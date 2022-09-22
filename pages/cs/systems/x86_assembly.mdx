@@ -1,0 +1,2217 @@
+import {
+	StaticArray,
+	Matrix,
+	JaggedArray,
+	StackPlot,
+	Stack,
+	Mem,
+} from "../../../components/hago";
+
+<Metadata
+	title={"x86 Assembly"}
+	description={"Notes on x86 Assembly"}
+	keywords={"x86, assembly, computer architecture"}
+/>
+
+# x86 Assembly
+
+<div className="outline">
+
+1. [x86 Assembly Program Components](#x86-assembly-program-components)
+2. [x86 Assembly Program Data Types](#x86-assembly-program-data-types)
+3. [x86 Integer Registers](#x86-integer-registers)
+	1. [What Do the Register Names Mean?](#what-do-the-register-names-mean)
+4. [Operations in Assembly](#operations-in-assembly)
+5. [Moving Data](#moving-data)
+6. [Addressing Modes](#addressing-modes)
+	1. [Simple Addressing Modes](#simple-addressing-modes)
+		1. [Normal Addressing](#normal-addressing)
+		2. [Displacement](#displacement)
+		3. [Aside: Argument Function Registers](#aside-argument-function-registers)
+		4. [General Addressing Mode](#general-addressing-mode)
+7. [Address Computation Instructions](#address-computation-instructions)
+8. [Arithmetic Operations](#arithmetic-operations)
+9. [Branching Instructions](#branching-instructions)
+	1. [Comparison Operators](#comparison-operators)
+	2. [Test Instructions](#test-instructions)
+	3. [Set Instructions](#set-instructions)
+10. [Jump Instructions](#jump-instructions)
+11. [Conditional Move Instructions](#conditional-move-instructions)
+12. [Loop Instructions](#loop-instructions)
+	1. [Do-while Loops](#do-while-loops)
+	2. [While-loops](#while-loops)
+	3. [For-loops](#for-loops)
+	4. [Switch Statements](#switch-statements)
+13. [Functions](#functions)
+	1. [The Stack](#the-stack)
+		1. [Push](#push)
+		2. [Pop](#pop)
+		3. [Security Vulnerabilities](#security-vulnerabilities)
+	2. [Example: Function Execution in Assembly](#example-function-execution-in-assembly)
+	3. [Handling Recursion](#handling-recursion)
+	4. [Inside the Stack Frame](#inside-the-stack-frame)
+	5. [Caller- v. Callee-saved](#caller--v-callee-saved)
+14. [Glossary](#glossary)
+
+</div>
+
+This chapter provides an overview of x86 Assembly.
+
+The Intel x86 processor is the dominating processor for the laptop,
+desktop, and server markets. The processor has a gargantuan, complex
+instruction set, in part because it provides backwards compatibility as far
+back as the Intel 8086, first introduced in 1978. Despite the instruction
+set's size, only a small subset of the instructions are actually used and
+seen by most programs.
+
+The x86 is **CISC processor (complex instruction set computer)**. This is
+in contrast to **RISC processors (reduced instruction set computer)**. RISC
+processors have a very simple instruction set, where all the instructions
+are of uniform size, and the addressing modes are limited. CISC processors,
+on the other hand, have variable length instructions and numerous
+addressing modes.
+
+The CISC model makes it much, much easier to implement backwards
+compatibilty. In designing an instruction set, engineers have to use the
+available memory space optimally. As such, because earlier computers had
+smaller amounts of memory, so their instructions were shorter. Later
+computers had larger amounts of memory, so their instructions were longer.
+This is variable length across time. So to provide backwards compatibility,
+Intel had to use the CISC model.
+
+Early on, CISC processors beat RISC processors in terms of speed and
+backwards compatibility, while RISC processors reigned supreme in terms of
+power and heat generation. Because of how small and simple the processor's
+instructions are, RISC processors do not need to perform nearly as many
+computations as CISC processors when it comes to addressing and executing
+instructions. Accordingly, RISC processors are ideal for devices that must
+be able to operate in low power conditions. Because of these features, RISC
+processors are often found in devices that do not need to perform the
+complex computations we'd perform on a desktop or server:
+
+- ARM processors for phones, tablets, cars
+- PowerPC for game consoles and older Macs
+- SPARC for servers
+- MIPS for printers
+- 8-bit microcontroller (microwaves, washing machines, fridges, air
+  conditioners, and numerous other appliances)
+
+Intel, recognizing this, has taken steps to ensure their processors perform
+just as well as RISC processors under both low power condtions and in terms
+of heat generation. If we examined an x86 instruction executing, we'd find
+that the instruction is ultimately converted into much smaller, simpler
+instructions, much like a RISC processor. Thus, while the x86 is a CISC
+processor in name and likeness, internally, it operates very much like a
+RISC processor.
+
+### Multicore Processors
+
+Below is a table of various Intel processors over time:
+
+| Processor  | Release Date | Transistors     | MHz             | Comment                                                                                                    |
+| ---------- | ------------ | --------------- | --------------- | ---------------------------------------------------------------------------------------------------------- |
+| 8086       | 1978         | ${29~000}$      | ${[5,10]}$      | First 16-bit Intel processor, the basis for IBM PC and DOS. 1MB address space.                             |
+| 386        | 1985         | ${275_000}$     | ${[16,33]}$     | First 32-bit Intel processor. Commonly referred to as IA32, it added _flat addressing_ and could run Unix. |
+| Pentium 4E | 2004         | ${125~000~000}$ | ${[2800,3800]}$ | First 64-bit Intel x86 processor, referred to as x86-64.                                                   |
+| Core 2     | 2006         | ${291~000~000}$ | ${[1060,3333]}$ | First multi-core Intel processor.                                                                          |
+| Core i7    | 2008         | ${731~000~000}$ | ${[1600,4400]}$ | First quad-core Intel processor.                                                                           |
+
+As mentioned earlier, processors face the hurdle of heat generation. As the
+number of transistors increases, so too does the processor's temperature.
+In fact, at Intel's trajectory up until 2004, processors would've ended up
+hotter than the sun by 2040. This is precisely why multicore processors
+were introduced.
+
+As an aside, recent Intel processors often have interesting names —
+Nehalem, Sandy Bridge, Ivy Bridge, Haswell, Broadwell, and so on. The
+actual processor names (i.e., what we'd see on an Intel patent application)
+use sequences of numbers. For example, the Itanium 9300 series of processor
+are codenamed Tukwila. The human-readable names are also called _internal
+names_, as they're the code names used by Intel within the company. The
+longer, numeric-like names are _external names_, used by Intel when it
+deals with entities outside the company. The names come from various places
+in the United States — Haswell is a town in Colorado, Knights Landing is in
+California, Coffee Lake is in Oregon, etc. Because place names are in the
+public domain, Intel may use them without fear of a copyright violation.
+
+Intel follows this practice carefully, given what happened to Apple in the
+early 1990s. While developing the Mac 7100, Apple's engineers gave the
+computer the code name "Carl Sagan", prompting Sagan to threaten a
+copyright claim against the company. Apple settled and renamed the project
+BHA (Butt Head Astronomer).
+
+## x86 Assembly Program Components
+
+There are four key parts to an Assembly program:
+
+1. **The program counter** — the address of the next instruction. On
+   x86-64, this is called `RIP`.
+2. **Register file** — a collection of heavily-used program data.
+3. **Condition codes** — a code indicating the status of the most recent
+   arithmetic or logical operation.
+4. **data memory** — a byte-addressable array containing user data.
+5. **program memory** — a byte-addressable array containing instructions.
+6. **stack** — a stack data structure to support subroutines/procedures.
+
+## x86 Assembly Program Data Types
+
+Assembly code has a small set of data types:
+
+1. An **integer type** of 1, 2, 4, or 8 bytes. This data type applies to
+   data values and addresses (untyped pointers).
+2. A **floating point type** of 4, 8, or 10 bytes.
+3. **SIMD vector data types** of 8, 16, 32, or 64 bytes.
+4. A **code type**, covering byte sequences that encode a series of
+   instructions.
+
+Importantly, none of the bolded terms in the list are actually understood
+by the processor. All the processor knows are discrete units of bytes.
+Moreover, there are no aggragate data types like arrays or structs —
+everything is just a contiguous allocation of bytes in memory.
+
+## x86 Integer Registers
+
+The x86 has sixteen integer registers:
+
+| x86 Register Name | Backwards Compatible Name | Purpose                                                      |
+| ----------------- | ------------------------- | ------------------------------------------------------------ |
+| `%rax`            | `%eax`                    | temporary register/stores the return value                   |
+| `%rbx`            | `%ebx`                    | stores values that should be preserved across function calls |
+| `%rcx`            | `%ecx`                    | stores the 4th argument of a function                        |
+| `%rdx`            | `%edx`                    | stores the 3rd argument of a function                        |
+| `%rsi`            | `%esi`                    | stores the 2nd argument of a function                        |
+| `%rdi`            | `%edi`                    | stores the 1st argument of a function                        |
+| `%rsp`            | `%esp`                    | stores the stack pointer                                     |
+| `%rbp`            | `%ebp`                    | stores values that should be preserved across function calls |
+| `%r8`             | `%r8d`                    | stores the 5th argument of a function                        |
+| `%r9`             | `%r10d`                   | stores the 6th argument of a function                        |
+| `%r10`            | `%r11d`                   | stores temporary values                                      |
+| `%r11`            | `%r11d`                   | stores temporary values                                      |
+| `%r12`            | `%r12d`                   | stores values that should be preserved across function calls |
+| `%r13`            | `%r13d`                   | stores values that should be preserved across function calls |
+| `%r14`            | `%r14d`                   | stores values that should be preserved across function calls |
+| `%r15`            | `%r15d`                   | stores values that should be preserved across function calls |
+
+### What Do the Register Names Mean?
+
+The registers have their current names largely because of history. Intel's
+first 8-bit processor was the 8008, and it had seven _physical_ 8-bit
+registers. The eighth "register" was a logical register (also called
+_pseudo-register_), created by encoding the registers within the
+instructions as three bits (${2^{3} = 8}$).
+
+<Mem
+	data={[
+		{ a: "A", val: "0000 0000" },
+		{ a: "B", val: "0000 0000" },
+		{ a: "C", val: "0000 0000" },
+		{ a: "D", val: "0000 0000" },
+		{ a: "E", val: "0000 0000" },
+		{ a: "H", val: "0000 0000" },
+		{ a: "L", val: "0000 0000" },
+		{ a: "M", val: "pseudo" },
+	]}
+	cellWidth={65}
+	scale={40}
+/>
+
+The `A` stood for _accumulator_, and it stored implicit operands and return
+values for arithmetic and logical operations. The pseudo-register was
+called the `M` register, for _memory_. The `M` register worked by pointing
+to the memory location resulting from combining the registers `H`
+(_high-order byte_) and `L` (_low-order byte_). In the 70s, this was the
+only way to construct addresses. The remaining registers, `B`, `C`, `D`,
+and `E`, were generic registers, so their names were completely arbitrary.
+
+When the 8086 came along in 1986, the same names were used for backwards
+compatibility. The difference, however, was that the registers were now
+16-bits wide:
+
+<Mem
+	data={[
+		{ a: "AX", val: "AH AL" },
+		{ a: "BX", val: "BH BL" },
+		{ a: "CX", val: "CH CL" },
+		{ a: "DX", val: "DH DL" },
+		{ a: "SP", val: "0000 0000 0000 0000" },
+		{ a: "BP", val: "0000 0000 0000 0000" },
+		{ a: "SI", val: "0000 0000 0000 0000" },
+		{ a: "DI", val: "0000 0000 0000 0000" },
+	]}
+	cellWidth={130}
+	scale={40}
+/>
+
+The letter `X` was intended to represent a variable, signifying that it
+could be replaced with `H` or `L` to access the lower and higher order
+bytes, as was done in the 8008. Because there were now far more ways to
+construct address (more available memory, more possible methods to
+address), Intel made the design choice of restricting how some of the
+registers could be used. This in turn meant that the previously generic
+registers now had to have meaning: `BX` was the _base register_, `CX` was
+the _count register_, and `DX` was the data register (`AX` remained the
+_accumulator_).
+
+The new registers were also given meaning: `BP` was the _base pointer_,
+`SP` was the _stack pointer_, `SI` was the _source index_, and `DI` was the
+_destination index_.
+
+Fast forward to the x86, and the registers got bigger. Now they were
+32-bits wide. Once again, for backwards compatibility, the first 16-bits
+could be accessed by using the 8080 register names — `AX`, `AL`, `BX`,
+`CX`, etc. Likewise, the two lower bytes could be referred to with `AH`,
+`AL`, `BH`, `BL`, and so on.
+
+To refer to all 32-bits in the register, Intel appended the letter `E`
+(_extended_) to the names, yielding the register names like `EAX` and
+`EBX`.
+
+Fast forward to the x86-64, and we see that the letter `E` was replaced
+with the letter `R`. Importantly, this change wasn't done by Intel, but by
+AMD, Intel's primary competitor in the early 2000s (Intel's main competitor
+today is ARM, which currently dominates the processor market for mobile
+phones, tablets, and embedded devices). AMD made the decision to cut
+backwards compatibility at 8086, so the smallest lower-order reference we
+can make is `AX`, `AL`, etc. Moreover, AMD decided to name the new
+registers by replacing `E` with `R` for _register_.
+
+The x86-64 register names today do not necessarily map to their registers'
+purpose. The function argument register names can be traced back to
+_destination index_, _source index_, _data register_, _count register_, and
+so on, but they aren't necessarily used the way they were used when the
+8080 first appeared. In sum, the register names don't originate in their
+purposes today, but history.
+
+## Operations in Assembly
+
+Where the register names allow us to store data, _operations_ allow us to
+perform actions on that data. In x86, instructions can be categorized as
+follows:
+
+- **Address instructions**
+  - These are instructions for transferring data between memory and the
+    processor registers. There are two kinds of addressing instructions:
+    1. **Load instructions** are instructions to load data from the memory
+       into the register.
+    2. **Store instructions** are instructions to store register data into
+       memory.
+- **Arithmetic instructions**
+  - These are instructions for performing arithmetic functions on register
+    or memory data.
+- **Control instructions**
+  - These are instructions to transfer control between subroutines. There
+    are three kinds of control instructions:
+    1. **Direct unconditional jumps** are instructions to immediately
+       execute another instruction.
+    2. **Indirect unconditional jumps** are instructions to immediately go
+       to the address containing the instruction.
+    3. **Direct conditional jumps** are instructions to execute another
+       instruction only if some condition is true.
+    4. **Indirect conditional jumps** are instructions to go to an address
+       containing an instruction only if some condition is true.
+
+## Moving Data
+
+Moving data in x86 Assembly has the grammar:
+
+$$
+	\mm{movq} \seq{source} \seq{destination}
+$$
+
+The instruction `movq` is a shortening of "move quad", corresponding to
+"Move 8 bytes", which is what's typically moved in a 64-bit architecture.
+If we want to just move 4 bytes, we use the instruction `movl`. The
+${source}$ and ${destination}$ can be one of the following types:
+
+1.  An integer type, corresponding to constant integer data. These are like
+    constants in C, but prefixed with`$`. For example:
+
+        ```nasm
+        $0x400,$-533
+        ```
+
+2.  A register type, corresponding to one of the sixteen integer registers.
+    For example:
+
+        ```nasm
+        %rax, %r13
+        ```
+
+    Importantly, the register `%rsp` cannot be used, as its reserved for
+    special use, and certain registers can only be used for particular
+    instructions.
+
+3.  A memory type, which is a sequence of 8 consecutive bytes of memory at
+    an address given by the register. These arguments are used in the
+    context of an **addressing mode**. The simplest example of a memory
+    type argument:
+
+        ```nasm
+        (%rax)
+        ```
+
+    Notice that this is a register name surrounded with a parenthesis.
+    Using this syntax, we are _dereferencing_ the `%rax` register ("give me
+    the address inside `%rax`").
+
+Illustrating with an example:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655919947/cs/assembly1_vwzpj7.svg"
+	}
+	imwidth={"642"}
+	imheight={"322"}
+	caption={"C to Assembly"}
+	width={"80"}
+/>
+
+Let's go over this line by line. When we write:
+
+```nasm
+movq $0x4, %rax
+```
+
+we are saying, "Move the constant 4 into the register `%rax`." This is
+equivalent to creating a variable in C. Next, the line:
+
+```nasm
+movq $-147, (%rax)
+```
+
+says, "Move the constant -147 into the address stored in the register
+`%rax`". In this case, that address is `4`, so the memory address `4` now
+contains the constant -147. Then we write:
+
+```nasm
+movq %rax, %rdx
+```
+
+This says, "Move the value stored in the register `%rax` into the register
+`%rdx`". This is equivalent to assigning a variable identifier to another
+variable identifier. In this case, the value `4` is now in the register
+`%rdx`. When we write:
+
+```nasm
+movq %rax, (%rdx)
+```
+
+we command, "Move the value in `%rax` into the address stored in `%rdx`."
+Here, the value `4` is moved into the register `4`. Finally, when we write:
+
+```nasm
+movq (%rax), %rdx
+```
+
+we instruct, "Move the address stored in `%rax` into the register `%rdx`".
+Now the address `4` is stored in the register `%rdx`.
+
+## Addressing Modes
+
+At the Assembly level, memory is viewed as a giant array of bytes. For
+illustrative purposes, we'll refer to this array with the variable
+${\mm{RAM}.}$
+
+<Mem
+	data={[
+		"vdots30",
+		"...",
+		"...",
+		"...",
+		"...",
+		"...",
+		"...",
+		"...",
+		"...",
+		"vdots50",
+		"...",
+		"...",
+		"vdots50",
+	]}
+	scale={50}
+/>
+
+Because it's an array, when we want to access a particular piece of data in
+memory, we can index into memory:
+
+$$
+   \mm{RAM[}i\mm{]}
+$$
+
+What can we pass as a value for ${i?}$ It depends on the **addressing
+mode** — an instruction set's specification for what values of ${i}$ we can
+pass, as well as how those values should be formatted. That is, the
+instruction set architecture's rules for how we index into memory. In x86,
+there many addressing modes, so we'll go through them one at a time.
+
+### Simple Addressing Modes
+
+The simplest addressing modes are:
+
+1. Normal addressing, and
+2. Displacement addressing
+
+#### Normal Addressing
+
+In normal addressing, ${i = R_n,}$ where ${R_n}$ is: (a) of the sixteen
+processor registers, and (b) holds a memory address's numeric value. Thus,
+in normal addresing mode, we have:
+
+$$
+   \mm{RAM[}R_n\mm{]}
+$$
+
+For example, when we write the instruction:
+
+```nasm
+movq (%rcx), %rax
+```
+
+the notational equivalent is:
+
+$$
+   \mm{RAM[\%rcx]}
+$$
+
+Suppose the register `%rcx` holds the value `0x100`. The notation is thus:
+
+$$
+   \mm{RAM[0x100]}
+$$
+
+which translates to, "Read the memory location indexed 0x100". If the
+memory location `0x100` contained the value `4`, then the result of the
+command above is to store the value `4` inside the register `%rax`.
+
+Importantly, this is precisely what happens in C's pointer dereferencing:
+
+```c
+// suppose i, j, and k are hexadecimals
+int a = 5; // address 0xi in memory holds the value 5
+int *p = &a; // address 0xj in memory holds the address 0xi
+int c = *p + 1; // address 0xk in memory holds (value at 0xi) + 1
+```
+
+#### Displacement
+
+In displacement addressing, ${i = R_n + D,}$ where (a) ${R_n}$ is one of
+the exis sixteen registers, (b) ${R_n}$ holds a memory address value, and
+(c) ${D \in \NN}$ is an offset value. Putting it all together, we have:
+
+$$
+   \mm{RAM[} R_n + D  \mm{]}
+$$
+
+In Assembly, the corresponding syntax takes the form:
+
+$$
+   \mm{movq $D$($R_n$), $R_i$}
+$$
+
+For example, if we wrote:
+
+```nasm
+movq 5(%rbp), %rdx
+```
+
+we're effectively stating performing the following instructions:
+
+1. Get the memory address value in the register `%rbp`.
+2. Add 5 to that memory address value.
+3. Go to the resulting memory address.
+4. Store the value inside that memory address in the register `%rdx`.
+
+As we can likely tell, this is equivalent to indexing into an array in
+languages like C. When we write:
+
+```c
+int arr[5] = {1,2,3,4,5};
+```
+
+the identifier `arr` gives us the starting address for the array (stored in
+a register like `%rbp`). When we write:
+
+```c
+arr[2]
+```
+
+we are effectively incrementing the address stored in `%rbp` by 2.
+
+#### Aside: Argument Function Registers
+
+Having discussed the two simple addressing modes, we can now add a few more
+facts about registers in x86. By convention, when we write a function in a
+language like C:
+
+$$
+   \mm{$type$ $f$(arg1, arg2, ..., arg$n$)}
+$$
+
+the first six function arguments are stored in the following registers:
+
+| argument number | register |
+| --------------- | -------- |
+| 1               | `%rdi`   |
+| 2               | `%rsi`   |
+| 3               | `%rdx`   |
+| 4               | `%rcx`   |
+| 5               | `%r8`    |
+| 6               | `%r9`    |
+
+Any arguments beyond 6 are pushed onto a stack so they can be popped off
+the stack in order (we'll discuss this at length later).
+
+#### General Addressing Mode
+
+The _general addressing mode_ in the x86 is a generalization of the
+previous addressing modes we discussed. It takes the form:
+
+$$
+   \mm{RAM[$R_b$ + ($S \times R_i$) + $D$]}
+$$
+
+where:
+
+- ${D}$ is the the constant displacement (1, 2, or 4 bytes).
+- ${R_b}$ is the base register (any of the 16 registera), by default 0.
+- ${R_i}$ is the index register (any of the 16 registers other than
+  `%rsp`), by default 0.
+- ${S}$ is a scale, equal to either 1, 2, 4, or 8, and by default is 1.
+
+In Assembly, this formula is expressed with the syntax:
+
+$$
+   \mm{D($R_b$, $R_i$, $S$)}
+$$
+
+For example, suppose the register `%rdx` contained the address `0xf000`,
+and the register `%rcx` container the address `0x0100`. These assumptions
+result in the following:
+
+```nasm
+0x8(%rdx)        // => 0xf000 + 0x8 = 0xf008
+(%rdx, %rcx)     // => 0xf000 + 0x100 = 0xf100
+(%rdx, %rcx, 4)  // => 0xf000 + (4 * 0x100) = 0xf400
+0x80(,%rdx,2)    // => 0x0000 + (2 * 0xf000) + 0x80 = 0x1e080
+```
+
+## Address Computation Instructions
+
+A particularly useful instruction in x86 is the `leaq` instruction. The
+syntax:
+
+$$
+   \mm{leaq $Src$,$R_n$}
+$$
+
+The ${Src}$ is an address mode expression, and the $R_n$ is some register.
+This instruction effectively says:
+
+> Set the register $R_n$ to the address denoted by $Src$.
+
+## Arithmetic Operations
+
+There are numerous arithmetic operations provided in x86, but the most
+common operations are:
+
+| Instruction                | Computation              |
+| -------------------------- | ------------------------ |
+| $$\mm{addq $src$,$dst$}$$  | ${dst = dst + src}$      |
+| $$\mm{subq $src$,$dst$}$$  | ${dst = dst - src}$      |
+| $$\mm{imulq $src$,$dst$}$$ | ${dst = dst \times src}$ |
+| $$\mm{salq $src$,$dst$}$$  | ${dst = dst \bls src}$   |
+| $$\mm{sarq $src$,$dst$}$$  | ${dst = dst \brs src}$   |
+| $$\mm{shrq $src$,$dst$}$$  | ${dst = dst \brs src}$   |
+| $$\mm{xorq $src$,$dst$}$$  | ${dst = dst \bxor src}$  |
+| $$\mm{andq $src$,$dst$}$$  | ${dst = dst \band src}$  |
+| $$\mm{orq $src$,$dst$}$$   | ${dst = dst \bor src}$   |
+
+At the CPU level, these operations are performed as we saw in earlier
+sections. Adders, multiplexors, demultiplexors, combinations of the three
+or some other circuit are used to carry out the binary arithmetic and
+bitwise operations.
+
+## Branching Instructions
+
+There are three key registers for branching instructions on the x86:
+
+1. The `%rax` (the _accumulator register_) register stores temporary data.
+2. The `%rsp` (the _stack pointer register_) register stores the currrent
+   location of the run time stack (i.e., a pointer to the current top of
+   the stack).
+3. The `%rip` (the _instruction pointer register_) register stores the
+   location of the current code control point (i.e., the _program counter_;
+   a pointer to the next instruction to execute).
+
+As mentioned earlier, each of these registers is 64-bits (8 bytes) wide.
+Alongside the registers above, there are four critical _1-bit_ registers
+necessary for branching:
+
+1. `CF` (the _carry flag register_),
+2. `SF` (the _sign flag register_),
+3. `ZF` (the _zero flag register_), and
+4. `OF` (the _overflow flag register_).
+
+These four registers are called **condition code registers**, or, more
+abstractly, **condition codes**. Given the condition code registers are
+only 1 bit wide, each register can only be either 1 or 0.
+
+Everytime we perform an arithmetic operation, the condition code registers
+are implicitly set, and stay set until we overwrite them with some other
+operation. Notice what this means — because the registers stay set, they
+are effectively preserving information across time. That ability is what
+allows the processor to make decisions. Whenever we pass a conditional
+instruction, the processor "goes back in time" by referring to the
+condition codes.
+
+For example, when we want to perform the computation:
+
+```nasm
+t = a + b
+```
+
+The condition code registers change according to the following rules:
+
+1. If a carry occurs beyond the most significant bit (unsigned overflow),
+   the `CF` register is toggled (i.e., from a `0` to a `1` or from a `1` to
+   a `0`). For example, on an 8-bit system, if the computation results in:
+
+   $$
+   \begin{aligned}
+      &bbbb~bbbb \\
+      + &bbbb~bbbb \\
+      \hline
+      {1}~&bbbb~bbbb
+   \end{aligned}
+   $$
+
+   the `CF` register is set.
+
+2. If `t = 0`, the `ZF` register is toggled.
+3. If `t < 0`, the `SF` register is toggled. For example, if the
+   computation results in:
+
+   $$
+   \begin{aligned}
+      &bbbb~bbbb \\
+      + &bbbb~bbbb \\
+      \hline
+      &{{1}}bbb~bbbb
+   \end{aligned}
+   $$
+
+   then the `SF` register is set. Notice that because this register only
+   reports whether the result of a computation was negative, it means
+   nothing for unsigned computations.
+
+4. If a signed overflow occurs, i.e.,
+
+   ```nasm
+   (a>0 && b>0 && t<0) || (a<0 && b<0 && t>=0)
+   ```
+
+   The `OF` register is toggled. Visually, this the `OF` register is set
+   when we add two bit vectors with the same sign, but the result is a
+   different sign:
+
+   $$
+   \begin{aligned}
+      &Abbb~bbbb \\
+      + &Abbb~bbbb \\
+      \hline
+      &{{B}}bbb~bbbb
+   \end{aligned}
+   $$
+
+All of this happens behind the scenes.
+
+### Comparison Operators
+
+The comparison operators in high-level code are ultimately executed by the
+processor using the condition code registers. To understand how, recall
+this basic property in real analysis:
+
+> **property**. Let ${a,b,S \in \RR.}$ The following properties hold:
+>
+> 1.  ${s = 0 \iff (a-b) = 0 \iff a = b \iff b = a}$
+> 2.  ${s > 0 \iff  (a-b) > 0 \iff  a > b \iff b < a}$
+> 3.  ${s < 0 \iff  (a-b) < 0 \iff  a < b \iff b > a}$
+
+In Assembly, the comparison operators take the form:
+
+$$
+	\mm{cmpq} a,b
+$$
+
+where ${a,b \in \ZZ.}$ When we execute the command above, we are actually
+computing:
+
+$$
+	a - b
+$$
+
+without specifying a destination. And since we're computing ${a - b,}$ we
+can map the mathematical properties to the condition codes:
+
+1. If the `ZF` register is set, then `a = b`.
+2. else if the `SF` register is set, then `a < b`.
+3. else `a > b`.
+
+Unlike real numbers, however, there's always the possibility of an
+overflow. Accordingly, there are a few more applicable rules for
+comparisons on a computer:
+
+1. For signed comparisons, if the `OF` register is set, then the result of
+   the comparison is possibly incorrect.
+2. For unsigned comparisons, if the `CF` register is set, then the result
+   of the comparison is possible incorrect.
+
+### Test Instructions
+
+One unusual instruction related to branching should be mentioned — the
+`test` instruction. This instruction takes the form:
+
+$$
+   \mm{testq}~~src2,src1
+$$
+
+This instruction is equivalent to computing `src1 & src2` without setting a
+destination. This is useful because it sets the condition codes based on
+the result of computing `src1 & src2`.
+
+- If `src1 & src2 = 0`, then the `ZF` register is set.
+- If `src1 & src2 < 0`, then the `SF` register is set.
+
+Effectively, the `test` instructions can be used to determine if the value
+in some register is `0` or negative. This leads to instructions that look
+like:
+
+```nasm
+testq %rax, %rax
+```
+
+It looks unusual, but its a perfectly valid — even useful — instruction,
+since checking for negativity and zeroness is a common enough operation.
+Intel opted to introduce the instruction because it followed all of the
+other instruction formats — the instruction took two operands. In turn,
+costs are saved from having to introduce new unary instructions that only
+took one operand.
+
+### Set Instructions
+
+The `set𝑥` instructions take the following form:
+
+$$
+   \mm{set$x$}~~destination
+$$
+
+In short, the instruction works as follows:
+
+1. If the condition is true, set the low-order byte of the destination to
+   `1`.
+2. If the condition is false, set the low-order byte of the destination to
+   `0`.
+
+where the condition is the current value of a particular condition code
+register. The `set` instructions are as follows:
+
+| Instruction | Description                                                                                                                 |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `sete`      | If `ZF=1`, set the byte equal to `1`; else `0` (completes and stores the result of an equality check).                      |
+| `setne`     | If `~ZF=1`, set the byte equal to `1`; else `0` (completes and stores the result of an inequality check).                   |
+| `sets`      | If `SF=1`, set the byte equal to `1`; else `0` (completes and stores the result of a negativity).                           |
+| `setns`     | If `~SF=1`, set the byte equal to `1`; else `0` (completes and stores the result of a nonnegativity check).                 |
+| `setg`      | If `~(SF^OF)&~ZF=1`, set the byte equal to `1`; else `0` (completes and stores the result of a greater than check).         |
+| `setge`     | If `~(SF^OF)=1`, set the byte equal to `1`; else `0` (completes and stores the result of a greater than or equal to check). |
+| `setl`      | If `(SF^OF)=1`, set the byte equal to `1`; else `0` (completes and stores the result of a less than check).                 |
+| `setle`     | If `(SF^OF)\|ZF=1`,set the byte equal to `1`; else `0` (completes and stores the result of a less than or equal to check).  |
+| `seta`      | If `~CF&~ZF=1`,set the byte equal to `1`; else `0` (completes and stores the result of an "above" check).                   |
+| `setb`      | If `~CF=1`,set the byte equal to `1`; else `0` (completes and stores the result of a "below" check).                        |
+
+The set instructions are the storage part for the comparison instructions.
+Remember, when we write the instruction `compq 𝑎,𝑏`, all we're doing is
+computing `𝑎 - 𝑏`. We still have to determine whether that result is is
+greater than, equal to, or less than `0`. The way to do so is not by
+comparing the actual result of the computation, but by comparing the
+effects that computation had on the condition code registers.
+
+For example, if we wanted to check if `a == b` (equality), the computation
+`a - b` would return `0`. This sets the `ZF` conditition code to `1`, which
+then sets the lower order byte in the destination register to `1`. This
+means that the condition is true.
+
+For example, consider the code:
+
+```c
+int gt (long x, long y) {
+   return x > y;
+}
+```
+
+This code translates to the following:
+
+```nasm
+cmpq %rsi, %rdi  # compare x:y
+setq %al         # set register `%al` to 1 if the condition is true, 0 otherwise
+movzbl %l, %eax  # zero the rest of %rax
+ret              # return
+```
+
+Notice the instruction `movzbl %l, %eax`. This instruction will zero the
+rest of the contents in the register `%rax`. The step is necessary because
+the `set` instructions only change the lower-order byte of the register's
+contents. This means that anything above that byte (the other 7 bytes) will
+comprise a garbage value.
+
+## Jump Instructions
+
+For branching to work, we need a set of jump instructions. These
+instructions tell the processor to _go to_ another instruction _only if_ a
+particular condition is true. In x86, the jump instructions are always
+prefixed with a `j`:
+
+| Instruction | Condition      | Description                                                 |
+| ----------- | -------------- | ----------------------------------------------------------- |
+| `jmp 𝑥`     | `1`            | Jump to 𝑥 immediately (unconditional jump)                  |
+| `je 𝑥`      | `ZF`           | Jump to 𝑥 only if the equality test is true                 |
+| `jne 𝑥`     | `~ZF`          | Jump to 𝑥 only if the non-equality test is true             |
+| `js 𝑥`      | `SF`           | Jump to 𝑥 only if the negativity test is true               |
+| `jns 𝑥`     | `~SF`          | Jump to 𝑥 only if the non-negativity test is true           |
+| `jg 𝑥`      | `~(SF^OF)&~EF` | Jump to 𝑥 only if the greater-than test is true             |
+| `jge 𝑥`     | `~(SF^OF)`     | Jump to 𝑥 only if the greater-than-or-equal-to test is true |
+| `jl 𝑥`      | `(SF^OF)`      | Jump to 𝑥 only if the less-than test is true                |
+| `jle 𝑥`     | `(SF^OF)\|ZF`  | Jump to 𝑥 only if the less-than-or-equal-to test is true    |
+| `ja 𝑥`      | `(~CF)&(~ZF)`  | Jump to 𝑥 only if the "above" test is true                  |
+| `jb 𝑥`      | `CF`           | Jump to 𝑥 only if the "below" test is true                  |
+
+For example, consider the following code, with its Assembly equivalent
+beside:
+
+<Grid cols={2}>
+
+```c
+int absolute_difference(int x, int y) {
+   long result;
+   if (x > y) {
+      result = x - y;
+   } else {
+      result = y - x;
+   }
+   return result;
+}
+```
+
+```nasm
+absolute_difference:
+   cmpq %rsi, %rdi
+   jle .L4
+   movq %rdi, %rax
+   subq %rsi, %rax
+   ret
+.L4:
+   movq %rsi, %rax
+   subq %rdi, %rax
+   ret
+```
+
+</Grid>
+
+There are a few new constructs here. First, the `absolute_difference` and
+`.L4` are called **labels**. They're used to demarcate the points in the
+Assembly program to jump to. Second, the `ret` (_return_) keyword is used
+to exit out of the labeled block of code and get back to whatever
+instruction was supposed to execute next in the normal sequence.
+
+With these details, we can see how the logic works. We perform the
+comparison, and if it turns out to be true — the result of
+`cmpq %rsi, %rdi` — we jump to the line labeled `.L4` (per the instruction
+`jle .L4`), and execute the code after that line. If the comparison is
+false, however, we perform no jump and continue executing the instructions
+under `absolute_difference`.
+
+For both code blocks, we see the correct use for the registers: `%rdi` for
+the first argument of the function, `%rsi` for the second argument, and
+`%rax` for the return value.
+
+As an aside, the notion of using labels in Assembly is found directly in C
+through the `goto` operator:
+
+```c
+int absolute_difference(int x, int y) {
+	int result;
+	int negativity_test = x <= y;
+	if (negativity_test) goto Else;
+	result = x - y;
+	goto Done;
+	Else:
+		result = y-x;
+	Done:
+		return result;
+}
+
+int main() {
+	int a = 5;
+	int b = 7;
+	int c = absolute_difference(a, b);
+	printf("|5-7| = %d\n", c);
+	return 0;
+}
+```
+
+```bash
+|5-7| = 2
+```
+
+## Conditional Move Instructions
+
+The jump instructions worked fine for many years, until the Assembly
+architects realized how inefficient they were. The problem with using jump
+instructions: Given 𝑛 conditions, the compiler could it wrong
+${\dfrac{100}{n}\%}$ chance the CPU could it wrong. And if it did get it
+wrong, it had to have a way to go all the way back and unravel the work it
+did. This was incredibly time consuming and costly. Because instructions
+are executed through a sequential pipeline, jump instructions were too
+disruptive.
+
+Rather than coming up with ways to backtrack the CPU's work, the CPU
+engineers and Assembly architects came up with the _conditional move
+instruction_. These instructions are supported on all post-1995 x86
+processors.
+
+To illustrate how these instructions work, consider the switch statement,
+supported in many languages like C:
+
+$$
+   \mm{val = $test$ ? $then$ : $else$}
+$$
+
+where ${test}$ is some Boolean condition, and ${then}$ and ${else}$ are
+expressions. The conditional move instruction is an encapsulation of the
+following instructions:
+
+1. Evaluate the $then$ expression.
+2. Set `result` (a temporary variable) to the value from step 1.
+3. Evaluate the $else$ expression.
+4. Set `eval` (a temporary variable) to the value from step 3.
+5. Evaluate the $test$ expression.
+6. Negate the result of evaluating the $test$ expression.
+7. Set `nt` (a temporary variable) to the value from step 6.
+8. If `nt` is true, set `result` to `eval`.
+9. Return `result`.
+
+Notice that we've effectively turned a branching sequence into a linear
+sequence. We never go anywhere else. If `nt` is true, we change the result.
+If it's not, we just return. In actual Assembly, we get a program that
+looks like:
+
+```nasm
+absolute_difference:
+   movq    %rdi,  %rax  # x
+   subq    %rsi,  %rax  # result = x-y
+   movq    %rsi,  %rdx
+   subq    %rdi,  %rdx  # eval = y-x
+   cmpq    %rsi,  %rdi  # x:y
+   cmovle  %rdx,  %rax  # if <=, result = eval
+   ret
+```
+
+There are, however, costs to this approach. For starters, if the $then$ or
+the $else$ expressions are large, expensive computation, it's difficult to
+justify using this approach. If it turns out that we never needed to change
+the result, or that the result should've been the other to begin with, all
+that work would have been for naught.
+
+There's also a safety concern: If our condition is to check for the null
+pointer, we should not be computing the $else$ expression, since the $else$
+expression is likely not supposed to be executed at all if we were
+confronted with a null pointer.
+
+## Loop Instructions
+
+Now that we've seen how conditional instructions work, the natural next
+step is to examine looping. We'll start with the simplest loop, the
+_do-while loop_.
+
+### Do-while Loops
+
+Consider the following program that uses a do-while loop:
+
+```c
+int number_of_1_bits(unsigned int x) {
+	int result = 0;
+	do {
+		result += x & 0x1;
+		x >>= 1;
+	} while (x);
+	return result;
+}
+
+int main() {
+	int n = 5;
+	int r = number_of_1_bits(5);
+	printf("There are %d one bits in %d\n", r, n);
+	return 0;
+}
+```
+
+```bash
+There are 2 one bits in 5
+```
+
+The function `number_of_1_bits()` returns the number 1 bits in its integer
+argument. We could also have written the program in goto style:
+
+```c
+int number_of_1_bits(unsigned int x) {
+	int result = 0;
+	Loop:
+		result += x & 0x1;
+		x >>= 1;
+		if (x) goto Loop;
+		return result;
+}
+```
+
+Examining the goto version, we have the following in Assembly:
+
+```nasm
+   mov1     $0,     %eax  # result = 0;
+.L2:                   # Loop:
+   movq   %rdi,  %rdx
+   andl   $1,    %edx  # t = x & 0x1
+   addq   %rdx,  %rax  # result += t
+   shrq   %rdi         # x >>= 1
+   jne    .L2          # if (x) goto Loop
+   rep; ret
+```
+
+Generally, the do-while loop in Assembly takes the form (C form to the
+right and Assembly to the left):
+
+<Grid cols={2}>
+
+$$
+\begin{aligned}
+   &\mm{do}~\{ \\
+   &~~~~statement_1 \\
+   &~~~~statement_2 \\
+   &~~~~\vdots \\
+   &~~~~statement_n \\
+   &\}~~\mm{while}~~(test)
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+   &\mm{LoopLabel:}\\
+   &~~~~instruction_1 \\
+   &~~~~instruction_2 \\
+   &~~~~\vdots \\
+   &~~~~instruction_n \\
+   &~~~\mm{if}~~(test) \\
+   &~~~~~~~~\mm{goto}~~\mm{LoopLabel}
+\end{aligned}
+$$
+
+</Grid>
+
+Like the conditional instructions, looping is a matter of jumping to labels
+depending on the loop's test condition. Note that the `rep` instruction,
+for our purposes, is just a dummy instruction. Compilers produce this
+instruction for largely historical reasons that aren't very relevant today.
+
+### While-loops
+
+For the while-loop, the Assembly form is similar, but with just a few more
+labels:
+
+<Grid cols={2}>
+
+$$
+\begin{aligned}
+   &\mm{while}~(test)~\{ \\
+   &~~~~statement_1 \\
+   &~~~~statement_2 \\
+   &~~~~\vdots \\
+   &~~~~statement_n \\
+   &\}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+   &\mm{goto TestLabel}\\
+   &\mm{LoopLabel:}\\
+   &~~~~instruction_1 \\
+   &~~~~instruction_2 \\
+   &~~~~\vdots \\
+   &~~~~instruction_n \\
+   &\mm{TestLabel}: \\
+   &~~~~\mm{if}~~(test)\\
+   &~~~~~~\mm{goto}~~\mm{LoopLabel}\\
+   &\mm{DoneLabel}: \\
+\end{aligned}
+$$
+
+</Grid>
+
+### For-loops
+
+The for-loop is really just syntactic sugar for a common sequence of
+instructions. In C, the general form of a for-loop is:
+
+$$
+   \begin{aligned}
+      &\mm{for}~~(init;~~test;~~update)~~\{ \\
+      &~~~~~statement_1; \\
+      &~~~~~statement_2; \\
+      &~~~~~~~\vdots \\
+      &~~~~~statement_n; \\
+      &\}
+   \end{aligned}
+$$
+
+Thus, all we're really doing is:
+
+1. Initialize the index counter.
+2. Perform the test.
+3. Update the index counter.
+4. Evaluate the body.
+5. Return to step 2.
+
+In Assembly form:
+
+$$
+   \begin{aligned}
+      &\mm{initialize the counter} \\
+      &\mm{if}~~!(test) \\
+      &~~~~\mm{goto DoneLabel} \\
+      &\mm{LoopLabel:} \\
+      &~~~~statement_1 \\
+      &~~~~statement_2 \\
+      &~~~~\vdots \\
+      &~~~~statement_n \\
+      &\mm{update} \\
+      &\mm{if}~~(test) \\
+      &~~~~\mm{goto LoopLabel} \\
+      &\mm{DoneLabel:} \\
+      &~~~~\mm{return} \\
+   \end{aligned}
+$$
+
+Importantly, notice the ${!(test).}$ Modern compilers are smart enough to
+recognize that this initial test will likely be false, so it immediately
+enters the loop.
+
+### Switch Statements
+
+In C, switch statments take the form:
+
+$$
+   \begin{aligned}
+      &\mm{switch}(x)~~\{ \\
+      &~~~~\mm{case}(val_0): \\
+      &~~~~~~~~block_0 \\
+      &~~~~\mm{case}(val_1): \\
+      &~~~~~~~~block_1 \\
+      &~~~~\vdots \\
+      &~~~~\mm{case}(val_{n-1}): \\
+      &~~~~~~~~block_{n-1} \\
+      &\}
+   \end{aligned}
+$$
+
+In Assembly, these statements are executed as follows. First, a _jump
+table_ is constructed. Each cell in the table contains the memory address
+of the first instruction in the code block (subsequent instructions are
+stored contiguously thereafter). These addresses are called _targets_:
+
+| Address          | Contents                             |
+| ---------------- | ------------------------------------ |
+| ${target_0}$     | Instructions if case ${0}$ is true   |
+| ${target_1}$     | Instructions if case ${1}$ is true   |
+| ${target_2}$     | Instructions if case ${2}$ is true   |
+| ${target_3}$     | Instructions if case ${3}$ is true   |
+| ${\vdots}$       | ${\vdots}$                           |
+| ${target_{n-1}}$ | Instructions if case ${n-1}$ is true |
+
+In Assembly: Using the same condition codes we saw earlier, if one of the
+cases returns `true`, we execute the instruction:
+
+$$
+   \mm{goto *JTab[$x$]}
+$$
+
+This instruction encapsulates the instructions:
+
+1. If ${x}$ is ${val_0}$, go to the jump table cell indexed 0.
+2. If ${x}$ is ${val_1}$, go to the jump table cell indexed 1.
+3. If ${x}$ is ${val_2}$, go to the jump table cell indexed 2.
+4. etc.
+
+Notice the use of the `*` in the instruction. This tells the processor that
+the instruction is in an address, rather than the actual jump table cell.
+Now, we know that languages like C default to fall-through behavior, but
+allow users to employ the `break` keyword to prevent this default.
+Accordingly, compilers must address the cases where a mixture of `break`
+and fall-through is used. To do so, the actual Assembly program looks
+something like:
+
+```nasm
+a_switch:
+   movq %rdx, %rcx
+   cmpq $8 %rdi
+   ja .L8
+   jmp *.L4(,%rdi,8)
+```
+
+Above, we can see usual move and jump instructions. But what is that `$8`?
+This instruction maps to some switch statement with 8 cases. This means
+that if the compiler encounters any value beyond the greatest possible
+value or the smallest possible value, it can immediately infer that this is
+the default case. If it is the default case, jump immediately to the label
+`.L8` — the last cell in the jump table. Otherwise, we jump to the label
+`*.L4`. That label might look like the following:
+
+```nasm
+.section .rodata
+   .align 8
+.L4:
+   .quad .L0 # first case
+   .quad .L1 # second case
+   .quad .L2 # third case
+   .quad .L3 # fourth case
+   .quad .L4 # fifth case
+   .quad .L5 # sixth case
+   .quad .L6 # seventh case
+   .quad .L7 # eight case
+   .quad .L8 # default
+```
+
+To implement fall-through behavior (say case 5 falls through to case 6),
+the relevant labels under `.L4` contain a `merge` label:
+
+```nasm
+.L5:
+   # instructions for case 5
+   goto merge
+.L6
+   merge:
+      # instructions for case 6
+```
+
+How do the `break` statements work? Well, suppose each of the cases
+contained a break statement. Then, inside any of the labels under `.L4`,
+say `.L3`, we would have something that looks like:
+
+```nasm
+.L3:
+   movq %rsi, %rax
+   # more statements
+   ret
+```
+
+That is, including the `break` keyword in any one of the cases results in
+an implicit `ret` (return) instruction.
+
+At this point, we can likely see the downside to switch statements. Each
+case requires a pointer, which, in a 64-bit program, takes up 8 bytes.
+Thus, given ${n}$ cases, the switch statement alone takes up ${8n}$ bytes
+of memory. This is not to say that switch statements are sub-optimal in
+terms of memory, but we certainly should not be writing switch statements
+with hundreds or thousands of cases.
+
+## Functions
+
+Consider the general form of a function call:
+
+```nasm
+int f() {
+	// ... code ...
+	y = g(x);
+	print(y);
+}
+
+int g(int i) {
+	int t = 3 * i;
+	int v[10];
+	// ... code ...
+	return v[t];
+}
+```
+
+As simple as this high-level source code appears, implementing the ability
+to call functions is non-trivial — it consists of three key mechanisms:
+
+1. **A mechanism for passing control**. When we a call a function, we have
+   to get to the first instruction for that function, execute it all the
+   way through, and then get back to the point we made the call.
+2. **A mechanism for passing data**. Functions can take arguments, and
+   those arguments are usually passed from _outside_ the function.
+   Functions can also return values. We need a way to move data around.
+3. **A mechanism for managing memory**. Functions should be able to
+   allocate memory during their execution. That memory should also be
+   deallocated once the function has finished executing. This is especially
+   important for recursive functions.
+
+All of these mechanisms are implemented through machine instructions. And
+like any library, there are many ways to complete those implementations.
+The decisions behind making making those implementations make up the
+instruction set's **application binary interface (ABI)**.
+
+### The Stack
+
+On a modern computer, memory can be thought of as a long line of numbered
+addresses, where each address identifies a particular byte of memory:
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"...",
+		"vdots25",
+		"...",
+		"...",
+		"...",
+		"vdots25",
+		{ a: "0xnn", val: "..." },
+	]}
+	scale={50}
+/>
+
+To help manage such a large amount of memory, the addresses are organized
+into certain regions, called **memory regions**. There are many different
+regions, but we for now, we're just going to think about the stack:
+
+<Stack data={["stack", " ", "code", " "]} scale={50} />
+
+Within the stack region, the memory looks like:
+
+<Stack
+	data={[" ", " ", " ", " ", " ", " ", { val: " ", ptr: "%rsp" }]}
+	scale={50}
+/>
+
+The `%rsp` register always contains a pointer to the top of the stack.
+Notice that the top of stack, visually, is at the bottom. This is because
+modern machines use the _little endian_ approach to address organization:
+The smaller addresses hold the most significant bytes, while the larger
+addresses hold the lease significant bytes.
+
+The use of little endian also means that as the stack gets bigger, it grows
+"down". This is an import point to keep in mind, as it helps us determine
+whether we want to add to, subtract from, the stack.
+
+In x86, there are two core instructions associated with the stack: `push`
+and `pop`.
+
+#### Push
+
+The push instruction has the form:
+
+$$
+   \mm{pushq}~R_n
+$$
+
+where ${R_n}$ is a register. When we write the instruction
+${\mm{pushq}~R_n,}$ the following operations occur:
+
+1. The operand inside ${R_n}$ is fetched.
+2. The value inside `%rsp` (the address of the current top of the stack) is
+   decremented by 8 (this creates a new element in the stack, increasing
+   the stack's size).
+3. The operand fetched from ${R_n}$ is written at the address given by
+   `%rsp`.
+
+Examining this sequence, we can learn the following: Everything _before_
+the address stored in `%rsp` is _within scope_, and everything _after_ the
+address stored in `%rsp` is _garbage_.
+
+<Grid cols={3}>
+
+<Stack
+	data={[
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ptr: "%rsp", ant: "in scope" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+	]}
+	scale={90}
+/>
+
+$$
+ \Large \to
+$$
+
+<Stack
+	data={[
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ptr: "%rsp", ant: "in scope" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+	]}
+	scale={90}
+/>
+
+</Grid>
+
+#### Pop
+
+To remove a value from the stack, x86 provides the `pop` instruction:
+
+$$
+   \mm{popq}~D_n
+$$
+
+where ${D_n}$ is (usually) a register, but may also be some other
+destination in memory. When the ${\mm{popq}~D_n}$ instruction is executed,
+the following operations occur in sequence:
+
+1. The value at the address inside `%rsp` is read.
+2. The address inside `%rsp` is incremented by 8.
+3. The value is stored inside ${D_n}$.
+
+Visually, popping has the effect of decreasing the size of the stack.
+Again, everything after the address in `%rsp` is garbage:
+
+<Grid cols={3}>
+
+<Stack
+	data={[
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ptr: "%rsp", ant: "in scope" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+	]}
+	scale={90}
+/>
+
+$$
+ \Large \to
+$$
+
+<Stack
+	data={[
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ant: "in scope" },
+		{ val: " ", ptr: "%rsp", ant: "in scope" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+	]}
+	scale={90}
+/>
+
+</Grid>
+
+#### Security Vulnerabilities
+
+There's a crucial point to keep in mind with this process. Suppose we
+pushed a value `0xda42` onto the stack:
+
+<Stack
+	data={[
+		{ val: "...", ant: "in scope" },
+		{ val: "...", ant: "in scope" },
+		{ val: "...", ant: "in scope" },
+		{ val: "0xda42", ptr: "%rsp", ant: "in scope" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+	]}
+	scale={50}
+/>
+
+When we pop that value off the stack, it doesn't actually "disappear":
+
+<Stack
+	data={[
+		{ val: "...", ant: "in scope" },
+		{ val: "...", ant: "in scope" },
+		{ val: "...", ptr: "%rsp", ant: "in scope" },
+		{ val: "0xda42", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+		{ val: " ", ant: "garbage" },
+	]}
+	scale={50}
+/>
+
+It's still there in memory, and it will remain there until its overwritten.
+This means that, as long as it hasn't been overwritten, someone with enough
+know-how of the system can access and retrieve that value.
+
+### Example: Function Execution in Assembly
+
+Consider the following code:
+
+```c
+void multstore(int x, int y, int *destination) {
+   int t = mult2(int x, int y);
+   *destination = t;
+}
+int mult2(int a, int b) {
+   int s = a * b;
+   return s;
+}
+```
+
+The two functions `multstore` and `mult2` can be translated as follows:
+
+<Grid cols={2} rows={2}>
+
+```c
+void multstore(int x, int y, int *destination) {
+   int t = mult2(int x, int y);
+   *destination = t;
+}
+```
+
+```nasm
+0000000004000540 <multstore>:
+   400540: push   %rbx
+   400541: mov    %rdx,   %rbx
+   400544: callq  400550  <mult2>
+   400549: mov    %rax,   (%rbx)
+   40054c: pop    %rbx
+   40054d: retq
+```
+
+```c
+int mult2(int a, int b) {
+   int s = a * b;
+   return s;
+}
+```
+
+```nasm
+0000000040000550 <mult2>:
+   400550: mov  %rdi, %rax
+   400553: imul %rsi, %rax
+   400557: retq
+```
+
+</Grid>
+
+Examining the Assembly translations, the first thing we want to focus on is
+the instruction:
+
+```nasm
+400544: callq  400550  <mult2>
+```
+
+Let's go over each part of the translations carefully, starting with
+`multstore`'s translation. First, we have the line:
+
+```nasm
+0000000004000540 <multstore>:
+```
+
+The bit vector `0000000004000540` is the address for the block of
+instructions constituting the function `multstore`. Specifically, it's the
+address of the first instruction in the code block. The symbol
+`<multstore>` is the symbolic, human-readable label for that block.
+
+Within that code block, there are two key instructions we see, `push %rbx`
+and `pop %rbx`. We'll get back to those instructions later.
+
+The next instruction is `mov %rdx, %rbx`. This says, "Move the contents of
+inside register `%rdx` (a register that stores the third argument for a
+function) into register `%rbx`. The `%rbx` register stores a local variable
+for the caller (`<multstore>`). Local variable registers are essentially
+shields — the values they contain are protected against any changes. In the
+source code, the third argument is a pointer. Thus, the instruction
+`mov %rdx, %rbx` means that we now have a local variable storing some
+location in memory.
+
+Importantly, at this point, the processor registers and the stack have the
+following state:
+
+<Mem
+	data={[
+		{ val: "0x120", a: "%rsp" },
+		{ val: "0x400544", a: "%rip" },
+	]}
+	scale={50}
+	cellWidth={120}
+	width={400}
+	height={150}
+/>
+
+<Stack
+	data={[
+		{ ant: "0x130", val: "..." },
+		{ ant: "0x128", val: "..." },
+		{ ant: "0x120", val: "0x400544", ptr: "%rsp" },
+		{ ant: "0x118", val: "..." },
+	]}
+	scale={50}
+	width={400}
+	height={150}
+/>
+
+Recall that the `%rip` register stores the _instruction pointer_ (the
+_program counter_), and contains the address of the current instruction.
+The `%rsp` register stores the address of the current top of the stack. The
+address `0x120` (and all the other addresses labeled on the stack) is just
+an arbitrary address used for demonstration purposes.
+
+The next line is `callq 400550 <mult2>`. This instruction says, "Go to the
+address 400550, and continue execution with the instructions under the
+label `<mult2>`. This takes us to the address `0x400550`, and we get the
+following effect in memory:
+
+<Mem
+	data={[
+		{ val: "0x118", a: "%rsp" },
+		{ val: "0x400550", a: "%rip" },
+	]}
+	scale={50}
+	cellWidth={120}
+	width={400}
+	height={150}
+/>
+
+<Stack
+	data={[
+		{ ant: "0x130", val: "..." },
+		{ ant: "0x128", val: "..." },
+		{ ant: "0x120", val: "0x400544" },
+		{ ant: "0x118", val: "0x400549", ptr: "%rsp" },
+	]}
+	scale={50}
+	width={400}
+	height={150}
+/>
+
+First, notice what was pushed onto the stack when we use a `call`
+instruction. In this case, it's `0x400549`. This is called the **return
+address**. By pushing this instruction onto the stack, we're "bookmarking"
+where we left off. As we'll see, when `<mult2>` finishes executing, we'll
+get back to precisely where we should.
+
+Second, the `%rip` register now contains `0x400550`. This is the first
+instruction for the code block under the label `<mult2>`. So, we go to the
+instruction `0x400550`, and execute the instructions thereafter.
+
+Inside that code block, we have the first instruction, stored at the
+address `400550`. This instruction says, "Move the contents of register
+`%rdi` into the register `%rax`.
+
+```nasm
+400550: mov  %rdi, %rax
+```
+
+The register `%rdi` stores the first argument in the function (in the
+source code, the argument `x`), and the register `%rax` stores the return
+value. Thus, we are moving the contents inside `%rdi` into the register
+`%rax` (remember that `%rax` is _callee-owned_, meaning that the value will
+persist).
+
+Next, we have the instruction:
+
+```nasm
+400553: imul  %rsi, %rax
+```
+
+This tells us to compute the signed multiplication of the value inside the
+register `%rsi` (the register that stores the second argument of the
+function), with the value inside `%rax` (which, at this point, stores the
+first argument of the function, per the earlier `mov` instruction).
+
+After the `imul` instruction finishes executing, we get to the next
+instruction:
+
+```nasm
+retq
+```
+
+At this point, the `%rip` register is `0x400557`. Importantly, however, the
+`%rsp` register never changed — it's been storing `0x118` this whole time.
+
+When we get to the `retq` instruction, we essentially execute _goto_
+instruction. We go from wherever we are now, to whatever the _return
+address_ is. How do we get that return address? Well, it's at the top of
+the stack, which is pointed to by the `%rsp` register. So, we go to the
+address `0x118`, and get the value stored in there: `0x400549`.
+
+We take this value, `0x400549`, and update the `%rip` register. The `%rip`
+register changes from `0x400557` to `0x400549`, and the `%rsp` register now
+becomes `0x120`:
+
+<Mem
+	data={[
+		{ val: "0x118", a: "%rsp" },
+		{ val: "0x400549", a: "%rip" },
+	]}
+	scale={50}
+	cellWidth={120}
+	width={400}
+	height={150}
+/>
+
+<Stack
+	data={[
+		{ ant: "0x130", val: "..." },
+		{ ant: "0x128", val: "..." },
+		{ ant: "0x120", val: "0x400544" },
+		{ ant: "0x118", val: "0x400549", ptr: "%rsp" },
+	]}
+	scale={50}
+	width={400}
+	height={150}
+/>
+
+Once that has finished, the `%rsp` register is incremented (since the
+return address is no longer needed), and we the stack pointer back to
+`0x120`:
+
+<Mem
+	data={[
+		{ val: "0x118", a: "%rsp" },
+		{ val: "0x400549", a: "%rip" },
+	]}
+	scale={50}
+	cellWidth={120}
+	width={400}
+	height={150}
+/>
+
+<Stack
+	data={[
+		{ ant: "0x130", val: "..." },
+		{ ant: "0x128", val: "..." },
+		{ ant: "0x120", val: "0x400544", ptr: "%rsp" },
+		{ ant: "0x118", val: "0x400549" },
+	]}
+	scale={50}
+	width={400}
+	height={150}
+/>
+
+When we get back to `400549`, we execute the instruction
+`mov %rax, (%rbx)`. Recall that the register `%rbx` stored the third
+argument for `<multstore>`, which was some address in memory. When we write
+`(%rbx)`, we dereference that address, and store the value now in `%rax`
+(the return value from `<mult2>`) inside that address.
+
+This is a good point to recall the registers related to functions:
+
+| Register | Purpose                               |
+| -------- | ------------------------------------- |
+| `%rdi`   | Stores the function's first argument  |
+| `%rsi`   | Stores the function's second argument |
+| `%rdx`   | Stores the function's third argument  |
+| `%rcx`   | Stores the function's fourth argument |
+| `%r8`    | Stores the function's fifth argument  |
+| `%r9`    | Stores the function's sixth argument  |
+| `%rax`   | Stores the function's return value    |
+
+If a function has more than six arguments, they must be pushed onto the
+stack:
+
+<Stack
+	data={["...", "arg1", "arg2", "arg3", "arg4", "...", "arg𝑛"]}
+	scale={50}
+/>
+
+This leads to a helpful observation when it comes to designing functions:
+
+> _Lemma_. For a 64-bit program, a function with 𝑎 = 6 + 𝑛 arguments, where
+> 𝑎 is the number of arguments, must allocate the 𝑛 arguments on the stack,
+> and is therefore less efficient than a function with 𝑎 ≤ 6 arguments.
+
+More generally:
+
+> _Lemma_. The more arguments a function has, the less efficient it is.
+
+What about the `push` and `pop` instructions from earlier? To understand
+how these instructions impact the big picture, we have to talk about
+recursion.
+
+### Handling Recursion
+
+The simplest recursive function takes the form:
+
+$$
+f(n) =
+\begin{cases}
+\begin{aligned}
+
+x~~~~ &\tt{if}~~n = b \\
+f(n \to b)~~~~ &\tt{else} \\
+
+\end{aligned}
+\end{cases}
+$$
+
+where ${n}$ is the function's argument, ${b}$ is the base case, ${x}$ is
+the result of the base case, and ${f(n \to b)}$ is a call to the function
+with an argument ${n}$ that tends towards the base case. Put together, the
+recursive function is a function with a two-pronged definition:
+
+1. It's some determinable value under certain circumstances (the base
+   case), and
+2. it's an evaluation of itself with a different argument that brings the
+   definition closer to the first prong.
+
+This is a high-level view of recursive functions. At the lower levels, the
+definition looks more like:
+
+$$
+f_0(n) =
+\begin{cases}
+\begin{aligned}
+
+x~~~~ &\tt{if}~~n = b \\
+f_n(n \to b)~~~~ &\tt{else} \\
+
+\end{aligned}
+\end{cases}
+$$
+
+This might not seem like much of a change, but with this notation, we've
+included subscripts to emphasize a critical fact about recursive functions
+at the low level: Whenever we make a recursive call, we are essentially
+making a call to an entirely new function. In other words, if we had code
+that looked like:
+
+```nasm
+f(n) {
+   if (n=0) return 0;
+   else f(n-1);
+}
+f(3)
+```
+
+We could accomplish the same result by writing:
+
+```nasm
+a(n) { return n-1; }
+b(n) { return n-1; }
+c(n) { return n-1; }
+f(n) {
+   let x = a(n);
+   let y = b(x);
+   let z = c(y);
+   return z;
+}
+f(3);
+```
+
+Obviously the recursive definition allows us to pass more than 3 arguments,
+but the point is, recursive calls result in memory consumption just as if
+we were calling completely different functions (setting aside compiler
+optimizations).
+
+Keeping this fact in mind, we see that there are several requirements for
+implementing recursion:
+
+1. Each call must have their own memory to store arguments.
+2. Each call must have their own memory to store local variables.
+3. Each call must have a return pointer.
+
+These requirements ensure that each function call has its own _state_.
+Additionally, that _state_ must only exist for a limited amount of time:
+Starting at (1) the moment the call is made, and ending at (2) the moment
+the return instruction is reached. And because this time restriction
+implies that the calls are _ordered_, an additional rule is needed: The
+_caller_ can return only if the _callee_ has returned.
+
+Let's consider an example. Suppose we have the following recursive
+pseudocode:
+
+```nasm
+h(n) => {
+   n = 0? => return 0
+   else: h(n-1)
+}
+g(...) => h(n)
+f(...) => g(...)
+```
+
+Here, we see that `f(...)` calls the function `g(...)`, which calls the
+function `h(n)`. The function `h(n)` then either calls itself or returns
+`0`.
+
+When we call the function `f(...)`, we get the following effect in the
+stack:
+
+<Stack
+	data={[
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "previous frame" },
+		{ ptr: "%rbp", val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ ptr: "%rsp", val: "...", ant: "f() frame" },
+	]}
+	scale={50}
+/>
+
+Notice the labels `f() frame` and `previous frame`. All of the stacks
+elements (the individual rectangles in the diagram) used for a particular
+function constitute the function's _frame_. These elements might store any
+of the following for `f()`:
+
+1. Optionally, the value inside `%rbp`, which contains the address of the
+   stack element immediately prior. This is optional because it's only
+   necessary if there is a variable amount of elements to be allocated for
+   the call. Why? Because if there is a variable amount of elements, then
+   the compiler needs a bookmark. If the amount of elements to be allocated
+   is fixed, the compiler does not need to set this register's value — it
+   simply performs arithmetic on the current address to get back to where
+   it should go back to: "I know I pushed 8 bytes of data, so I only have
+   to subtract 8 bytes worth of data."
+2. Return information for `f()`.
+3. Arguments for `f()`.
+4. Local storage for `f()`.
+5. If `f()` has more than 6 arguments, the data needed to get those
+   arguments.
+6. Temporary space for `f()`, if needed.
+
+When we encounter the `callq` instruction for `g()`, we get something that
+looks like:
+
+<Stack
+	data={[
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ ptr: "%rbp", val: "...", ant: "g() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ ptr: "%rsp", val: "...", ant: "g() frame" },
+	]}
+	scale={40}
+/>
+
+When we get to `h()`, we the same thing:
+
+<Stack
+	data={[
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ ptr: "%rbp", val: "...", ant: "h() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ ptr: "%rsp", val: "...", ant: "h() frame" },
+	]}
+	scale={40}
+/>
+
+And when make a recursive call, we see the same:
+
+<Stack
+	data={[
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "previous frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "f() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ val: "...", ant: "g() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ ptr: "%rbp", val: "...", ant: "h() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ val: "...", ant: "h() frame" },
+		{ ptr: "%rsp", val: "...", ant: "h() frame" },
+	]}
+	scale={40}
+/>
+
+As we can see, if the recusive calls contain local variables, those will
+result in new allocations. If there are too many recursive calls, we get a
+**stack overflow** (often presented as the runtime error "maximum stack
+size exceeded"). Assuming the base case for `h()` is reached, we might get
+something that looks like this:
+
+<StackPlot
+	data={[
+		["f"],
+		["f", "g"],
+		["f", "g", "h"],
+		["f", "g", "h", "h"],
+		["f", "g", "h", "h", "h"],
+		["f", "g", "h", "h"],
+		["f", "g", "h"],
+		["f", "g"],
+		["f"],
+	]}
+	scale={60}
+/>
+
+Notice how the stack frames grow and shrinks with time — every frame
+beneath a given stack frame cannot "disappear" until the frame above it is
+finished.
+
+### Inside the Stack Frame
+
+Inside the stack frame, we have something that looks like the following:
+
+<Stack
+	data={[
+		{ val: "argument 1" },
+		{ val: "..." },
+		{ val: "argument 𝑛" },
+		{ val: "return address" },
+		{ val: "old %rbp", ptr: "%rbp" },
+		{ val: "saved register 1" },
+		{ val: "..." },
+		{ val: "saved register 𝑛" },
+		{ val: "local variable 1" },
+		{ val: "..." },
+		{ val: "local variable 𝑛" },
+		{ val: "callee parameter 1" },
+		{ val: "..." },
+		{ val: "callee parameter 𝑛" },
+		{ val: "return address" },
+		{ val: "...", ptr: "%rsp" },
+	]}
+	fwidth={135}
+	scale={40}
+/>
+
+The ellipses indicate are used to indicate further stack elements
+corresponding to that particular kind of data. Importantly, all of the data
+from `argument 1` to the `return address` is the **caller frame** — the
+frame of the caller that called the function. Everything from the optional
+`old %rbp` up to the next `return address` is called the **callee frame** —
+the frame of the function called.
+
+### Caller- v. Callee-saved
+
+Recall: When a function `𝑓` calls a function `𝑔`, we say that `𝑓` is the
+**caller** , and `𝑔` is the **callee**. Now suppose that both `𝑓` and `𝑔`
+both want to use some register ${R_n,}$ say the register `%rdx`. Because
+there's one, and only one `%rdx`, if `𝑓` uses `%rdx` and stores something
+in there, when `𝑔` later uses `%rdx`, they'd overwrite whatever `𝑓` stored
+in `%rdx`.
+
+On an x86-64 chip, there are only 16 registers. This presents a challenge:
+How do ensure that the 16 registers are used efficiently? With 16
+registers, there's the threat of a single procedure hogging too many of the
+registers. This threat is addressed through _register saving conventions_.
+There are two such conventions:
+
+1. **Caller saved** - The _caller_ saves temporary values in its frame
+   before the call.
+2. **Callee saved** - The _callee_ saves temporary values in its frame
+   before using the register, and restores the values before returning
+   control to the caller.
+
+The _caller saved_ registers are as follows (the _Other Purpose_ column
+lists another purpose for the register, along side _caller saved_):
+
+| Register | Other Purpose                    |
+| -------- | -------------------------------- |
+| `%rax`   | Stores return value              |
+| `%rdi`   | Stores the 1st function argument |
+| `%rsi`   | Stores the 2nd function argument |
+| `%rdx`   | Stores the 3rd function argument |
+| `%rcx`   | Stores the 4th function argument |
+| `%r8`    | Stores the 5th function argument |
+| `%r9`    | Stores the 6th function argument |
+| `%r10`   | Stores temporary data            |
+| `%r11`   | Stores temporary data            |
+
+For example, suppose `f()` must call `g()`. Both `f()` and `g()` use the
+register `%rdi`. To ensure `%rdi` is shared between both `f()` and `g()`,
+`f()` will save the contents of `%rdi` in _its_ stack frame, alongside any
+other data it must save:
+
+<Stack
+	data={[
+		{ val: "%rax", ant: "return" },
+		{ val: "%rdi", ant: "argument" },
+		{ val: "%rsi", ant: "argument" },
+		{ val: "%rdx", ant: "argument" },
+		{ val: "%rcx", ant: "argument" },
+		{ val: "%r8", ant: "argument" },
+		{ val: "%r9", ant: "argument" },
+		{ val: "%r10", ant: "temporary" },
+		{ val: "%r11", ant: "temporary" },
+	]}
+	scale={50}
+/>
+
+By keeping storing this data in its own frame, `f()` doesn't have to
+concern itself with whatever happens to registers later down the call
+chain. When control gets back to `f()`, all it must do is use the data it
+stored away in its frame.
+
+Alternatively, `f()` could employ the _callee saved_ approach. Here, the
+_callee_ `g()` must save `f()`'s data somewhere, and it is `g()`'s
+responsibility to save and restore that data before it returns control to
+`f()`. The callee saved registers are laid out below.
+
+| Register | Purpose                                                                                                  |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| `%rbx`   | stores caller's data temporarily                                                                         |
+| `%r12`   | stores caller's data temporarily                                                                         |
+| `%r13`   | stores caller's data temporarily                                                                         |
+| `%r14`   | stores caller's data temporarily                                                                         |
+| `%rbp`   | stores caller's data temporarily / stores a frame pointer                                                |
+| `%rsp`   | stores caller's stack pointer value / automatically restored to original value when the function returns |
+
+
+ 
+
+## Glossary
+
+- **architecture** - The set of all binary instructions understood by a
+  processor. Also called the _instruction set architecture (ISA)_.
+- **machine code** - The binary, byte-level programs executed by a
+  processor.
+- **assembly code** - The textual representation of machine code.
+- **microarchitecture** - The implementation of an architecture.

@@ -1,0 +1,1363 @@
+import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
+
+<Metadata
+	title={"Bit Manipulation"}
+	description={"Notes on bit manipulation techniques"}
+	keywords={"data structures and algorithms, bit manipulation"}
+/>
+
+# Binary Representation
+
+<q>
+
+_"The synthetic words binit and bigit never flew. Bit did. But acceptance
+has not been universal. Lancelot Hogben wrote: 'The introduction by Tukey
+of bits for binary digits has nothing but irresponsible vulgarity to
+commend it.' Should Tukey byte back?"_
+
+Brockway McMillan, _Anecdotes_, ~6 Annals of the History of Computing~ 155
+(1984).
+
+</q>
+
+<div className="outline">
+
+1. [Representing Information](#representing-information)
+	1. [Why Bits?](#why-bits)
+	2. [Word Size](#word-size)
+	3. [Word-oriented Memory Organization](#word-oriented-memory-organization)
+2. [Encoding Bytes](#encoding-bytes)
+3. [Data Representations in C](#data-representations-in-c)
+4. [Encoding Integers](#encoding-integers)
+	1. [Warning on Twos Complement](#warning-on-twos-complement)
+	2. [Numeric Ranges](#numeric-ranges)
+	3. [Relationship Between Signed and Unsigned Values](#relationship-between-signed-and-unsigned-values)
+5. [Sign Extension & Truncation](#sign-extension--truncation)
+	1. [Overflow Bits in Addition](#overflow-bits-in-addition)
+	2. [Overflow Bits in Multiplication](#overflow-bits-in-multiplication)
+	3. [Loops & Overflow Bits](#loops--overflow-bits)
+	4. [Floating Point Numbers](#floating-point-numbers)
+		1. [Single- vs. Double-Precision](#single--vs-double-precision)
+		2. [Kinds of Floating Point Numbers](#kinds-of-floating-point-numbers)
+			1. [Normalized Floating Point Numbers: Exponent](#normalized-floating-point-numbers-exponent)
+			2. [Normalized Floating Point Numbers: Significand](#normalized-floating-point-numbers-significand)
+		3. [Denormalized Values](#denormalized-values)
+6. [Bit Manipulation](#bit-manipulation)
+	1. [Bitwise AND](#bitwise-and)
+	2. [Bitwise OR](#bitwise-or)
+	3. [Bitwise XOR](#bitwise-xor)
+	4. [Bitwise NOT](#bitwise-not)
+	5. [Bitwise Left-shift](#bitwise-left-shift)
+	6. [Bitwise Right-shift](#bitwise-right-shift)
+	7. [Applications](#applications)
+		1. [Bit Manipulation Helpers](#bit-manipulation-helpers)
+			1. [Printing Binary Representation](#printing-binary-representation)
+		2. [Negating a Number](#negating-a-number)
+		3. [Representing & Manipulating Sets](#representing--manipulating-sets)
+			1. [Set Intersection](#set-intersection)
+			2. [Set Union](#set-union)
+			3. [Symmetric Difference](#symmetric-difference)
+			4. [Complement](#complement)
+		4. [Parity Checking](#parity-checking)
+		5. [Bit Handling](#bit-handling)
+			1. [Read the ith Bit](#read-the-ith-bit)
+			2. [Clear the ith Bit](#clear-the-ith-bit)
+			3. [Write the ith Bit](#write-the-ith-bit)
+
+</div>
+
+This chapter covers notes on bits, bytes, and binary representation. In the
+definitions below, we denote the set of all binary numbers with the symbol
+${\mathbb{B}.}$
+
+## Representing Information
+
+On a computer, information is represented with **bits** — 0 or 1. By
+arranging the 1s and 0s in certain ways and assigning those arrangments
+meaning (a process called **encoding**) we can instruct a computer to
+perform operations.
+
+This is a key point. A sequence of bits on a computer have no meaning
+unless we, humans, give those bits meaning. We can represent
+
+$$
+	11101101101101
+$$
+
+as a number (15213) or as some other value, say a memory address, alphabet,
+numeral, emoji, and so on. Absent our giving it meaning, the sequence above
+is just a sequence of electrical pulses.
+
+### Why Bits?
+
+Bits are used because they're the easiest way to deal with the noise and
+uncertainty of electrical pulses running through wires. If we examined the
+pulses with an oscilloscope, we'd see graphs that aren't _true step
+functions_ like we'd see in a mathematics textbook. Instead, they're graphs
+that _appear_ to resemble step functions.
+
+### Word Size
+
+Every computer has a **word size**. In terms of hardware, the word size is
+the width of a single register on the machine. The width of a register is
+the number of binary cells the register contains. For example, a machine
+with a word size of 8 bits consists of registers with 8 binary cells. On a
+machine with a word size of 64 bits, a single register ctonains 64 binary
+cells.
+
+In terms of software, the word size is the nominal size of pointer data (a
+memory address). Put differently, the word size is the maximum number of
+bits the computer's CPU can process at a single point in time. This is in
+line with the hardware perspective — if the most a register can take is
+${w}$ bits, then the CPU can only work with ${w}$ at a time.
+
+Thus, If we have a 4-bit machine, each register has 4 binary cells, each of
+which can be either 1 or 0. As such, the number of possible bit sequences
+for 4 binary cells ranges from 0 to ${2^4 - 1 = 15,}$ or 16 possible
+sequences. This leaves 16 possible memory addresses.
+
+### Word-oriented Memory Organization
+
+If we have ${n}$ possible numbers for addresses, the next question is how
+we want to use those numbers to address memory locations — the process of
+**byte ordering**. There are predominant two approaches too byte ordering:
+
+1. **Big Endian** (used by SPARC, PPC Mac, and the Internet), and
+2. **Little Endian** (used by the x86, ARM processesors for Android, iOS,
+   Linux, as well as most modern operating systems like Windows and OSX)
+
+With the Big Endian approach, the least significant byte has the highest
+address. With the Little Endian approach, the least signfiicant byte has
+the lowest address. Simply put, with Big Endian, the bits are ordered from
+left to right:
+
+<Sequence data={[1, 1, 1, 0, 1, 0, 1, 0, 1]} scale={40} />
+
+And with Little Endian, the bits are ordered from right to left:
+
+<Sequence
+	data={[1, 0, 1, 0, 1, 0, 1, 1, 1]}
+	reverseIndex={true}
+	scale={40}
+/>
+
+Most of devices we use daily employ Little Endian ordering. The one
+exception is the Internet. This is because the Network Working Group (the
+organization responsible for implementing the Internet in its early years)
+decided to use Big Endian.^[note_big_endian] It's not entirely clear why
+they made that decision, but it's what we have today.
+
+[^note_big_endian]: See RFC 1700.
+
+## Encoding Bytes
+
+Because a single bit is so small, when we want to think of the smallest
+possible unit on a computer, we tend not to think in terms of an individual
+bit, but rather a group of four bits, colloquially called a **nibble**. In
+doing so, we can then think of information in terms of hexadecimal:
+
+| Hex | Decimal | Binary |
+| --- | ------- | ------ |
+| 0   | 0       | 0000   |
+| 1   | 1       | 0001   |
+| 2   | 2       | 0010   |
+| 3   | 3       | 0011   |
+| 4   | 4       | 0100   |
+| 5   | 5       | 0101   |
+| 6   | 6       | 0110   |
+| 7   | 7       | 0111   |
+| 8   | 8       | 1000   |
+| 9   | 9       | 1001   |
+| A   | 10      | 1010   |
+| B   | 11      | 1011   |
+| C   | 12      | 1100   |
+| D   | 13      | 1101   |
+| E   | 14      | 1110   |
+| F   | 15      | 1111   |
+
+This allows us to write large numbers in hexadecimal notation ala C:
+
+$$
+	\tt{0xFA1D37B}
+$$
+
+## Data Representations in C
+
+In C, we have the following data representations (in bytes):
+
+| Data Type | Typical 32-bit | Typical 64-bit | x86-64 |
+| --------- | -------------- | -------------- | ------ |
+| `char`    | 1              | 1              | 1      |
+| `short`   | 2              | 2              | 2      |
+| `int`     | 4              | 4              | 4      |
+| `long`    | 4              | 8              | 8      |
+| `float`   | 4              | 4              | 4      |
+| `double`  | 8              | 8              | 8      |
+| `pointer` | 4              | 8              | 8      |
+
+Notice that the column headers are prefixed with "typical". This is because
+there is not set size for any of these types. It depends on how the program
+is compiled. A modern machine can have a register size of 64-bits, but
+output a program with 32-bits. Couple that with virtual machines, and
+there's really no such thing as an "𝑛-bit machine". It entirely depends on
+the source machine, the program, the compiler, the target machine, and many
+other factors.
+
+## Encoding Integers
+
+Integers can be positive or negative (signed or unsigned). For unsigned
+integers, the binary representation can be mathematically represented as:
+
+$$
+	\tt{unsignedBinary}(X) = \sum\limits_{i=0}^{w-1} x_i \. 2^i
+$$
+
+And to represent signed integers, we use two's complement. Mathematically:
+
+$$
+	\tt{twosComplement}(X) = -x_{w-1} \cdot 2^{w-1} + \sum\limits_{i=0}^{w-1} x_i \. 2^i
+$$
+
+The term:
+
+$$
+	-x_{w-1} \cdot 2^{w-1}
+$$
+
+In Twos-complement, this is called the **sign bit**, and it indicates the
+numbers signage — 0 for nonnegative, 1 for negative. For example, consider
+the number 10 on a machine with a word size of 5. In binary, this number is
+represented as:
+
+| -16 | 8   | 4   | 2   | 1   |
+| --- | --- | --- | --- | --- |
+| 0   | 1   | 0   | 1   | 0   |
+
+Notice that the leftmost bit has a heavy negative weight
+(${2^{5-1} = 2^4 = 16}$), while all the bits to its right has a positive
+weight. To represent the number -10, we start with -16, and add the
+necessary bits to get -10:
+
+| -16 | 8   | 4   | 2   | 1   |
+| --- | --- | --- | --- | --- |
+| 1   | 0   | 1   | 1   | 0   |
+
+This gives us: ${-16 + 4 + 2 = -10.}$ Because of twos-complement, computers
+do not perform real number addition. Instead, they perform modular
+addition.
+
+### Warning on Twos Complement
+
+As a warning, we should never assume that a machine uses twos-complement
+representation. While there aren't very many ones-complement machines
+today, when working with low-level systems, we should check to know for
+certain that the relevant platform uses twos-complement. There are several
+ways to do so.
+
+The simplest way is to check if:
+
+$$
+	-1 \test{=} \bnot 0
+$$
+
+If -1 and ${\bnot 0}$ are equal, then the machine uses twos-complement
+representation. Why? Because -1 on a twos-complement machine is always a
+bit vector of entirely ones. If they aren't equal, then we're using either
+ones-complement hardware or, albeit very rare, a sign-magnitude machine.
+
+### Numeric Ranges
+
+From the discussion of twos-complement, we can see that on a machine with a
+word size ${w}$ we have the following conclusions (where ${U}$ is an
+unsigned number and ${T}$ is a signed number in twos-complement):
+
+| ${U_{min}}$ | ${U_{max}}$ | ${T_{min}}$  | ${T_{max}}$   |
+| ----------- | ----------- | ------------ | ------------- |
+| 0           | ${2^{w-1}}$ | ${-2^{w-1}}$ | ${2^{w-1}-1}$ |
+| 000...0     | 111...1     | 100...0      | 011..1        |
+
+For example, for a machine with a word size of 16, we have:
+
+| ${U_{min}}$ | ${U_{max}}$ | ${T_{min}}$ | ${T_{max}}$ |
+| ----------- | ----------- | ----------- | ----------- |
+| 0           | 65535       | -32768      | 32767       |
+| 0           | FF FF       | 80 00       | 7F FF       |
+
+Notice that with twos-complement, we can represent more negative numbers
+than we can positive numbers. Why? Because we have to set aside space
+for 0.
+
+In C, a `short` is 2 bytes long.
+
+| Decimal | Hex   | Binary            |
+| ------- | ----- | ----------------- |
+| 15213   | 3B 6D | 00111011 01101101 |
+| -15213  | C4 93 | 11000100 10010011 |
+
+### Relationship Between Signed and Unsigned Values
+
+Following twos complement, we see that following relationship between
+unsigned and signed numeric values. Suppose the table below is drawn from a
+machine with a word size of 4.
+
+| ${X}$ | Unsigned ${X}$ | Twos-Complement ${X}$ |
+| ----- | -------------- | --------------------- |
+| 0000  | 0              | 0                     |
+| 0001  | 1              | 1                     |
+| 0010  | 2              | 2                     |
+| 0011  | 3              | 3                     |
+| 0100  | 4              | 4                     |
+| 0101  | 5              | 5                     |
+| 0110  | 6              | 6                     |
+| 0111  | 7              | 7                     |
+| 1000  | 8              | -8                    |
+| 1001  | 9              | -7                    |
+| 1010  | 10             | -6                    |
+| 1011  | 11             | -5                    |
+| 1100  | 12             | -4                    |
+| 1101  | 13             | -3                    |
+| 1110  | 14             | -2                    |
+| 1111  | 15             | -1                    |
+
+Notice that for nonnegative numbers, both signed and unsigned numbers have
+the same encodings. However, once we hit the most significant bit, the
+encodings change: For the signed numbers, we add ${-2^{w},}$
+
+This means that we can jump to and from unsigned to signed numbers with the
+following:
+
+> __lemma__. Given a machine with a word size ${w,}$ and a negative number
+> ${n}$ on the machine,
+>
+> $$
+> |n| =	n + 2^w
+> $$
+
+This lemma leads to some strange real-world behaviors. Negative numbers can
+become extremely large positive numbers, and large positive numbers can
+become negative. Because of this, languages like Java do not provide an
+unsigned data type — if a programmer uses a number that's too large, Java
+throws a compile-time error `Integer number too large`.
+
+## Sign Extension & Truncation
+
+To perform arithmetic operations on binary numbers, the operands must have
+the same length. For example, to add ${1010}$ (a binary sequence of four
+bits) to another binary number, that number must also be of length ${bbbb}$
+(four bits). This is a straightforward concept complicated by the fact that
+languages have different data types, e.g., a `char` is 1 byte (16 bits),
+while an `short` is 2 bytes (32 bits). For example, in C, when we add a
+`char` (a smaller data type) to an `int` (a larger data type), the `char`
+value is promoted to an `int`. In C++, when a `long` value is assigned to a
+`short` value, the `long` value is chopped to fit the `short` value's
+available addresses. These operations are made possible hrough _sign
+extension_ and _truncation_.
+
+In sign extension, if we add `1010` to `1010 1100`, additional copies of
+the most significant bit are appended to the smallest bit sequence. This
+results in:
+
+$$
+\begin{aligned}
+	&1111~1010 \\
+	&1010~1100
+\end{aligned}
+$$
+
+In truncation, the extra bits are chopped off:
+
+$$
+\begin{aligned}
+	&1111~1010 \\
+	&~~~~~1010
+\end{aligned}
+$$
+
+Obviously, there's a limit on how many more bits we can append to a given
+bit sequence. When we go over that limit, we get an **overflow bit**.
+
+### Overflow Bits in Addition
+
+When an overflow results from twos-complement addition, we have two
+possibilities:
+
+1. The result is within the twos-complement representable range,
+2. The result is too big (a **positive overflow**) — resulting in a
+   negative number.
+3. The result is too small (a **negative overflow**) — resulting in a
+   positive number.
+
+Mathematically:
+
+$$
+	\small
+	\tt{2sAdd}(u, v) = \begin{cases}
+	\begin{aligned}
+		u + v + 2^w ~~~~ &u + v < \tt{MIN}_w ~~ \tt{(Negative Overflow)} \\
+		u + v ~~~~ &\tt{MIN}_w \leq u + v \leq \tt{MAX}_w \tt{(No Overflow)} \\
+		u + v - 2^w ~~~~ &\tt{MAX}_w < u + v ~~ \tt{(Positive Overflow)}
+	\end{aligned}
+	\end{cases}
+$$
+
+In languages like C, no overflow occurs for unsigned addition. The catch,
+of course, is that we get _unsigned integer wrapping_.
+
+### Overflow Bits in Multiplication
+
+For multiplication, we have a messier situation. When we multiply an ${n}$
+bit number by an ${m}$ bit number, we need ${n + m}$ bits for the product.
+If we have two ${w}$ bit numbers ${x}$ and ${y}$, the product ${x \cdot y}$
+requires twice as many bits. Thus, the product of two unsigned ${w}$ bit
+numbers can require either ${0}$ or ${2w}$ bits.
+
+For 2s-complement multiplication (signed multiplication), we have two
+cases. If one of the operands is ${\tt{MIN}}$, then we may need up to
+${2w-1}$ bits. If one of the operands is ${\tt{MAX},}$ we may need up to
+${2w}$ bits.
+
+Again, we can't keep adding bits. As such, like addition, there are two
+approaches for handling overflows in multiplication:
+
+1. For unsigned multiplication:
+   1. Ignore the overflow bits (truncation), or
+   2. Implement modular arithmetic (${u \cdot v = u \cdot v \bmod 2^w}$).
+2. For signed multiplication:
+   1. Ignore the overflow bits, or
+   2. Compute the product (resulting in a bit sequence of length ${n+m}$),
+      and then truncate the result.
+
+### Loops & Overflow Bits
+
+One area where overflow bits are potentially dangerous is the use of
+iteration. A common iterative construct in many languages is the for-loop,
+and in many situations, we often want to _count down_:
+
+```cpp
+int i;
+for (i = start; i >= 0; i--) {
+	// code
+}
+```
+
+The problem with this approach is that `int` can be signed or unsigned.
+Considering how common fenceposts are, unless the programmer truly knows
+the data they're working with the loop above is risky. Because of this,
+some programmers employ the following:
+
+```cpp
+unsigned i;
+for (i = start; i >= 0; i--) {
+	// code
+}
+```
+
+While this declares that `i` is a positive value, it does not guarantee it.
+Because unsigned arithmetic on any machine employs unsigned wrapping, we
+can imagine a scenario where the loop counter `i` wraps.
+
+We can prevent this is by using the following:
+
+```cpp
+size_t start;
+for (i = start-2; i < start; i--) {
+	// code
+}
+```
+
+This ensures that we don't wrap. Of course, it also assumes that `start` is
+not less than 0.
+
+### Floating Point Numbers
+
+For the rational number 3.145, we know that the 1's place is the 1/10ths
+place, the 4 the 1/100ths, the 5 the 1/100ths, and so on. The same idea
+applies to binary numbers. For the rational binary number 1011.101, the
+first 1 to the right of the point corresponds 1/2, the 0 to 1/4, and the
+next 1 1/8. Thus, the number 1011.101 corresponds to:
+
+$$
+ 	 8 + 2 + 1 + 1/2 + 1/8 = 11.625
+$$
+
+There are several limitations with this encoding scheme. First, we can only
+represent numbers of the form ${\dfrac{n}{2^k}.}$ This means that we get
+binary representations like:
+
+$$
+\begin{aligned}
+	&\dfrac{1}{3} = 0.0101010101[01] \ldots \\[1em]
+	&\dfrac{1}{5} = 0.001100110011[0011] \ldots \\[1em]
+	&\dfrac{1}{10} = 0.0001100110011[0011] \ldots
+\end{aligned}
+$$
+
+Second, the binary point is fixed — the point doesn't actually move; the
+bits go around it. This means that there are only so many values we can
+represent.
+
+Because of these limitations, hardware designers came up with all sorts of
+ways to mitigate. In response to the increasingly chaotic market, the
+Institute of Electrical and Electronics Engineers (IEEE), a professional
+association of electrical and computer engineers, established a uniform
+standard for floating point arithmetic. In particular, the standard
+clarified how rounding, overflows, and underflows of floating points should
+be handled — the three most idiosyncratic areas at the time.
+
+Today, the standard is supported by all major CPUs, and those that do not
+are generally regarded as _black market CPUs_. That said, the IEEE standard
+is a remarkably difficult standard to comply with at the hardware level.
+Much of the standard was defined by numerical analysts — mathematicians —
+rather than hardware engineers. The IEEE standard, however, is precisely
+what makes working with floating point numbers today user-friendly (at
+least compared to what it was like before the standard).
+
+For computers, the numerical form of a floating point number is the
+following:
+
+$$
+	-1^s \cdot M \cdot 2^E
+$$
+
+where ${s}$ is the sign bit. ${M}$ is the **significand** or **mantissa**.
+This is the number of significant digits, usually some fractional value in
+the range ${[1.0, 2.0).}$ The bits that encode ${M}$ are called **f-bits**
+(fractional bits). And ${E}$ is the **exponent**, which weights the value
+by a power of two. The bits that encode ${E}$ are called the **e-bits**
+(exponent bits).
+
+For example, the number ${15213,}$ as a float, can be represented as:
+
+$$
+	(-1)^0 \cdot 1.1101101101101_{[2]} \cdot 2^{13}
+$$
+
+Here, ${s = 0}$ because ${15213}$ is positive. ${M}$ is the bit sequence of
+${13}$ bits following the decimal point. Then we have ${E = 2^{13}.}$
+
+Visualizing with bits, this looks like:
+
+<Sequence
+	data={[
+		"s",
+		{ val: "E*", class: "blue" },
+		{ val: "E*", class: "blue" },
+		{ val: "...", class: "blue" },
+		{ val: "E*", class: "blue" },
+		{ val: "E*", class: "blue" },
+		{ val: "M*", class: "red" },
+		{ val: "M*", class: "red" },
+		{ val: "...", class: "red" },
+		{ val: "M*", class: "red" },
+	]}
+	scale={40}
+/>
+
+Above, we've appended asterisks to each of the locations to indicate that
+these are encodings of the numbers comprising the numerical form. In other
+words, they're not _exactly_ the numbers we'd see in the numerical form.
+
+#### Single- vs. Double-Precision
+
+Many languages provide the type `float` and the type `double` for floating
+point numbers. These types correspond to single-precision floating point
+numbers and double-precision floating point numbers respectively. At the
+bit level, these distinctions result in the following:
+
+| Single Precision               | Double Precision                |
+| ------------------------------ | ------------------------------- |
+| 1 bit for the sign bit         | 1 bit for the sign bit          |
+| 8-bits for ${E}$               | 11 bits for ${E}$               |
+| 23-bits for ${M}$              | 52 bits for ${M}$               |
+| total 32 bits (4 bytes)        | total 64 bits (8 bytes)         |
+| encodes up to 7 decimal digits | encodes up to 16 decimal digits |
+
+There are of course, other formats: half precision, tripe precision, quad
+precision, etc.
+
+#### Kinds of Floating Point Numbers
+
+There are three kinds of floating point numbers, depending on how the
+e-bits are encoded.
+
+1. If all of the e-bits are 0, the number is a **denormalized floating
+   point number**.
+2. If all of the e-bits are 1, the number is a **special floating point
+   number**.
+3. If the e-bits are not all zeroes and not all ones, the number is a
+   **normalized floating point number**.
+
+The way a floating point number's exponent ${E}$ and significand ${M}$ is
+encoded depends on which of these three kinds the floating point number is.
+
+##### Normalized Floating Point Numbers: Exponent
+
+Following the normalized floating point number's definition, if we focused
+just on the e-bits, there's a finite range decimals we can represent with
+just the e-bits, since the e-bits cannot be 1 or 0 in decimal. Because this
+is a potentially very small amount, we want to make the best use of it.
+
+To do so, the ${E}$ value is encoded as a _biased value_:
+
+$$
+	E = \tt{exp} - \tt{bias}
+$$
+
+where ${\tt{exp}}$ is the unsigned number represented by the e-bits, and
+the bias is:
+
+$$
+	\tt{bias} = 2^{k-1} - 1
+$$
+
+and ${k}$ is the number of e-bits. Putting it goether, the encoding of the
+exponent is:
+
+$$
+	E = \tt{exp} - 2^{k - 1} - 1
+$$
+
+Because of this, the encoding of ${E}$ falls within the ranges:
+
+- For single-precision, ${-126 \leq E \leq 127}$
+- For double-precision, ${-1022 \leq E \leq 1023}$
+
+##### Normalized Floating Point Numbers: Significand
+
+For the significand, the encoding starts with an implied 1:
+
+$$
+	M = 1.xxx \ldots x_2
+$$
+
+This implies that for any given floating point number, the e-bits do not
+map to the binary representation of the number, but the IEEE-encoding of
+the number.
+
+Above, the part ${xxx \ldots x_2}$ are the f-bits. If all of these bits are
+0, then ${M = 1.0.}$ If all of the bits are ${1,}$ then
+${M = 2.0 - \epsilon.}$ Here, the ${\epsilon}$ is some tiny amount. This
+tiny amount comes from the fact that ${M}$ falls within the range
+${[1.0, 2.0),}$ so it can never quite get to ${2.0.}$
+
+#### Denormalized Values
+
+While the encoding scheme for normalized values covers a lot of
+floating-point use cases, we can get closer to zero.
+
+For floating point numbers, when the e-bits are all 0s, we have a
+**denormalized value**. For denormalized values, we use a different
+encoding:
+
+$$
+	E = 1 - \tt{bias}  = 1 - 2^{k-1} - 1
+$$
+
+## Bit Manipulation
+
+The following sections examine bit manipulation techniques.
+
+### Bitwise AND
+
+The bitwise AND operation is defined as follows:
+
+> __definition__. Let ${a, b \in \mathbb{B}.}$ If both ${a = 1}$ and ${b = 1}$, then
+> ${a \band b = 1.}$ Else, ${a \band b = 0.}$
+
+The possible results with two bits:
+
+<Grid cols={4}>
+
+$$
+	1 \band 0 = 0
+$$
+
+$$
+	0 \band 1 = 0
+$$
+
+$$
+	0 \band 0 = 0
+$$
+
+$$
+	1 \band 1 = 1
+$$
+
+</Grid>
+
+### Bitwise OR
+
+The Bitwise OR operation is defined as follows:
+
+> __definition__. Let ${a, b \in \mathbb{B}}$ be binary numbers. If ${a = 0}$ and
+> ${b = 0,}$ then ${a \bor b = 0.}$ Else, ${a \bor b = 1.}$
+
+<Grid cols={4}>
+
+$$
+	1 \bor 0 = 1
+$$
+
+$$
+	0 \bor 1 = 1
+$$
+
+$$
+	0 \bor 0 = 0
+$$
+
+$$
+	1 \bor 1 = 1
+$$
+
+</Grid>
+
+Here's another example. What is the result of ${5 | 8}$? Well, first
+convert 5 to binary, which is 0101. Then we convert 8 to binary, which
+is 1000. The result then is:
+
+$$
+\begin{aligned}
+	 &0 1 0 1  \\
+	|~& 1 0 0 0 \\
+	\hline
+	&1 1 0 1
+\end{aligned}
+$$
+
+The number 1101, in decimal form, is 13.
+
+### Bitwise XOR
+
+Bitwise XOR (the exclusive or) is defined as follows:
+
+> __definition__. Let ${a,b \in \mathbb{B}}$. If ${a}$ and ${b}$ have the same value,
+> then ${a \bxor b = 0.}$ Else, ${a \bxor b = 1.}$
+
+Laying out the possibilities with two bits:
+
+<Grid cols={4}>
+
+$$
+	1 \bxor 0 = 1
+$$
+
+$$
+	0 \bxor 1 = 1
+$$
+
+$$
+	0 \bxor 0 = 0
+$$
+
+$$
+	1 \bxor 1 = 0
+$$
+
+</Grid>
+
+Illustrating with decimals, suppose we wanted to compute ${5 \bxor 7.}$ The
+decimal 5 in binary is ${101,}$ and the decimal 7 in binary is ${111.}$
+Thus, we get:
+
+$$
+\begin{aligned}
+	 &  1 0 1   \\
+	\bxor& 1 1 1  \\
+	\hline
+	&   0 1 0
+\end{aligned}
+$$
+
+### Bitwise NOT
+
+The bitwise NOT operation is a unary operation — it only takes one
+argument. The operation is defined as follows:
+
+> __definition__. Let ${n \in \mathbb{B}.}$ If ${n = 0,}$ then ${\bnot n = 1.}$ If
+> ${n = 1,}$ then ${\bnot n = 0.}$
+
+For example:
+
+<Grid cols={2}>
+
+$$
+  \bnot 1 = 0
+$$
+
+$$
+   \bnot 0 = 1
+$$
+
+</Grid>
+
+We can think of the bitwise NOT operation as the "bit-flipper." For
+example, ${\bnot 5}$ results in:
+
+$$
+	\begin{aligned}
+		\bnot & 0 0 0 1 0 1 \\
+		\hline
+		& 1 1 1 0 1 0
+	\end{aligned}
+$$
+
+Importantly, the bitwise NOT operation will also flip the number's MSB
+(most significant bit). This means that the result of the number could very
+well be negative. Above, the number ${111010}$ is 58 in decimal.
+
+An interesting implication of this fact is the result of coding something
+along these lines in some language:
+
+```nasm
+int a = 0;
+int b = ~a;
+print(b);
+```
+
+This will result in ${-1.}$ Why? Because the number ${0,}$ on say, a 4-bit
+platform, is:
+
+$$
+	0000
+$$
+
+Flipping all of these bits, we get:
+
+$$
+	1111
+$$
+
+Because the MSB is 1, we have a negative number. The rest of the bits are
+the magnitude of the number. And because modern computers use 2s-complement
+to represent decimals, the decimal 1 is apparent when we go through the 2s
+compliment process.
+
+Here, we have ${1111.}$ 2s-complement says we invert all the bits:
+
+$$
+	0000
+$$
+
+Then add 1:
+
+$$
+\begin{aligned}
+	 &0000 \\
+	+&0001 \\
+	\hline
+	 &0001
+\end{aligned}
+$$
+
+The number ${0001}$ in binary is the number ${1.}$ Hence the result -1.
+
+### Bitwise Left-shift
+
+The bitwise left-shift operation is defined as follows:
+
+> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \NN.}$ Then ${b \bls n}$ shifts
+> all the digits of ${b}$ to the _left_ ${n}$ positions.
+
+Let's look at an example. The number 5 in binary is ${0000101.}$ When we
+write:
+
+$$
+	5 \bls 2
+$$
+
+we get the binary number:
+
+$$
+	0010100
+$$
+
+Just to make the comparison clearer:
+
+$$
+\begin{aligned}
+	\text{before left shift:}~~&{0000101} \\
+	\text{after left shift:}~~&{{00101}}00
+\end{aligned}
+$$
+
+Notice how the digits have shifted by ${n}$ places. This is interesting.
+The number ${0101}$ in decimal is ${5,}$ and the number ${010100}$ in
+binary is ${20.}$ This observation leads to an alternative definition of
+the binary left-shift operator:
+
+> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \NN.}$ Then:
+>
+> $$
+> 	b \bls n = c \cdot 2^n
+> $$
+>
+> where ${c}$ is the decimal form of ${b.}$
+
+Thus, we have the following:
+
+<Grid cols={3}>
+
+$$
+  5 \bls 1 = 5 \. 2^1 = 10
+$$
+
+$$
+ 4 \bls 2 = 4 \. 2^2 = 16
+$$
+
+$$
+ 8 \bls 3 = 8 \. 2^3 = 64
+$$
+
+</Grid>
+
+### Bitwise Right-shift
+
+Bitwise right shift.
+
+> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \NN.}$ Then ${b \brs n}$ shifts
+> all the digits of ${b}$ to the _right_ ${n}$ positions.
+
+For example, the number 10 in binary is ${001010.}$ The computation:
+
+$$
+	10 \brs 2
+$$
+
+results in:
+
+$$
+	000010
+$$
+
+A before and after shot:
+
+$$
+\begin{aligned}
+	\text{before right shift:}~~&{001010} \\
+	\text{after right shift:}~~&00{0010}
+\end{aligned}
+$$
+
+Notice how we lose the last two binary digits. The number ${000010}$ in
+decimal is ${2.}$ Like the left-shift operation, the right-shift operation
+also yields a more interesting definition:
+
+> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \NN.}$ Then:
+>
+> $$
+> 	b \brs n = \floor{\dfrac{c}{2^n}} \\
+> $$
+>
+> where ${c}$ is the decimal form of ${b.}$
+
+Thus, we have:
+
+<Grid cols={2} rows={2}>
+
+$$
+  10 \brs 1 = \floor{\dfrac{10}{2^1}} = 2
+$$
+
+$$
+ 4 \brs 2 = \floor{\dfrac{4}{2^2}} = 1
+$$
+
+$$
+ 5 \brs 1 = \floor{ \dfrac{5}{2^1} } = \floor{2.5} = 2
+$$
+
+$$
+ 2 \brs 2 = \floor{ \dfrac{2}{2^2} } = \floor{0.5} = 0
+$$
+
+</Grid>
+
+Note that this trick will "round the wrong way" when we shift negative
+numbers. That is, performing ${-5 \brs 1 = \floor{-2.5} = -3.}$ If we want
+the result to be closer to zero, we have to add some _bias_ to the number:
+
+$$
+	 (-5 + (1 \bls 1)-1) \brs 1
+$$
+
+### Applications
+
+Now that we have an understanding of the bitwise operations, let's see some
+useful applications. Given that we can perform some fairly interesting
+arithmetic with these operations, there are numerous possible applications.
+The curation below is just a small sampling.
+
+#### Bit Manipulation Helpers
+
+To help us look at our outputs, it's helpful to have some utility functions
+involving bits.
+
+##### Printing Binary Representation
+
+There are a number of ways to print the binary representation of a some
+data. In C++, we can use the `<bitset>` member function in the standard
+library:
+
+```cpp
+#include <iostream>
+#include <bitset>
+
+std::bitset<8> printBinaryInt(int n) {
+	return std::bitset<8>(n);
+}
+```
+
+#### Negating a Number
+
+We can negate a number ${n}$ by performing the following:
+
+$$
+	\bnot n + 1
+$$
+
+For example, say for the number ${2,}$ in 4-bit binary ${0010,}$ we can
+negate by first performing the bitwise-not:
+
+$$
+\begin{aligned}
+	\bnot	&0010 \\
+	\hline
+	&1101
+\end{aligned}
+$$
+
+then adding 1 to the result:
+
+$$
+	\begin{aligned}
+		&1101
+		+ &0001
+		\hline
+		&1110
+	\end{aligned}
+$$
+
+which is ${-2}$ in twos-complement. As a further observation, notice that:
+
+$$
+\begin{aligned}
+	&1101
+	+ &1110
+	\hline
+	&1111
+\end{aligned}
+$$
+
+which is -1 in twos-complement. Thus, we have another observation:
+
+$$
+	b + \bnot b = -1
+$$
+
+#### Representing & Manipulating Sets
+
+Suppose we had the following sets:
+
+$$
+	A = \{ 0,3,5,6 \} \\
+	B = \{ 0,2,4,6 \} \\
+$$
+
+We can represent these sets in binary. First, we know that the sets have a
+size of four. So, we can use two separate bytes corresponding to 0:
+
+$$
+	A: 00000000 \\
+	B: 00000000
+$$
+
+then, we set a variable `i = 7`, and decrement it down to 0 for both sets.
+If `i` is equal to an element in the set, we toggle the bit to 1. This
+gives us a binary representation of the sets:
+
+<Sequence data={[0, 1, 1, 0, 1, 0, 0, 1]} scale={30} reverseIndex={true} />
+<Sequence data={[0, 1, 0, 1, 0, 1, 0, 1]} scale={30} reverseIndex={true} />
+
+Once we have these binary representations, the bitwise operators can be
+used to generate the different results of various set operations.
+
+##### Set Intersection
+
+For example, ${A \cap B}$ is `A&B`:
+
+$$
+	\begin{aligned}
+		&01101001 \\
+	\band	&01010101 \\
+	\hline
+		&01000001
+	\end{aligned}
+$$
+
+which gives us the bit vector:
+
+<Sequence data={[0, 1, 0, 0, 0, 0, 0, 1]} scale={30} reverseIndex={true} />
+
+Examining the set, ${A \cap B}$ is in fact the set ${\{ 0,6 \}.}$
+
+##### Set Union
+
+The set ${A \cup B}$ can be drawn from `A|B`:
+
+$$
+\begin{aligned}
+	&01101001 \\
+	\bor &01010101 \\
+	\hline
+	&01111101
+\end{aligned}
+$$
+
+This gives us the bit vector:
+
+<Sequence data={[0, 1, 1, 1, 1, 1, 0, 1]} scale={30} reverseIndex={true} />
+
+And in fact, ${A \cup B = \{ 0,2,3,4,5,6 \}.}$
+
+##### Symmetric Difference
+
+The set ${A \triangle B}$ (the symmetric difference) is given by `A^B`:
+
+$$
+\begin{aligned}
+	&01101001 \\
+	\bxor &01010101 \\
+	\hline
+	&00111100
+\end{aligned}
+$$
+
+yielding the bit vector:
+
+<Sequence data={[0, 0, 1, 1, 1, 1, 0, 0]} scale={30} reverseIndex={true} />
+
+And again, ${A \triangle B = \{ 2,3,4,5,7 \}.}$
+
+##### Complement
+
+The complement of set ${B}$ is given by the `~B`.
+
+$$
+	\begin{aligned}
+		\bnot &01010101 \\
+		\hline
+		&10101010
+	\end{aligned}
+$$
+
+yielding the bit vector:
+
+<Sequence data={[1, 0, 1, 0, 1, 0, 1, 0]} scale={30} reverseIndex={true} />
+
+We again see that this too is correct: The set ${\{ 1,3,5,7 \}}$ contains
+all of the elements not in the set ${B.}$
+
+#### Parity Checking
+
+We can use the bitwise operations to check whether a given number ${n}$ is
+odd or even. I.e., checking the number's parity. The most common way to
+check if a given number 𝑛 is odd or even is with the modulus operator:
+
+$$
+	n \tmod 2 \test{=} 0
+$$
+
+Mathematically, this is equivalent to asking whether 2 divides ${n.}$ If it
+does, then the 𝑛 is even; otherwise, 𝑛 is odd. So how might we do this with
+the bitwise operators? Well, let's look at the first 10 integers in binary:
+
+| Decimal | Binary |
+| :-----: | :----: |
+|    1    | 00001  |
+|    2    | 00010  |
+|    3    | 00011  |
+|    4    | 00100  |
+|    5    | 00101  |
+|    6    | 00110  |
+|    7    | 00111  |
+|    8    | 01000  |
+|    9    | 01001  |
+|   10    | 01010  |
+
+Do we see a patern in these numbers? Let's make it a little clearer:
+
+| Decimal |    Binary     |
+| :-----: | :-----------: |
+|    1    | ${0000{1}}$ |
+|    2    | ${0001{0}}$ |
+|    3    | ${0001{1}}$ |
+|    4    | ${0010{0}}$ |
+|    5    | ${0010{1}}$ |
+|    6    | ${0011{0}}$ |
+|    7    | ${0011{1}}$ |
+|    8    | ${0100{0}}$ |
+|    9    | ${0100{1}}$ |
+|   10    | ${0101{0}}$ |
+
+The last bit for an odd number is ${1,}$ while the last bit for an even
+number is ${0.}$ This is not surprising, since each digit in a binary
+number is a power of two, and the last digit corresponds to ${2^0,}$ which
+is ${1.}$
+
+Thus, we can check if a number is odd or even by checking if the last bit
+in the number is a ${0}$ or ${1.}$ To get that last bit, we can use the
+bitwise-and operation. More specifically, to check if the number ${n}$ is
+odd or even, we perform:
+
+$$
+	n \band 1
+$$
+
+If the last binary digit of ${n}$ is a ${1,}$ then ${n \band 1 = 1.}$ If
+it's a ${0,}$ then ${n \band 1 = 0.}$ For example, for the number ${3,}$ we
+get:
+
+$$
+	\begin{aligned}
+	& 0 0 0 1 1 \\
+	\band	& 0 0 0 0 1 \\
+	\hline
+	& 0 0 0 0 1
+	\end{aligned}
+$$
+
+In code, this might look like the following:
+
+```cpp
+#include <iostream>
+
+void parityCheck(int n) {
+	if (n & 1) {
+		std::cout << n << " is odd" << std::endl;
+	} else {
+		std::cout << n << " is even" << std::endl;
+	}
+}
+```
+
+#### Bit Handling
+
+Some of the later application's we'll consider will requiring us to
+manipulate the individual bits of a number. This is called **bit
+handling**, and it consists of three key operations: (1) reading the 𝑖th
+bit, (2) writing the 𝑖th bit, and (3) clearing the 𝑖th bit, where 𝑖 is the
+position of some bit the number comprises.
+
+For example, the number ${8}$ on an 8-bit platform is represented as
+${0 0 0 0 1 0 0 0.}$ We can visualize the positions as:
+
+<Sequence data={[0, 0, 0, 0, 1, 0, 0, 0]} scale={50} reverseIndex={true} />
+
+Importantly, notice the position of the bits. The MSB is the left-most bit,
+at the position ${\ell - 1,}$ where ${\ell}$ is the number of bits
+constituting the number (we subtract 1 because the count starts at 0).
+
+##### Read the ith Bit
+
+Using the number 5, suppose we want to get the bit at position 2:
+
+<Sequence
+	data={[0, 0, 0, 0, 0, { val: 1, class: "red" }, 0, 1]}
+	scale={50}
+	reverseIndex={true}
+/>
+
+We can't exactly use the bitwise-AND here, because that would only give us
+the first bit. What we really want is a bitsequence that sets up the
+following:
+
+<Sequence
+	data={[0, 0, 0, 0, 0, { val: 1, class: "red" }, 0, 1]}
+	scale={50}
+	reverseIndex={true}
+/>
+<Sequence
+	data={[0, 0, 0, 0, 0, { val: 1, class: "red" }, 0, 0]}
+	scale={50}
+	reverseIndex={true}
+/>
+
+In other words, a bitsequence consisting entirely of 0s, other than the
+second position. How might we get this number? Well, it's just the
+following:
+
+$$
+	1 \bls i
+$$
+
+where ${1}$ is the integer one, and ${i}$ is the number of positions we
+want to shift. Once we do so, we can perform a bitwise-and:
+
+$$
+	\begin{aligned}
+		&0 0 0 0 0 1 0 1 \\
+	\band	&0 0 0 0 0 1 0 0 \\
+		\hline
+		&0 0 0 0 0 1 0 0
+	\end{aligned}
+$$
+
+Once we have this number, we can compare it against ${0.}$ If it's greater
+than ${0,}$ then the bit is ${1.}$ Otherwise, its ${0.}$ The result of
+computing ${1 \bls i}$ is called a **bitmask**. Here's an implementation in
+C++:
+
+```cpp
+#include <iostream>
+
+int getIthBit(int n, int i) {
+	int mask = 1 << i;
+	return (n & mask) > 0 ? 1 : 0;
+}
+
+int main() {
+	const int n = 5;
+	int i;
+	std::cin>>i;
+	std::cout << "bit @ position " << i << " is " << getIthBit(n,i) << std::endl;
+	return 0;
+}
+```
+
+##### Clear the ith Bit
+
+Say we have the following bit sequence:
+
+<Sequence data={[0, 0, 0, 0, 1, 1, 0, 1]} scale={50} reverseIndex={true} />
+
+When we _clear_ the bit at position 2, we get:
+
+<Sequence data={[0, 0, 0, 0, 1, 0, 0, 1]} scale={50} reverseIndex={true} />
+
+Notice what happened. The bit at position ${2}$ became ${0,}$ but
+everything else was kept as is. This is the operation of _bit-clearing_.
+Like we saw previously, we can clear the ith bit by first creating a mask:
+
+$$
+	1 \bls i
+$$
+
+where ${i}$ is the position we want cleared. Then we flip the result with
+bitwise-not:
+
+$$
+	\bnot(1 \bls i)
+$$
+
+And then simply perform a bitwise-and:
+
+$$
+	n \band \bnot(1 \bls i)
+$$
+
+where ${n}$ is the number comprising the bit sequence.
+
+##### Write the ith Bit

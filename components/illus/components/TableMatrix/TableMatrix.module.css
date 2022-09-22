@@ -1,0 +1,14 @@
+.TableMatrix {
+	border: none;
+}
+
+.TableMatrix td {
+}
+
+.topHeaders {
+	border: none;
+}
+
+.shifter {
+	border: solid thin red;
+}

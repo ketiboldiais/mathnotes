@@ -1,0 +1,710 @@
+<Metadata
+	title={`Gaussian Elimination`}
+	description={`Notes on Gauss's Method`}
+	keywords={`Gaussian elimination, linear algebra`}
+/>
+
+# Gaussian Elimination
+
+This chapter provides an overview of _Gaussian elimination_.
+
+<div className={`outline`}>
+
+1. [Linear Equations](#linear-equations)
+2. [The Solution Set](#the-solution-set)
+3. [Linear Systems](#linear-systems)
+4. [Matrices](#matrices)
+5. [Gaussian Elimination](#gaussian-elimination)
+	1. [Gauss's Method with Matrices](#gausss-method-with-matrices)
+	2. [The Point of Gaussian Elimination](#the-point-of-gaussian-elimination)
+6. [Echelon Form](#echelon-form)
+7. [Reduced Echelon Form](#reduced-echelon-form)
+
+</div>
+
+## Linear Equations
+
+Like all mathematical fields, linear algebra has its own lingo. Let's
+familiarize ourselves with some of it. An expression of the form:
+
+$$
+	a_1x_1 + a_2x_2 + \ldots a_n x_n
+$$
+
+is called a _linear combination_. The ${a_i \in \reals}$ the combination's
+_coefficients_, and the ${x_i \in \reals}$ are the combinaton's _variables_.
+Append an equal assign at the end:
+
+$$
+	a_1x_1 + a_2x_2 + \ldots a_n x_n = b
+$$
+
+and we get a _linear equation_, where ${b}$ is a _constant_. For example, these
+equations are all linear equations:
+
+<Grid cols={3}>
+
+$$
+	2x_1 - 5x_2 - x_3 = 8
+$$
+
+$$
+	4y + 7 = 8
+$$
+
+$$
+	2x + 1 = 4
+$$
+
+</Grid>
+
+## The Solution Set
+
+The set of all values that solve a linear equation is called the equation's
+_solution set_. For example, consider the linear equation:
+
+$$
+	x_1 + 2x_2 - 3x_3 = 8
+$$
+
+This equation turns out to have infinitely many solutions. Some of these
+solutions are:
+
+$$
+	\sys{
+		&x_1=\no{-}3, &x_2=4, &x_3=\no{-}1 \\  
+		&x_1=-1, &x_2=3, &x_3=-1
+	}
+$$
+
+We can express the solution set for the equation above using _parametric form_:
+
+$$
+	\lset{ x_1 = s, x_2 = t, x_3 = \dfrac{s + 2t - 8}{3} : s, t \in \reals }
+$$
+
+## Linear Systems
+
+If we gather two or more linear equations and treat them as a single collection,
+we get a _linear system_ (or _system of linear equations_):
+
+$$
+ \sys{
+		& a_{1,1}x_1 + a_{1,2}x_2 + \ldots + a_{1,n}x_n & = & b_1 \\
+		& a_{2,1}x_1 + a_{2,2}x_2 + \ldots + a_{2,n}x_n & = & b_2 \\
+		& \vdots & & \\
+		& a_{m,1}x_1 + a_{m,2}x_2 + \ldots + a_{m,n}x_n & = & b_m
+	}
+$$
+
+If we can find a set of ${n}$ numbers (specifically, an ${n}$-tuple) that we can
+plug into each of the ${x_i,}$ such that all of the equations are solved
+simultaneously, then we call that set the system's _solution_. If the linear
+system has at least one solution, we can describe the system as _consistent_. If
+the system has no solutions, we describe it as _inconsistent_.
+
+In the system above, the the subscript ${m}$ is a positive integer, and denotes
+the _row_ index. The subscript ${n}$ is also a positive integer, and denotes the
+_column_ index. Much like how rectangles are described with ${\tt{length} \times
+\tt{width},}$ linear systems have the property ${m \times n.}$ We call this the
+linear system's _order_.
+
+Notice that the row index ${m}$ corresponds to the number of equations we have,
+and the the column index ${n}$ corresponds to the number of variables. This
+yields a few more properties about linear systems:
+
+1. If ${m \ltn n,}$ there are more unknowns than equations. In this case, we say
+the ${m \times n}$ system _underspecificed._
+
+2. If ${m \gtn m,}$ there are more equations than unknowns, and we say the ${m
+\times n}$ system is _overspecified_.
+
+## Matrices
+
+Consider the linear system:
+
+$$
+	\sys{
+
+		& \no{2}x  & + & y  &   &     & = & 0 \\
+		& 2x & - & y  & + & 3z  & = & 3 \\
+		& \no{2}x  & - & 2y & - & \no{3}z   & = & 3
+
+	}
+$$
+
+Early on, mathematicians recognized that having to write linear systems over and
+over again is a pain. Accordingly, they invented a new construct called a
+_matrix_, of which there are two types: the _coefficient matrix_ and the
+_augmented matrix_. With a coefficient matrix, we can express the system above
+as:
+
+$$
+	\mx{
+		1 & \no{-}1 & \no{-}0 \\
+		2 & -1 & \no{-}3 \\
+		1 & -2 & -1
+	}
+$$
+
+Each number in the matrix above corresponds to a coefficient in the linear
+system. There's also the _augmented matrix_:
+
+$$
+	\mx{
+		1 & \no{-}1 & \no{-}0 & \aug & 0 \\
+		2 & -1 & \no{-}3 & \aug & 3 \\
+		1 & -2 & -1 & \aug & 3
+	}
+$$
+
+This is simply the coefficient matrix, but with a column for the right-hand side
+of the equality, separated by a vertical bar. By using a matrix, we can give
+assign the linear system to a variable:
+
+$$
+	{\bf \A} 
+	=
+	\mx{
+		1 & \no{-}1 & \no{-}0 \\
+		2 & -1 & \no{-}3 \\
+		1 & -2 & -1
+	}
+$$
+
+Now comes the cool part — we can then express the linear system as a linear
+equation:
+
+$$
+	{\bf \A} \x = b
+$$
+
+Matrices also make solution sets easier to write. For example, the linear
+system:
+
+$$
+	\sys{
+		&     x  &     +  &      \no{-}y  &     +  & \no{6}z & - & \no{6}w & = & \no{-}1    \\
+		& \no{x} & \no{+} &      \no{-}y  &     -  & \no{6}z & + & \no{6}w & = &     -1       \\
+		&    3x  &     +  &  \no{-}\no{y} & \no{+} &      6z  & - &      6w & = & \no{-}6     \\
+		& \no{x} &     -  &            y  &     +  & \no{6}z  & - & \no{6}w & = & \no{-}1
+	}
+$$
+
+has the matrix:
+
+$$
+	\mx{
+		1 & \no{-}1 & \no{-}1 &      -1 & \aug & \no{-}1 \\
+		0 & \no{-}1 &      -1 & \no{-}1 & \aug &      -1 \\
+		3 & \no{-}0 & \no{-}6 &      -6 & \aug & \no{-}6 \\
+		0 &      -1 & \no{-}1 &      -1 & \aug & \no{-}1
+	}
+$$
+
+and the solution set:
+
+$$
+	\left.
+	\lset{
+		\mx{ 2 \\ -1 \\ 0 \\ 0} + 
+		\mx{ -2 \\ 1 \\ 1 \\ 0} z +
+		\mx{2 \\ -1 \\ 0 \\ 1} w
+		~\right \vert~
+		z,w \in \reals
+	}
+$$
+
+Each "1-column matrix" in the solution set is called a _column vector_ or simply
+_vector_. A matrix with a single row is called a _row vector_ (may also be
+called a _vector_). Each number in a vector is called a _vector component_.
+There's a particularly special vector we'll see often later called the _zero
+vector_ — a vector whose components are all zeroes:
+
+$$
+	\mx{0 \\ 0 \\ \vdots \\ 0}
+$$
+
+How did we get that solution? Through a method called _Gaussian elimination_.
+Before we get to that topic, let's say a few words about variables. Like other
+areas of mathematics, linear algebra has certain naming conventions. Matrices
+are traditionally named with uppercase, bold, Roman letters: ${\bf \A}$, ${\bf \B}$, ${\bf \C}$, ${\bf \Z.}$ Vectors are usually lowercase Roman or Greek letters, either overlined with an or in bold: ${\bf \a}$, ${\bf \b}$, ${\vector{\alpha}}$, ${\vector{\beta}.}$
+
+## Gaussian Elimination
+
+_Gaussian elimination_ (also called _Gauss's Method_) is a method of solving linear systems: 
+
+<dfn>
+
+__gauss's method.__ Let ${L_1}$ be a linear system. If ${L_1}$ is changed to a
+linear system ${L_2}$ with any of the following operations:
+
+1. one equation is swapped with another,
+2. one equation has both of its sides multiplied by a nonzero constant,
+3. one equation is replaced by the sum of itself and a multiple of another,
+
+then ${L_1}$ and ${L_2}$ have the same solution.
+
+</dfn>
+
+Each of the three operations in Gauss's method is called an _elementary row
+operation_. Let's see what each operation does with the system:
+
+$$
+	\sys{
+		2x & + & y  & = & -1 \\
+		x  & - & 3y & = & 17
+	}
+$$
+
+__Swapping.__ The first operation in Gauss's method is called _swapping_.
+Gauss's method tells us that these two systems have the same solution:
+
+<Grid cols={2}>
+
+$$
+	\sys{
+		2x & + & y  & = & -1 \\
+		x  & - & 3y & = & 17
+	}
+$$
+
+$$
+	\sys{
+		x  & - & 3y & = & 17 \\
+		2x & + & y  & = & -1
+	}
+$$
+
+</Grid>
+
+__Scaling.__ The second operation is called _swapping_. Again, these two systems
+have the same solution:
+
+<Grid cols={2}>
+
+$$
+	\sys{
+		2x & + & y  & = & -1 \\
+		x  & - & 3y & = & 17
+	}
+$$
+
+$$
+	\sys{
+		-6x & - & 3y  & = & 3 \\
+		x  & - & 3y & = & 17
+	}
+$$
+
+</Grid>
+
+Above, we multiplied the system to the right by the constant ${-3.}$
+
+__Pivoting.__ The third operation is called _pivoting_. This operation is a
+little more elaborate. Here, we first choose one of the system's equations
+(which one we choose is a question we'll discuss at length later). Using our
+example system, let's pick the second:
+
+$$
+	x - 3y = 17
+$$
+
+Then, we scale our equation of choice. Let's use 2 (why we choose 2 is
+another question we'll save for later). 
+
+$$
+	2(x - 3y = 17) \implies 2x - 6y = 34
+$$
+
+Next, we choose a second equation (other than what we chose first) and perform
+the same. Since we only have two equations, we scale the first. Let's use the
+constant ${-1:}$
+
+$$
+	-1(2x + y = -1) \implies -2x - y = 1
+$$
+
+Then, we add the scaled equations:
+
+$$
+	\eqs{
+	\no{+} \no{-} 2x - 6y &= 34 \\
+		+  -2x - \no{6} y &= 1 \\
+		\hline
+		   \no{+} -7y &= 35
+	}
+$$
+
+Gauss's method tells us that, if we replace the equation we chose first with the
+new equation above, we get a linear system whose solution is the same as the
+original's:
+
+<Grid cols={2}>
+
+$$
+	\sys{
+		2x & + & y  & = & -1 \\
+		x  & - & 3y & = & 17
+	}
+$$
+
+$$
+	\sys{
+		2x & + & y  & = & -1 \\
+		\no{2x} & - & 7y  & = & 35 \\
+	}
+$$
+
+</Grid>
+
+### Gauss's Method with Matrices
+
+We saw what Gaussian elimination looks like on an explicit linear system. But,
+as we saw previously, writing linear systems explicitly is tedious, so we use
+matrices. Let's see what Gauss's method looks like with matrices. Using the same
+linear system we saw previously:
+
+$$
+	\sys{
+		2x & + & y  & = & -1 \\
+		x  & - & 3y & = & 17
+	}
+$$
+
+we have the following augmented matrix:
+
+$$
+	\mx{
+		2 & \no{-}1 & \aug & -1 \\
+		1 & -3 & \aug & 17
+	}.
+$$
+
+The swap operation is expressed as follows:
+
+$$
+	\mx{
+		2 & \no{-}1 & \aug & -1 \\
+		1 & -3 & \aug & 17
+	}
+
+	\sim
+
+	\mx{
+		1 & -3 & \aug & 17 \\
+		2 & \no{-}1 & \aug & -1
+	}
+	~~
+	R_1 \swap R_2
+$$
+
+Above, the symbol (${\sim}$) means "has the same solution as," and the
+expression ${R_1 \swap R_2}$ means "Rows 1 and 2 were swapped." The scaling
+operation is expressed as:
+
+$$
+	\mx{
+		2 & \no{-}1 & \aug & -1 \\
+		1 & -3 & \aug & 17
+	}
+
+	\sim
+
+	\mx{
+		-6 & -3 & \aug & \no{1}3 \\
+		\no{-}1 & -3 & \aug & 17
+	}
+	~~
+	R_1 \alt -3R_1
+$$
+
+The notation ${R_1 \alt -3R_1}$ means: "Row 1 was replaced with ${-3 \times
+\tt{row 1}.}$" The pivoting operation is expressed as:
+
+$$
+	\mx{
+		2 & \no{-}1 & \aug & -1 \\
+		1 & -3 & \aug & 17
+	}
+
+	\sim
+
+	\mx{
+		2 & \no{-}1 & \aug & -1 \\
+		0 & -7 & \aug & 35
+	}
+	~~
+	2R_2 \alt 2R_2 - R_1
+$$
+
+The notation ${2R_2 \alt 2R_2 - R_1}$ means: "Row 2 was replaced with 2 times
+row 2 minus row 1." The remarkable aspect of Gaussian elimination is that, when
+used on matrices, a wide variety of patterns appear. And where there are
+patterns, there are theorems — the building blocks of a mathematical field.
+
+### The Point of Gaussian Elimination
+
+Whenever we work with linear systems, there are two keys question:
+
+1. Does the system have at least one solution? (i.e., _consistent_).
+2. If a solution does exist, is the solution unique?
+
+The point of Gaussian elimination is to manipulate the linear system into a form
+that's easier to solve. This is done through the process of _row reduction_. In
+row reduction, the goal is this:
+
+> Use elementary row operations to eliminate variables from select rows of an augmented matrix.
+
+What are the select rows? It depends on the system's order. Let's consider the
+simplest case, a ${2 \times 2}$ system. For the ${2 \times 2}$ system, the goal
+is to obtain a 1 in the top left corner and 0 in the bottom left corner:
+
+$$
+	\mx{
+		1 & \ldots & \ldots & \aug & \ldots \\
+		0 & \ldots & \ldots & \aug & \ldots \\
+	}
+$$
+
+If we execute Gauss's method correctly, we may get a matrix that takes one of
+the forms below. As it turns out, these forms imply how many solutions the
+system has:
+
+<Grid cols={3}>
+$$
+	{\bf A} = \mx{
+		1 & \square & \aug & \square \\
+		0 & 1 & \aug & \square \\
+	}
+$$
+$$
+	{\bf B} = \mx{
+		1 & \square & \aug & \square \\
+		0 & 0 & \aug & \square \\
+	}
+$$
+$$
+	{\bf C} = \mx{
+		1 & \square & \aug & \square \\
+		0 & 0 & \aug & 0 \\
+	}
+$$
+$$
+	1
+$$
+$$
+	0
+$$
+$$
+	\infty
+$$
+</Grid>
+
+To see why get these patterns, let's introduce some new vocabulary.
+
+## Echelon Form
+
+Suppose ${\L}$ is the linear system to the left, with its corresponding matrix
+to the right:
+
+$$
+	\lset{
+		\sys{
+			\no{2}x  & + & y  &   &     & = & 0 \\
+			2x & - & y  & + & 3z  & = & 3 \\
+			\no{2}x  & - & 2y & - & \no{3}z   & = & 3
+		}
+	}
+	~~~~
+	\mx{
+		1 & \no{-}1 & \no{-}0 \\
+		2 & -1 & \no{-}3 \\
+		1 & -2 & -1
+	}
+$$
+
+The first nonzero entry in each row of ${\L}$ is called the _leading entry_,
+and it corresponds to its ${\L}$ equation's _leading variable_. All the other
+nonzero entries are called _free entries_, and correspond their equations' _free
+variables_. Using this terminology, we state the formal definition of _echelon
+form_:
+
+<dfn>
+
+__echelon form.__ Let ${\bf M}$ be the matrix
+
+$$
+	\mx{
+		x_{1,1} & x_{1,2} & \ldots & x_{1,j} \\
+		x_{2,1} & x_{2,2} & \ldots & x_{2,j} \\
+		\vdots  & \vdots  & \vdots & \vdots  \\  
+		x_{i,1} & x_{i,2} & \ldots & x_{i,j} \\
+	},
+$$
+
+where ${\set{i,j \in \ZZ^+},}$ ${x \in \NN,}$ ${r,s \in
+\seq{1,2,\ldots,i},}$ and ${c \in \seq{1,2,\ldots,j}.}$ We say that ${\bf M}$ is
+in _echelon form_ if, and only if, the following propositions are true for ${\bf M}$: First, if there exists a row ${R_r}$ with an entry ${x \neq 0}$ and a row ${R_s}$ with entries ${\seq{0,0,\ldots,0},}$ then ${r \lt s.}$ Second, given a row ${R_r}$ and ${r \neq 1,}$ if ${R_r}$ contains a leading entry at the position ${R_{r,c}}$ and ${c \neq 1,}$ then ${R_{r-1}}$ contains a leading entry at ${R_{r-1,c-1}.}$ Third, if a row ${R_r}$ contains a leading entry at the position ${R_{r,c}}$ then for all rows ${R_{r + k}}$ where ${k \lt i - r,}$ the entry at ${R_{r+k,c} = 0.}$ 
+
+</dfn>
+
+Let's break this definition down into a checklist. A matrix ${\bf M}$ is in
+echelon form if, and only if, it satisfies the following properties.
+
+1. ${\bf M}$ is a rectangular matrix.
+2. If ${\bf M}$ contains rows with all zeroes (called _zero rows_) and rows that
+are not all zeroes (called _nonzero rows_), then no zero row appears before a
+nonzero row, from top to bottom. 
+3. If a row ${R}$ contains a leading entry ${x,}$ then ${x}$ is in a column
+immediately to the right of the leading entry of the row above ${R.}$
+4. If a row ${R}$ contains a leading entry ${x,}$ then for all the rows after ${R,}$ entries in ${x}$'s column are zeros.
+
+If a matrix is in echelon form, we call the matrix an _echelon matrix_. The word
+"echelon" is descriptive — the matrix is "steplike." For example, the matrices
+below are all in echelon form. The symbol ${\square}$ indicates that the entry
+is a nonzero value, and the symbol ${\star}$ indicates that the entry
+is any value (zero or nonzero):
+
+$$
+	\mx{
+		\square & \star & \star & \star \\
+		0 & \square & \star & \star \\
+		0 & 0 & \square & \star \\
+	}
+	~~
+	\mx{
+		\square & \star & \star & \star \\
+		0 & \square & \star & \star \\
+		0 & 0 & \star & \star \\
+		0 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 0 \\
+	}
+	~~
+		\mx{
+		0 & \square & \star & \star & \star & \star & \star & \star  & \star & \star  \\
+		0 & 0 & 0 & \square & \star & \star & \star & \star  & \star & \star  \\
+		0 & 0 & 0 & 0 & \square & \star & \star & \star  & \star & \star  \\
+		0 & 0 & 0 & 0 & 0 & \square & \star & \star  & \star & \star  \\
+		0 & 0 & 0 & 0 & 0 & 0 & 0 & \square  & \star & \star  \\
+	}
+$$
+
+Notice how the zeroes form a step-like (_echelon_) arrangement. Once a matrix is
+in echelon form, we can apply _back substitution_ solve the system. For example,
+consider the following linear system, already in echelon form:
+
+<Grid cols={2}>
+<div className={`eq`}>
+| ${8x_1}$ | ${-}$ | ${2x_2}$ | ${+}$ | ${x_3}$  | ${=}$ | ${4}$ |
+| -------- | ----- | -------- | ----- | -------- | ----- | ----- |
+|          |       | ${3x_2}$ | ${-}$ | ${x_3}$  | ${=}$ | ${7}$ |
+|          |       |          |       | ${2x_3}$ | ${=}$ | ${4}$ |
+</div>
+<div className={`mx`}>
+| 8   | -2  | 1   | 4   |
+| --- | --- | --- | --- |
+| 0   | 3   | -1  | 7   |
+| 0   | 0   | 2   | 4   |
+</div>
+</Grid>
+
+The last row tells us that ${x_3 = 2,}$ since ${2x_3 = 4.}$ Plugging ${x_3 = 2}$
+into the second row, we get ${3x_2 - 2 = 7,}$ which yields ${x_2 = 3.}$ And
+plugging ${x_2 = 3}$ and ${x_3 = 2}$ into the first row, we get ${x_1 = 1.}$
+
+
+## Reduced Echelon Form 
+
+From the definition of echelon form, we can state the formal definition of
+_reduced echelon form_.
+
+<dfn>
+
+__reduced echelon form.__ Let ${\bf M}$ be the matrix
+
+$$
+	\mx{
+		x_{1,1} & x_{1,2} & \ldots & x_{1,j} \\
+		x_{2,1} & x_{2,2} & \ldots & x_{2,j} \\
+		\vdots  & \vdots  & \vdots & \vdots  \\  
+		x_{i,1} & x_{i,2} & \ldots & x_{i,j} \\
+	},
+$$
+
+${R_r,~r=1,2,\ldots,i}$ be the rows of ${\M,}$ and ${C_c,~c=1,2,\ldots,j}$ be the columns of ${M.}$ ${\bf M}$ is in _reduced echelon form_ if, and only if, the following propositions are true for ${\bf M.}$ First, ${\bf M}$ is in echelon form. Second, for each row ${R_r,}$ ${R_r \neq [0,0,\ldots,0]}$ (that is, a nonzero row), then the leading entry of ${R_r}$ is 1. Third, if ${R_r}$ is a nonzero row and ${R_{a,b} = 1,}$ where ${a \in (1,2,\ldots,r)}$ and ${b \in (1,2,\ldots,c),}$ then for all rows ${R_{r,c}}$ and ${c \neq b,}$ ${R_{r,c} \neq 1.}$
+
+</dfn>
+
+Once again, let's break this definition down into a checklist. A matrix ${\bf
+M}$ is in _reduced echelon form_ if, and only if, the following conditions are
+met:
+
+1. ${\bf M}$ is in reduced echelon form,
+2. If ${\bf M}$ is a nonzero row, then its leading entry is 1.
+3. Each leading 1 in ${\bf M}$ is the only nonzero entry in its column.
+
+For example, the following are all _reduced echelon matrices_:
+
+$$
+	\mx{
+		1 & 0 & \star & \star & \\
+		0 & 1 & \star & \star & \\
+		0 & 0 & 0 & 0 & \\
+		0 & 0 & 0 & 0 & \\
+	}
+	~~
+		\mx{
+		0 & 1 & \star & 0 & 0 & 0 & \star & \star & 0 & \star \\
+		0 & 0 & 0 & 1 & 0 & 0 & \star & \star & 0 & \star \\
+		0 & 0 & 0 & 0 & 1 & 0 & \star & \star & 0 & \star \\
+		0 & 0 & 0 & 0 & 0 & 1 & \star & \star & 0 & \star \\
+		0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \star
+	}
+$$
+
+Now that we've seen the echelon definitions, we state another motivation for
+Gaussian elimination: Any nonzero matrix can be row reduced — using Gaussian
+elimination — into some (more than one) echelon matrix. If we reduce a matrix to
+an echelon matrix, then finding the solution of a linear system becomes much
+easier because of several facts.
+
+Given a reduced echelon matrix 
+
+<div className={`aug`}>
+|            |            |            |     |            |            |
+| ---------- | ---------- | ---------- | --- | ---------- | ---------- |
+| 1          | 0          | 0          | ... | 0          | ${b_1}$    |
+| 0          | ${\vdots}$ | 1          | ... | 0          | ${b_2}$    |
+| 0          | 0          | 1          | ... | 0          | ${b_3}$    |
+| ${\vdots}$ | ${\vdots}$ | ${\vdots}$ | ... | 0          | ${\vdots}$ |
+|            |            |            |     | 1          | ${b_k}$    |
+| 0          | 0          | 0          | ... | 0          | 0          |
+| ${\vdots}$ | ${\vdots}$ | ${\vdots}$ |     | ${\vdots}$ | ${\vdots}$ |
+| 0          | 0          | 0          | ... | 0          | 0          |
+</div>
+
+the first nonzero entry in each row is called the _pivot_, and each column that
+contains a pivot is called the _pivot column_. Once we have pivots, we can apply
+the _row reduction algorithm_:
+
+<dfn>
+
+__row reduction algorithm.__ Let ${\bf M}$ be a rectangular matrix. Then the
+row reduction algorithm proceeds as follows.
+
+1. Apply Gaussian elimination to transform ${\bf M}$ into its echelon form ${\bf M_{ef}.}$
+2. Apply Gaussian elimination to transform ${\bf M_{ef}}$ into its reduced echelon form ${\bf M_{ref}.}$
+3. Go to the leftmost nonzero column (the _pivot column_ ${P_c}$).
+4. Select an entry ${x \in P_c}$ as the pivot ${p.}$ 
+5. If ${p}$ is not at the top-left position, interchange the rows such that ${p}$ is at the top-left position.
+6. Create zeroes in all positions below the pivot using row replacement.
+7. Create a new submatrix without the rows above and including the pivot.
+8. Apply steps 3 to 6 to the submatrix.
+9. With the resulting submatrix, repeat steps 7 and 8 until there are no more nonzero rows that can be modified.
+10. With the final submatrix ${\bf{M}_f,}$ go to the rightmost pivot.
+11. From the bottom to the left, create zeros above each pivot.
+12. If a pivot is not ${1,}$ make it a ${1}$ via scaling.
+
+</dfn>
+

@@ -1,0 +1,291 @@
+<Metadata
+	title={'Tuples'}
+	description={'Notes on tuples and the Cartesian Product.'}
+	keywords={'set theory'}
+/>
+
+# Tuples
+
+This chapter provides notes on ordered pairs and tuples.
+
+<div className="outline">
+
+1. [Ordered Pairs](#ordered-pairs)
+2. [Tuples](#tuples)
+3. [The Cartesian Product](#the-cartesian-product)
+
+</div>
+
+When set theory was first introduced, it faced a major issue—how do you
+represent ordered pairs? That is, given the set ${\set{a,b},}$ how do you
+communicate that ${a}$ is first and ${b}$ is second, purely in the language of
+set theory?
+
+Sets, by definition, are unordered. Thus, ${\set{a,b}}$ is the same set as
+${\set{b,a}.}$ This is problematic because we have no way of communicating
+"${a}$ then ${b}$" purely in the language of set theory — there's no way to
+distinguish between ${\set{a,b}}$ and ${\set{b,a}.}$
+
+## Ordered Pairs
+
+In 1921, the Polish logician Kazimierz Kuratowski offered the following
+definition:
+
+<dfn>
+
+__ordered pair.__ An ordered pair, denoted ${(a,b),}$ is defined as:
+
+$$
+	(a,b) = \set{ \set{a}, \set{a,b}}
+$$
+
+</dfn>
+
+This is one of the greatest examples of "working with what you've got" and the
+extent of mathematical cleverness. Kuratowski essentially said: "Why are we
+so concerned about which goes first and which goes second? It's unnecessary."
+And he had a point. The notion of "first" and "second" is entirely relative.
+
+Suppose we had two objects side by side.
+
+$$
+	\large a ~~~ b
+$$
+
+If we read from left to right, ${a}$ is first and ${b}$ is second. If we read
+from right to left — a perfectly permissible thing to do — then ${b}$ is first
+and ${a}$ is second. If we read it from top to bottom — again perfectly
+permissible — then, well, all bets are off. Kuratowski was astute enough to
+realize that searching for a way to define "first" and "second" was a zero sum
+game. Even if we managed to establish a rigorous definition for "first" and
+"second," the situation wouldn't change because there would always be an
+alternative view.
+
+To Kuratowski, the notions of "first" and "second" are just convenient ways of
+achieving what we're really after: A way of communicating the idea that
+
+$$
+	\large a~~~b
+$$
+
+is different from
+
+$$
+	\large b~~~a.
+$$
+
+Thus, we don't need a way to establish what's first or second. What we need is a
+way to distinguish between two sets. If we look at Kuratowski's definition, it
+does exactly that. Let's say ${a = 0}$ and ${b = 1.}$ Then, by Kuratowski's
+definition, we have:
+
+$$
+	(0,1) = \set{ \set{0}, \set{0,1}}
+$$
+
+Now let's say ${a = 1}$ and ${b = 0.}$ Then we have:
+
+$$
+	(1,0) = \set{ \set{1}, \set{1,0}}
+$$
+
+Looking at the two sets, we see that they are, in fact, different:
+
+$$
+	(0,1) = \set{ \set{0}, \set{0,1}} \\	
+	(1,0) = \set{ \set{1}, \set{1,0}}
+$$
+
+Because we have a way of distinguishing between ${(a,b)}$ and ${(b,a),}$ the
+notion of "first" and "second" is just a cherry on top, and it just so happens
+that we prefer interpreting ${(a,b)}$ as "${a}$ is first, and ${b}$ is second."
+
+An added benefit of Kuratowski's definition is that it allows us to state when
+two ordered pairs are equal:
+
+<dfn>
+
+__equality of ordered pairs.__ Let $(a,b)$ and $(c,d)$ be ordered pairs. Then
+
+$$
+	(a,b) = (c,d)
+$$
+
+if, and only if, 
+
+$$
+	a = c ~~~\tt{and}~~~ b = d
+$$
+
+</dfn>
+
+## Tuples
+
+Ordered pairs allow us to express a pair ${(a,b).}$ But what if we want to
+express something like:
+
+$$
+	(a,b,c)
+$$
+
+Well, we can take a similar approach to Kuratowski's. But instead of nesting a
+set, we'll nest an ordered pair: 
+
+$$
+	(a, (b,c))
+$$
+
+Again, what's important is that we have a way of distinguishing the set
+represented by the expression above and some other set. If we expanded the above
+expression, we'd get:
+
+$$
+	\set{\set{a}, \set{a, \set{\set{b}, \set{b,c}}}}
+$$
+
+Once more, we still have a way to differentiate between sets. Suppose ${a=1,}$
+${b=2,}$ and ${c=3.}$ Then:
+
+$$
+	(1,2,3)=\set{\set{1}, \set{1, \set{\set{2}, \set{2,3}}}}
+$$
+
+Now suppose ${a=1,b=3,c=2.}$ Then:
+
+$$
+	(1,3,2)=\set{\set{1}, \set{1, \set{\set{3}, \set{3, 2}}}}
+$$
+
+Those are very clearly different sets. The fact that we're simply nesting
+ordered pairs allows us to extend the same idea to ${n}$ elements.
+
+$$
+	(1,2,3,4,\ldots,n)
+$$
+
+We call the construct above an _${n}$-tuple_. Notice that this effectively
+generalizes the notion of an ordered pair — an ordered pair is simply a 2-tuple.
+
+<dfn>
+
+__n-tuple.__ Where ${n \in \NN,}$ the collection:
+
+$$	
+(a_1,a_2,a_3,\ldots,a_n) = 
+\begin{cases}
+		\nil           & ~~\tt{if}~~ n = 0 \\[1em]
+		(a_1, (a_2, a_3, \ldots, a_n)) & ~~\tt{else}~~
+\end{cases}
+$$
+
+is called an ${n}$-tuple.
+
+</dfn>
+
+## The Cartesian Product
+
+With the notion of tuples, we can now represent a wide variety of objects
+mathematically. Suppose we have two sets:
+
+$$
+	A = \set{x,y,z} 
+	~~~~
+	B = \set{1,2,3}
+$$
+
+Now that we have tuples, we can create a set that contains all the possible
+2-tuples ${(a,b),}$ where ${a \in A}$ and ${b \in B.}$ Let's explicitly lay out
+that set:
+
+$$
+	A \times B =
+	\lset{
+		\eqs{
+			& (x,1), & (x,2), && (x,3) & \\
+			& (y,1), & (y,2), && (y,3) & \\
+			& (z,1), & (z,2), && (z,3) &
+		}
+	}
+$$
+
+More explicitly:
+
+<dfn>
+
+__Cartesian Product.__ Let ${A}$ and ${B}$ be sets. The set
+
+$$
+	A \times B
+$$
+
+is the set of all tuples ${(a,b),}$ where ${a \in A}$ and ${b \in B.}$
+
+</dfn>
+
+Because we have the notion of ${n}$-tuples, we can also define the Cartesian
+product generally:
+
+<dfn>
+
+__General Definition of the Cartesian Product.__ The ${A_1, A_2, \ldots, A_n}$
+be sets. The _Cartesian product_ of the sets ${A_1, A_2, \ldots, A_n,}$ denoted
+
+$$
+		A_1 \times A_2 \times \ldots \times A_n,
+$$
+
+is the set of all ${n}$-tuples ${(a_1, a_2, \ldots, a_n)}$ where ${a_i \in
+A_i}$ for ${i = 1,2,\ldots,n.}$ That is,
+
+$$
+	\small
+	A_1 \times A_2 \times \ldots \times A_n	= \set{(a_1,a_2,\ldots,a_n) : a_i \in
+	A_i \tt{ for } i=1,2,3,\ldots,n}
+$$
+
+</dfn>
+
+With the Cartesian product, we can now mathematically represent more complicated
+objects. For example, an entire deck of cards can be explicitly represented as:
+
+$$
+	\lset{
+		\eqs{
+			& (♠, 2)  && (♥, 2)  && (♣, 2)  && (♦, 2)   \\
+			& (♠, 3)  && (♥, 3)  && (♣, 3)  && (♦, 3)   \\
+			& (♠, 4)  && (♥, 4)  && (♣, 4)  && (♦, 4)   \\
+			& (♠, 5)  && (♥, 5)  && (♣, 5)  && (♦, 5)   \\
+			& (♠, 6)  && (♥, 6)  && (♣, 6)  && (♦, 6)   \\
+			& (♠, 7)  && (♥, 7)  && (♣, 7)  && (♦, 7)   \\
+			& (♠, 8)  && (♥, 8)  && (♣, 8)  && (♦, 8)   \\
+			& (♠, 9)  && (♥, 9)  && (♣, 9)  && (♦, 9)   \\
+			& (♠, 10) && (♥, 10) && (♣, 10) && (♦, 10)  \\
+			& (♠, J)  && (♥, J)  && (♣, J)  && (♦, J)   \\
+			& (♠, Q)  && (♥, Q)  && (♣, Q)  && (♦, Q)   \\
+			& (♠, K)  && (♥, K)  && (♣, K)  && (♦, K)   \\
+			& (♠, A)  && (♥, A)  && (♣, A)  && (♦, A)   \\
+		}
+	}
+$$
+
+Or we can simply denote it as:
+
+$$
+	\eqs{
+		&\S \times \R \\
+		&\tt{where} \\
+		&~~~\S = \{ ♠, ♥, ♣, ♦ \} \\
+		&~~~\R = \{ 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A \}
+	}
+$$
+
+Perhaps even more interesting is this Cartesian product:
+
+$$
+	\large \reals \times \reals
+$$
+
+This is the set of all pairs of real numbers, conventionally denoted
+${\reals^2.}$ Many people know this set as 2D space, and its higher-order
+cousin, ${\reals^3,}$ as 3D space.
+

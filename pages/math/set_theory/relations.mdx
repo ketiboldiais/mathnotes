@@ -1,0 +1,2462 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+
+<Metadata
+	title={'Relations'}
+	description={'Notes on relations'}
+	keywords={'relations, discrete mathematics, set theory'}
+/>
+
+# Relations
+
+
+This chapter is covers notes on relations.
+
+<div className={"outline"}>
+
+1. [Binary Relations](#binary-relations)
+	1. [Relations Generally](#relations-generally)
+	2. [Relation Language](#relation-language)
+2. [Homogenous Relations](#homogenous-relations)
+3. [Heterogenous Relations](#heterogenous-relations)
+4. [Types of Relations](#types-of-relations)
+	1. [The Empty Relation](#the-empty-relation)
+	2. [Reflexive Relations](#reflexive-relations)
+	3. [Irreflexive Relations](#irreflexive-relations)
+	4. [Quasi-reflexive Relations](#quasi-reflexive-relations)
+	5. [Symmetric Relations](#symmetric-relations)
+	6. [Antisymmetric Relations](#antisymmetric-relations)
+	7. [Asymmetric Relations](#asymmetric-relations)
+	8. [Transitive Relations](#transitive-relations)
+	9. [Intransitive Relations](#intransitive-relations)
+	10. [Left-total Relations](#left-total-relations)
+	11. [Right-total Relations](#right-total-relations)
+	12. [Comparable Relations](#comparable-relations)
+	13. [Connex Relations](#connex-relations)
+	14. [Incomparable Relations](#incomparable-relations)
+	15. [Right Euclidean Relation](#right-euclidean-relation)
+	16. [Left Euclidean Relation](#left-euclidean-relation)
+	17. [Equivalence Relations](#equivalence-relations)
+	18. [Partial Orders](#partial-orders)
+	19. [Weak Partial Orders](#weak-partial-orders)
+	20. [Strong Partial Orders](#strong-partial-orders)
+	21. [Total Order](#total-order)
+	22. [Preorders](#preorders)
+5. [Posets](#posets)
+	1. [Minimal and Maximal Elements](#minimal-and-maximal-elements)
+	2. [Chains](#chains)
+	3. [Lower Bound and Upper Bound](#lower-bound-and-upper-bound)
+	4. [Infimum and Supremum](#infimum-and-supremum)
+	5. [Mimimum and Maximum](#mimimum-and-maximum)
+	6. [Well-ordered Relations](#well-ordered-relations)
+	7. [Left-unique Relations](#left-unique-relations)
+	8. [Right-unique Relations](#right-unique-relations)
+6. [Maps](#maps)
+	1. [Functions](#functions)
+		1. [Restrictions and Extensions](#restrictions-and-extensions)
+		2. [Partial Orders of Functions](#partial-orders-of-functions)
+		3. [Surjections](#surjections)
+		4. [Injections](#injections)
+		5. [Bijections](#bijections)
+		6. [The Surjection Rule](#the-surjection-rule)
+		7. [The Injection Rule](#the-injection-rule)
+		8. [The Bijection Rule](#the-bijection-rule)
+7. [Families](#families)
+8. [Natural Numbers](#natural-numbers)
+	1. [The Axiom of Infinity](#the-axiom-of-infinity)
+	2. [Peano Axioms](#peano-axioms)
+9. [Sequences](#sequences)
+10. [Equivalence Class](#equivalence-class)
+
+</div>
+
+In the previous chapter on [tuples](tuples), we saw that, given some sets
+
+$$
+	A_1, A_2, \ldots, A_n,
+$$
+
+we can encapsulate all the possible tuples
+
+$$
+	(a_1 \in A_1, a_2 \in A_2, \ldots, a_n \in A_n)
+$$
+
+into a single set ${A_1 \times A_2 \times \ldots \times A_n}$ called the
+[Cartesian product](tuples#the-cartesian-product). But what if we want to
+specify just a part of the Cartesian product? For that, we use another special
+set called a _relation_. We'll start with the simplest type, the _binary
+relation_.
+
+## Binary Relations
+
+A binary relation is defined as follows:
+
+<dfn>
+
+__binary relation__. A set of ordered pairs ${(a,b)}$ is called a _relation_.
+
+</dfn>
+
+
+Notice what this definition implies: ${R}$ is a set, whose members are always
+2-tuples (ordered pairs). For example, the set:
+
+$$
+	\set{(a,1), (b,2), (c,3)}
+$$
+
+is a relation. In some cases, the relation is actually a subset of a Cartesian
+product. For example, suppose we had the following sets:
+
+$$
+	\eqs{
+		X &= \set{1,2,3} \\
+		Y &= \set{a,b,c}.
+	}
+$$
+
+The Cartesian product of these two sets is:
+
+$$
+	X \times Y =
+	\lset{
+		\eqs{
+			& (1,a), & (2,a), && (3,a) & \\
+			& (1,b), & (2,b), && (3,b) & \\
+			& (1,c), & (2,c), && (3,c) &
+		}
+	}.
+$$
+
+A binary relation is simply a subset of this Cartesian product. For example,
+this is a binary relation:
+
+$$
+	\lset{
+		(1,a), (2,b), (3,c)
+	},
+$$
+
+and so is this:
+
+$$
+	\lset{
+		(1,a), (2,a), (3,a)
+	},
+$$
+
+and this:
+
+$$
+	\lset{
+		\eqs{
+			& (1,a), & (2,a), && (3,a) & \\
+			& (1,b), & (2,b), && (3,b) & \\
+			& (1,c), & (2,c), && (3,c) &
+		}
+	}.
+$$
+
+Notice that this is also the Cartesian product we specified earlier. The binary
+relation does not have to be a _strict subset_ of the Cartesian product. It just
+has to be a subset. I.e., we can never have a tuple ${(a,b) \in R,}$ where ${R
+\subseteq A \times B}$ and ${a \notin A \lor b \notin B.}$
+
+Now that we've seen what a relation is, let's introduce some new notation.
+
+<dfn>
+
+__relation notation.__ Let ${R}$ be a relation from ${A}$ to ${B.}$ That is, ${R
+\subseteq A \times B.}$
+
+If ${(a,b) \in R,}$ we say "${a}$ is related to ${b}$ by ${R,}$" and we write:
+
+$$
+	a \rel b.
+$$
+
+Otherwise, if ${(a,b) \notin R,}$ we say "${a}$ is not related to ${b}$ by
+${R,}$" and write:
+
+$$
+	a \nrel b
+$$
+
+
+</dfn>
+
+### Relations Generally
+
+Much like how the Cartesian product can be generalized to handle an ${n}$ number
+of sets, relations can be generalized for an ${n}$ number of sets.
+
+<dfn>
+
+__general definition of a relation.__ Let ${A_1, A_2, \ldots, A_n}$ be sets.
+An _${n}$-ary relation_ on the sets ${A_1, A_2, \ldots, A_n}$ is a subset of
+
+$$
+	A_1 \times A_2 \times \ldots \times A_n,
+$$
+
+and ${n}$ is the relation's _degree_, and ${A_i, i = 1,2,\ldots,n}$ are called
+the relation's _projections_.
+
+</dfn>
+
+Certain ${n}$-ary relations have unique names. For example, when ${n=3,}$ we
+have a _ternary relation_. When ${n = 4,}$ we have a _quaternary relation_.
+${n}$-ary relations are examined in closer detail at a later juncture. Until
+then, we'll use binary relations to explore the various properties of relations.
+Accordingly, we'll use the word "relation" to mean a binary relation, unless
+otherwise stated. 
+
+
+
+### Relation Language
+
+It's important to get used to some of the language associated with relations.
+Below are some common phrases often used in the study of relations.
+
+| Phrase                                  | Symbolic Representation       |
+| --------------------------------------- | ----------------------------- |
+| ${R}$ is a relation _on_ ${A}$          | ${R \subseteq A \times A}$    |
+| ${R}$ is a relation _in_ ${A}$          | ${R \subseteq A \times A}$    |
+| ${R}$ is a relation from ${A}$ to ${B}$ | ${R \subseteq A \times B}$    |
+| ${a}$ is related to ${b}$ by ${R}$      | ${a \rel b}$, ${(a,b) \in R}$ |
+
+## Homogenous Relations
+
+Earlier, we saw the relation ${\reals \times \reals.}$ Notice that this is a
+relation from a set to itself. We call such relations _homogenous relations_.
+
+<dfn>
+
+__homogenous relations.__ A relation ${R}$ on a set ${A}$ is a relation from
+${A}$ to ${A.}$ That is,
+
+$$
+	R = \set{(a,b) : a \in A, b \in A}
+$$
+
+We call the set ${A}$ the _domain of discourse_ of ${R.}$
+
+</dfn>
+
+For example, say we had the set:
+
+$$
+	A = \set{1,2,3,4}
+$$
+
+The relation:
+
+$$
+	R = \set{(a,b) \in A \times A : a \dv b}
+$$
+
+is a homogenous relation, since it consists of pairs where both elements are of
+the same set, ${A.}$ Explicitly listing its members:
+
+$$
+	\lset{
+		\eqs{
+			& (1,1) & (1,2) & \\
+			& (1,3) & (1,4) & \\
+			& (2,2) & (2,4) & \\
+			& (3,3) & (4,4) & \\
+		}
+	}
+$$
+
+Other examples of homogenous relations include ${\reals^2}$ and ${\reals^3.}$
+Homogenous relations are particularly important because (1) they're the simplest
+relations to work with (the domain and the range are the same), and (2) they
+provide a medium for examining the properties of relations. Before we examine
+these properties, we introduce some special homogenous relations.
+
+## Heterogenous Relations
+
+In contrast to homogenous relations, heterogenous relations are relations over
+two different sets ${X}$ and ${Y.}$ For these relations, we call the set ${X}$
+the relation's _domain_, and ${Y}$ the relation's _codomain_. Heterogenous
+relations introduce several new types of relations. 
+
+For the first few types of relations, we'll stick to homogenous relations. That
+is, a relation ${R}$ on a single set called the domain of discourse ${\DD.}$
+Starting with [left-unique relations](#left-unique-relations), we'll start using
+heterogenous relations, but it's important to keep in mind that for such
+relations, we can have ${X = Y.}$
+
+## Types of Relations
+
+We now examine the various types of relations. As it turns out, there are many
+different types.
+
+### The Empty Relation
+
+Because relations are simply sets of tuples, it follows that relations are
+sets. As such, there's a special relation called the _empty relation_ — the
+relation that contains no members.
+
+<dfn>
+
+__empty relation.__ Let ${X}$ be a set. The empty relation on ${X}$ is defined
+as:
+
+$$
+	\nil_{X} = \set{(x,y) \in X : x~\nil_{X}~y}
+$$
+
+</dfn>
+
+### Reflexive Relations
+
+In the diagram below, the colored cells are members of a relation ${R_r.}$
+
+<table className={`product`}>
+	<tbody>
+		<tr>
+			<td></td>
+			<td>${a}$</td>
+			<td>${b}$</td>
+			<td>${c}$</td>
+		</tr>
+		<tr>
+			<td>${a}$</td>
+			<td className={`in`}>${(a,a)}$</td>
+			<td>${(a,b)}$</td>
+			<td>${(a,c)}$</td>
+		</tr>
+		<tr>
+			<td>${b}$</td>
+			<td>${(b,a)}$</td>
+			<td className={`in`}>${(b,b)}$</td>
+			<td>${(b,c)}$</td>
+		</tr>
+		<tr>
+			<td>${c}$</td>
+			<td>${(c,a)}$</td>
+			<td>${(c,b)}$</td>
+			<td className={`in`}>${(c,c)}$</td>
+		</tr>
+	</tbody>
+</table>
+
+The relation ${R_r}$ is an example of a reflexive relation — a relation
+containing all the pairs resulting from pairing each domain element with itself.
+
+<dfn>
+
+__reflexive relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
+a _reflexive relation_ if, and only if:
+
+> ${\forall a \in \DD \Seq{(a,a) \in R}.}$
+
+Or, equivalently:
+
+> For all ${a \in \DD,}$ ${a \rel a.}$
+
+</dfn>
+
+Note that definition of reflexivity does not prevent a relation from having
+other pairs. For example, both of these relations are reflexive:
+
+<Grid cols={2}>
+	<table className={`product`}>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>${a}$</td>
+				<td>${b}$</td>
+				<td>${c}$</td>
+			</tr>
+			<tr>
+				<td>${a}$</td>
+				<td className={`in`}>${(a,a)}$</td>
+				<td>${(a,b)}$</td>
+				<td className={`in`}>${(a,c)}$</td>
+			</tr>
+			<tr>
+				<td>${b}$</td>
+				<td>${(b,a)}$</td>
+				<td className={`in`}>${(b,b)}$</td>
+				<td>${(b,c)}$</td>
+			</tr>
+			<tr>
+				<td>${c}$</td>
+				<td>${(c,a)}$</td>
+				<td>${(c,b)}$</td>
+				<td className={`in`}>${(c,c)}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<table className={`product`}>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>${a}$</td>
+				<td>${b}$</td>
+				<td>${c}$</td>
+			</tr>
+			<tr>
+				<td>${a}$</td>
+				<td className={`in`}>${(a,a)}$</td>
+				<td className={`in`}>${(a,b)}$</td>
+				<td className={`in`}>${(a,c)}$</td>
+			</tr>
+			<tr>
+				<td>${b}$</td>
+				<td className={`in`}>${(b,a)}$</td>
+				<td className={`in`}>${(b,b)}$</td>
+				<td className={`in`}>${(b,c)}$</td>
+			</tr>
+			<tr>
+				<td>${c}$</td>
+				<td className={`in`}>${(c,a)}$</td>
+				<td className={`in`}>${(c,b)}$</td>
+				<td className={`in`}>${(c,c)}$</td>
+			</tr>
+		</tbody>
+	</table>
+</Grid>
+
+However, the moment we're missing one of self-pairs, the relation is no longer
+reflexive. For example, all of the relations below are not reflexive:
+
+<Grid cols={4}>
+	<table className={`product`}>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>${a}$</td>
+				<td>${b}$</td>
+				<td>${c}$</td>
+			</tr>
+			<tr>
+				<td>${a}$</td>
+				<td>${(a,a)}$</td>
+				<td>${(a,b)}$</td>
+				<td>${(a,c)}$</td>
+			</tr>
+			<tr>
+				<td>${b}$</td>
+				<td>${(b,a)}$</td>
+				<td className={`in`}>${(b,b)}$</td>
+				<td>${(b,c)}$</td>
+			</tr>
+			<tr>
+				<td>${c}$</td>
+				<td>${(c,a)}$</td>
+				<td>${(c,b)}$</td>
+				<td className={`in`}>${(c,c)}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<table className={`product`}>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>${a}$</td>
+				<td>${b}$</td>
+				<td>${c}$</td>
+			</tr>
+			<tr>
+				<td>${a}$</td>
+				<td className={`in`}>${(a,a)}$</td>
+				<td>${(a,b)}$</td>
+				<td>${(a,c)}$</td>
+			</tr>
+			<tr>
+				<td>${b}$</td>
+				<td>${(b,a)}$</td>
+				<td>${(b,b)}$</td>
+				<td>${(b,c)}$</td>
+			</tr>
+			<tr>
+				<td>${c}$</td>
+				<td>${(c,a)}$</td>
+				<td>${(c,b)}$</td>
+				<td className={`in`}>${(c,c)}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<table className={`product`}>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>${a}$</td>
+				<td>${b}$</td>
+				<td>${c}$</td>
+			</tr>
+			<tr>
+				<td>${a}$</td>
+				<td className={`in`}>${(a,a)}$</td>
+				<td>${(a,b)}$</td>
+				<td>${(a,c)}$</td>
+			</tr>
+			<tr>
+				<td>${b}$</td>
+				<td>${(b,a)}$</td>
+				<td className={`in`}>${(b,b)}$</td>
+				<td>${(b,c)}$</td>
+			</tr>
+			<tr>
+				<td>${c}$</td>
+				<td>${(c,a)}$</td>
+				<td>${(c,b)}$</td>
+				<td>${(c,c)}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<table className={`product`}>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>${a}$</td>
+				<td>${b}$</td>
+				<td>${c}$</td>
+			</tr>
+			<tr>
+				<td>${a}$</td>
+				<td className={`in`}>${(a,a)}$</td>
+				<td className={`in`}>${(a,b)}$</td>
+				<td className={`in`}>${(a,c)}$</td>
+			</tr>
+			<tr>
+				<td>${b}$</td>
+				<td className={`in`}>${(b,a)}$</td>
+				<td className={`in`}>${(b,b)}$</td>
+				<td className={`in`}>${(b,c)}$</td>
+			</tr>
+			<tr>
+				<td>${c}$</td>
+				<td className={`in`}>${(c,a)}$</td>
+				<td className={`in`}>${(c,b)}$</td>
+				<td>${(c,c)}$</td>
+			</tr>
+		</tbody>
+	</table>
+</Grid>
+
+We can also visualize relations with graphs. For example, the graphs below are
+all visual representations of a reflexive relation:
+
+<Grid cols={2}>
+	<Graph data={[
+			{link: [`A`, `A`]},
+			{link: [`A`, `B`]},
+			{link: [`B`, `B`]},
+			{link: [`B`, `C`]},
+			{link: [`C`, `C`]},
+		]}id={"reflexive1"} collisionRadius={40}
+			edgeLength={40}  scale={100}
+			width={320}      height={320}    isDirected={true}
+	/>
+	<Graph data={[
+			{link: [`A`, `A`]},
+			{link: [`B`, `B`]},
+			{link: [`C`, `C`]},
+		]}id={"reflexive2"} collisionRadius={40}
+			edgeLength={40}  scale={100}
+			width={320}      height={320}    isDirected={true}
+	/>
+</Grid>
+
+### Irreflexive Relations
+
+In the diagram below, the red cells are elements that are __not__ members of a
+relation called ${R_i.}$
+
+<table className={`product`}>
+	<tbody>
+		<tr>
+			<td></td>
+			<td>${a}$</td>
+			<td>${b}$</td>
+			<td>${c}$</td>
+		</tr>
+		<tr>
+			<td>${a}$</td>
+			<td className={`out`}>${(a,a)}$</td>
+			<td>${(a,b)}$</td>
+			<td>${(a,c)}$</td>
+		</tr>
+		<tr>
+			<td>${b}$</td>
+			<td>${(b,a)}$</td>
+			<td className={`out`}>${(b,b)}$</td>
+			<td>${(b,c)}$</td>
+		</tr>
+		<tr>
+			<td>${c}$</td>
+			<td>${(c,a)}$</td>
+			<td>${(c,b)}$</td>
+			<td className={`out`}>${(c,c)}$</td>
+		</tr>
+	</tbody>
+</table>
+
+As long as the relation has this property, we say that it's _irreflexive_. If
+someone tells us that a relation ${R}$ is irreflexive, then they're essentially
+saying, "No matter how hard you search through ${R,}$ you'll never find an
+identity pair."
+
+<dfn>
+
+__irreflexive relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
+an _irreflexive relation_ if, and only if:
+
+> ${\forall a \in \DD \Seq{(a,a) \notin R}.}$
+
+Or, equivalently,
+
+> For all ${a \in \DD,}$ ${a \nrel a.}$
+
+</dfn>
+
+Importantly, reflexivity and irreflexivity are __not__ opposites of one another.
+For example, the following relation is neither reflexive nor irreflexive:
+
+<table className={`product`}>
+	<tbody>
+		<tr>
+			<td></td>
+			<td>${a}$</td>
+			<td>${b}$</td>
+			<td>${c}$</td>
+		</tr>
+		<tr>
+			<td>${a}$</td>
+			<td className={`in`}>${(a,a)}$</td>
+			<td>${(a,b)}$</td>
+			<td>${(a,c)}$</td>
+		</tr>
+		<tr>
+			<td>${b}$</td>
+			<td>${(b,a)}$</td>
+			<td>${(b,b)}$</td>
+			<td>${(b,c)}$</td>
+		</tr>
+		<tr>
+			<td>${c}$</td>
+			<td>${(c,a)}$</td>
+			<td>${(c,b)}$</td>
+			<td className={`in`}>${(c,c)}$</td>
+		</tr>
+	</tbody>
+</table>
+
+Why? Because (1) it's nonreflexive because it doesn't contain all the pairs
+whose elements relate to themselves, and (2) it's nonirreflexive because some of
+the relation's pairs are elements relating to themselves.
+
+Below are two graphs of irreflexive relations. Notice for both graphs, there are
+no loops.
+
+<Grid cols={2}>
+	<Graph data={[
+			{link: [`A`, `B`]},
+			{link: [`B`, `C`]},
+			{link: [`C`, `D`]},
+		]}id={"irreflexive1"} collisionRadius={40}
+			edgeLength={40}  scale={100}
+			width={320}      height={320}    isDirected={true}
+	/>
+	<Graph data={[
+			{link: [`A`, `B`]},
+			{link: [`C`, `D`]},
+			{link: [`E`, `F`]},
+		]}id={"irreflexive2"} collisionRadius={40}
+			edgeLength={40}  scale={100}
+			width={320}      height={320}    isDirected={true}
+	/>
+</Grid>
+
+### Quasi-reflexive Relations
+
+Consider the following relation. To the left is its tabular representation, and
+to the right is its corresponding graph.
+
+<Grid cols={2}>
+	<table className={`product`}>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>${a}$</td>
+				<td>${b}$</td>
+				<td>${c}$</td>
+			</tr>
+			<tr>
+				<td>${a}$</td>
+				<td className={`in`}>${(a,a)}$</td>
+				<td className={`in`}>${(a,b)}$</td>
+				<td>${(a,c)}$</td>
+			</tr>
+			<tr>
+				<td>${b}$</td>
+				<td className={`in`}>${(b,a)}$</td>
+				<td>${(b,b)}$</td>
+				<td className={`in`}>${(b,c)}$</td>
+			</tr>
+			<tr>
+				<td>${c}$</td>
+				<td className={`in`}>${(c,a)}$</td>
+				<td className={`in`}>${(c,b)}$</td>
+				<td>${(c,c)}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<Graph data={[
+			{link: [`a`, `a`]},
+			{link: [`a`, `b`]},
+			{link: [`b`, `a`]},
+			{link: [`b`, `c`]},
+			{link: [`c`, `a`]},
+			{link: [`c`, `b`]},
+		]}id={"quasireflexive"} collisionRadius={40}
+			edgeLength={40}  scale={100}
+			width={320}      height={100}    isDirected={true}
+	/>
+</Grid>
+
+
+This is an example of a relation that's neither reflexive nor irreflexive. We
+call such relations _quasi-reflexive relations_ — a relation where some of the
+elements relate to themselves, and others do not. There are two kinds of
+quasi-reflexive relations. Left-quasi-reflexive relations:
+
+<dfn>
+
+__left-quasi-reflexive relation.__ A relation ${R}$ on a domain of discourse
+${\DD}$ is _left-quasi-reflexive_ if, and only if:
+
+> ${\forall a,b \in \DD \Seq{(a,b) \in R \implies (a,a) \in R}.}$
+
+Or, equivalently,
+
+> For all ${a,b \in \DD,}$ if ${a \rel b,}$ then ${a \rel a.}$
+
+
+</dfn>
+
+and right-quasi-reflexive relations:
+
+<dfn>
+
+__right-quasi-reflexive relation.__ A relation ${R}$ on a domain of discourse
+${\DD}$ is _right-quasi-reflexive_ if, and only if:
+
+> ${\forall a,b \in \DD \Seq{(a,b) \in R \implies (b,b) \in R}.}$
+
+Or, equivalently,
+
+> For all ${a,b \in \DD,}$ if ${a \rel b,}$ then ${b \rel b.}$
+
+</dfn>
+
+### Symmetric Relations
+
+Below, the colored cells are members of a relation called ${R_s:}$
+
+<table className={`product`}>
+	<tbody>
+		<tr>
+			<td></td>
+			<td>${a}$</td>
+			<td>${b}$</td>
+			<td>${c}$</td>
+		</tr>
+		<tr>
+			<td>${a}$</td>
+			<td>${(a,a)}$</td>
+			<td className={`in`}>${(a,b)}$</td>
+			<td className={`in`}>${(a,c)}$</td>
+		</tr>
+		<tr>
+			<td>${b}$</td>
+			<td className={`in`}>${(b,a)}$</td>
+			<td>${(b,b)}$</td>
+			<td>${(b,c)}$</td>
+		</tr>
+		<tr>
+			<td>${c}$</td>
+			<td className={`in`}>${(c,a)}$</td>
+			<td>${(c,b)}$</td>
+			<td>${(c,c)}$</td>
+		</tr>
+	</tbody>
+</table>
+
+${R_s}$ is an example of a _symmetric relation_. The basic idea is, if we reach
+into the relation and find:
+
+$$
+	(a,b)
+$$
+
+then we can expect to later get:
+
+$$
+	(b,a)
+$$
+
+Here's one definition:
+
+<dfn>
+
+__symmetric relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is symmetric if, and only if:
+
+> ${\forall a,b \in \DD \Seq{(a,b) \in R \implies (b,a) \in R}}$
+
+Or, equivalently,
+
+> For all ${a,b \in \DD,}$ if ${a \rel b,}$ then ${b \rel a.}$
+
+</dfn>
+
+### Antisymmetric Relations
+
+Beloow, the teal-colored cells are members of a relation called ${R_a,}$ and the
+and the red-colored cells are members _not in_ ${R_a.}$
+
+<table className={`product`}>
+	<tbody>
+		<tr>
+			<td></td>
+			<td>${a}$</td>
+			<td>${b}$</td>
+			<td>${c}$</td>
+		</tr>
+		<tr>
+			<td>${a}$</td>
+			<td>${(a,a)}$</td>
+			<td className={`out`}>${(a,b)}$</td>
+			<td className={`in`}>${(a,c)}$</td>
+		</tr>
+		<tr>
+			<td>${b}$</td>
+			<td className={`in`}>${(b,a)}$</td>
+			<td>${(b,b)}$</td>
+			<td>${(b,c)}$</td>
+		</tr>
+		<tr>
+			<td>${c}$</td>
+			<td className={`out`}>${(c,a)}$</td>
+			<td>${(c,b)}$</td>
+			<td>${(c,c)}$</td>
+		</tr>
+	</tbody>
+</table>
+
+This is an example of an _antisymmetric relation_. The idea is, if someone tells us that a relation is antisymmetric, then:
+
+> If we reach into the relation and find the pair:
+>
+>	$$
+>		(a,b)
+>	$$
+>
+>	_and_ ${a \neq b,}$ then we won't find a pair
+>
+>	$$
+>		(b,a).
+>	$$
+
+Here's an explicit definition:
+
+<dfn>
+
+__antisymmetric relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
+_antisymmetric_ if, and only if:
+
+> ${\forall a,b \in \DD \Seq{((a,b) \in R \land a \neq b) \implies (b,a) \notin R}}$
+
+Or, equivalently,
+
+> For all ${a,b \in \DD,}$ if ${a \rel b}$ and ${a \neq b,}$ then ${b \nrel a.}$
+
+Alternatively:
+
+> ${\forall a,b \in \DD \Seq{((a,b) \in R \land (b,a) \in R) \implies a = b}.}$
+>
+> For all ${a,b \in \DD,}$ if ${a \rel b}$ and ${b \rel a,}$ then ${a = b.}$
+
+</dfn>
+
+### Asymmetric Relations
+
+If a relation ${R}$ is both [antisymmetric](#antisymmetric-relation) and
+[irreflexive](#irreflexive-relations), we say that ${R}$ is an _asymmetric
+relation_.
+
+<dfn>
+
+__asymmetric relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is _asymmetric_ if, and only if:
+
+> ${\forall a,b \in \DD \Seq{(a,b) \notin R \lor (b,a) \notin R}}$
+
+Or, equivalently,
+
+> For all ${a,b \in \DD,}$ then ${a \nrel b}$ or ${b \nrel a.}$
+
+</dfn>
+
+Note that this is a very different type of relation from the antisymmetric
+relation. With the antisymmetric relation, we allow ${(a,b) \in R}$ and ${(b,a)
+\in R,}$ provided that ${a = b.}$ The asymmetric relation says if we have an
+${(a,b) \in R,}$ we'd better not have a ${(b,a) \in R,}$ whether or not ${a =
+b.}$
+
+### Transitive Relations
+
+When we see an argument of the form:
+
+> (1) ${R \subseteq S \times S.}$
+>
+> (2) ${a, b, c \in S.}$
+>
+> (3) ${a \rel b}$ and ${b \rel c.}$
+>
+> (4) Therefore, ${a \rel c}$
+
+then we can deduce that ${R}$ is a transitive relation.
+
+<dfn>
+
+__transitivite relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
+_transitive_ if, and only if:
+
+> ${\forall a,b,c \in \DD \Seq{((a,b) \in R \land (b,c) \in R) \implies (a,c) \in R}}$ 
+
+Or, equivalently,
+
+> For all ${a,b,c \in \DD,}$ if ${a \rel b}$ and ${b \rel c,}$ then ${a \rel c.}$
+
+
+</dfn>
+
+### Intransitive Relations
+
+Relations that are not transitive are called _intransitive relations_.
+
+<dfn>
+
+__intransitive relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is _intransitive_ if, and only if:
+
+> ${\forall a,b,c \in \DD \Seq{(~(a,b) \in R \land (b,c) \in R~) \implies (a,c) \notin R}.}$
+
+Or, equivalently,
+
+> For all ${a,b,c \in \DD,}$ if ${a \rel b}$ and ${b \rel c,}$ then ${a \nrel c.}$
+
+</dfn>
+
+### Left-total Relations 
+
+A _left-total relation_ is defined as follows:
+
+<dfn>
+
+__left-total relation.__ Let ${X}$ and ${Y}$ be sets, and ${R}$ a relation from
+${X}$ to ${Y.}$ Then ${R}$ is a _left-total relation_ if, and only if,
+
+> ${\forall x \in X \Seq{\exists y \in Y : (x,y) \in R}.}$
+
+That is,
+
+> for all ${x \in X,}$ there exists a ${y \in Y}$ such that ${x \rel y.}$
+
+</dfn>
+
+### Right-total Relations 
+
+A _right-total relation_ is defined as follows:
+
+<dfn>
+
+__right-total relation.__ Let ${X}$ and ${Y}$ be sets, and ${R}$ a relation from
+${X}$ to ${Y.}$ Then ${R}$ is a _right-total relation_ if, and only if,
+
+> ${\forall y \in Y \Seq{\exists x \in X : (x,y) \in R}.}$
+
+That is,
+
+> for all ${y \in Y,}$ there exists an ${x \in X}$ such that ${x \rel y.}$
+
+</dfn>
+
+### Comparable Relations
+
+If a relation ${R}$ has the property of _comparability_, we say that ${R}$ is a
+_comparabe relation_ or a _strongly-connected relation_.
+
+<dfn>
+
+__comparable relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
+_comparable_ if, and only if:
+
+> ${\forall a,b \in \DD \Seq{(a,b) \in R \lor (b,a) \in R}}$
+
+Or, equivalently,
+
+> For all ${a,b \in \DD,}$ ${a \rel b}$ or ${b \rel a.}$
+
+</dfn>
+
+### Connex Relations
+
+If a relation ${R}$ has the _connex property_, we say that ${R}$ is a _connected relation_ or a _connex relation_.
+
+<dfn>
+
+__connex.__ A relation ${R}$ on a domain of discourse ${\DD}$ is a _connex relation_ if, and only if:
+
+> ${\forall a,b \in \DD \Seq{(a \neq b) \implies (a,b) \in R \lor (b,a) \in R}.}$
+
+Or, equivalently,
+
+> For all ${a,b \in \DD,}$ if ${a \neq b,}$ then ${a \rel b}$ or ${b \rel a.}$
+
+</dfn>
+
+
+### Incomparable Relations
+
+If a relation ${R}$ has the property of _incomparability_, we say that ${R}$ is
+_incomparable_.
+
+<dfn>
+
+__incomparability relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is _incomparable_ if, and only if:
+
+> ${\forall a,b \in \DD \Seq{(a,b) \notin R \land (b,a) \notin R}}$
+
+Or, equivalently,
+
+> For all ${a,b \in \DD,}$ ${a \nrel b}$ and ${b \nrel a.}$
+
+</dfn>
+
+### Right Euclidean Relation
+
+A _right Euclidean relation_ is defined as follows:
+
+<dfn>
+
+__right euclidean relation.__ A relation ${R}$ on a domain of discourse ${\DD}$
+is _right Euclidean_ if, and only if,
+
+> ${\forall a,b,c \in \DD \Seq{ (a,b), (a,c) \in R \implies (b,c) \in R }}$
+
+Or, equivalently,
+
+> For all ${a,b,c \in R,}$ if ${a \rel b}$ and ${a \rel c,}$ then ${b \rel c.}$
+
+</dfn>
+
+### Left Euclidean Relation
+
+A _left Euclidean relation_ is defined as follows:
+
+<dfn>
+
+__left euclidean relation.__ A relation ${R}$ on a domain of discourse ${\DD}$
+is _left Euclidean_ if, and only if,
+
+> ${\forall a,b,c \in \DD \Seq{ (b,a), (c,a) \in R \implies (b,c) \in R }}$
+
+Or, equivalently,
+
+> For all ${a,b,c \in R,}$ if ${b \rel a}$ and ${c \rel a,}$ then ${b \rel c.}$
+
+</dfn>
+
+### Equivalence Relations
+
+Earlier, we saw the relations:
+
+<Grid cols={2}>
+	<table className={`product`}>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>${a}$</td>
+				<td>${b}$</td>
+				<td>${c}$</td>
+			</tr>
+			<tr>
+				<td>${a}$</td>
+				<td className={`in`}>${(a,a)}$</td>
+				<td>${(a,b)}$</td>
+				<td>${(a,c)}$</td>
+			</tr>
+			<tr>
+				<td>${b}$</td>
+				<td>${(b,a)}$</td>
+				<td className={`in`}>${(b,b)}$</td>
+				<td>${(b,c)}$</td>
+			</tr>
+			<tr>
+				<td>${c}$</td>
+				<td>${(c,a)}$</td>
+				<td>${(c,b)}$</td>
+				<td className={`in`}>${(c,c)}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<table className={`product`}>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>${a}$</td>
+				<td>${b}$</td>
+				<td>${c}$</td>
+			</tr>
+			<tr>
+				<td>${a}$</td>
+				<td className={`in`}>${(a,a)}$</td>
+				<td className={`in`}>${(a,b)}$</td>
+				<td className={`in`}>${(a,c)}$</td>
+			</tr>
+			<tr>
+				<td>${b}$</td>
+				<td className={`in`}>${(b,a)}$</td>
+				<td className={`in`}>${(b,b)}$</td>
+				<td className={`in`}>${(b,c)}$</td>
+			</tr>
+			<tr>
+				<td>${c}$</td>
+				<td className={`in`}>${(c,a)}$</td>
+				<td className={`in`}>${(c,b)}$</td>
+				<td className={`in`}>${(c,c)}$</td>
+			</tr>
+		</tbody>
+	</table>
+</Grid>
+
+Both of these are examples of _equivalence relations_.
+
+<dfn>
+
+__equivalence relation.__ A relation ${\equiv}$ on a domain of discourse ${A}$
+is an _equivalence relation_ if, and only if:
+
+1. ${a \equiv a}$ [reflexivity](#reflexive-relations),
+2. ${a \equiv b}$ implies ${b \equiv a}$ [symmetry](#symmetric-relations), _and_
+3. ${a \equiv b}$ and ${\equiv c}$ implies ${a \equiv c}$ [transitivity](#transitive-relations).
+
+</dfn>
+
+### Partial Orders
+
+Below is the definition of a partial order. Note that there's some new notation
+being used here. The symbol ${\preceq}$ is a generic symbol for a
+relation that can be replaced with ${\lt,}$ ${\le,}$ ${\prec,}$ ${=,}$ etc. The
+symbol ${\prec}$ means "immediately precedes" and the notation ${\succ}$ means
+"immdiately succeeds." These are useful notations when we're discussing
+comparisons between objects that aren't necessarily numbers. For example, if we
+define the tuple
+
+$$
+	(\tt{George I}, \tt{George II}, \tt{George III})
+$$
+
+as the partial order of British kings by reign, then we may denote the relation
+as:
+
+$$
+	\tt{George I} \prec \tt{George II} \prec \tt{George III}.
+$$
+
+Such a relation would be read as, "George I immediately precedes George II, and
+George II immediately precess George III." We could, of course, write:
+
+$$
+	\tt{George I} \lt \tt{George II} \lt \tt{George III}
+$$
+
+but it looks a bit awkward, given that the ${\lt}$ is commonly associated with
+numbers, the Georges aren't numbers (unless we define them as purely regnal
+numbers), and we risk offending some historian saying, "George I is less than
+George II ..." As such, we use the weaker symbol ${\preceq}$ to denote some hint
+of order.
+
+<dfn>
+
+__partial order.__ A relation ${\preceq}$ on a domain of discourse ${\DD}$ is
+called a _partial order_ if, and only if, for all ${a,b,c \in \DD,}$
+
+1. If ${a \preceq b}$ and ${b \preceq c,}$ then ${a \preceq c}$ ([transitivity](#transitive-relations)), and
+2. If ${a \preceq b}$ and ${b \preceq a,}$ then ${a = b.}$ ([antisymmetry](#antisymmetric-relation)).
+
+</dfn>
+
+Partial orders come in three subtypes:  _weak partial orders_, _strong partial
+orders_, and _full orders_.
+
+### Weak Partial Orders
+
+A _weak partial order_ is defined as follows:
+
+<dfn>
+
+__weak partial order.__ A relation ${\preceq}$ on a domain of discourse ${X}$ is
+called a _weak partial order_ if, and only if, for all ${a,b,c \in \DD}$
+
+1. ${a \preceq a,}$
+2. If ${a \preceq b}$ and ${b \preceq c,}$ then ${a \preceq c}$ ([transitivity](#transitive-relations)), and
+3. If ${a \preceq b}$ and ${b \preceq a,}$ then ${a = b.}$ ([antisymmetry](#antisymmetric-relation)).
+
+</dfn>
+
+As we can see from the definition, weak partial orders are what allow us to
+define the notion of "less than or equal to."
+
+### Strong Partial Orders
+
+_Strong partial orders_ are what give us the notion of less than and greater
+than:
+
+<dfn>
+
+__strong partial order.__ A relation ${\prec}$ on a domain of discourse ${\DD}$
+is called a _strong partial order_ if, and only if, for all ${a,b,c \in \DD}$
+
+1. ${a \not\prec a}$ ([irreflexivity](#irreflexive-relations)), 
+2. If ${a \prec b,}$ then ${b \not\prec a}$ ([asymmetry](#asymmetric-relations)), _and_
+3. If ${a \prec b}$ and ${b \prec c,}$ then ${a \prec c}$ ([transitivity](#transitive-relations)).
+
+</dfn>
+
+A classic example of the strong partial order is the ${\lt}$ relation.
+
+### Total Order
+
+A _total order_ is defined as follows:
+
+<dfn>
+
+__total order.__ A relation ${\leq}$ on a domain of discourse ${\DD}$ is called a
+_total order_ if, and only if, for all ${a,b,c \in \DD}$
+
+1. ${a \leq a,}$ ([transitivity](#transitive-relations)),
+2. ${a \leq b}$ or ${b \leq a,}$ ([comparability](#comparable-relations)),
+3. If ${a \leq b}$ and ${b \leq c,}$ then ${a \leq c}$ ([transitivity](#transitive-relations)), _and_
+4. If ${a \leq b}$ and ${b \leq a,}$ then ${a = b.}$ ([antisymmetry](#antisymmetric-relation)).
+
+</dfn>
+
+### Preorders
+
+Preorders are a particularly useful kind of relation that we'll use extensively
+later.
+
+<dfn>
+
+__preorder.__ Let ${\lesssim}$ be relation on the domain of discourse ${\DD.}$ Then
+${R}$ is called a _preorder_ if, and only if, for all ${a,b,c \in \DD,}$
+
+1. ${a \lesssim a}$ ([reflexivity](#reflexive-relations)), _and_
+2. If ${a \lesssim b}$ and ${b \lesssim c,}$ then ${a \lesssim c}$ ([transitivity](#transitive-relations)).
+
+</dfn>
+
+The name _preorder_ comes from the fact that preorders are "almost" partial
+orders. They have the property of transitivity, but not antisymmetry.
+
+## Posets
+
+Partial orders lead to another kind of mathematical object called the _poset_.
+Posets are defined as a tuple ${(S,R),}$ where ${S}$ is domain of discourse, and
+${R}$ is a relation. This is likely our first encounter with a definition of
+this form. As we'll see later (and throughout all of the volumes on this site),
+it is extremely common in mathematics to define objects as tuples:
+
+<Grid cols={3}>
+
+$$
+	(\tt{set}, \tt{relation})
+$$
+$$
+	(\tt{set}, \tt{function})
+$$
+$$
+	(\tt{set}, \tt{operation})
+$$
+$$
+	(\tt{set}, \tt{functions})
+$$
+$$
+	(\tt{set}, \tt{set}, \tt{functions})
+$$
+$$
+	(\tt{set}, \tt{operations})
+$$
+
+</Grid>
+
+In fact, there's an entire field of mathematics dedicated to studying the way we
+construct these definitions, called abstract algebra.
+
+
+<dfn>
+
+__poset.__ Let ${\preceq}$ be a [partial order](#partial-orders) on a set
+${P.}$ Then the tuple ${P = (P,\preceq)}$ is called a _poset_ (or _partially
+ordered set_) if, and only if, for all ${a,b,c \in P:}$
+
+1. ${a \preceq a}$ ([reflexivity](#reflexive-relations)),
+2. if ${a \preceq b}$ and ${b \preceq a,}$ then ${a = b}$ ([antisymmetry](#antisymmetric-relations)), _and_
+3. if ${a \preceq b}$ and ${b \preceq c,}$ then ${a \preceq c}$ ([transitivity](#transitive-relations)).
+
+</dfn>
+
+Posets are a much weaker notion of ordering (hence the name partial order). A
+poset can be ordered, but not necessarily. This is because posets impose no
+requirement for comparability.
+
+Astute readers might have noticed something slightly off about posets. They're a
+bit, well, redundant. We could've just simply written:
+
+$$
+	\dom{\preceq}
+$$
+
+When it comes to notation in mathematics, however, ${\tt{tradition} \preceq \tt{reason}.}$
+
+### Minimal and Maximal Elements
+
+Below are the definitions of minimal and maximal elements. Minimals and maximals
+are much weaker notions of "minimum" and "maximum." A minimal ${m \in S}$,
+informally, is an element that does not _precede_ any other element of ${S.}$
+That doesn't necessarily make it the smallest element. Why? Becuse posets, by
+definition, aren't necessarily comparable.
+
+<dfn>
+
+__maximal element.__ Let ${(A, \preceq)}$ be a poset. Then an element ${b \in A}$ is a _maximal element_ if, and only if,
+
+> there is no ${a \in A}$ such that ${b \preceq a.}$
+
+If the above condition is satisfied, we write:
+
+$$
+	\tt{maximal}{(A)} = b
+$$
+
+</dfn>
+
+The definition of a minimal element:
+
+<dfn>
+
+__minimal element.__ Let ${(A,\preceq)}$ be a poset. Then an element ${b \in A}$ is a _minimal element_ if, and only if:
+
+> there is no ${a \in A,}$ such that ${a \preceq b.}$
+
+If the above condition is satisfied, we write:
+
+$$
+	\tt{minimal}{(A)} = b
+$$
+
+</dfn>
+
+### Chains
+
+Chains are a stronger form of the poset.
+
+<dfn>
+
+__chain.__ Let ${\le}$ be a [partial order](#partial-orders) on a set
+${L.}$ Then the tuple ${L = (L,\le)}$ is called a _chain_, if, and only
+if, for all ${a,b,c \in L,}$
+
+1. ${a,b \in L,}$ ${a \le b}$ or ${b \le a,}$ ([comparability](#comparable-relations)),
+2. ${a \le a}$ ([reflexivity](#reflexive-relations)),
+3. if ${a \le b}$ and ${b \le a,}$ then ${a = b}$
+([antisymmetry](#antisymmetric-relations)), _and_
+4. if ${a \le b}$ and ${b \le c,}$ then ${a \le c}$
+([transitivity](#transitive-relations)).
+
+</dfn>
+
+Like the poset, what we call a _chain_ is simply the domain of a [total order](#total-order). Tradition, once again, calls upon us to use a specific term.
+
+### Lower Bound and Upper Bound
+
+Here is the definition for lower bound:
+
+<dfn>
+
+__lower bound.__ Let ${P}$ be a poset ${(P,\preceq),}$ and ${S \subseteq P.}$ If there exists an element ${\mathcal{a} \in P}$ such that:
+
+> for all ${s \in S,}$ ${\mathcal{a} \preceq s,}$
+
+then ${\mathcal{a}}$ is called the _lower bound_ of ${S,}$ which we denote as:
+
+$$
+	a \in S^{\ell}
+$$
+
+where ${S^{\ell}}$ is the set of all lower bounds of ${S.}$
+
+</dfn>
+
+And the definition of an upper bound:
+
+<dfn>
+
+__upper bound.__ Let ${P}$ be a poset ${(P, \preceq),}$ and ${S \subseteq P.}$
+If there exists an element ${\mathcal{a} \in P}$ such that:
+
+> for all ${s \in S,}$ ${s \preceq \mathcal{a},}$
+
+then ${\mathcal{a}}$ is called the _upper bound_ of ${S,}$ which we denote as:
+
+$$
+	a \in S^{u}
+$$
+
+where ${S^u}$ is the set of all upper bounds of ${S.}$
+
+</dfn>
+
+### Infimum and Supremum
+
+From the definition of a lower bound, we get another relation called the
+infimum:
+
+<dfn>
+
+__infimum.__ Let ${(P,\preceq),}$ be a poset and ${S \subseteq P.}$ If:
+
+1. there exists an element ${\mm{i} \in S^{\ell},}$ _and_
+2. for all ${s \in S^{\ell},}$ ${\mm{i} \preceq s,}$
+
+then we say the element ${\mm{i} \in S}$ is the _infimum_ of ${S.}$ To denote the infimum ${\mm{i},}$ we may use any of the following notations:
+
+$$
+	\inf(S) = \bigwedge\limits_{\mm{i} \in S} \mm{i} = \mm{i}
+$$
+
+</dfn>
+
+The symbol ${\bigwedge}$ is often called "big wedge" after its LaTeX command,
+`\bigwedge`. The benefit to using this notation is that it falls in line with
+the using the notation ${x \land y,}$ which returns the infimum of ${(x,y).}$
+Those familiar with symbolic logic might recognize this as the _and operator_.
+Indeed, when ${x,y \in \set{0 \def \string{false},1 \def \string{true}},}$ it
+becomes apparent why ${\land}$ is an attractive notation. Given ${0 \land 1,}$
+we get ${0,}$ or ${\string{false}.}$
+
+Likewise, the definition of an upper bound gives us another relation called the
+supremum.
+
+<dfn>
+
+__supremum.__ Let ${(P,\preceq)}$ be a poset and ${S \subseteq P.}$ If:
+
+1. there exists an element ${\mm{b} \in S^{u}}$ _and_
+2. for all ${s \in S^{u},}$ ${s \preceq \mm{b},}$
+
+then we say the element ${\mm{b} \in S}$ is the _supremum_ of ${S.}$ To denote
+the supremum ${\mm{b},}$ we may use any of the following notations:
+
+$$
+	\sup(S) = \bigvee\limits_{\mm{b} \in S} \mm{b} = \mm{b}
+$$
+
+</dfn>
+
+### Mimimum and Maximum
+
+The maximum of a set ${P}$ is defined as follows:
+
+<dfn>
+
+__minimum.__ Let ${(P,\preceq)}$ be a poset. If:
+
+1. there exists an element ${\ell \in P,}$ such that
+2. for all ${p \in P,}$ ${\ell \preceq p,}$
+
+then ${\ell \in P}$ is the _minimum_ of ${P,}$ denoted:
+
+$$
+	\min{(P)} = \ell
+$$
+
+</dfn>
+
+and the minimum of a set ${P:}$
+
+<dfn>
+
+__maximum.__ Let ${(P,\preceq)}$ be a poset. If:
+
+1. there exists an element ${u \in P,}$ such that
+2. for all ${p \in P,}$ ${u \preceq b,}$
+
+then ${u \in P}$ is the _minimum_ of ${P,}$ denoted:
+
+$$
+	\max{(P)} = u
+$$
+
+</dfn>
+
+### Well-ordered Relations
+
+Now that we have the definition of minimal and maximal elements, we can define
+an extremely useful relation called a _well ordering_.
+
+<dfn>
+
+__well ordering.__ Let ${R}$ be a on the domain of discourse ${\DD.}$ If, and only if,
+
+1. ${R}$ is a [total order](#total-order), _and_
+2. every non-empty subset of ${\DD}$ has a [minimum](#mimimum-and-maximum),
+
+then ${R}$ is a well-ordered relation.
+
+</dfn>
+
+### Left-unique Relations
+
+A _left-unique relation_ is defined as follows:
+
+<dfn>
+
+__left-unique relation.__ Let ${X}$ and ${Y}$ be sets, and ${R}$ a relation from
+${X}$ to ${Y.}$ Then ${R}$ is _left-unique_ if, and only if,
+
+> ${(\forall x,z \in X \land \forall y \in Y)\Seq{ ((x,y) \in R \land (z,y) \in R) \implies x = z }.}$
+
+That is,
+
+> For all ${x,z \in X}$ and for all ${y \in Y,}$ if ${x \rel y}$ and ${z \rel y,}$ then ${x = z.}$
+
+</dfn>
+
+### Right-unique Relations
+
+A _right-unique relation_ (also called a _univalent relation_), is defined as
+follows:
+
+<dfn>
+
+__right-unique relation.__ Let ${X}$ and ${Y}$ be sets, and ${R}$ a relation
+from ${X}$ to ${Y.}$ Then ${R}$ is _right-unique_ if, and only if,
+
+> ${(\forall x,z \in X \land \forall y \in Y)\Seq{ ((x,y) \in R \land (z,y) \in R) \implies y = z }.}$
+
+That is,
+
+> For all ${x,z \in X}$ and for all ${y \in Y,}$ if ${x \rel y}$ and ${z \rel y,}$ then ${y = z.}$
+
+</dfn>
+
+As we'll see later, the right-unique relation is a key component in the
+definition of functions.
+
+## Maps
+
+Another type of relation is the _map_; also called _mapping_, _assignment_,
+_function_, _operation_, or _transformation_. While the latter terms are often
+used interchangeably, we take a bit more care in using the words and distinguish
+them by definition. In these materials, we will say that _map_, _assignment_,
+and _mapping_ are synonymous, but _function_, _operation_, and _transformation_
+are special kinds of maps.
+
+<dfn>
+
+__map__. Let ${A,}$ ${B,}$ and ${\Gamma}$ be sets, such that ${\Gamma \subseteq
+A \times B.}$ Then the triple:
+
+$$
+	f = (A, B, \Gamma)
+$$
+
+is a _map_ if, and only if
+
+> For each ${a \in A,}$ there is exactly one ${b \in B}$ with ${(a,b) \in \Gamma.}$
+
+We write ${f(a)}$ for this unique ${b,}$ and call it _the value of ${f}$ at ${a}$_ (or _the image of ${a}$ under ${f}$_). We say that ${A}$ is the _domain_ of ${f,}$ ${B}$ the _codomain_ of ${f,}$ and ${\Gamma}$ the _graph_ of ${f.}$ We write:
+
+$$
+	f : A \to B
+$$
+
+to indicate that ${f}$ is a map from ${A}$ to ${B.}$
+
+</dfn>
+
+Visualizing the map relation as a graph, all of the following are maps: 
+
+<div className="grid3">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"f1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["2"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"f2"}
+ />
+ <Bipartite
+  data={[
+   { link: ["1"] },
+   { link: ["2"] },
+   { link: ["a", "3"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"f3"}
+ />
+</div>
+
+But the following are not:
+
+<div className="grid3">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nf1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["a", "2"] },
+   { link: ["a", "3"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nf2"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", { id: "5", hide: true }] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nf3"}
+ />
+</div>
+
+### Functions
+
+In these materials, functions are a particular type of map.  A function ${f: X
+\to Y}$ is a relation from ${X}$ to ${Y,}$ where _every_ element of ${X}$ is
+paired with _exactly one_ element of ${Y.}$ We say that ${X}$ is the _domain_ of
+${f,}$ and ${Y}$ is the _range_ of ${f.}$ Here's the working definition we'll
+use:
+
+<dfn>
+
+__function.__ Let ${X}$ and ${Y}$ be sets, and ${\Gamma \subseteq X \times Y}$ a
+relation. A function ${f}$ is a triple ${(X,Y,\Gamma),}$ where ${\Gamma}$ is
+[right-unique](#right-unique-relations). That is, for each ${x \in X,}$ there is
+a unique element ${y \in Y}$ with ${(x,y) \in \Gamma.}$ We call ${X}$ the
+_domain_ of ${f,}$ denoted ${\dom{f} = X;}$ ${Y}$ the range of ${f,}$ denoted
+${\ran{f} = Y;}$ and ${\Gamma}$ the _graph_ of ${f,}$ denoted ${\Gamma(f).}$ We
+may also denote a function ${f}$ with the expression:
+
+$$
+	f: X \to Y
+$$
+
+which we read as "${f}$ is a function from ${X}$ to ${Y.}$" Alternatively, we
+may also write:
+
+$$
+	f(x) = y
+$$
+
+</dfn>
+
+A few more bits of terminology associated with functions: The element ${y \in
+Y}$ is called the _value_ that the ${f}$ _assumes_ at the _argument_ ${x.}$
+Given an argument ${x,}$ we say that ${f}$ _sends_ or _maps_ or _transforms_
+${x}$ onto ${y.}$
+
+While some authors treat _image_ and _range_ synonymously, we distinguish the
+two terms. From the definition of a function, it's clear that we can have
+function ${f : X \to Y}$ where ${X = Y.}$ In this case, we say that ${f}$ maps
+${X}$ _onto_ ${Y,}$ and we call ${X}$ the domain and ${Y}$ the range, using the
+usual syntax:
+
+$$
+	\dom{f} = X \\
+	\ran{f} = Y
+$$
+
+If, however, it turns out that ${Y \subset X,}$ we say that ${Y}$ is the _image_
+of ${f,}$ and use the following syntax:
+
+$$
+	\dom{f} = X \\
+	\image{(f)} = Y
+$$
+
+We use this different notation and wording to make it clear that the codomain
+${Y}$ is a subset of the domain ${X}$ (in later sections, we'll see that for
+some situations, a function's range is often more important than the function
+itself). If it turns out that ${X \subset Y,}$ we say that ${f}$ is an
+_embedding_ of ${X}$ into ${Y.}$ For this case, we simply use the notation
+${\dom{f} = X}$ and ${\ran{f} = Y.}$
+
+#### Restrictions and Extensions
+
+In the case where ${f: X \to X,}$ we call ${f}$ the _identity map_. The identity
+map introduces us to a special kind of relation called the _restriction_.
+
+<dfn>
+
+__restriction.__ Let ${f: X \to Y}$ be a function from ${X}$ to ${Y,}$ and the
+set ${A}$ be a subset of ${X}$ (i.e., ${A \subset X}$). Where ${x \in X}$ and ${y \in Y,}$ the function:
+
+$$
+	f(x) = y ~~~(\tt{for}~~ x \in A)
+$$
+
+is called the _restriction of ${f}$ to ${A}$_. We may denote such a function
+with:
+
+$$
+	\eval{f}{A}: A \to X
+$$
+
+</dfn>
+
+Informally, restrictions are simply a more convenient way of defining functions
+for a common scenario. Suppose we have the function:
+
+$$
+	f: B \to C
+$$
+
+We want to define a function ${g: A \to C,}$ but ${A \subset C.}$ That is, we
+want to communicat that there's a relationship between the members of ${A}$ and
+the members of ${C,}$ that doesn't include the members of ${B.}$ The identity map allows us to say that:
+
+$$
+	g(x) = f(x)
+$$
+
+where ${x \in A.}$ The function ${g(x)}$ is called the _restriction_ of ${f}$ to
+${X,}$ and the function ${f(x)}$ is called the _extension_ of ${g}$ to ${B.}$
+
+#### Partial Orders of Functions 
+
+Now that we've defined the concepts of restriction and extension, one
+interesting consequence is examining them as they relate to partial orders.
+Suppose ${X,}$ ${Y,}$ and ${F}$ are sets, where ${F}$ is the set of all
+functions whose domain is included in ${F}$ and whose range is included in
+${Y.}$ Now suppose we have the relation:
+
+$$
+	f \rel g \iff \dom{f} \subset \dom{g} \land \forall x \in \dom{f}\Seq{f(x) = g(x)}
+$$
+
+That is, ${f}$ is a restriction of ${g}$ (or, equivalently, ${g}$ is an extension
+of ${f}$). Given that all the functions in ${F}$ are just subsets of the
+Cartesian product ${X \times Y,}$ it follows that the relation:
+
+$$
+	f \rel g \equiv f \subset g
+$$
+
+
+#### Surjections
+
+A function ${f: X \to Y}$ is called _surjective_ if every element of ${Y}$
+is mapped to _at least once_.
+
+<dfn>
+
+__surjection.__ Let ${f}$ be a map from the set ${X}$ to the set ${Y.}$ If, for
+each ${y}$ in ${Y,}$ there exists an ${x \in X,}$ such that:
+
+$$
+	f(x) = y
+$$
+
+
+then ${f}$ is a _surjection_, and we write:
+
+$$
+	f: X \surj Y.
+$$
+
+</dfn>
+
+In other words, every element of ${Y}$ gets at least one of ${X.}$ They
+can get many of ${x,}$ but they must at least have one. For example, this
+is a surjective function:
+
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"s1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+   { link: ["d", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"s2"}
+ />
+</div>
+
+But these are not:
+
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["2"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"ns1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["1"] },
+   { link: ["2"] },
+   { link: ["a", "3"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"ns2"}
+ />
+</div>
+
+#### Injections
+
+A function ${f: X \to Y}$ is called _injective_ if every element of ${Y}$
+is mapped to _at most once_.
+
+<dfn>
+
+__injection.__ Let ${f}$ be a map from the set ${X}$ to the set ${Y,}$ and ${x
+\in X.}$ If, for each ${x \neq x',}$ 
+
+$$
+	f(x) \neq (x'),
+$$
+
+
+then ${f}$ is an _injection_, and we write:
+
+$$
+	f: X \inj Y.
+$$
+
+</dfn>
+
+That is, every element of ${Y}$ gets _at most_ one of ${X.}$ They
+can get none of ${X,}$ but if they do get something from ${X,}$ they can
+only get one. For example, these are injective functions:
+
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"b1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+   { link: ["4"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"b2"}
+ />
+</div>
+
+But these are not:
+
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+   { link: ["d", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nb1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["1"] },
+   { link: ["2"] },
+   { link: ["a", "3"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nb2"}
+ />
+</div>
+
+Another way of thinking about injections: They're functions that map distinct
+elements of the domain to distinct elements of the codomain.
+
+#### Bijections
+
+A function ${f: X \to Y}$ is called _bijective_ iff it is both _surjective_
+and _injective_.
+
+<dfn>
+
+__bijection.__ Let ${f}$ be a map from the set ${X}$ to the set ${Y.}$ If, for
+each ${y \in Y,}$ there exists a unique ${x \in X,}$ such that:
+
+$$
+	f(x) = y,
+$$
+
+
+then ${f}$ is an _bijection_, and we write:
+
+$$
+	f: X \bij Y.
+$$
+
+</dfn>
+
+
+For example, these functions only take one appearance:
+
+<Bipartite
+ data={[
+  { link: ["a", "1"] },
+  { link: ["b", "2"] },
+  { link: ["c", "3"] },
+  { link: ["d", "4"] },
+ ]}
+ scale={50}
+ height={170}
+ marginTop={0}
+ marginBottom={0}
+ id={"bij1"}
+/>
+
+That is, every element of ${X}$ maps to one, and only one, element of
+${Y,}$ and every element of ${Y}$ is mapped to once, and only once. None of
+these functions are bijective:
+
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nbij1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+   { link: ["4"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nbij2"}
+ />
+</div>
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", { id: "5", hide: true }] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nbij3"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["b", "3"] },
+   { link: ["c", "4"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nbij3"}
+ />
+</div>
+
+From top-left to bottom-right: The first is surjective but not injective,
+the second is injective but not surjective, and the last two are not
+functions.
+
+#### The Surjection Rule
+
+Let ${X}$ and ${Y}$ be sets. If ${f}$ is a surjective function mapping elements
+from ${X}$ to ${Y,}$ then:
+
+$$
+ \card(X) \gte \card(Y)
+$$
+
+I.e., either:
+
+1. ${X}$ has more members than ${Y,}$ or
+2. ${X}$ and ${Y}$ have the same number of members.
+
+#### The Injection Rule
+
+Let ${X}$ and ${Y}$ be sets. If ${f}$ is an injective function mapping elements
+from ${X}$ to ${Y,}$ then:
+
+$$
+ \card(X) \lte \card(Y)
+$$
+
+I.e., either:
+
+1. ${X}$ has less members than ${Y,}$ or
+2. ${X}$ and ${Y}$ have the same number of members.
+
+#### The Bijection Rule
+
+Let ${X}$ and ${Y}$ be sets. If ${f}$ is a bijective function mapping elements
+from ${X}$ to ${Y,}$ then:
+
+$$
+ \card(X) = \card(Y)
+$$
+
+I.e., ${X}$ and ${Y}$ have the same number of members.
+
+## Families 
+
+Now that we've seen functions, we introduce another special relation called the
+_family_.
+
+<dfn>
+
+__family.__ Let ${I}$ and ${X}$ be sets, and ${f}$ a function defined as
+follows:
+
+1. ${f: I \to X.}$
+2. Where ${i \in I}$ and ${x \in X,}$ ${f(x) = (i,x) = x_i.}$
+
+We call ${I}$ the _index set_, ${i \in I}$ an _index_, ${X}$ the _indexed set_,
+${x \in X}$ a _term_, and the function ${f}$  a _family_.
+
+</dfn>
+
+A particularly special type of family is the _sequence_. But before we examine
+sequences, we need a special set called the _natural numbers_.
+
+## Natural Numbers
+
+There are many ways to define the natural numbers, but for this chapter, we'll
+use the _Von Neumann definition_.
+
+### The Axiom of Infinity
+
+Before we see that definition, we define a special set operation called the
+_successor_.
+
+<dfn>
+
+__successor.__ Let ${S}$ be a set. Then
+
+$$
+	S^+ = S \cup \set{S}
+$$
+
+is the set obtained by adjoining ${S}$ to the elements of ${S,}$ called the _successor_ of ${S.}$
+
+</dfn>
+
+If we represent the empty set with the symbol ${0}$ (i.e., ${0 \def \nil,}$)
+then we have:
+
+$$
+	\small
+	\eqs{
+		0 &= \nil \\
+		0^+ &= \set{\nil} \\
+		(0^+)^+ &= \set{\nil, \set{\nil}} \\
+		((0^+)^+)^+ &= \set{\nil, \set{\nil}, \set{\nil, \set{\nil}}} \\
+		\vdots
+	}
+$$
+
+As we can tell, the pattern continues. It's a bit cumbersome to keep writing
+those zeroes. Since each set is different, we can them unique symbols: 
+
+$$
+	\small
+	\eqs{
+		0 &= \nil \\
+		1 &= \set{\nil} \\
+		2 &= \set{\nil, \set{\nil}} \\
+		3 &= \set{\nil, \set{\nil}, \set{\nil, \set{\nil}}} \\
+		&\vdots
+	}
+$$
+
+If we continued writing out the sets, and gatthered them all in one set, we'd
+eventually have the set:
+
+$$
+	\set{0,1,2,3,4,5,7,9}.
+$$
+
+Which, as we know, is the set of digits. What we want, however, is the set of all the numbers, call it ${\omega:}$
+
+$$
+	\omega = \set{0,1,2,3,\ldots}
+$$
+
+However, if we want to have this set, we need an axiom:
+
+<dfn>
+
+__axiom of infinity.__ There exists a set containing ${0}$ and
+containing the successor of each of its elements.
+
+</dfn>
+
+We need this axiom because nothing we've covered so far allows us to say that
+we can have a set like ${\omega.}$ With this axiom established, we have the
+following definition:
+
+<dfn>
+
+__natural numbers.__ Let ${0 = \set{~~},}$ the empty set, and ${S}$ be the
+successor function ${S(a) = a \cup \set{a}}$ for every set ${a.}$ By the axiom
+of infinity, there exist sets which contain ${0}$ and are closed under ${f.}$ As
+such, there exists a [bijection](#bijections) from ${n}$ to ${S,}$ of the form:
+
+$$
+	\small
+	\eqs{
+		0 &= \set{~~} \\
+		1 &= 0 \cup \set{0} = \set{0} = \set{\set{~~}} \\
+		2 &= 1 \cup \set{1} = \set{0,1} = \set{\set{~~}, \set{\set{~~}}} \\
+		3 &= 2 \cup \set{2} = \set{0,1,2} = \set{\set{~~}, \set{\set{~~}}, \set{\set{~~}, \set{\set{~~}}}} \\
+		&\vdots \\
+		n &= n-1 \cup \set{n-1} = \set{0,1,\ldots,n-1} = \set{\set{~~}, \set{{~~}}, \ldots, \set{{~~}, \set{{~~}}, \ldots}} \ldots
+	}
+$$
+
+We call this bijection the set of natural numbers, denoted ${\NN.}$ Where ${n
+\leq m \iff n \subset m,}$ then the [poset](#posets) ${(\NN, \leq)}$ is a
+[well-ordering](#well-ordered-relations). Given ${n \in \NN,}$ we denote the
+poset ${(n \in \NN, \leq)}$ as:
+
+$$
+	\Seq{n} = (n \in \NN, \leq) = 0 \leq 1 \leq 2 \leq \ldots \leq n-1 = (0,1,2,\ldots,n-1)
+$$
+
+</dfn>
+
+### Peano Axioms
+
+To nail the coffin completely, we take a closer look at what exactly the set of
+natural numbers is. First, recall the definition of the successor set:
+
+$$
+	\small
+	\omega = \lset{
+	\eqs{
+		0 &= \set{~~}, \\
+		1 &= 0 \cup \set{0} = \set{0} = \set{\set{~~}}, \\
+		2 &= 1 \cup \set{1} = \set{0,1} = \set{\set{~~}, \set{\set{~~}}}, \\
+		3 &= 2 \cup \set{2} = \set{0,1,2} = \set{\set{~~}, \set{\set{~~}}, \set{\set{~~}, \set{\set{~~}}}}, \\
+		&\vdots \\
+		n &= n-1 \cup \set{n-1} = \set{0,1,\ldots,n-1} = \set{\set{~~}, \set{{~~}}, \ldots, \set{{~~}, \set{{~~}}, \ldots}} \ldots
+	}}.
+$$
+
+From this definition, we get the first two Peano axioms:
+
+<dfn>
+
+__peano axiom i.__ ${0 \in \omega.}$
+
+__peano axiom ii.__ ${n \in \omega \implies n^+ \in \omega}$
+
+</dfn>
+
+Next, we know that if a set ${S}$ is a subset of ${\omega}$ and ${S}$ is a
+successor set, then ${S = \omega.}$ This gives us the third Peano axiom:
+
+<dfn>
+
+__peano axiom iii.__ If ${S \subset \omega,}$ ${0 \in S,}$ and ${n^+ \in S}$
+whenever ${n \in S,}$ then ${S = \omega.}$
+
+</dfn>
+
+The third axiom follows simply from the definition of the successor set. As it
+turns out, the third Peano axiom is also known as the _Principle of Mathematical
+Induction_ — that given the set ${S}$ we just described, there is always a
+minimal element. 
+
+Next, we know that since ${0}$ represents the empty set, it cannot be the case
+that any successor is ${0,}$ since the successor, by definition, is a union of
+an element and a set — i.e., not empty, and therefore, not zero. This yields the fourth axiom:
+
+<dfn>
+
+__peano axiom iv.__ For all ${n \in \omega,}$ ${n^+ \neq 0.}$
+
+</dfn>
+
+Now, suppose we defined the set ${S}$ as follows:
+
+> ${n \in S}$ if, and only if:
+>
+> ${~~~}$ (1) ${n \in \omega~~~}$ _and_
+>
+> ${~~~}$ (2) ${\forall x \in n \Seq{ n \not\subset x}}$
+
+That is, ${S}$ is the set of all ${n}$ that are not subsets of themselves. Since
+${0}$ is not a subset of any of its elements (it's the empty set), it follows
+that ${0 \in S.}$ What if, say, ${n \in S?}$ Well, from the definition above, we
+have ${n \in \omega,}$ which means that ${n \subset n,}$ and ${n \notin n.}$ It
+follows, then, that ${n^+}$ (the successor of ${n}$) is not a subset of ${n}$ —
+${n^+ \subset n.}$ But ${n^+}$ must be in there somewhere, otherwise ${n \notin
+\omega.}$ The only other set ${n^+}$ can be a subset of is ${x.}$ But if ${n^+
+\subset x,}$ then ${n \subset x,}$ and because ${n \subset S,}$ it must be the
+case that ${x \notin n.}$ Thus, it cannot be the case that ${n^+ \not\subset
+n,}$ and ${n^+ \not\subset x \in n.}$ Thus, we have the following lemma:
+
+<dfn>
+
+__peano lemma i.__ For all ${n \in S,}$ ${n \not\subset n.}$
+
+</dfn>
+
+Next, suppose we defined the set ${S}$ as follows:
+
+> ${n \in S}$ if, and only if,
+>
+> ${~~~}$ (1) ${n \in \omega}$ _and_
+>
+> ${~~~}$ (2) ${\forall x \in n \Seq{x \subset n}}$
+
+It's vacuously true that ${0 \in S.}$ Now let's consider ${n \in S.}$ If ${x \in
+n^+,}$ then we have two cases: Either (a) ${x \in n,}$ or (b) ${x = n.}$ For
+case (a), since ${n \in S,}$ it follows that ${x \in n}$ from our definition.
+And since ${n \in S,}$ it follows that ${x \subset n^+.}$ Case (b) is trivial —
+if ${x=n,}$ we have ${x=n \in S,}$ and since ${x=n \in S,}$ ${x=n \subset n^+.}$
+This yields the following lemma:
+
+<dfn>
+
+__peano lemma ii.__ For all ${n \in S,}$ ${n \subset n^+.}$
+
+</dfn>
+
+Now suppose that ${n,m \in S}$ and ${n^+ = m^+}$ (the successor of ${n}$ is the
+same set as the successor of ${m}$). This means there are two cases:
+
+1. Since ${n \in n^+,}$ it follows that ${n \in m^+,}$ and either ${n \in m}$ or ${n = m.}$
+2. Since ${m \in m^+,}$ it follows that ${m \in n^+,}$ and either ${m \in n,}$ or ${m = n.}$
+
+Suppose ${n \neq m.}$ Then it must be the case that ${n \in m}$ and ${m \in n.}$
+From the second lemma, it follows that ${n \in n.}$ But this would then mean
+that ${n \subset n,}$ which contradicts the first lemma. This yields the fifth
+Peano axiom:
+
+<dfn>
+
+__peano axiom v.__ If ${n,m \in \omega}$ and ${n^+ = m^+,}$ then ${n = m.}$
+
+</dfn>
+
+The Peano axioms define the set ${S}$ as the natural numbers ${\NN.}$ Given the
+set ${\NN,}$ we can construct the integers ${\ZZ,}$ the rationals ${\QQ,}$ the
+reals ${\RR,}$ and the complex numbers ${\CC.}$
+
+## Sequences
+
+Now that we've defined the set of natural numbers, we can introduce ourselves to
+a foundational object in mathematics — the sequence. In these materials, we
+define a sequence is a [family](#families), where the index set is the [natural
+poset](#natural-numbers), and the indexed set is some set ${S.}$
+
+<dfn>
+
+__sequence.__ Let ${A_n}$ be a family ${A_n: \Seq{n} \to S.}$ That is, a
+function that maps members of, or all of, the natural numbers to the elements of a set ${S.}$ Then:
+
+$$
+	A_n = \seq{a_0, a_1, a_2, a_3, \ldots, a_{n-1}}
+$$
+
+is an ordered collection of elements — not necessarily distinct — called a _sequence_. Each element of ${A_n}$ is called a _term_ or _component_ of the sequence, and each term may be referenced as ${a_i,}$ where ${i = 0,1,2,3,\ldots,n-1}$ is called the term's _index_.
+
+</dfn>
+
+If we think a little more carefully about that definition, we'd find that
+sequences are actually mappings. The term's index is a natural number, and each
+term has an index. That is, a sequence is a mapping from the natural numbers to
+some set of objects.
+
+For example, our sequence:
+
+$$
+	\seq{\tt{Alice}, \tt{Boram}, \tt{Callum}}
+$$
+
+can also be expressed as:
+
+$$
+	\set{(0, \tt{Alice}), (1, \tt{Boram}), (2, \tt{Callum})}
+$$
+
+or, visually:
+
+<Bipartite
+  data={[
+   { link: ["0", "A"] },
+   { link: ["1", "B"] },
+   { link: ["2", "C"] },
+  ]}
+  scale={50}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"seq1"}
+/>
+
+This yields an alternative definition of a sequence:
+
+<dfn>
+
+__sequence.__ A sequence ${a_n}$ is a mapping from the natural numbers to a
+given set ${S.}$
+
+$$
+	a_n : \NN \to S
+$$
+
+</dfn>
+
+## Equivalence Class 
+
+If a object ${x}$ is related to an object ${y}$ by an equivalence relation, we
+say that ${x}$ and ${y}$ are _equivalent_, and write ${x \equiv y.}$ We say this
+earlier in our discussion of [equivalence relations](#equivalence-relations).
+Often, it's helpful to gather all the objects equivalent to some object ${x}$
+into a single set. We call this set the _equivalence class_ of ${x.}$
+
+<dfn>
+
+__equivalence class.__ Let ${\equiv}$ be an equivalence relation on the domain
+of discourse ${\DD,}$ and ${a \in \DD.}$ Then the _equivalence class_ of ${a}$
+is defined as the set:
+
+$$
+	\class{a}_{\equiv}~~\def~~\set{b \in \DD : b \equiv a}
+$$
+
+</dfn>
+
+Given an element ${c \in \class{a}_{\equiv},}$ ${c}$ is called a
+_representative_ of the equivalence class. Note that some authors denote the
+equivalence class with the notation ${\Seq{a}.}$ Because we use this notation in
+another area of mathematics — combinatorics — we instead use the notation
+${\class{a}_{\equiv}.}$

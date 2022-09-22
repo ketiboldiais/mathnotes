@@ -1,0 +1,595 @@
+import {BinaryTree} from "../../../components/illus/components/BinaryTree/BinaryTree";
+import { BoxMatrix } from "../../../components/hago";
+import { Tree } from "../../../components/hago";
+
+# Backtracking
+
+Backtracking is a form of recursion — using recursion, we assign values to
+variables, one variable at a time.[^cite_bt] It's commonly used to solve a
+CSPs:
+
+> **Definition: Constraint Satisfaction Problems (CSP).** A CSP is a
+> problem that takes the following form: Given ${n}$ variables and ${L}$
+> labels, assign each of the variables a label, subject to restrictions
+> (called _constraints_). The restrictions specify what combinations of
+> labels are allowed for some subset of the variables.[^cite_csp]
+
+From the definition above, we can think of many problems that can be
+restated as CSPs:
+
+1. Combinatorical optimization problems (e.g., the travelling salesman
+   problem).
+2. Sudoku puzzles
+3. The 𝑁-queens problem
+4. Various optimization problems
+
+Question: Couldn't we solve these problems with iteration? We could, but it
+would be unwieldy. From the definition above, solving a CSP via iteration —
+say, brute force — requires our algorithm to evaluate all the possible
+assignments (or states). For some problems, many of those evaluations are
+wasteful. Midway through the process, it's apparent that the current
+assignment is bad (violates a constraint). Unfortunately, because of the
+way CSPs are, there's usually no easy way to stop the evaluation midway.
+Recursion, however, handles this problem easily — _return on the base
+case_.
+
+Details may be hazy at this point, so let's clarify with some analogy.
+
+[^cite_bt]:
+    Paul W. Purdom, Jr. _Search Rearrangement Backtracking and Polynomial
+    Average Time_, 21 ~Artificial Intelligence~ 1-2, 117-133 (1983).
+
+[^cite_csp]:
+    Belaid Benhamou. _Study of Symmetry in Constraint Satisfaction
+    Problems_, ~Proceedings of the 2nd Workshop on Principles and Practice
+    of Constraint Programming PPCP’94~, 18-19 (1994).
+
+## Backtracking & Depth-first Search
+
+Backtracking is analogous to a depth-first search for a solution. Say we
+had some CSP. In backtracking, we imagine treat the CSP as a _constraint
+tree_ (or more generally, a _constraint graph_):
+
+<BinaryTree
+	data={[
+		[" ", ["A", "B"]],
+		["A", ["C", "D"]],
+		["B", ["E", "F"]],
+		["C", ["G", "H"]],
+		["D", ["I", { val: "J", focus: "blue" }]],
+		["E", ["K", "L"]],
+		["F", ["M", "N"]],
+	]}
+	cwidth={10}
+	scale={50}
+/>
+
+Each of the nodes represent a variable, and each edge represents a
+constraint. That constraint could be anything: "If there's an edge, these
+two variables _can't_ be assigned together", "If there's an edge, these two
+variables _can_ be assigned together", etc.
+
+Viewed this way, we see why backtracking has advantages over traditional
+iterative methods. If we encounter a particular node (a particular
+subtree), we can immediately abandon the search for a solution altogether.
+For example, in the tree above, suppose the correct solution is `J`. We
+start from the root, and traverse the entire tree (the set of all possible
+solutions). Say we get all the way down `G`. At that point, we make a
+determination: Is this a good state or a bad state? I.e., is the path I've
+taken from the root down to this node (`root--A--C--G`) satisfactory
+(doesn't violate the constraints)? No. So, we _backtrack_ to the parent
+node, `C`, and report that the path is not a valid assignment. This report
+goes up to `A`, which then determines: "`C`, you are not a valid
+assignment. Don't bother to continue searching." So, the search goes down
+to `D`, and eventually to `J`, the correct solution.
+
+Where backtracking takes a depth-first search, the brute-force approach
+takes a bread-first search. To find the correct solution `J`, we check each
+node at each level, one by one: `A`, then `B`, then `C`, then `D`, then
+`E`, etc.
+
+| Approach     | Path                | Total Checks |
+| ------------ | ------------------- | ------------ |
+| Backtracking | `G-C-A-I-D-J`       | 6            |
+| Brute-force  | `A-B-C-D-E-F-G-H-I` | 9            |
+
+The difference doesn't seem like much (we've purposely kept the solution
+close for readability) but it's not difficult to imagine a CSP where the
+correct solution is at the right-most leaf node of some gargantuan tree.
+Or, worse, if the correct solution doesn't exist at all.
+
+Importantly, many CSPs have a runtime complexity of ${O(n!).}$ While
+backtracking doesn't always evade this upperbound, it can certainly reduce
+the number of steps necessary. That said, there are some problems (as we'll
+see shortly) that cannot get around this bound — it would take years, if
+not decades, to find a solution.
+
+## The N-queens Problem
+
+To understand the N-queens problem, recall that a queen can move in any of
+these directions:
+
+1. ${n}$ squares to the left.
+2. ${n}$ squares to the right.
+3. ${n}$ squares forwards.
+4. ${n}$ squares backwards.
+5. ${n}$ squares diagonally.
+
+With this in mind, the N-queens problem asks the following:
+
+> Given an ${N \times N}$ chessboard, how many ways can we place ${N}$
+> queens such that no two queens can threaten one another?
+
+To start, let's say we have a ${4 \times 4}$ board:
+
+<BoxMatrix
+	data={[
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+	]}
+/>
+
+We place queens column by column, then row by row. Our first column is 0,
+so we place a queen there:
+
+<BoxMatrix
+	data={[
+		["Q_1", 0, 0, 0],
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+	]}
+/>
+
+Let's cross out all the spaces that subsequent queens can't occupy:
+
+<BoxMatrix
+	data={[
+		["Q_1", "⨉", "⨉", "⨉"],
+		["⨉", "⨉", 0, 0],
+		["⨉", 0, "⨉", 0],
+		["⨉", 0, 0, "⨉"],
+	]}
+/>
+
+Now we place a second queen at column 2, again, crossing out all the paths
+again:
+
+<BoxMatrix
+	data={[
+		["Q_1", "⨉", "⨉", "⨉"],
+		["⨉", "⨉", "⨉", 0],
+		["⨉", "Q_2", "⨉", "⨉"],
+		["⨉", "⨉", "⨉", "⨉"],
+	]}
+/>
+
+Now we try to place a third queen — we can't. Column 3 is covered entirely
+in ${Q_1}$ and ${Q_2}$'s paths. So, we have to _backtrack_ to ${Q_2,}$ and
+increment their position:
+
+<BoxMatrix
+	data={[
+		["Q_1", "⨉", "⨉", "⨉"],
+		["⨉", "⨉", 0, "⨉"],
+		["⨉", "⨉", "⨉", 0],
+		["⨉", "Q_2", "⨉", "⨉"],
+	]}
+/>
+
+We now consider ${Q_3}$ again. Now we have a space:
+
+<BoxMatrix
+	data={[
+		["Q_1", "⨉", "⨉", "⨉"],
+		["⨉", "⨉", "Q_3", "⨉"],
+		["⨉", "⨉", "⨉", "⨉"],
+		["⨉", "Q_2", "⨉", "⨉"],
+	]}
+/>
+
+When we get to ${Q_4,}$ we find ourselves in trouble again — no spaces. So,
+we backtrack to ${Q_3.}$ We try incrementing ${Q_3}$'s position, and find
+that we can't. So, we backtrack again to ${Q_2.}$ When we get to ${Q_2,}$
+we again find that we can't increment ${Q_2}$'s position, so we backtrack
+again to ${Q_1,}$ and increment their position:
+
+<BoxMatrix
+	data={[
+		["⨉", "⨉", 0, 0],
+		["Q_1", "⨉", "⨉", "⨉"],
+		["⨉", "⨉", 0, 0],
+		["⨉", 0, "⨉", 0],
+	]}
+/>
+
+We get back to ${Q_2,}$ and use the last position, since that's the only
+available space:
+
+<BoxMatrix
+	data={[
+		["⨉", "⨉", 0, 0],
+		["Q_1", "⨉", "⨉", "⨉"],
+		["⨉", "⨉", "⨉", 0],
+		["⨉", "Q_2", "⨉", "⨉"],
+	]}
+/>
+
+We get to ${Q_3,}$ and use the first position, since that's the only
+available space:
+
+<BoxMatrix
+	data={[
+		["⨉", "⨉", "Q_3", "⨉"],
+		["Q_1", "⨉", "⨉", "⨉"],
+		["⨉", "⨉", "⨉", 0],
+		["⨉", "Q_2", "⨉", "⨉"],
+	]}
+/>
+
+Finally, we get to ${Q_4,}$ and use the second-to last space, since that's
+the only available space:
+
+<BoxMatrix
+	data={[
+		["⨉", "⨉", "Q_3", "⨉"],
+		["Q_1", "⨉", "⨉", "⨉"],
+		["⨉", "⨉", "⨉", "Q_4"],
+		["⨉", "Q_2", "⨉", "⨉"],
+	]}
+/>
+
+If we were to use an iterative approach, we'd have to check
+all of the nodes in this search tree:
+
+<Tree
+	data={[
+		[" ", ""],
+		["0", " "],
+		["00", "0"],
+		["000", "00"],
+		["0000", "000"],
+		["0001", "000"],
+		["0002", "000"],
+		["0003", "000"],
+		["001", "00"],
+		["0010", "001"],
+		["0011", "001"],
+		["0012", "001"],
+		["0013", "001"],
+		["002", "00"],
+		["0020", "002"],
+		["0021", "002"],
+		["0022", "002"],
+		["0023", "002"],
+		["003", "00"],
+		["0030", "003"],
+		["0031", "003"],
+		["0032", "003"],
+		["0033", "003"],
+		["01", "0"],
+		["010", "01"],
+		["0100", "010"],
+		["0101", "010"],
+		["0102", "010"],
+		["0103", "010"],
+		["011", "01"],
+		["0110", "011"],
+		["0111", "011"],
+		["0112", "011"],
+		["0113", "011"],
+		["012", "01"],
+		["0120", "012"],
+		["0121", "012"],
+		["0122", "012"],
+		["0123", "012"],
+		["013", "01"],
+		["0130", "013"],
+		["0131", "013"],
+		["0132", "013"],
+		["0133", "013"],
+		["02", "0"],
+		["020", "02"],
+		["0200", "020"],
+		["0201", "020"],
+		["0202", "020"],
+		["0203", "020"],
+		["021", "02"],
+		["0210", "021"],
+		["0211", "021"],
+		["0212", "021"],
+		["0213", "021"],
+		["022", "02"],
+		["0220", "022"],
+		["0221", "022"],
+		["0222", "022"],
+		["0223", "022"],
+		["023", "02"],
+		["0230", "023"],
+		["0231", "023"],
+		["0232", "023"],
+		["0233", "023"],
+		["03", "0"],
+		["030", "03"],
+		["0300", "030"],
+		["0301", "030"],
+		["0302", "030"],
+		["0303", "030"],
+		["031", "03"],
+		["0310", "031"],
+		["0311", "031"],
+		["0312", "031"],
+		["0313", "031"],
+		["032", "03"],
+		["0320", "032"],
+		["0321", "032"],
+		["0322", "032"],
+		["0323", "032"],
+		["033", "03"],
+		["0330", "033"],
+		["0331", "033"],
+		["0332", "033"],
+		["0333", "033"],
+		["1", " "],
+		["10", "1"],
+		["100", "10"],
+		["1000", "100"],
+		["1001", "100"],
+		["1002", "100"],
+		["1003", "100"],
+		["101", "10"],
+		["1010", "101"],
+		["1011", "101"],
+		["1012", "101"],
+		["1013", "101"],
+		["102", "10"],
+		["1020", "102"],
+		["1021", "102"],
+		["1022", "102"],
+		["1023", "102"],
+		["103", "10"],
+		["1030", "103"],
+		["1031", "103"],
+		["1032", "103"],
+		["1033", "103"],
+		["11", "1"],
+		["110", "11"],
+		["1100", "110"],
+		["1101", "110"],
+		["1102", "110"],
+		["1103", "110"],
+		["111", "11"],
+		["1110", "111"],
+		["1111", "111"],
+		["1112", "111"],
+		["1113", "111"],
+		["112", "11"],
+		["1120", "112"],
+		["1121", "112"],
+		["1122", "112"],
+		["1123", "112"],
+		["113", "11"],
+		["1130", "113"],
+		["1131", "113"],
+		["1132", "113"],
+		["1133", "113"],
+		["12", "1"],
+		["120", "12"],
+		["1200", "120"],
+		["1201", "120"],
+		["1202", "120"],
+		["1203", "120"],
+		["121", "12"],
+		["1210", "121"],
+		["1211", "121"],
+		["1212", "121"],
+		["1213", "121"],
+		["122", "12"],
+		["1220", "122"],
+		["1221", "122"],
+		["1222", "122"],
+		["1223", "122"],
+		["123", "12"],
+		["1230", "123"],
+		["1231", "123"],
+		["1232", "123"],
+		["1233", "123"],
+		["13", "1"],
+		["130", "13"],
+		["1300", "130"],
+		["1301", "130"],
+		["1302", "130"],
+		["1303", "130"],
+		["131", "13"],
+		["1310", "131"],
+		["1311", "131"],
+		["1312", "131"],
+		["1313", "131"],
+		["132", "13"],
+		["1320", "132"],
+		["1321", "132"],
+		["1322", "132"],
+		["1323", "132"],
+		["133", "13"],
+		["1330", "133"],
+		["1331", "133"],
+		["1332", "133"],
+		["1333", "133"],
+		["2", " "],
+		["20", "2"],
+		["200", "20"],
+		["2000", "200"],
+		["2001", "200"],
+		["2002", "200"],
+		["2003", "200"],
+		["201", "20"],
+		["2010", "201"],
+		["2011", "201"],
+		["2012", "201"],
+		["2013", "201"],
+		["202", "20"],
+		["2020", "202"],
+		["2021", "202"],
+		["2022", "202"],
+		["2023", "202"],
+		["203", "20"],
+		["2030", "203"],
+		["2031", "203"],
+		["2032", "203"],
+		["2033", "203"],
+		["21", "2"],
+		["210", "21"],
+		["2100", "210"],
+		["2101", "210"],
+		["2102", "210"],
+		["2103", "210"],
+		["211", "21"],
+		["2110", "211"],
+		["2111", "211"],
+		["2112", "211"],
+		["2113", "211"],
+		["212", "21"],
+		["2120", "212"],
+		["2121", "212"],
+		["2122", "212"],
+		["2123", "212"],
+		["213", "21"],
+		["2130", "213"],
+		["2131", "213"],
+		["2132", "213"],
+		["2133", "213"],
+		["22", "2"],
+		["220", "22"],
+		["2200", "220"],
+		["2201", "220"],
+		["2202", "220"],
+		["2203", "220"],
+		["221", "22"],
+		["2210", "221"],
+		["2211", "221"],
+		["2212", "221"],
+		["2213", "221"],
+		["222", "22"],
+		["2220", "222"],
+		["2221", "222"],
+		["2222", "222"],
+		["2223", "222"],
+		["223", "22"],
+		["2230", "223"],
+		["2231", "223"],
+		["2232", "223"],
+		["2233", "223"],
+		["23", "2"],
+		["230", "23"],
+		["2300", "230"],
+		["2301", "230"],
+		["2302", "230"],
+		["2303", "230"],
+		["231", "23"],
+		["2310", "231"],
+		["2311", "231"],
+		["2312", "231"],
+		["2313", "231"],
+		["232", "23"],
+		["2320", "232"],
+		["2321", "232"],
+		["2322", "232"],
+		["2323", "232"],
+		["233", "23"],
+		["2330", "233"],
+		["2331", "233"],
+		["2332", "233"],
+		["2333", "233"],
+		["3", " "],
+		["30", "3"],
+		["300", "30"],
+		["3000", "300"],
+		["3001", "300"],
+		["3002", "300"],
+		["3003", "300"],
+		["301", "30"],
+		["3010", "301"],
+		["3011", "301"],
+		["3012", "301"],
+		["3013", "301"],
+		["302", "30"],
+		["3020", "302"],
+		["3021", "302"],
+		["3022", "302"],
+		["3023", "302"],
+		["303", "30"],
+		["3030", "303"],
+		["3031", "303"],
+		["3032", "303"],
+		["3033", "303"],
+		["31", "3"],
+		["310", "31"],
+		["3100", "310"],
+		["3101", "310"],
+		["3102", "310"],
+		["3103", "310"],
+		["311", "31"],
+		["3110", "311"],
+		["3111", "311"],
+		["3112", "311"],
+		["3113", "311"],
+		["312", "31"],
+		["3120", "312"],
+		["3121", "312"],
+		["3122", "312"],
+		["3123", "312"],
+		["313", "31"],
+		["3130", "313"],
+		["3131", "313"],
+		["3132", "313"],
+		["3133", "313"],
+		["32", "3"],
+		["320", "32"],
+		["3200", "320"],
+		["3201", "320"],
+		["3202", "320"],
+		["3203", "320"],
+		["321", "32"],
+		["3210", "321"],
+		["3211", "321"],
+		["3212", "321"],
+		["3213", "321"],
+		["322", "32"],
+		["3220", "322"],
+		["3221", "322"],
+		["3222", "322"],
+		["3223", "322"],
+		["323", "32"],
+		["3230", "323"],
+		["3231", "323"],
+		["3232", "323"],
+		["3233", "323"],
+		["33", "3"],
+		["330", "33"],
+		["3300", "330"],
+		["3301", "330"],
+		["3302", "330"],
+		["3303", "330"],
+		["331", "33"],
+		["3310", "331"],
+		["3311", "331"],
+		["3312", "331"],
+		["3313", "331"],
+		["332", "33"],
+		["3320", "332"],
+		["3321", "332"],
+		["3322", "332"],
+		["3323", "332"],
+		["333", "33"],
+		["3330", "333"],
+		["3331", "333"],
+		["3332", "333"],
+		["3333", "333"],
+	]}
+	width={5000}
+	edgeLength={950}
+	height={1000}
+	id="Tree1"
+/>

@@ -1,0 +1,360 @@
+import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
+
+# Summary
+
+## Abstract Data Type vs. Data Structures
+
+An abstract data type defines a collection of valid operations and their
+behaviors on stored data. It provides an interface (API) for storing,
+organizing, and manipulating data. To implement the abstract data type, we
+use a _data structure_.
+
+## Algorithms
+
+An algorithm is a well-defined procedure that solves a computational
+problem. It does so by transforming a given input data into a desired
+output or answer.
+
+## Data Structures
+
+Broadly, data structures fall into two categories:
+
+1. **contiguous data structures** (e.g., static arrays, dynamic arrays),
+   and
+2. **connected data structures** (e.g., linked lists, trees, graphs)
+
+In selecting a data structure, we have to make a few considerations:
+
+1. How much _time_ is needed to perform the operation?
+2. How much _space_ is needed to perform an operation?
+3. How does input size affect the results?
+
+### Example
+
+Consider a singly-linked list with ${n}$ elements. How many operations are
+needed to insert a value at the end of the singly-linked list?
+
+Answer: Let's consider a simpler case. If there are three nodes, then we
+can count nine steps. For each node, we have to (1) access the node, and
+(2) check if the node has a null pointer. This yields 6 steps. If all of
+the nodes are safe (no node has a null pointer), we get to the last node,
+and perform three steps: (1) create the node, (2) insert the value, and (3)
+update the pointer. This yields 6 + 3 = 9 steps total. We can generalize
+this as:
+
+$$
+	T(n) = 2n + 3
+$$
+
+This tells us that the insertion into a linked list takes linear time. If
+we doubled the size of our linked list, we can expect that it would take us
+double the amount of time to insert, and if we tripled the size of our
+linked list, triple the amount of time.
+
+## Stacks
+
+Stacks are LIFO (last-in-first-out) data structure. They implement the
+following API:
+
+<table>
+	<thead>
+		<tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>`push(object)`</td>
+			<td>Add an object to the top of the stack.</td>
+		</tr>
+		<tr>
+			<td>`pop(object)`</td>
+			<td>Remove the current object at the top of the stack.</td>
+		</tr>
+		<tr>
+			<td>`object &top()`</td>
+			<td>Return a reference to the top element.</td>
+		</tr>
+		<tr>
+			<td>`size()`</td>
+			<td>Return the number of elements in the stack.</td>
+		</tr>
+		<tr>
+			<td>`isEmpty()`</td>
+			<td>Checks if the stack has no elements.</td>
+		</tr>
+	</tbody>
+</table>
+
+Use cases for the stack include:
+
+- A web browser's "back" feature,
+- a text editor's "undo" feature,
+- function calls in a virtual machine/C++
+
+### Implementations
+
+There are two kinds of stack implementations:
+
+1. An array-based stack (also called _static stacks_),
+2. A vector-based stack (_dynamic stacks_), and
+3. A list-based stack (_dynamic stacks_),
+
+#### Static Stacks
+
+The array-based stack is a stack implemented with a static array. And
+because its implemented with a static array, array-based stacks have a
+fixed size.
+
+<table>
+	<thead>
+		<tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>`push(object)`</td>
+			<td>
+				<ol>
+					<li>Check that the stack's height is less than its capacity.</li>
+					<li>
+						If it's less than the capacity, we can go ahead and push.
+						Otherwise, throw an error.
+					</li>
+					<li>Use the `top_pointer` to add an element.</li>
+					<li>Increment the `top_pointer`.</li>
+				</ol>
+			</td>
+		</tr>
+		<tr>
+			<td>`pop(object)`</td>
+			<td>Decrement the top pointer.</td>
+		</tr>
+		<tr>
+			<td>`object &top()`</td>
+			<td>Dereference the `top_pointr - 1`.</td>
+		</tr>
+		<tr>
+			<td>`size()`</td>
+			<td>Subtract `base_pointer` from the `top_pointer`.</td>
+		</tr>
+		<tr>
+			<td>`isEmpty()`</td>
+			<td>Checks if the stack has no elements.</td>
+		</tr>
+	</tbody>
+</table>
+
+For array-based stacks (static or dynamic), we always have the
+`top_pointer` pointing just past the last element in the array data
+structure:
+
+<Sequence
+	data={[1, 2, 3, "", "", ""]}
+	arrayPointers={[
+		{ text: "b", target: 0 },
+		{ text: "t", target: 3 },
+	]}
+	scale={30}
+/>
+
+#### Vector-based Dynamic Stacks
+
+Dynamic stacks are stacks that do not have a fixed size.
+
+<table>
+	<thead>
+		<tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>`push(object)`</td>
+			<td>
+				<ol>
+					<li>If needed, allocate a bigger array and copy data.</li>
+					<li>Use the `top_pointer` to add an element.</li>
+					<li>Increment the `top_pointer`.</li>
+				</ol>
+			</td>
+		</tr>
+		<tr>
+			<td>`pop(object)`</td>
+			<td>Decrement the top pointer.</td>
+		</tr>
+		<tr>
+			<td>`object &top()`</td>
+			<td>Dereference the `top_pointr - 1`.</td>
+		</tr>
+		<tr>
+			<td>`size()`</td>
+			<td>Subtract `base_pointer` from the `top_pointer`.</td>
+		</tr>
+		<tr>
+			<td>`isEmpty()`</td>
+			<td>Checks if the stack has no elements.</td>
+		</tr>
+	</tbody>
+</table>
+
+### List-based Dynamic Stacks
+
+The alternative to a vector-based stack is a list-based stack:
+
+<table>
+	<thead>
+		<tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>`push(object)`</td>
+			<td>
+				<ol>
+					<li>Insert a new node at the `head_ptr`.</li>
+					<li>Delete the node at `head_ptr`.</li>
+					<li>Increment `size`.</li>
+				</ol>
+			</td>
+		</tr>
+		<tr>
+			<td>`pop(object)`</td>
+			<td>Delete the node at `head_ptr`. Decrement the size.</td>
+		</tr>
+		<tr>
+			<td>`object &top()`</td>
+			<td>Dereference `head_ptr`.</td>
+		</tr>
+		<tr>
+			<td>`size()`</td>
+			<td>Return `size`.</td>
+		</tr>
+		<tr>
+			<td>`isEmpty()`</td>
+			<td>Check if `size == 0` or `head_ptr == nullptr`.</td>
+		</tr>
+		<tr>
+			<td colSpan={2}>
+				*Alternatively: Get rid of the `size` variable, count the nodes
+				each time.
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+### Comparing the Approaches
+
+From a high-level view, the three implementations aren't that different.
+However, at a lower level, arrays largely outperform linked lists. While
+the time complexities are largely ${O(1),}$ (constant time), arrays will
+have smaller constants than linked lists. Moreover, linked lists have a
+higher memory overhead — they require more space and require further
+operations for memory allocation and management.
+
+<table>
+	<thead>
+		<tr>
+			<th colSpan={4}>__Time Complexities__</th>
+		</tr>
+		<tr>
+			<th>Method</th>
+			<th>Static Stack</th>
+			<th>Vector-based Dynamic Stack</th>
+			<th>List-based Dynamic Stack</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>`push(object)`</td>
+			<td>${O(1)}$</td>
+			<td>
+				${O(n)}$ (averages out to an amortized constant with many pushes)
+			</td>
+			<td>${O(1)}$</td>
+		</tr>
+		<tr>
+			<td>`pop(object)`</td>
+			<td>${O(1)}$</td>
+			<td>${O(1)}$</td>
+			<td>${O(1)}$</td>
+		</tr>
+		<tr>
+			<td>`object &top(object)`</td>
+			<td>${O(1)}$</td>
+			<td>${O(1)}$</td>
+			<td>${O(1)}$</td>
+		</tr>
+		<tr>
+			<td>`size()`</td>
+			<td>${O(1)}$</td>
+			<td>${O(1)}$</td>
+			<td>
+				${O(1)}$ (if size is tracked); ${O(n)}$ if size is untracked
+			</td>
+		</tr>
+		<tr>
+			<td>`empty()`</td>
+			<td>${O(1)}$</td>
+			<td>${O(1)}$</td>
+			<td>${O(1)}$</td>
+		</tr>
+	</tbody>
+</table>
+
+The C++ standard library provides a stack. We can use it by writing:
+
+```cpp
+#include <stack>
+```
+
+The default underlying container is a `std::deque<>` (a double-ended
+queue), but we can specify two other containers `std::list<>` (a
+doubly-linked list) or `std::vector<>` (a dynamic array).
+
+## Queues
+
+The queue is another basic container. In contrast to the stack, the queue
+is a FIFO data structure — first in, first out. The general API:
+
+<table>
+	<thead>
+		<tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>`enqueue(object)`</td>
+			<td>Add an element to the back of the queue.</td>
+		</tr>
+		<tr>
+			<td>`dequeue`</td>
+			<td>Remove the element at the front of the queue.</td>
+		</tr>
+		<tr>
+			<td>`object &front()`</td>
+			<td>Return a reference to the element at the front of the queue.</td>
+		</tr>
+		<tr>
+			<td>`size()`</td>
+			<td>Return the number of elements in the queue.</td>
+		</tr>
+		<tr>
+			<td>`isEmpty()`</td>
+			<td>Check if the queue has no elements</td>
+		</tr>
+	</tbody>
+</table>
+
+Examples of queue usages include:
+
+- Adding songs to the end of the "play next" playlist
+- Routers determining which network packet to send next

@@ -1,0 +1,281 @@
+# Data Link Layer
+
+We now take a closer look at the data link layer. Recall that the data link layer provides several services:
+
+__Framing.__ The data link layer is charged with packing the data
+bits into frames, such that each frame can be distinguished from other frames.
+Question: Why do we need frames? We need frames because of the fact that we
+break down transmitted into smaller chunks. The receiving node must have some
+way of determining the start and end of each chunk. That's done via framing,
+which is handled by the data link layer.
+
+__Encapsulating Network Layer Data.__ The data link layer is also charged with
+encapsulating the header and trailer into the packet. Recall that the header
+contains (1) the source MAC address, and (2) the destination MAC address.
+
+__Flow Control.__ ata link layer must also provide _flow control services_. If
+the sending node is too fast, the data link layer must slow down the amount of
+incoming packets to ensure the recipient system doesn't get overwhelmed.
+
+__Access Control.__ The data link layer must provide _access control services_.
+These are services that regulate the system's entry and exit from a connection.
+
+__Error Control.__ Finally, the data link layer must also provide _error control
+services_. Whenever we transmit data from one node to another, there's always
+the risk of a packet getting lost. The data link layer's error control services
+provide either (a) error detection, (b) error correction, or (c) both (a) and
+(b).
+
+## Data Link Sublayers
+
+The data link layer consists of two sublayers — (i) the _logical link control layer (LLC)_ and (ii) the _MAC layer_.
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1662662516/cs/datalink_ay3qrr.svg"}
+	imwidth={"322"}
+	imheight={"212"}
+	caption={"data link sublayers"}
+	width={"40"}
+/>
+
+### Logical Link Layer (LLC)
+
+The LLC, also called the _Data Link Control (DLC) layer_ is charged with handling communications between the network layer and the physical layer. The LLC accomplishes this through a two step process:
+
+1. Take as input the network layer data.
+2. Add control information (the information needed to enforce the speed limit
+the system and the recipient agreed to)
+
+### MAC Layer 
+
+The MAC layer is charged with moving the data it receives from the LLC to the
+physical layer, and moving the data it receives from the physical layer to the
+LLC. Typically, this layer is implemented by hardware (the computer's network
+interface card).
+
+The MAC layer transports data through the following process:
+
+1. Take the data as input.
+2. Assemble/disassemble: If the data is coming from the LLC, attach the header
+and trailer frames. If the data is coming from the physical layer, assemble the
+frames into data (the _framing service_).
+3. Transport the frames/data.
+
+Alongside framing, the MAC layer also handles error control. What kind of errors is the MAC layer handling? To answer this question, we examine the process of framing.
+
+## Framing
+
+When a node ${A}$ sends data to node ${B,}$ the data changes substantially as it
+moves from layer to layer. The presentation layer adds data, followed by the
+session layer, the network layer, and so on. Let's say the data sent by ${A}$ is
+roughly 50 megabytes. 
+
+When the data is sent by the physical layer, however, it's sent as sequence of
+signals (which we can think of as 0s and 1s), with no clear delimiters. Without
+more, node ${B}$ has no way of knowing where specific parts of the data start
+and end. One section might run for 5 bytes, another 10, and another 25. Or it
+might be 10, 15, 5. This is precisely what framing is supposed to solve.
+
+There are three flavors of framing techniques: (1) _variable-size framing_, (2)
+_fixed-size framing_, and (3) _clock-based framing_. We examing each in turn.
+
+
+### Fixed-size Framing
+
+Here's how fixed-size framing works: Before any data is exchanged between ${A}$f
+and ${B,}$ they mutually agree that the bits they exchange with one another can
+be organized into groups of ${x}$ bits. That is, each frame will be of size
+${x.}$ Thus, when ${B}$ receives the bitstream, it will construct a frame every
+${x}$ bits.
+
+Fixed-size framing's primary benefit: It's easy to manage for the receiver and
+faster to process for the receiver. The receiver simply needs to keep track of
+how many bits its read, and reset that count everytime it hits ${x.}$ 
+
+The costs: It can lead to substantial wasted space because of the fixed size.
+If a chunk of data only takes up 1 byte in reality but ${x = 2}$ bytes, an
+additional byte must be added to the frame as padding. Inversely, if a chunk of
+data should ideally be treated as 2 bytes and ${x = 1}$ byte, then the chunk
+must be split into two separate frames. This leads to increased _fragmentation_,
+which increases the risk of packet loss and corruption. Because of these costs,
+network engineers developed an alternative: _variable-size framing_.
+
+### Variable-size Framing
+
+Here's how variable-size framing works: Before any data is exchanged between
+${A}$ and ${B,}$ both ${A}$ and ${B}$ must agree on a sequence of bits (called a
+_sentinel_) that marks the start and end of frame.
+
+There's a problem here: The substantive data itself contains the sentinel
+`11011`. How does ${B}$ know which `11011`s are sentinels and which are
+substantive data? The two most common approaches to resolving this problem are
+_bit stuffing_ and _byte stuffing_.
+
+#### Bit Stuffing
+
+In bit stuffing, ${A}$ and ${B}$ agree to interpret frames as collections of
+bits. It doesn't matter what the bits actually represent — be it text, sound, or
+video — they're just collections of bits. ${A}$ and ${B}$ make this agreement by
+following bit-oriented protocols like _HDLC (High-level Data Link Control)_.
+
+Under HDLC, frames have the following form:
+
+<table className="frame">
+	<thead>
+		<tr>
+			<th>8 bits</th>
+			<th>16 bits</th>
+			<th>${x}$ bits</th>
+			<th>16 bits</th>
+			<th>8 bits</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>~begin~</td>
+			<td>~header~</td>
+			<td>~body~</td>
+			<td>~crc~</td>
+			<td>~end~</td>
+		</tr>
+		<tr>
+			<td>01111110</td>
+			<td>
+				<table>
+					<tbody>
+						<tr>
+							<td>~address~</td>
+							<td>~control~</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+			<td>...</td>
+			<td>...</td>
+			<td>01111110</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+In an HDLC frame, the ~begin~ and ~end~ bits are sentinels with the bitsequence
+`01111110`. Importantly, this bit sequence is sent continuously by either ${A}$
+or ${B}$ (whichever is idle), so long as they maintain a connection. This
+ensures ${A}$ and ${B}$'s clocks remain in sync throughout the transmission.
+
+The ~header~ consists of two subfields: an ~address~ field and a ~control~
+field. The ~address~ field is self-explanatory: It contains the necessary
+address for processing. The ~control~ field is more interesting: It determines
+whether the frame is an _I-frame (information frame)_, _S-frame (supervisory
+frame)_, or a _U-frame (unnumbered frame)_. The determinants are as follows:
+
+1. If the first bit is a 0, then the frame is an I-frame — a framed used to
+   number the frame (we'll revisit these frames in detail later).
+2. If the first two bits are 10, then the frame is an S-frame — a frame used for
+   error and flow control.   
+3. If the first two bits are 11, then the frame is a U-frame — a frame
+   containing special commands for processing the frame.
+
+
+The ~crc~ (_Cyclic Redundancy Check_) is used for error detection. This is also
+where the trailer is found.
+
+The ~body~, contains the _payload_ (the substantive data). This field is of
+variable size. What if the sentinel bits appear in the payload? The sender
+places a 0 after every five consecutive 1s it sees. For example, suppose
+subsequence of the body contains:
+
+$$
+	\ldots~0~1~1~1~1~1~\ldots~
+$$
+
+when the sender encounters that fifth 1 bit, it immediately places a 0:
+
+$$
+	\ldots~0~1~1~1~1~1~{\color{salmon}{0}}~\ldots~
+$$
+
+then, whenever the receiver sees five ones, it removes the next 0. What are the
+costs to this approach? Well, the most obvious is overhead. We add additional
+non-data bits to the stream. Moreover, the shorter a packet is, the more
+likely we are to bit stuff. 
+
+The real problem, however, is that the _code rate_ — the proportion of the body
+relative to the other fields — is now unpredictable. In some sense, this puts us
+back at the original problem framing was supposed to solve in the first place —
+where does the actual substantive data start and end? Viewed this way, it seems
+as if bit stuffing is a "sweep under the rug" solution. We didn't solve the
+problem completely, but packaged it into a smaller box and tuck it away.
+
+#### Byte Stuffing
+
+With byte stuffing, ${A}$ and ${B}$ agree to interpret frames as collections of
+bytes (`char` values), rather than bits. ${A}$ and ${B}$ make this agreement by
+following any one of several byte-oriented protocols: _BSC (Binary
+Synchronous Communication)_, _DDCMP (Digital Data Communication Message
+Protocol)_, and _PPP (Point-to-Point Protocol)_.
+
+##### BSC Protocol
+
+In the BSC protocol, frames take the following form:
+
+<table className="frame">
+	<thead>
+		<tr>
+			<th>8 bits</th>
+			<th>8 bits</th>
+			<th>8 bits</th>
+			<th></th>
+			<th>8 bits</th>
+			<th>${x}$ bits</th>
+			<th>8 bits</th>
+			<th>16 bits</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>~syn~</td>
+			<td>~syn~</td>
+			<td>~soh~</td>
+			<td>~header~</td>
+			<td>~stx~</td>
+			<td>~body~</td>
+			<td>~etx~</td>
+			<td>~crc~</td>
+		</tr>
+	</tbody>
+</table>
+
+The frame starts with two fields, ~syn~ and ~syn~ (_sync_ fields). The next
+field is ~soh~ (_start of header_). Then the header itself. The end of the
+header, and the payload's start, is delimited with the ~stx~ (_start of text_)
+field. The body is of variable length, delimited by the ~etx~ (_end of text_)
+field. The frame ends with the ~crc~ field, similary to what we saw for HDLC.
+
+Like HDLC, we face the problem of the ~stx~ or ~etx~ field appearing in the
+body. The difference: We stuff a byte rather than a bit.
+
+##### PPP Protocol
+
+The _Point-to-Point Protocol (PPP)_ is another popular byte-oriented protocol.
+
+### Clock-based Framing
+
+Clock-based framing drastically departs from fixed- and variable-size framing.
+This approach essentially asks: Why should we frame according to the transferred
+data? Why not just use an external clock? The idea is, instead using some fixed
+length or sentinels, we use a clock that samples frames at specific intervals.
+Because the frames arrive at ${B}$ at equidistant points in time, ${B}$ can
+readily determine what's a frame and what isn't. ${A}$ and ${B}$ can take a
+clock-based framing approach by following a clock-oriented protocol like _SONET
+(Synchronous Optical Network)_.
+
+The problem with clock-based framing: It's very expensive and tricky to
+implement. Clock-based framing requires designers to account for delays due to
+relativity.  It's akin to running a hybrid lecture where some students are
+in-person, while others are on the moon. The students in-person will hear the
+lecturer at the same time, but those on the moon will hear the lecturer some
+time ${t}$ later. This makes routine tasks difficult. Those on the moon might
+respond to questions that were asked and answered a few minutes ago.
+

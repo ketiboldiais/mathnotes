@@ -1,0 +1,35 @@
+.container button {
+	font-family: var(--serif);
+	background-color: inherit;
+	border: none;
+}
+.testingContainer div { display: block; }
+.container > button {
+	font-size: 0.95em;
+	color: rgb(142, 174, 184);
+}
+.container button:hover { cursor: pointer; }
+.container > div { margin: 10%; }
+.containerCloseButton {
+	font-size: 1.3em;
+	float: right;
+	font-family: "Fira Code";
+	position: sticky;
+	top: 0;
+}
+.contentActive { display: none; }
+.contentInactive {
+	background-color: var(--background-color);
+	box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.5);
+	border: solid thin lightgrey;
+	z-index: 20;
+	position:fixed;
+	overflow-y: scroll;
+	overscroll-behavior:none;
+	width: 80%;
+	height: 80%;
+	top:50;
+	left:0;
+	bottom:0;
+}
+.contentBody { padding: 1em; }

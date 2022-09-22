@@ -1,0 +1,99 @@
+# Riemann Sums
+
+Riemann sums provide the general procedure for handling definite integrals.
+We start with some curve, an area beneat the curve, and some increments. We
+call each of the increments ${\Delta x.}$ If there are ${n}$ pieces, then:
+
+$$
+	\Delta x = \dfrac{b-a}{n}
+$$
+
+With this information, we pick a height of ${f(c_i)}$ in each interval. In
+other words, within each of the ${\Delta x,}$ pick some point ${c_i.}$
+Then, plugging ${c_i}$ into ${f}$ &mdash; ${f(c_i)}$ &mdash; we get the
+height of the rectangle we want. This sets the dimensions for each of our
+rectangles.
+
+With the rectangle's dimensions set, we can add all of the areas of the
+rectangles:
+
+$$
+	\sum\limits_{i=1}^{n} \underbrace{f(c_i)}_{height} \overbrace{\Delta x}^{base}
+$$
+
+This summation is called a <b>Riemann sum</b>. The complicated example we
+saw earlier involving pyramids is an in-depth examination of how the
+Riemann sum works. Applying the limit to the Riemann sum &mdash; as
+${\Delta x}$ tends towards ${0,}$ i.e., as the rectangles get very thin
+&mdash; is a good use case for Leibniz notation:
+
+$$
+	\lim\limits_{\Delta x \to 0} \sum\limits_{i=1}^{n} f(c_i) \Delta x \implies \int_a^b f(x)~dx
+$$
+
+The Riemann sum demonstrates another way to interpret integrals: They're
+cumulative sums. Suppose ${t}$ is a variable for time, measured in years,
+and the function ${f(t)}$ is a borrowing rate, measured in dollars per
+year. Suppose our friend Bernard borrows money every day. This means that:
+
+$$
+	\Delta t = \dfrac{1}{365}
+$$
+
+Now let's say the rate varies over the year. Sometimes Bernard needs more
+money, other times he needs less. Question: How much has Bernard borrowed
+so far? Well, if Bernard has borrowed up to day ${45,}$ then:
+
+$$
+	t = \dfrac{45}{365}
+$$
+
+The amount borrowed then is:
+
+$$
+	f \left( \dfrac{45}{365} \right) \cdot \Delta t = f \left( \dfrac{45}{365} \right) \cdot \dfrac{1}{365}
+$$
+
+Notice that the units work out:
+
+$$
+	\left[ f \left( \dfrac{45}{365} \right) \right] \dfrac{\text{\$}}{\cancel{\text{yr}}} \cdot \left[ \dfrac{1}{365} \right]~\cancel{\text{yr}}
+$$
+
+This means that if we want to add up how much we've borrowed for an entire
+year, we would get the sum:
+
+$$
+	\begin{aligned} \text{total borrowed} &= \sum\limits_{i=1}^{365} f \left( \dfrac{i}{365} \right) \Delta t \\[1em] &= \int_0^1 f(t)~dt \end{aligned}
+$$
+
+This gives us how much Bernard's borrowed, but there's still the question
+of how much Bernard owes the bank at the end of the year. Let's say the
+interest rate ${r}$ is compounded continously. If we start out with ${P}$
+as the principal, then after time ${T,}$ Bernard owes:
+
+$$
+	\text{amount owed} = P \cdot e^{rT}
+$$
+
+We know that the principal is:
+
+$$
+	P = f \left( \dfrac{i}{365} \right) \Delta t
+$$
+
+Then, we know that the time left in the year is given by:
+
+$$
+	T = 1 - \dfrac{i}{365}
+$$
+
+This tells us that amount Bernard owes is:
+
+$$
+	\begin{aligned} \text{amount owed} &= \sum\limits_{i=1}^{365} \left( f \left( \dfrac{i}{365} \right) \Delta t \right) e^{r(1 - \frac{i}{365})} \\[1em] &= \int_0^1 e^{r(1-t)} f(t)~dt \end{aligned}
+$$
+
+This example illustrates why we append the symbol ${dx}$ to integrals
+&mdash; it allows us to be consistent with units and develop meaningful,
+consistent formulas.

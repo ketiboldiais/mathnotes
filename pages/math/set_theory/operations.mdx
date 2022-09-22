@@ -1,0 +1,188 @@
+<Metadata
+	title={'Operations'}
+	description={'Notes on operations'}
+	keywords={'set theory'}
+/>
+
+# Algebraic Structures
+
+This chapter covers notes on _algebraic structures_. 
+
+<div className={"outline"}>
+
+1. [Operations](#operations)
+2. [Algebraic Structure](#algebraic-structure)
+3. [Axioms](#axioms)
+
+</div>
+
+## Operations
+
+We begin by defining an operation. As we saw in the [last chapter](./relations),
+an _operation_ is a kind of [map](./relations#maps). We now provide an explicit
+definition:
+
+<dfn>
+
+__operation.__ Let ${S}$ be a set and ${n \in \NN.}$ Then the _operation_ ${\mm{f}}$ is a function:
+
+$$
+	\mm{f}: A^n \to A.
+$$
+
+where the symbol ${\mm{f}}$ is the _operator_, ${A}$ the _carrier_, and ${n}$
+the _arity_ of ${\mm{f}.}$ If ${n=3,}$ then ${\mm{f}: A^3 \to A,}$ in which case
+we call ${\mm{f}}$ a _ternary operation_.  If ${n = 2,}$ then ${\mm{f}: A^2 \to
+A,}$ and ${\mm{f}}$ is called a _binary operation_. If ${n=1,}$ then ${\mm{f}: A
+\to A,}$ and ${\mm{f}}$ is called a _unary operation_. If ${n=0,}$ then
+${\mm{f}: A^0 \to A,}$ and ${\mm{f}}$ is called a _nullary operation_, or
+_constant_.
+
+</dfn>
+
+In these materials, we will focus primarily on binary and unary operations. From
+the definition above, we can say that, given ${a,b \in A,}$ a unary operation
+may be written as ${f(a)}$ or ${f(b)}$ and a binary operation may be written as
+${f(a,b).}$ However, we don't usually think of operations as functions (though
+we will soon enough), and the way operations are written depends heavily on the
+problem at hand: 
+
+| Operation   | Equivalent | Type           | Example        |
+| ----------- | ---------- | -------------- | -------------- |
+| ${\op a~b}$ | ${f(a,b)}$ | Binary Prefix  | ${\times a~b}$ |
+| ${a \op b}$ | ${f(a,b)}$ | Binary Infix   | ${a \div b}$   |
+| ${a~b \op}$ | ${f(a,b)}$ | Binary Postfix | ${a~b~+}$      |
+| ${\op a}$   | ${f(a)}$   | Unary Prefix   | ${-a}$         |
+| ${a \op}$   | ${f(a)}$   | Unary Postfix  | ${a!}$         |
+
+In general, we'll use the notation ${a ~\op~ b}$ for binary operations, and
+the notation ${\op a}$ for unary operations. For each of the operations above,
+we call ${a}$ and ${b}$ the _operands_ of ${\mm{f}.}$
+
+Something to observe right off the bat: Since ${\mm{f}}$ is a function, it
+follows that, where ${a,b \in A,}$ and ${\op:A^2 \to A,}$ we have ${a \op b \in
+A.}$ Furthermore, note that the operator ${\mm{f}}$ must always return some
+element in ${A.}$ It can't return an element not in the carrier. In other words,
+for the operation ${\mm{f},}$ the only things that exist in the universe are the
+things in its carrier ${A.}$  For example, suppose:
+
+$$
+	B = \set{0,1}
+$$
+
+One operation we might define on this set is ${\times}$ (multiplication). This
+is a valid binary operation, since the operator always returns an element of the
+set ${B.}$
+
+$$
+	\eqs{
+		\times(0,0) &= 0 \times 0 &= 0 \\
+		\times(0,1) &= 0 \times 1 &= 0 \\
+		\times(1,0) &= 1 \times 0 &= 0 \\
+		\times(1,1) &= 1 \times 1 &= 1
+	}
+$$
+
+## Algebraic Structure
+
+An algebraic structure, despite its complicated-sounding name, has a
+surprisingly short definition: 
+
+<dfn>
+
+__algebraic structure.__ An _algebraic structure_, or _algebra_, is a tuple:
+
+$$
+	(A,~\set{\mm{f}_0, \mm{f}_1, \mm{f}_2,~\ldots,~\mm{f}_{n-1}})
+$$
+
+where ${A}$ is the _carrier set_, and ${\mm{f}_i}$ are operations on ${A.}$
+
+</dfn>
+
+From the definition above, an _algebra_ or _algebraic structure_ is a tuple
+with two objects: (1) a set, and (2) a set of operations — functions — that take
+some member(s) of the set as a arguments, and return some member(s) of the set
+as their image. That set could be anything — a set of numbers, vectors, tuples,
+matrices, circuits, Boolean values, chess pieces, politicians, etc. Given that
+operations are functions, functions are relations, and relations are really just
+rules for how objects are paired, it follows that the moment we take a set and
+define rules for how things in that set can be combined, we've created a an
+algebra.
+
+## Axioms
+
+We begin by defining a few axioms to make our discussion easier. Suppose ${a,b,c
+\in S,}$ and ${\op}$ is an operator. First, we say that an operation ${\op}$ is
+_commutative_ on a set ${A}$ if, and only if, for all ${a,b \in A,}$ it is true
+that ${a \op b = b \op a.}$
+
+<dfn>
+
+__commutativity.__ Let ${S}$ be a carrier set and ${\op}$ and operation on
+${S.}$ Then ${\op}$ is _commutative_ if, and only if, for all ${a,b \in S,}$ it
+is true that ${a \op b = b \op a.}$ Otherwise, we say that the operation ${\op}$
+is _noncommutative_.
+
+</dfn>
+
+Some examples: The operation of ${+}$ on the integers is commutative:
+${1+2=2+1.}$ Likewise, the operation of ${\times}$ is commutative on the
+integers ${2 \times 3 = 3 \times 2.}$ The operation of division on the reals,
+however, is not: ${1/2 \neq 2/1.}$ We say the addition is _commutative_ on the
+reals, and division is _noncommutative_ on the reals. Subtraction is not
+commutative on the integers either, ${a-b \neq b-a,}$ with the single exception
+that ${a=b.}$ This does not, however, motivate us to say "partially commutative"
+because an operation is commutative if, and only if, it holds for all members of
+the carrier. Even if there were such a motivation, it wouldn't be very useful.
+(We follow the ancient mantra of mathematics — if it does not need to be
+said/defined, do not say/define it.)
+
+A few more bits of detail: First, since ${\op}$ is a function, the commutative
+property essentially tells us that ${{f}(a,b) = {f}(b,a).}$ In the world
+of functions, we say that ${{f}}$ is a symmetric function.  Given ${a \op b}$
+and ${\op}$ is commutative, we may use the cute phrase, "${a}$ commutes with
+${b,}$ and ${b}$ commutes with ${a.}$" Thus, when an operation ${\op}$ on a set
+${S}$ is commutative, then elements that are placed on the ${\op}$ bus are free
+to sit wherever they'd like — ${\op}$ will send them where they must regardless.
+
+Next, we say that an operation ${\op}$ is _associative_ if, and only if, for all
+${a,b \in A,}$ we can rest assured that ${a \op (b \op c) = (a \op b) \op c.}$
+Associativity is a property that arises when we have more than two operands —
+with just one or two operands, associativity is unnecessary, because
+commutativity/noncommutativity answers all of our questions. When we have more
+than two operands, however, we're confronted with a question that commutativity
+can't answer: Given ${a \op b \op c,}$ can we do ${a \op b}$ first? Put
+differently, associativity tells us whether applying commutativity is at our
+discretion. If an operation is _nonassociative_, then no — there are rules to
+follow. If an operation is associative, then yes — it's a free for all.
+
+<dfn>
+
+__associativity.__ Let ${S}$ be a carrier set and ${\op}$ and operation on
+${S.}$ Then ${\op}$ is _associative_ if, and only if, for all ${a,b,c \in S,}$
+it is true that ${(a \op b) \op c = a \op (b \op c).}$ Otherwise, we say that
+the operation ${\op}$ is _nonassociative_.
+
+</dfn>
+
+Once more, since ${\op}$ is just a function, we can think of associativity in
+functional terms as ${f(f(x,y),z) = f(x,f(y,z)).}$ Importantly, the fact that an
+operation is associative does not imply that it's commutative. For example, the
+concatenation operation ${\con}$ on strings is associative, but noncommutative.
+For those unfamiliar, ${\con}$ is an operation that takes two sequences of
+symbols, and _concatenates_, or _joins_ them, into a single sequence of symbols.
+For example, ${\string{ab} \con \string{cd} = \string{abcd},}$ or ${\string{Hi}
+\con \string{~~} \con \string{there.} = \string{Hi there.}}$ Thus, it follows
+that ${(a \con b) \con c = a \con (b \con c) = abc,}$ but it's not the case
+that ${(a \con b) \con c = (b \con a) \con c.}$
+
+The same goes in the other direction: The commutativity _does not imply_
+associativity. Perhaps the most important example of this in real life is
+_floating point addition_ (and by extension, multiplication). ${(a + -a) + b =
+b}$ is always true, but ${a + (-a + b)}$ is not guaranteed to equal ${b}$
+because of precision loss, and the probability that ${a + (-a + b) \neq b}$
+increases if ${b - a}$ is very close to ${0.}$ Failing to consider this fact can
+kill; the Patriot Missile Failure of 1991 killed 28 U.S. soldiers and injured
+about 100 others because of incorrect floating point arithmetic.
+

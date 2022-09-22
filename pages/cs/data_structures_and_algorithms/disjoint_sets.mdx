@@ -1,0 +1,94 @@
+import { Graph } from "../../../components/hago";
+
+# Disjoint Sets
+
+Suppose we had the following graphs:
+
+<Graph
+	data={[
+		[1, 2],
+		[2, 3],
+		[3, 4],
+		[5, 6],
+		[6, 7],
+		[7, 8],
+	]}
+	scale={60}
+	height={300}
+/>
+
+We can represent these graphs as sets:
+
+$$
+	\begin{aligned}
+		S_1 &= \{ 1,2,3,4 \} \\
+		S_2 &= \{ 5,6,7,8 \}
+	\end{aligned}
+$$
+
+The intersection of these two sets is null:
+
+$$
+	S_1 \cap S_2 = \varnothing
+$$
+
+Therefore, we say that ${S_1}$ and ${S_2}$ are **disjoint**.
+
+## Find Operation
+
+On the disjoint set data structure, the `find()` operation returns the set
+an input argument ${n}$ belongs to. For example, `find(5)` returns ${S_2,}$
+and `find(3)` returns ${S_1.}$ If no such element exists, `find()` (as
+defined in these materials) returns `null`.
+
+## Union Operation
+
+The `union()` operation connects two vertices on the graph. For example,
+`union(4,8)` results in:
+
+<Graph
+	data={[
+		[1, 2],
+		[2, 3],
+		[3, 4],
+		[5, 6],
+		[6, 7],
+		[7, 8],
+		[4, 8],
+	]}
+	scale={60}
+	height={300}
+/>
+
+Importantly, the `union()` operation, at least one the disjoint set data
+structure, will only connect two vertices ${v_1}$ and ${v_2}$ if, and only
+if, ${v_1}$ and ${v_2}$ are members of different sets. That is, there isn't
+already a path connecting the two of them. For example, `union(1,2)` will
+not do anything, because `1` and `2` are members of the same set — ${S_1.}$
+
+Now, notice what happens if we call `union(1,5)`:
+
+<Graph
+	data={[
+		[1, 2],
+		[2, 3],
+		[3, 4],
+		[4, 8],
+		[5, 6],
+		[1, 5],
+		[6, 7],
+		[7, 8],
+	]}
+	blast={50}
+	scale={60}
+	height={300}
+/>
+
+Now all of the vertices are connected in a single graph. Additionally, the
+earlier individual sets are no more. We now just have one set:
+
+$$
+	S = \{ 1,2,3,4,5,6,7,8 \}
+$$
+
+This yields a valuable piece of information: The graph contains a _cycle_.

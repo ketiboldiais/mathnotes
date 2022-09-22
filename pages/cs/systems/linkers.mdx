@@ -1,0 +1,699 @@
+import { Stack } from "../../../components/hago";
+
+# Linkers
+
+Once we've created a slighly complicated project in C or C++, our project
+likely comprises multiple files. Assuming these files are necessary for the
+project to work, they must each be compiled and _linked_. For example, say
+we have the following C files. First, a file called `main.c`:
+
+```c
+int sum(int *a, int n);
+
+int arr[2] = {1,2};
+
+int main(int argc, char** argv) {
+	int val = sum(array, 2);
+
+	return 0;
+}
+```
+
+The function `sum` is declared in `main.c`, but defined in a different file
+called `sum.c`:
+
+```c
+int sum(int *a, int n) {
+	int i, s = 0;
+	for (i = 0; i < n; i++) {
+		s += a[i];
+	}
+	return s;
+}
+```
+
+The two programs above are translated and linked by a program called the
+**compiler driver**. Within the compiler driver are two programs: (1) the
+_compiler_ and (2) the _linker_. As we saw in the compiler unit, the
+compiler itself consists of several programs: the _tokenizer_, _parser_,
+and _translator_. After we compile the two source code files above, we get
+two output files: `main.o` and `sum.o`. These two files contain the lower
+level code returned from the translator. To get these programs to work, we
+send these files to the linker.
+
+With modern compilers, all of this can be done in one line:
+
+```bash
+gcc -Og -o myProgram main.c sum.c
+```
+
+When we write the line above:
+
+1.  `main.c` and `sum.c` are translated by the compiler's translator to
+    `main.o` and `sum.o`. These translations are done separately, which is
+    why we see two different _object files_.
+2.  The `main.o` and `sum.o` files are then sent to the linker, which takes
+    the two files and links them into a single _executable_ called
+    `myProgram`. This is a file containing all of the code and data for all
+    the functions defined in `main.c` and `sum.c`
+3.  To execute the program, we _execute_ the _executable_ (hence the name):
+
+        ```bash
+        ./myProgram
+        ```
+
+## Why Do Linkers Exist?
+
+Several reasons. First, linkers are what allow us to modularize our
+projects. Following the _single responsibility principle_, it's always a
+good idea to separate our project's components into individual files. But,
+in doing so, we run into a problem: How do we ensure the system executes
+the files in the order we have in mind? By ensuring all of the files' code
+lines are executed in order. And the easiest way to do that is to merge all
+of the code lines into a single file — the linker's principle job.
+
+Second, we want the ability to compile projects separately. It may not seem
+all that valuable for small to medium-sized projects (in fact, it may seem
+annoying), but imagine a project with thousands of files (or more
+accurately, dependencies). If we had to compile the entire project just to
+test one file, we would waste valuable development time. The more
+dependencies we have, the longer compilation takes (extremely large
+projects can wade into the hours or even days territory). This is more
+apparent when we realize that we use dependencies that we didn't write
+ourselves. Why should we have to waste compile time for `stdio` header
+file?
+
+Third, linkers provide a way to use memory efficiently. Linking object file
+𝐴 and object file 𝐵, the linker will aggregate 𝐴 and 𝐵's shared functions
+into a single file. This is particularly valuable when we use functions
+from external libraries like `math.h`. Linkers have two options for doing
+so:
+
+1. **Static linking**. In creating the executable, the linker will ensure
+   only the library code actually used is included. For example, if we just
+   used `sin` function in `math.h`, the linker won't also include the
+   myriad of other `math.h` functions: `cos`, `cosh`, `asin`, and so on.
+2. **Dynamic linking.** The executable files don't contain any library
+   code. Instead, a single copy of the library code is shared across all
+   executing process.
+
+## Types of Object Files
+
+Object files are also called _modules_. There are tree types:
+
+1. **Relocatable object files**. These object files are identified with the
+   `.o` extension. They're the object files outputted by the compiler (or
+   assembler), to be fed to the linker. They contain code and data in a
+   form that can be combined with other `.o` files.
+2. **Executable object file.** These object files are identified as `a.out`
+   (if we don't give the linker a name to use). They contain code and data
+   that can be copied directly into memory and executed. They're also
+   called _executables_ — the files outputted by linkers.
+3. **Shared object file**. These are a special kind of relocatable object
+   file that can be loaded into memory and linked dynamically at load or
+   run time. They're identified with the exten `.so` (or, on Windows,
+   `.dll`, _dynamically linked libraries_).
+
+## What's Inside an Object File?
+
+We can see what's inside an object file by running the command:
+
+```bash
+objdump -rd <executable-name>
+```
+
+Doing so for our `prog` executable, we get the following:
+
+```bash
+prog:   file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+0000000100003f20 <_main>:
+100003f20: 55                           pushq   %rbp
+100003f21: 48 89 e5                     movq    %rsp, %rbp
+100003f24: 48 83 ec 20                  subq    $32, %rsp
+100003f28: c7 45 fc 00 00 00 00         movl    $0, -4(%rbp)
+100003f2f: 89 7d f8                     movl    %edi, -8(%rbp)
+100003f32: 48 89 75 f0                  movq    %rsi, -16(%rbp)
+100003f36: 48 8d 3d c3 00 00 00         leaq    195(%rip), %rdi  # 100004000 <_arr>
+100003f3d: be 02 00 00 00               movl    $2, %esi
+100003f42: e8 19 00 00 00               callq   0x100003f60 <_sum>
+100003f47: 89 c1                        movl    %eax, %ecx
+100003f49: 31 c0                        xorl    %eax, %eax
+100003f4b: 89 4d ec                     movl    %ecx, -20(%rbp)
+100003f4e: 48 83 c4 20                  addq    $32, %rsp
+100003f52: 5d                           popq    %rbp
+100003f53: c3                           retq
+100003f54: 90                           nop
+100003f55: 90                           nop
+100003f56: 90                           nop
+100003f57: 90                           nop
+100003f58: 90                           nop
+100003f59: 90                           nop
+100003f5a: 90                           nop
+100003f5b: 90                           nop
+100003f5c: 90                           nop
+100003f5d: 90                           nop
+100003f5e: 90                           nop
+100003f5f: 90                           nop
+
+0000000100003f60 <_sum>:
+100003f60: 55                           pushq   %rbp
+100003f61: 48 89 e5                     movq    %rsp, %rbp
+100003f64: 48 89 7d f8                  movq    %rdi, -8(%rbp)
+100003f68: 89 75 f4                     movl    %esi, -12(%rbp)
+100003f6b: c7 45 ec 00 00 00 00         movl    $0, -20(%rbp)
+100003f72: c7 45 f0 00 00 00 00         movl    $0, -16(%rbp)
+100003f79: 8b 45 f0                     movl    -16(%rbp), %eax
+100003f7c: 3b 45 f4                     cmpl    -12(%rbp), %eax
+100003f7f: 0f 8d 1f 00 00 00            jge     0x100003fa4 <_sum+0x44>
+100003f85: 48 8b 45 f8                  movq    -8(%rbp), %rax
+100003f89: 48 63 4d f0                  movslq  -16(%rbp), %rcx
+100003f8d: 8b 04 88                     movl    (%rax,%rcx,4), %eax
+100003f90: 03 45 ec                     addl    -20(%rbp), %eax
+100003f93: 89 45 ec                     movl    %eax, -20(%rbp)
+100003f96: 8b 45 f0                     movl    -16(%rbp), %eax
+100003f99: 83 c0 01                     addl    $1, %eax
+100003f9c: 89 45 f0                     movl    %eax, -16(%rbp)
+100003f9f: e9 d5 ff ff ff               jmp     0x100003f79 <_sum+0x19>
+100003fa4: 8b 45 ec                     movl    -20(%rbp), %eax
+100003fa7: 5d                           popq    %rbp
+100003fa8: c3                           retq
+```
+
+Above, we see the Assembly code we'd expect if we had instead written the
+entire program in one file (with address differences of course). The key
+point is, the linker's sole job is to ensure all of these instructions are
+lumped into a single file in proper order.
+
+As an aside, notice the large amount of `nop` instructions (no operation).
+The array of `nop` instructions is called a **nop sled**, and it's used to
+prevent buffer overflows.
+
+Object files will all look generally look like the output above.[^note_obj]
+Where object files differ (slightly) is in formatting.
+
+[^note_obj]:
+    In actuality, the object file is just a long sequence of ones and
+    zeros. Tools like `objdump` transform this sequence into human-readable
+    Assembly
+
+## Object File Formats
+
+Object file formats differ from system to system. The first format was
+`a.out`, used by the computers at Bell Labs and early Unix systems. Today,
+Windows uses the _Portable Executable (PE) format_, and Mac OS X uses the
+_Mach-O format_. Linux and other Unix systems use _Executable and Linkable
+Format (ELF)_.
+
+Regardless of format, the general structure is largely the same. The file
+is divided into different sections, each with a particular purpose. The
+sections are presented below in order:
+
+| Section        | Contents                                                                                                                                                                                                                                                                          |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `header`       | 16-byte sequence that describes the system's word size and byte ordering; type of the object file; machine type; locations of the sections                                                                                                                                        |
+| `.text`        | The program's machine code. If we have local and static variables, they're placed here to be handled at runtime on the stack.                                                                                                                                                     |
+| `.rodata`      | Read-only data: E.g., format strings in `printf` calls, jump tables for switch statements                                                                                                                                                                                         |
+| `.data`        | Initialized global/static variables not set to zero. I.e., data that persists across jumps.                                                                                                                                                                                       |
+| `.bss`         | Uninitialized global/static variables, or global/static variables set to zero. At runtime, these variables are all set to zero, and they occupy no space in memory. `bss` originally stood for "block started by symbol", but is often known colloquially as "Better save space." |
+| `.symtab`      | The object file's symbol table. For executables, the symbol table will not contain entries for local variables. But it will for `.o` files (the object files outputted by the compiler)                                                                                           |
+| `.rel.text`    | Places in the `.text` section that will have to be changed when the linker combines the object file with another. `rel` stands for "relocation."                                                                                                                                  |
+| `.rel.data`    | Places in the `.data` section that will have to be changed when the linker combines the object file with another.                                                                                                                                                                 |
+| `.debug`       | If the object file is generated with a debugging flag, a symbol table with entries for local variables and custom type definitions. Tools like `gdb` and `valgrind` work by manipulating this section.                                                                            |
+| `.line`        | If the object file is generated with a debugging flat, mappings between line numbers in the source code file and the machine code instructions in the `.text` section.                                                                                                            |
+| `.strtab`      | A table of string values, where each string value is the symbol in the symbol tables, and the section names.                                                                                                                                                                      |
+| _header table_ | A table containing descriptions of each section.                                                                                                                                                                                                                                  |
+
+## The Keyword Static
+
+The `static` keyword has several meanings because there are several usage
+scenarios:
+
+1. Static variables.
+2. Static functions.
+
+To understand the meanings, we should lay out the different kinds of
+constructs a higher-level language might have:
+
+| Construct                  | Description                                                                                                                                                                                                                                                            |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| local non-static variable  | Variables that can only be read inside a specific function's body in the file. These variables are stored in the stack.                                                                                                                                                |
+| local non-static function  | Functions that can only be called inside a specific function's body in the file. These variables are stored in the stack.                                                                                                                                              |
+| global non-static variable | A variable that can be read by all functions in all of the linked files.                                                                                                                                                                                               |
+| global non-static function | A function defined at the global level inside a file. If their headers are written in a linked file, they can be called by functions in the linked file. They can always be called by their sibling functions (other functions inside the the file they're defined in) |
+| local static variable      | A variable that can be read/written across all calls to the function.                                                                                                                                                                                                  |
+| local static function      | A function that can be called across all calls to the parent function.                                                                                                                                                                                                 |
+| global static variable     | A variable that can be only be read/written during calls by functions inside the file it's declared in, but not by functions in other linked files. These variables are stored in `.bss` or `.data`                                                                    |
+| global static function     | A function that can be only be called during calls by functions inside the file it's declared in, but not by functions in other linked files. These variables are stored in `.bss` or `.data`                                                                          |
+
+Illustrating with C:
+
+```c
+static int x = 5; // Global static variable. Only f, g, and h can read/write x.
+
+int n = 4 // Global non-static variable. f, g, h, and all functions in linked files can read/write n.
+
+static void a() { // global static function
+	printf("foo\n");
+}
+
+// f, g, and h are all global non-static functions
+int f() {
+	static int y = 5; // Local static variable. First f call uses y=5, all subsequent f calls use the value updated by the previous f call.
+	if (y == 0) return y;
+	else {
+		y--;
+		return f();
+	}
+}
+
+int g() {
+	int m = 2; // local non-static variable. Each m call get its own, new copy of m.
+	return m;
+}
+
+static void u(int) // local static function, used only by h
+int h(int t) { // t is an argument, which is a local non-static variable
+	u(t);
+	return t;
+}
+static void u(int i) { // definition of u
+	printf("%d", i);
+}
+```
+
+## How Do Linkers Work?
+
+When we send object files to the linker, it executes the following
+procedure:
+
+1. **Symbol resolution.** For each file, resolve all symbols.
+2. **Merging.** For each file, merge all of the instructions and data into
+   single sections.
+3. **Relocation.** Relocate the sections into their final absolute memory
+   locations in the executable.
+
+We'll go through each of these steps in turn.
+
+### Symbol Resolution
+
+The purpose of symbol resolution is take each symbol (the names for certain
+functions and variables in the source code files) and bind it with one, and
+only one, definition (the initializations of those names). To understand
+what this means, we revisit compilers.
+
+From the [compiler section](compilers), we saw that after a compiler
+receives source code, it will generate a
+[symbol table](compilers#symbol-tables). This is a table containing the
+names, memory sizes, and other information about identifiers (variable and
+function names) used in the program. Each of these identifiers are called
+**symbols**. Because each source code file results in its own object file,
+the object files will contain their own symbol tables.
+
+The symbol tables generated by the compiler will often contain a large
+amount of information. This includes symbols for function arguments and
+local. The linker, however, is only looking at three kinds of symbols.
+Suppose we have two source code files, 𝐴 and 𝐵, compiled to their
+respective object files.
+
+1. **Global symbols**. These are identifiers defined in 𝐴 that can be
+   referenced and used in 𝐵, or vice versa. In languages like C, these take
+   the form of _nonstatic functions_ or _global variables_.
+2. **External symbols.** These are identifiers used in 𝐴 or 𝐵 that are
+   defined elsewhere. For example, if 𝐵 uses the `math.h` module and uses
+   the `acosh` function, `acosh` is called an _external_. It's defined
+   outside of 𝐵 but used by 𝐵.
+3. **Local symbols**. These are identifiers defined globally in 𝐴 that can
+   only be used by 𝐴. Or, in 𝐵's case, the identifiers defined globally in
+   𝐵 that can only be used by 𝐵. In languages like C, these are are called
+   _static functions_ or _global variables_.
+
+What about all of the local identifiers? Those are not looked at by the
+linker. Remember, the linker's operates at the file (or global) level. The
+linker will not touch locals — it assumes that the identifiers are already
+in the correct place, ready to go.
+
+When the linker receives the object files, it will go through each file,
+and _resolve_ the **symbol references**: an identifier associated with a
+symbol. For example, in the two programs we saw previously:
+
+```c
+// main.c
+int sum(int *a, int n);
+
+int arr[2] = {1,2};
+
+int main(int argc, char** argv) {
+	int val = sum(arr, 2);
+
+	return 0;
+}
+```
+
+```c
+// sum.c
+int sum(int *a, int n) {
+	int i, s = 0;
+	for (i = 0; i < n; i++) {
+		s += a[i];
+	}
+	return s;
+}
+```
+
+In `main.c`, we have two symbols for the linker: `array` and `main`. We
+also have symbol reference: `sum`. This symbol refers to the `sum` defined
+in `sum.c` In `sum.c` we have one symbol: `sum`.
+
+For example, compiling the files into a single object file called `prog`
+and running the command:
+
+```bash
+objdump -t prog
+```
+
+we get the following output:
+
+```bash
+0000000100000000 g     F __TEXT,__text __mh_execute_header
+0000000100004000 g     O __DATA,__data _arr
+0000000100003f30 g     F __TEXT,__text _main
+0000000100003f60 g     F __TEXT,__text _sum
+0000000000000000         _UND_ dyld_stub_binder
+```
+
+Let's put this information into an actual table:
+
+| Offset             | bind | Type    | Section            | Name                  |
+| ------------------ | ---- | ------- | ------------------ | --------------------- |
+| `0000000100000000` | `g`  | `F`     | `__TEXT,__text`    | `__mh_execute_header` |
+| `0000000100004000` | `g`  | `O`     | `__DATA,__data`    | `_arr`                |
+| `0000000100003f30` | `g`  | `F`     | `__TEXT,__text`    | `_main`               |
+| `0000000100003f60` | `g`  | `F`     | `__TEXT,__text`    | `_sum`                |
+| `0000000000000000` |      | `_UND_` | `dyld_stub_binder` |                       |
+
+Each row in the table is a symbol entry, and each entry has the following
+fields:
+
+1. The **symbol offset** contains the offset values for each symbol. We can
+   think of this value as corresponding to the symbol's index in its
+   respective section. This is how the linker quickly finds the symbols.
+2. The **binding** indicates whether the symbol is a global, static, or
+   reference.
+3. The **type** indicates whether the symbol is a function (`F`), object
+   (`O`), or undefined (`_UND_`).
+4. The **section** indicates which section the symbol belongs to. In this
+   case, we see that it's either the _text_ section, or the _data section_.
+5. Finally, the **name** field provides the symbol's name.
+
+The last row, `dyld_stub_binder`, is an output we may or may not see
+depending on the compiler we use. The output above was generated on Mac OS
+X, which uses dynamic linking. The `dyld_stub_binder` is a function that
+takes a symbol and effectively designates it as a symbol to be dynamically
+linked. We'll cover this in more detail when we get to dynamic linking. If
+we had instead written:
+
+```c
+#include <stdio.h>
+
+int sum(int *a, int n);
+
+int arr[2] = {1,2};
+
+int main(int argc, char** argv) {
+	int val = sum(arr, 2);
+	printf("%d\n", val);
+	return 0;
+}
+```
+
+we would see the symbol table:
+
+```bash
+0000000100008008 l     O __DATA,__data __dyld_private
+0000000100000000 g     F __TEXT,__text __mh_execute_header
+0000000100008010 g     O __DATA,__data _arr
+0000000100003ef0 g     F __TEXT,__text _main
+0000000100003f40 g     F __TEXT,__text _sum
+0000000000000000         _UND_ _printf
+0000000000000000         _UND_ dyld_stub_binder
+```
+
+Now, back to symbol resolution. Say we wanted to link two files, `main.c`
+and `foo.c`:
+
+```c
+// main.c
+void foo();
+int main() {
+	foo();
+	return 0;
+}
+```
+
+```c
+// foo.c
+void foo() {
+	printf("foo!\n");
+}
+```
+
+When the linker receives `main.o` and `foo.o`, the symbol tables look as
+follows. For `main.o`, we have:
+
+```bash
+0000000000000000 g     F __TEXT,__text _main
+0000000000000000         _UND_ _foo
+```
+
+and for `foo.o`, we have:
+
+```bash
+0000000000000000 g     F __TEXT,__text _foo
+0000000000000000         _UND_ _printf
+```
+
+Notice how the entries in the symbol table are undefined. This is because
+we're only seeing the symbol tables outputted by the compiler. All the
+compiler does is create symbol tables for the code in the file its given.
+It doesn't have a clue about what's going on in some other file. Thus, when
+the compiler encounters these undefined symbols, it marks the entry as
+undefined, indicating to the linker: "This is probably defined in some
+other module."
+
+The linker's job at the symbol resolution stage is as follows:
+
+1. Fill in those undefined entries.
+2. If there are duplicate entries, pick one so there aren't duplicates.
+
+This is done by creating a single large symbol table, as we saw earlier.
+Say we link the `main.o` and `foo.o` into `prog`.
+
+Just to remind ourselves, the linker's job is to take the two symbol tables
+from `main.o` and `foo.o`:
+
+<Grid cols={2}>
+
+<Stack data={["main.o", "data", "bss", "text", "..."]} />
+
+<Stack data={["foo.o", "data", "bss", "text", "..."]} />
+
+</Grid>
+
+and create a single monolithic symbol table for `prog`:
+
+<Stack
+	data={[
+		"prog",
+		"main data",
+		"main bss",
+		"main text",
+		"main ...",
+		"foo data",
+		"foo bss",
+		"foo text",
+		"foo ...",
+	]}
+	scale={50}
+/>
+
+#### Resolution Procedure
+
+Once the linker receives the object files, it begins going through each
+file's symbol table. When the linker encounters a reference, it will look
+at the symbol table for a definition. If it finds the definition, it
+_binds_ the reference to the definition. This effectively resolves the
+reference. If it doesn't find a definition, it flags the reference and
+continues.
+
+The linker resolves symbols by relying on a key fact — when the compiler
+generates its symbol tables, it classifies each symbol as one of the
+following:
+
+1. a _strong symbol_, or
+2. a _weak symbol_
+
+**Strong symbols** are symbols for global functions and initialized global
+variables. **Weak symbols** are symbols for uninitialized global variables
+and variables declared with the keyword `extern`. We'll see why this fact
+is important in a moment.
+
+When the linker encounters a reference to a local symbol, the process is
+easy enough: the linker doesn't have to do anything. The compiler already
+did the heavy lifting of ensuring that the symbol had only one definition.
+
+When the linker encounters a strong symbol defined in one symbol table and
+the same strong symbol in defined in another symbol table, it will throw an
+error: "multiple definition of ...".
+
+When the linker encounters an entry marked as undefined, it flags, or
+marks, the entry for revisiting and continues. From then on, there are two
+possibilities:
+
+1. The symbol is defined in another module, or
+2. the symbol isn't defined at all.
+
+If it's possibility (2) the linker will throw the link error **undefined
+reference error**. If it's (1), the procedure is a little more elaborate.
+First, if the symbol is marked as undefined, then it's considered a weak
+symbol by definition. So, to ensure the symbol gets a definition, the
+linker must be able to find a strong symbol with the same name. When the
+linker encounters such a symbol, it chooses that strong symbol as the
+definition to bind all other symbols with. For example, given the programs:
+
+```c
+// main.c
+int baz=1;
+int main() {
+	...
+}
+```
+
+```c
+// foo.c
+int baz;
+p2() {}
+```
+
+When the linker encounters `foo` in `foo.c`, it will associate that
+undefined entry with the entry for `baz` in `main.c`'s symbol table. This
+will ultimately resolve the undefined entries (assuming there are strong
+symbols with the same name else where).
+
+If the linker encounters multiple weak symbols with the same name but
+nowhere do we provide a strong symbol with the same name, the linker will
+choose _any_ of the weak symbols.
+
+Importantly, the linker _will not_ perform type checking. Instead, all it
+does is follow these rules blindly:
+
+1. Throw a link error if there are multiple strong symbols with the same
+   name.
+2. If there is one strong symbol and one or more weak symbols with the same
+   name, choose the strong symbol.
+3. If there are multiple weak symbols with the same name, choose any of
+   them.
+
+Accordingly, we can get some very weird errors if we tried to link two
+files that look like the following:
+
+```c
+// fileA.c
+long int x;
+int main() {
+	....
+}
+```
+
+```c
+// fileB.c
+double x = 3.14;
+```
+
+In this case, the linker will choose the `x` defined in `fileB.c` as the
+controlling definition to bind all references to. If we don't get any
+responses from the operating system (stack overflows, heap overflows,
+etc.), our program will compile and run without a hitch. No errors at
+compiletime, linktime, or runtime. But, we'll likely see some very strange
+results. These are among the worst kinds of bugs because we have no error
+messages to work with.
+
+We can avoid this danger by following a set of best practices:
+
+1. If we're going to use a global variable that should only be used within
+   its module, declare the variable with `static`.
+2. If we need all of our modules to have access to some global variable,
+   create a separate header file for globals and define the variable inside
+   that header file.
+3. If we need all of our modules to have access to some global variable
+   that can only be defined in some module (perhaps the output of some
+   function in that module), define the variable in a separate header file,
+   and mark it with `extern`.
+4. Alternatively, we can use the `ifdef` pattern.
+
+The `ifdef` pattern is illustrated with the following examples:
+
+```c
+// module.c
+#include "global.h"
+int f() {
+	return g+1;
+}
+```
+
+```c
+// main.c
+#define INITIALIZE
+#include "global.h"
+
+int main() {
+	int x = g * 2;
+}
+```
+
+```c
+// global.h
+#ifdef INITIALIZE
+	int g = 23;
+#else
+	extern int g;
+#endif
+```
+
+When we write `#ifdef INITIALIZE`, we're saying, "If `INITIALIZE` is
+defined, use `int g = 23`. Otherwise (the `#else`), use `extern int g`."
+This ensures that `g` doesn't get multiple definitions.
+
+### Symbol Relocation
+
+Once the linker has resolved all of the references without error, it
+essentially has three separate tables with entries that (1) have no
+duplicates and (2) have all the references defined. The final step is to
+pull each section from the tables and merge them into a single giant table.
+
+To do so, the linker must adjust some of the addresses for the variables
+and functions to ensure everything is sequential. Once it has completed
+this alignment process, it outputs the executable, ready for our execution.
+
+To tie this back to our earlier discussions on memory, the linker only
+handles the globals, externals, local globals, and statics. Everything else
+is handled at runtime (the stack), the operating system (the heap and
+external libraries).
+
+<Stack
+	data={[
+		{ val: "kernel", ant: "invisible" },
+		{ val: "stack", ant: "runtime" },
+		{ val: "..." },
+		{ val: "heap", ant: "malloc at runtime" },
+		{ val: "data", ant: "linker" },
+		{ val: "bss", ant: "linker" },
+		{ val: "init", ant: "linker" },
+		{ val: "text", ant: "linker" },
+		{ val: "rodata", ant: "linker" },
+	]}
+	width={700}
+	scale={70}
+/>

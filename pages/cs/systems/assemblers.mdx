@@ -1,0 +1,98 @@
+import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
+
+<Metadata
+	title={"Assemblers"}
+	description={"Notes on assemblers"}
+	keywords={"assemblers, computer architecture"}
+/>
+
+# Assemblers
+
+An _assembler_ is a piece of software that translates assembly code to
+machine code. I.e., going from this:
+
+```nasm
+@i
+M=1
+@sum
+M=0
+@i
+@R0
+```
+
+to something like this:
+
+```nasm
+0101010001001001001
+0111110011001101001
+1101010011001001001
+0101010001001011001
+1101010011001001001
+0101010001001011001
+```
+
+Assemblers are actually fairly simple programs. The basic logic is as
+follows:
+
+- While the end-of-file (EOF) has not been reached:
+  1.  Read the next Assembly language command.
+  2.  Break the command into its component fields.
+  3.  Lookup the binary code for each field.
+  4.  Combine the codes into a single machine language command.
+  5.  Output the machine language command.
+
+Let's illustrate with an example. Suppose we have the Assembly language
+command:
+
+```nasm
+Load R1, 18
+```
+
+This tells the computer to load the value 18 in the register 1. If we look
+at this command closely, it's a sequence of characters:
+
+<Sequence
+	data={["L", "o", "a", "d", " ", "R", "1", ",", " ", "1", "8"]}
+	scale={40}
+/>
+
+When this command is sent to the Assembler, it reads the command and breaks
+the command down into its component parts, stripping white space and commas
+in the process:
+
+<Grid cols={3}>
+
+<Sequence data={["L", "o", "a", "d"]} scale={60} />
+<Sequence data={["R", "1"]} scale={40} />
+<Sequence data={["1", "8"]} scale={40} />
+
+</Grid>
+
+Once the Assembler has the component parts, it must translate each of them
+into machine language — meaningful sequences of ones and zeroes. To do so,
+it looks up the **opcode** for each command in the computer's opcode table:
+
+| Command    | Opcode      |
+| ---------- | ----------- |
+| `Load`     | `11011`     |
+| ${\vdots}$ | ${\vdots}$  |
+| `R1`       | `01`        |
+| ${\vdots}$ | ${\vdots}$  |
+| `18`       | `000010010` |
+
+Some of the commands identify registers, in which case they might have
+shorter opcodes than others. Other commands are direct translations of
+numbers, so the direct binary conversion is used. After translating each
+component, the Assembler puts all of the translated pieces together
+
+<Sequence
+	data={[1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0]}
+	scale={50}
+/>
+
+After the translation stage is where computer architects take different
+directions. Some computers require the Assembler to add some padding to the
+sequence to prevent possible gaps in memory. This keeps memory addressing
+accurate and safe. Other computers end the Assembler's job here: Once the
+Assembler has translated all the commands, it outputs the machine language
+to some file that the computer's hardware can take as input.

@@ -1,0 +1,43 @@
+# Interrupts
+
+This article covers notes on **interrupts** — events that break the normal
+pipeline of instructions fed to the CPU.
+
+Say we're on our laptop and want to read a news article on some webpage.
+The webpage suddenly displays a popup, telling us to disable AdBlock.
+Annoyed, we click the back button. To do so, we might shift our mouse (or
+touch our trackpad), to move the cursor. How does the computer know to move
+the cursor to that position?
+
+The answer is, it doesn't. At least, not on its own. Instead, when we move
+the cursor with some peripheral (e.g., a mouse, trackpad, or keyboad), the
+peripheral's controller or adapter sends a sequence of _interrupts_ to the
+CPU.
+
+We barely notice these interruptions because of how fast the CPU is. Human
+reaction time is measured in milliseconds — the fastest possible conscious
+reaction times range from 150 to 300 milliseconds. The CPU, however,
+operates at the GHz level — we're talking _nanoseconds_. In 1 millisecond,
+a tiny fraction of even the fastest reaction times, the CPU has already
+gone through a million instructions, if not more.
+
+This is even more remarkable when we realize just how much we expect the
+computer to do: We type an email on a browser window while listening to
+music on some app or viewing a PDF with some reader. This is all part of
+the computer's _exception control flow_.
+
+## Mechanisms
+
+Importantly, interrupts aren't some low-level concept. They exist at every
+level of the computer system. At the lowest level are **exceptions**. These
+are direct changes to the system's control flow. For example, when our
+laptop runs out battery. Some of us may have noticed that when a computer
+screen dies and we quickly plug in the power source immediately after, we
+find that the computer hasn't died entirely. We're back where we left off
+(but it may take the computer some time to get back up to speed). This is
+possible because of some exception mechanism.
+
+At the higher levels, we have **context switches**. Operating system
+exceptions that allow us to go from apps like Word to Chrome to some notes
+app very quickly. **Signals** are exception mechanisms that we, as
+programmers, can use to interrupt the system.

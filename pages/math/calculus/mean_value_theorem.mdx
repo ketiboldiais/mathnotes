@@ -1,0 +1,333 @@
+# The Mean Value Theorem
+
+Let's say we embark on a flight from Boston to Los Angeles. The flight
+lasts ${6}$ hours, covering roughly ${3000 \text{~mi}.}$ The Mean Value
+Theorem (MVT) states that at some point during this flight, we're
+travelling at the _average speed_:
+
+$$
+	\dfrac{3000 \text{~mi}}{6 \text{~hr}} = 500 ~\frac{\text{mi}}{\text{hr}}
+$$
+
+At various points in the flight we might've travelled faster than
+${500 ~\frac{\text{mi}}{\text{hr}},}$ at other points less than
+${500 ~\frac{\text{mi}}{\text{hr}}.}$ _mvt_ provides that regardless of
+those facts, there is at least one point during the flight where we were
+traveling at ${500 ~\frac{\text{mi}}{\text{hr}}.}$ It is because of the
+role of an average that the theorem is called the "Mean Value Theorem."
+
+Stating the theorem formally:
+
+> **Mean Value Theorem**. Let ${f(x)}$ be a function where the following
+> conditions are true:
+>
+> 1.  ${f(x)}$ is continuous when ${a \leq x \leq b.}$
+> 2.  ${f(x)}$ is differentiable when ${a < x < b.}$
+>
+> Then there exists a number ${c}$ where ${a < c < b}$ such that:
+>
+> $$
+> 	f'(c) = \dfrac{f(b) - f(a)}{b - a}
+> $$
+>
+> Or, equivalently:
+>
+> $$
+> 	f(b) - f(a) = f'(c)[(b - a)]
+> $$
+
+For the first condition: There's a link between ${a}$ and ${b.}$ If it were
+discontinuous, there would be no relation between ${a}$ and ${b.}$ And for
+the second condition: we can determine the speed, or more generally, the
+slope, at each point between ${a}$ and ${b.}$
+
+The intuition behind _mvt_ is best gained by illustration:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657502827/math/mvt_geometric_id1mv8.svg"
+	}
+	imwidth={"449"}
+	imheight={"229"}
+	caption={"Geometric interpretation"}
+	width={"70"}
+/>
+
+In the diagram above, the blue line is the _secant line_ between the points
+${a}$ and ${b.}$ This line has the slope:
+
+$$
+	\dfrac{f(b) - f(a)}{b - a}
+$$
+
+What's the relationship between this slope and ${f'(c)?}$ Well, the slope
+${f'(c)}$ is the slope of the red line. That red line is parallel to the
+blue secant line. Initially, it's somewhere far from the blue secant line,
+but as we shift it closer and closer to the secant line, it will eventually
+touch the graph. That point where it touches the graph is the point
+${c, f(c).}$ And because this red line now touches the graph, it has the
+same slope as the blue line:
+
+$$
+	f'(c) = \dfrac{f(b) - f(a)}{b-a}
+$$
+
+A few sidepoints: First, when we apply _MVT_, we're just focusing on the
+interval ${(a, b).}$ We're not considering anything outside this interval.
+Second, the parallel line doesn't have to just touch one point. _mvt_
+merely provides that it touches _some point_.[^some_note]
+
+[^some_note]:
+    In mathematics, the word "some" is shorthand for "at least one." It
+    could be a million points, a thousand, or just one. In all of those
+    cases, there is _some_ point.
+
+But what happens if ${f(x)}$ was something like this instead:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657502891/math/mvt_geometric1_x6qchg.svg"
+	}
+	imwidth={"449"}
+	imheight={"229"}
+	caption={"Hypothetical"}
+	width={"50"}
+/>
+
+In this case, we wouldn't get a tangent line. Fortunately, there's a simple
+fix. Instead of having the parallel lines come from the bottom, have them
+come from the top:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657502922/math/mvt_geometric2_sigqdi.svg"
+	}
+	imwidth={"449"}
+	imheight={"270"}
+	caption={"Parallel lines"}
+	width={"50"}
+/>
+
+A critical issue we should always consider when applying _mvt_ is whether
+${f}$ is differentiable on the open interval ${(a,b).}$ This is because all
+it takes is one non-differentiable point to prevent us from applying _mvt_.
+For example, some function that looks like:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657502960/math/mvt_fail_jkwc5r.svg"
+	}
+	imwidth={"166"}
+	imheight={"130"}
+	caption={"Error"}
+	width={"30"}
+/>
+
+Shifting the parallel line up, we would never get a tangent line. There is
+no derivative at the red point. For _mvt_ to be true, ${f'}$ must exist at
+all points ${a < x < b.}$
+
+Let's take a closer look at the formula
+
+$$
+	\dfrac{f(b) - f(a)}{b - a} = f'(c)
+$$
+
+Rewriting the equation:
+
+$$
+	f(b) - f(a) = [f'(c)](b-a)
+$$
+
+And rewriting one more time:
+
+$$
+	f(b) = f(a) + [f'(c)](b-a)
+$$
+
+Suppose that ${a < b.}$ This means that ${b - a}$ is positive:
+
+$$
+	\begin{aligned} a & < b \\ 0 & < b - a \end{aligned}
+$$
+
+This in turn means that the factor ${(b-a)}$ in our rewritten equation is
+positive:
+
+$$
+	f(b) = f(a) + [f'(c)]\textcolor{teal}{(b-a)}
+$$
+
+This leads to several inferences. First, if ${f'(c)}$ is positive
+${(f'(c) > 0),}$ then the term ${[f(c)](b-a)}$ is also positive.
+
+$$
+	f(b) = f(a) + \textcolor{teal}{[f'(c)](b-a)}
+$$
+
+And given the equation, it follows that:
+
+$$
+	f(b) > f(a)
+$$
+
+From this analysis, we can conclude that:
+
+$$
+	(f'(c) > 0) \implies \text{$f$ is increasing}
+$$
+
+Following the same thought process, if ${f'(c) < 0,}$ then the term
+${[f'(c)](b-a)}$ is negative:
+
+$$
+	f(b) = f(a) + \textcolor{firebrick}{[f'(c)](b-a)}
+$$
+
+Which leads to the conclusion:
+
+$$
+	(f'(c) < 0) \implies \text{$f$ is decreasing}
+$$
+
+Finally, we have the case where ${f'(c) = 0.}$ Where this occurs, we have:
+
+$$
+	\begin{aligned} f(b) &= f(a) + [f'(c)](b-a) \\ &= f(a) + [0](b-a) \\ &= f(a) + 0 \\ &= f(a) \end{aligned}
+$$
+
+Which implies the conclusion:
+
+$$
+	(f'(c) = 0) \implies \text{$f$ is constant}
+$$
+
+Now, because we can apply the _mean value theorem_ for any interval on the
+function ${f,}$ (provided the theorem's conditions are met), our inferences
+are applicable to ${f}$ more generally. Accordingly, the inferences we just
+drew are extremely powerful and useful propositions. We state them as a
+lemma:
+
+> **lemma**. Where the mean value theorem is true, the following
+> propositions hold:
+>
+> 1.  If ${f' > 0,}$ then ${f}$ is increasing.
+> 2.  If ${f' < 0,}$ then ${f}$ is decreasing.
+> 3.  If ${f' = 0,}$ then ${f}$ is constant.
+
+With these inferences drawn, we now point out a few nuances with
+
+_mvt_. _mvt_ is rarely, if ever, actually used to find some value ${c.}$
+This is because _mvt_ never tells you how many ${c}$s there are. It could
+be a hundred, it could be just one. Instead, _mvt_ is more often used as a
+tool for drawing larger conclusions, particularly through the inferences we
+stated in the lemma above.
+
+In the realm of applied mathematics, _mvt_ is used to determine whether a
+particular rate of change lies between two extremes. For example, suppose
+${v_{min}}$ is the minimum velocity for some vehicle, and ${v_{max}}$ is
+the maximum velocity. Then suppose that while the vehicle travels, a
+speedometer reads the velocities ${v(a)}$ and ${v(b).}$
+
+_mvt_ allows us to determine whether:
+
+$$
+	v_{min} \leq \dfrac{v(b) - v(a)}{b - a} \leq v_{max}
+$$
+
+where ${v_{min}, v_{max} \in a \leq x \leq b}$ (since the minimum and
+maximum can occur at the endpoints). In essence, _mvt_'s greatest value
+lies in what it implies, rather than what it states. To examine this value,
+let's consider inequalities.
+
+Suppose we're given the following inequality:
+
+$$
+	e^x > 1 + x ~\text{ where }~ x > 0
+$$
+
+Question: Is this proposition true? Let's start by rewriting the
+proposition as a function:
+
+$$
+	\begin{aligned} e^x &> 1 + x \\ e^x - (1+x) &= 0 \\ e^x - (1+x) &= f(x) \end{aligned}
+$$
+
+We have the function ${f(x) = e^x - (1+x).}$ Where ${x = 0,}$ we have:
+
+$$
+	\begin{aligned} f(0) &= e^0 - (1+0) \\ &= 1 - (1) \\ &= 0 \end{aligned}
+$$
+
+If we differentiate ${f,}$ we get:
+
+$$
+	\begin{aligned} f(x) &= e^x - (1+x) \\ f'(x) &= (e^x)' - (1)' + (x)' \\ &= e^x - 1 \end{aligned}
+$$
+
+We know that ${e^x > 1}$ where ${x > 0.}$ Thus, it follows that
+${f'(x) > 0}$ where ${x > 0.}$ This means that:
+
+$$
+	f(x) > f(0) ~\text{ where }~ x > 0
+$$
+
+Plugging in our function definition, we get:
+
+$$
+	\begin{aligned} f(x) &> f(0) ~\text{ where }~ x > 0 \\ e^x - (1 + x) &> 0 \\ e^x &> 1 + x \end{aligned}
+$$
+
+This proves that the proposition ${e^x > 1 + x}$ where ${x > 0}$ is true.
+Now consider another problem:
+
+> **problem**. Is ${e^x}$ greater than ${1+x+\dfrac{x^2}{2}?}$
+
+Abstracting the problem statement, we're asked to determine whether the
+proposition:
+
+$$
+	e^x > 1 + x + \dfrac{x^2}{2}
+$$
+
+is true. Once more, we use the same technique. We rewrite the inequality as
+a function:
+
+$$
+	\begin{aligned} e^x &> 1 + x + \dfrac{x^2}{2} \\[1em] e^x - (1 + x + \dfrac{x^2}{2}) &= 0 \\[1em] e^x - (1 + x + \dfrac{x^2}{2}) &= g(x) \end{aligned}
+$$
+
+Where ${x = 0,}$ we have:
+
+$$
+	\begin{aligned} g(x) &= e^x - (1 + x + \dfrac{x^2}{2}) \\[1em] g(0) &= e^0 - (1 + 0 + \dfrac{0}{2}) \\[1em] &= 1 - (1 + 0 + 0) \\[1em] &= 1 - 1 \\[1em] &= 0 \end{aligned}
+$$
+
+Then we differentiate ${g(x):}$
+
+$$
+	\begin{aligned} g'(x) &= (e^x)' - (1)'+ (x)' + \left( \dfrac{x^2}{2} \right)' \\[1em] &= e^x - 0 + 1 + x \\[1em] &= e^x + x + 1 \end{aligned}
+$$
+
+Given the derivative ${g'(x),}$ we know that:
+
+$$
+	g'(x) = e^x - (1 + x) > 0 ~\text{ where }~ x > 0
+$$
+
+from the previous problem. This tells us that ${g(x) > g(0).}$ Which
+implies that the proposition:
+
+$$
+	e^x > 1 + x + \dfrac{x^2}{2}
+$$
+
+is true. It turns out that we can keep going with the proposition:
+
+$$
+	e^x > 1 + x + \dfrac{x^2}{2} + \dfrac{x^3}{3 \cdot 2} + \dfrac{x^4}{4 \cdot 3 \cdot 2} + \ldots
+$$
+
+What this tells us is that the left hand side of the inequality, ${e^x,}$
+grows pretty quickly, but if we go infinitely far, the right hand side
+eventually catches up.

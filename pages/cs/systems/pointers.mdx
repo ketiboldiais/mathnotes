@@ -1,0 +1,1577 @@
+import { Mem, StaticArray } from "../../../components/hago";
+
+<Metadata
+	title={"Pointers"}
+	description={"Notes on pointers"}
+	keywords={"pointers, C, computer architecture"}
+/>
+
+# Pointers
+
+<div className="outline">
+
+1. [Pointer Declaration: \*ptr = &var](#pointer-declaration-ptr--var)
+	1. [Uninitialized Pointers](#uninitialized-pointers)
+	2. [Null Pointers](#null-pointers)
+2. [Printing Memory Addresses](#printing-memory-addresses)
+3. [Dereferencing: \*ptr](#dereferencing-ptr)
+4. [Indirect Transfering: *ptr1 = *ptr2](#indirect-transfering-ptr1--ptr2)
+5. [Aliases: ptr1 = ptr2](#aliases-ptr1--ptr2)
+6. [Warning: \*ptr1 = ptr2](#warning-ptr1--ptr2)
+7. [Warning: ptr = \*ptr](#warning-ptr--ptr)
+8. [malloc, sizeof, & free](#malloc-sizeof--free)
+		1. [Dangling Pointers](#dangling-pointers)
+		2. [Double Free](#double-free)
+		3. [Post-free Nullification](#post-free-nullification)
+9. [Copies: var = var](#copies-var--var)
+10. [References: &var = var](#references-var--var)
+11. [Pass-by-reference v. Pass-by-value](#pass-by-reference-v-pass-by-value)
+	1. [Pass-by-object-reference](#pass-by-object-reference)
+12. [Why is the Asterisk Used for Declaration and Dereference?](#why-is-the-asterisk-used-for-declaration-and-dereference)
+	1. [Pointer Types](#pointer-types)
+13. [Pointer Syntax Summary](#pointer-syntax-summary)
+14. [Pointer Arithmetic](#pointer-arithmetic)
+	1. [Printing a Value's Individual Bytes](#printing-a-values-individual-bytes)
+15. [Arrays](#arrays)
+
+</div>
+
+On a computer, an integer value can mean one of two things:
+
+1. An actual data value, or
+2. A memory address
+
+By a _memory address_, we mean some integer value that names a _byte_ in
+memory. For example, in the diagram below, each cell is 1 byte of memory.
+The left column is the address (a hexadecimal number), and the right column
+consists of 8 bits.
+
+<Mem
+	data={[
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+	]}
+	cellWidth={60}
+	width={250}
+	scale={50}
+/>
+
+Notice that each of the addresses increments by one. If were to store a
+`char` value — a data type that consumes 1 byte of memory — it would occupy
+exactly one of these cells. For example, the number 5 in eight bits is
+`0000 0101`. If we wrote:
+
+```c
+char x = 5;
+```
+
+we would have:
+
+<Mem
+	data={[
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		{ val: "0000 0101", id: "x" },
+	]}
+	cellWidth={60}
+	width={300}
+	scale={40}
+/>
+
+What if we wrote:
+
+```c
+int x = 56;
+```
+
+In this case, for a program compiled with a 64-bit compiler, we would have:
+
+<Mem
+	data={[
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		"0000 0000",
+		{ val: "0000 0000", className: "vald" },
+		{ val: "0000 0000", className: "vald" },
+		{ val: "0000 0000", className: "vald" },
+		{ val: "0011 1000", id: "x", className: "vald" },
+	]}
+	cellWidth={60}
+	width={300}
+	scale={40}
+/>
+
+Notice that in the diagram above, the value `56` occupies 4 bytes. This is
+because for a 64-bit program, an `int` takes up 4 bytes of memory. This
+leads to an interesting observation:
+
+> _Variable names are just a convenient way — human-readable identifiers —
+> of labelling the contiguous block of bytes composing the data value._
+
+The variable itself maps to the first address in this contiguous block (in
+the diagram above, `0x09`). Thus, the notion of a data type serves two
+purposes from the computer's perspective:
+
+1. It instructs the computer how much memory should be set aside for the
+   value.
+2. It instructs the computer how far to _read_ — starting from the first
+   address mapped to the variable — the array of memory blocks to get all
+   of the necessary bits for the value.
+
+We distinguish between the two possibilities with **pointers**. Simply put,
+a pointer is a variable that stores the address of a location in memory. We
+expand this definition with a few additional terms and propositions:
+
+1. Because a pointer is a variable that stores a memory address, we also
+   say that a pointer _is_ a memory address.
+2. Because the pointer is a variable, the pointer has a memory address of
+   its own — it's a memory address that stores a memory address. As such,
+   there are always two sides to a pointer:
+   1. The _address of_ a pointer, and
+   2. The _address in_ a pointer.
+3. In text, we will refer to the _address of_ a pointer as the pointer's
+   **addof**, and the _address in_ a pointer as the pointer's **addin**.
+4. The the address a pointer stores is called the pointer's **pointee**.
+5. Because the pointee is a memory address, it contains data, whether it's
+   our program's data or garbage. In text, we will refer to this data as
+   the pointer's **valat** ("_value at_").
+
+## Pointer Declaration: \*ptr = &var
+
+To illustrate, say we wrote the code:
+
+```c
+int a = 4;
+int b = 6;
+int c = 8;
+```
+
+We can visualize the result in memory as follows:
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"vdots10",
+		{ val: 4, id: "a" },
+		{ val: 6, id: "b" },
+		{ val: 8, id: "c" },
+		"vdots10",
+		"...",
+	]}
+	scale={50}
+/>
+
+Above, the values 4, 6, and 8 are stored in the addresses `0x0B`, `0x0C`,
+and `0x0D` respectively. When we write:
+
+```c
+int a = 4;
+int b = 6;
+int c = 8;
+int *p = &a;
+```
+
+We get the following:
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"vdots10",
+		{ val: 4, id: "a" },
+		{ val: 6, id: "b" },
+		{ val: 8, id: "c" },
+		{ val: "0x0B", id: "p" },
+		"vdots10",
+		"...",
+	]}
+	scale={60}
+	height={300}
+	width={450}
+/>
+
+Notice what happens here. When we write `&a`, we get `a`'s addof.
+Furthermore, `p`'s addin (`0x0B`) is `a`'s addof (`0x0B`). `p`'s addof,
+however, does not change (`0x0E`). Let's illustrate further with some C++
+code.
+
+### Uninitialized Pointers
+
+Whenever we declare a pointer, it's critical that we initialize them
+immediately whenever possible. That is, we really only have two options for
+declaration:
+
+1. `int *𝑝 = &𝑣`, where 𝑝 is a pointer variable and 𝑣 is an existing
+   variable, or
+2. `int *𝑝 = null`.
+
+If we just write `int *𝑝`, 𝑝 is effectively a **wild pointer**. The
+descriptor _wild_ is fitting: 𝑝 points to _anywhere_ in memory. We never
+want a pointer that stores some random address. With a sufficiently complex
+program, it's all too easy to forget that we neglected to initialize the
+pointer. When we later dereference 𝑝 far, far away from when we declared
+it, we'll almost certainly be scratching our heads at either (1) a seg
+fault, (2) some compiler error, (3) some seemingly random value, or (4)
+perhaps worst of all, getting the correct outputs intermittently.
+
+### Null Pointers
+
+Writing:
+
+```c
+int *p = NULL;
+```
+
+assigns the address `0x0` (the integer 0) as `p`'s addin. This means that
+if we attempt to dereference `p`, we are guaranteed to get a seg fault.
+This is a better outcome than what we'd get with a wild pointer, because
+we, at the very least, get a single outcome everytime.
+
+Because of the assignment of 0x0, we can use the pattern of
+_null-pointer-checking_:
+
+```c
+if (p == NULL) {
+	// handle
+}
+```
+
+This is a particularly useful construct, as it allows to check for a
+variety of situations: whether we've reached the end of a linked list,
+whether no value was assigned, whether the user didn't enter a value, and
+so on.
+
+## Printing Memory Addresses
+
+We can print a memory address in C++ with the following code:
+
+```c
+int main() {
+	int a = 4;
+	int b = c;
+	int c = 8;
+	int *p = &a;
+	printf("addof(a) = %p \n", &a);
+}
+```
+
+```bash
+addof(a) = 0x7ff7b759dd18
+```
+
+Here, we see that `a`'s addof is `0x7ff7b759dd18`. Let's see some more
+outputs:
+
+```c
+int main() {
+	int a = 4;
+	int b = 6;
+	int c = 8;
+	int *p = &a;
+	printf("addof(a) = %p \n", &a);
+	printf("addof(b) = %p \n", &b);
+	printf("addof(c) = %p \n", &c);
+	printf("addof(p) = %p \n", &p);
+	printf("addin(p) = %p \n", p);
+}
+```
+
+```bash
+addof(a) = 0x7ff7b6112d18
+addof(b) = 0x7ff7b6112d14
+addof(c) = 0x7ff7b6112d10
+addof(p) = 0x7ff7b6112d08
+addin(p) = 0x7ff7b6112d18
+```
+
+The output conforms to our earlier discussion. `a`'s addof is
+`0x7ff7b6112d18`, `p`'s addin is `0x7ff7b6112d18`. and `p`'s addof is
+`0x7ff7b6112d18`.
+
+## Dereferencing: \*ptr
+
+Returning to our code example:
+
+```c
+int a = 4;
+int b = 6;
+int c = 8;
+int *p = &a;
+```
+
+Because `p` stores `a`'s addof, we can access the contents of `a`:
+
+```c
+int main() {
+	int a = 4;
+	int b = 6;
+	int c = 8;
+	int *p = &a;
+	printf("valat(p) = %d \n", *p);
+}
+```
+
+```bash
+valat(p): 4
+```
+
+Notice the operator we used. When we write:
+
+```nasm
+*p
+```
+
+We are really saying:
+
+```nasm
+read the contents in addof(a)
+```
+
+and because `addof(a) = 0x7ff7b6112d18`, this redues to:
+
+```nasm
+read the contents in 0x7ff7b6112d18
+```
+
+Setting everything else aside, that's all there really is to pointers. We
+use `*` to initialize a pointer, `&` to get an addof, and `*` to get the
+valat.
+
+## Indirect Transfering: *ptr1 = *ptr2
+
+Suppose we have the following:
+
+```c
+int x = 0;
+int y = 1;
+
+int *p = &x;
+int *q = &y;
+
+*p = *q
+```
+
+Logging the variables' stored values and addresses, we get the following:
+
+<Grid cols={2}>
+
+```bash
+Before indirect transfer:
+ valat(a) = a = 0
+ valat(b) = b = 1
+ valat(p1) = *p1 = 0
+ valat(p2) = *p2 = 1
+After indirect transfer:
+ valat(a) = a = 1
+ valat(b) = b = 1
+ valat(p1) = *p1 = 1
+ valat(p2) = *p2 =  1
+```
+
+```bash
+Before indirect transfer:
+ addof(a) = &a = 0x7ff7bfaaecf8
+ addof(b) = &b = 0x7ff7bfaaecf4
+ addin(p1) = p1 = 0x7ff7bfaaecf8
+ addin(p2) = p2 = 0x7ff7bfaaecf4
+After indirect transfer:
+ addof(a) = &a = 0x7ff7bfaaecf8
+ addof(b) = &b = 0x7ff7bfaaecf4
+ addin(p1) = p1 = 0x7ff7bfaaecf8
+ addin(p2) = p2 =  0x7ff7bfaaecf4
+```
+
+</Grid>
+
+Crucially, notice that the addresses haven't changed, but the values stored
+in those addresses have. This is a common pattern in C code called
+**indirect transferring**.
+
+## Aliases: ptr1 = ptr2
+
+Consider the following code:
+
+```c
+int a = 0;
+int b = 1;
+
+int *p1 = &a;
+int *p2 = &b;
+
+p1 = p2;
+```
+
+Logging the addresses for these variables, we get:
+
+```bash
+Before aliasing:
+ addof(a) = &a = 0x7ff7b3f51cf8
+ addof(b) = &b = 0x7ff7b3f51cf4
+ addin(p1) = p1 = 0x7ff7b3f51cf8
+ addin(p2) = p2 = 0x7ff7b3f51cf4
+After aliasing:
+ addof(a) = &a = 0x7ff7b3f51cf8
+ addof(b) = &b = 0x7ff7b3f51cf4
+ addin(p1) = p1 = 0x7ff7b3f51cf4
+ addin(p2) = p2 =  0x7ff7b3f51cf4
+```
+
+When we wrote `p1 = p2`, the `p1`'s `addin` becomes the same as `p2`'s
+addin. In effect, both `p1` and `p2` point to the same location in memory —
+the location marked as `b`. Because of this result, we say that `p1` and
+`p2` are **aliases** of the variable `b`.
+
+## Warning: \*ptr1 = ptr2
+
+When we write the following:
+
+```c
+int a = 0;
+int b = 1;
+
+int *p1 = &a;
+int *p2 = &b;
+
+*p1 = p2;
+```
+
+we get a warning. Why? Because we're trying to fit a memory address (some
+very large value) into an `int*` variable. For a 64-bit program, that
+`int*` variable only covers 8 bytes. Accordingly, we will lose any bits
+that cannot fit into the `int*`.
+
+## Warning: ptr = \*ptr
+
+When we write:
+
+```c
+int a = 0;
+int b = 1;
+
+int *p1 = &a;
+int *p2 = &b;
+
+p1 = *p2;
+```
+
+we also get a warning. This, however, is arguably far more sinister than
+the previous warning. Why? Because (1) we're assigning some `int` value as
+the pointer `p1`'s addin, and (2) because an `int` is 4 bytes, it will fit.
+However, that address is almost certainly a bogus address.
+
+## malloc, sizeof, & free
+
+In the examples we've covered, we've used memory on the stack. As soon as a
+function returns, the stack is cleared, and we lose all the data created
+and used within that function.
+
+We can, however, also allocate data from _heap memory_. In C, we can do so
+with the _memory-allocate_ function:
+
+$$
+	\mm{malloc(𝑁)} \implies *𝑝
+$$
+
+where 𝑁 is the number of bytes we want, and \*𝑝 is the returned value, a
+_pointer_ (recall that a pointer is just memory address — `malloc()`
+returns a heap-memory address).
+
+Because we often do not know how many bytes are needed to store a
+particular value, a common pattern in C is to use the `sizeof` operator:
+
+$$
+	\mm{sizeof(𝑇)}
+$$
+
+where 𝑇 is a type. A critical fact applies whenever we allocate memory with
+`malloc()`:
+
+> If we allocate 𝑁 bytes by writing `malloc(𝑁)`, the 𝑁 bytes will remain
+> allocated until the 𝑁 bytes are freed.
+
+This means that, if we allocate 𝑁 bytes for usage, those 𝑁 bytes cannot be
+re-allocated. This in turn means that if we do not free that memory, our
+program will have less available memory for usage. To free the allocated
+memory, we use the `free` operator. The syntax:
+
+$$
+	\mm{free}(𝑝)
+$$
+
+where 𝑝 is the pointer returned by `malloc()`. To illustrate:
+
+```c
+int *p = malloc(sizeof(int));
+*p = 57;
+// some code
+// finished using p
+free(p);
+```
+
+Above, \*𝑝 is stores some address in heap memory. That address spans 4
+bytes. Why? Because `sizeof(int)` returns 4, and passing that number into
+`malloc()` says, "Allocate 4 bytes of heap memory and give me the address
+of the first byte". When we then write `*p = 57`, we are storing the value
+`57` at the address in heap memory.
+
+#### Dangling Pointers
+
+There's one thing we should keep in mind with `free` operator. After we
+write `free(𝑝)`, the pointer `𝑝` actually still stores its addin, say some
+address `0x2231`. When `𝑝` is in this state, we say that `𝑝` is a
+**dangling pointer**.
+
+Dangling pointers exist because the `free` operator doesn't actually
+"delete" or "clear" anything. Instead, it just tells the system: "I'm no
+longer using this address `0x2231`, so go ahead and make it available for
+others to use." This means that we can _still_ dereference `𝑝`. But,
+there's no guarantee that whatever is in that address is what was in there
+previously. Instead, it's much more likely that the address now contains
+some completely random, garbage value.
+
+#### Double Free
+
+A more common bug with the `free` operator is freeing a pointer twice:
+
+```c
+int *p = malloc(sizeof(int));
+*p = 17;
+// some code
+// finished using p
+free(p);
+// some more code
+// forgot that p is already freed
+free(p);
+```
+
+This bug is so common that it's often called the **double free**. Is it
+that easy to forget that we've freed a pointer? In some sense, yes.
+However, a more common scenario of the double free is the following:
+
+```c
+int *p = malloc(sizeof(int));
+*p = 17;
+int *q = p;
+free(p);
+
+// this is a double free
+free(q);
+```
+
+Why is this a double free? Because the pointers `p` and `q` both point to
+the same location in memory:
+
+<Mem
+	data={[
+		{ val: "...", a: "0x9..." },
+		{ val: "0x3000", a: "0x9016", id: "q" },
+		{ val: "0x3000", a: "0x9000", id: "p" },
+		"vdots1",
+		"vdots1",
+		"vdots1",
+		{ val: "17", a: "0x3000", id: "*p,*q" },
+	]}
+	cellWidth={40}
+	scale={50}
+/>
+
+If when we write `free(p)`, we free the address `0x3000`, and when we write
+`free(q)`, we free it again.
+
+Why is this such a big deal? Because a double free effectively frees a
+memory address that is likely in use by another part of our program or some
+other entity.
+
+#### Post-free Nullification
+
+Because of the danger, a common pattern in C is the _post-free
+nullification_:
+
+```c
+int *p = malloc(sizeof(int));
+*p = 57;
+// some code
+// finished using p
+free(p);
+p = null;
+```
+
+Like the _post-declaration-nullification_ pattern, this pattern ensures
+that any attempt to dereference or free a freed pointer will result in a
+seg fault.
+
+## Copies: var = var
+
+As a precursor to the next section, when we write:
+
+```c
+int a = 0;
+int b = a;
+```
+
+we create a _copy_ of the variable `a`.
+
+## References: &var = var
+
+Consider this code's output:
+
+```c
+int main() {
+	int a = 8;
+	int &b = a;
+	printf("a = %d\n", a);
+	printf("b = %d\n", b);
+
+	b = a + 2;
+
+	printf("a = %d\n", a);
+	printf("b = %d\n", b);
+}
+```
+
+```bash
+a = 8
+b = 8
+a = 10
+b = 10
+```
+
+We're seeing the output above because `&b` is a _reference_ to `a`. If we
+print the addresses for both variables:
+
+```c
+int main() {
+	int a = 8;
+	int &b = a;
+	printf("addof(a) = %p\n", &a);
+	printf("addof(b) = %p\n", &b);
+}
+```
+
+```bash
+addof(a) = 0x7ff7bc7acd18
+addof(b) = 0x7ff7bc7acd18
+```
+
+we see that they're the same. This is very different from the use of a
+pointer. Compare the outputs if we had instead declared `b` as a pointer:
+
+<Grid cols={2} rows={2}>
+
+```c
+int main() {
+	int a = 8;
+	int &b = a;
+	printf("addof(a) = %p\n", &a);
+	printf("addof(b) = %p\n", &b);
+}
+```
+
+```c
+int main() {
+	int a = 8;
+	int *b = &a;
+	printf("addof(a) = %p\n", &a);
+	printf("addof(b) = %p\n", &b);
+}
+```
+
+```bash
+addof(a) = 0x7ff7bc7acd18
+addof(b) = 0x7ff7bc7acd18
+```
+
+```bash
+addof(a) = 0x7ff7ba6c5d18
+addof(b) = 0x7ff7ba6c5d10
+```
+
+</Grid>
+
+Under the hood, the operations of references and pointers do not appear
+that different. When we write `&b`, we are asking for `b`'s addof. Suppose
+`b`'s addof is `0x3def`. When we write `int &b = a`, we're effectively
+writing:
+
+```nasm
+0x3def = a
+```
+
+Since variable names are just human-readable identifiers for memory
+addresses, this is akin to saying:
+
+> The address `0x3def` stores the address called `a`.
+
+Again, not that different from a pointer at a low level. At a higher level,
+however, things are different. Once we write `&b = a`, the address `0x3def`
+essentially no longer exits. Instead, whenever we refer to the address
+`0x3def` — which we've called `b` — we will ultimately refer to the address
+called `a`. This is change in the usual mechanics, and it should be viewed
+as a different concept.
+
+As a _pointer_, `b` has its own, unique address, different from `a`. But as
+a _reference_, `b` has no life of its own — it's just another name for the
+address called `a`. Whatever changes we make on `a`, it'll show up for `b`,
+and whatever changes we make on `b`, it'll show up for `a`. Put bluntly,
+`b` is to `a` what Superman is to Clark Kent. Damage Superman and you
+damage Clark Kent, damage Clark Kent and you damage Superman. They're the
+same person.
+
+This demonstrates the key difference between pointers and references: With
+pointers, we can perform arithmetic operations, since the address variable
+has a pointee it can use as a starting point. With references, the address
+variable has no such starting point — it _is_ the starting point.
+
+## Pass-by-reference v. Pass-by-value
+
+Suppose we create a variable `int a = 1`. What's the difference between
+writing `int b = a` and `int &b = a`? Well, we can test:
+
+<Grid cols={2} rows={2}>
+
+```c
+int main() {
+	int a = 8;
+	int b = a;
+
+	printf("addof(a) = %p\n", &a);
+	printf("addof(b) = %p\n", &b);
+
+	a = a + 2;
+	b = b + 1;
+
+	printf("valat(a) = %d\n", a);
+	printf("valta(b) = %d\n", b);
+}
+```
+
+```c
+int main() {
+	int a = 8;
+	int &b = a;
+
+	printf("addof(a) = %p\n", &a);
+	printf("addof(b) = %p\n", &b);
+
+	a = a + 2;
+	b = b + 1;
+
+	printf("valat(a) = %d\n", a);
+	printf("valat(b) = %d\n", b);
+}
+```
+
+```bash
+addof(a) = 0x7ff7bd9b6d18
+addof(b) = 0x7ff7bd9b6d14
+valat(a) = 10
+valat(b) = 9
+```
+
+```bash
+addof(a) = 0x7ff7b12b9d18
+addof(b) = 0x7ff7b12b9d18
+valat(a) = 11
+valta(b) = 11
+```
+
+</Grid>
+
+When we write `int b = a`, we're effectively creating a _copy_ of the value
+stored in `a`, and saving that copy in the memory address called `b`. This
+is apparent given the fact that (1) both `a` and `b` have different
+addresses, and (2) the changes we make to `b` are independent of the
+changes we make to `a`, and vice versa.
+
+The difference between these two constructs leads to a distinction between
+**pass by reference** and **pass by value**. To illustrate, look at the
+output of these two functions:
+
+<Grid cols={2} rows={2}>
+
+```c
+void halve_by_reference(int *number) {
+	*number = (*number) / 2;
+};
+
+int main() {
+	int a = 8;
+	printf("a = %d\n", a);
+	halve_by_reference(&a);
+	printf("a = %d\n", a);
+}
+```
+
+```c
+void halve_by_value(int number) {
+	number = number / 2;
+}
+
+int main() {
+	int a = 8;
+	printf("a = %d\n", a);
+	halve_by_value(a);
+	printf("a = %d\n", a);
+}
+```
+
+```bash
+a = 8
+a = 4
+```
+
+```bash
+a = 8
+a = 8
+```
+
+</Grid>
+
+In the function `halve_by_reference()`, the parameter is a memory address
+containing an `int`. In the function `halve_by_value()`, the parameter is a
+value `int`. There are two functions that operate very differently. To see
+why, let's compare how they affect memory.
+
+When the function `main()` is executed, we ultimately end up with something
+that looks like:
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"vdots25",
+		{ val: 8, id: "a" },
+		{ val: "...", id: "<-sp" },
+	]}
+	scale={20}
+/>
+
+Above, there's a special pointer called the _stack pointer_. This pointer
+keeps track of the variables and data values used in the program. Setting
+aside the `printf` calls, when we get to the call `halve_by_reference()`, a
+"bookmark" called a _return address_ is created for `main()`, and the
+arguments for `halve_by_reference()` are set up:
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"vdots25",
+		{ val: 8, id: "a" },
+		{ val: "return address" },
+		"vdots25",
+		{ val: 8, id: "number" },
+		{ val: "...", id: "<-sp" },
+	]}
+	scale={40}
+	cellWidth={120}
+	width={500}
+/>
+
+It then performs the computation (in this case `number = number / 2`):
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"vdots25",
+		{ val: 8, id: "a" },
+		{ val: "return address" },
+		"vdots25",
+		{ val: 4, id: "number" },
+		{ val: "...", id: "<-sp" },
+	]}
+	scale={40}
+	cellWidth={120}
+	width={500}
+/>
+
+And once there no further instructions to execute, it _returns_ to the
+bookmark it placed:
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"vdots25",
+		{ val: 8, id: "a" },
+		{ val: "...", id: "<-sp" },
+		"vdots25",
+		{ val: 4, id: "number" },
+	]}
+	scale={40}
+	cellWidth={120}
+	width={500}
+/>
+
+Importantly, everything after the stack pointer is essentially gone — it no
+longer exists. There's no data available that would allow us to go back to
+the values in those memory addresses. Thus, when we print the value of `a`
+with `printf()`, we get back the value of `a`, which is `8`.
+
+Now, contrast this with the use of a reference. When the stack pointer sets
+up the function call, the argument passed is not a value, but the _address_
+of a value:
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"vdots25",
+		{ val: 8, id: "a" },
+		{ val: "return address" },
+		"vdots25",
+		{ val: "0x1A", id: "number" },
+		{ val: "...", id: "<-sp" },
+	]}
+	scale={40}
+	cellWidth={120}
+	width={500}
+/>
+
+When we perform the computation (`*number = *number/2`), we are saying,
+"The value stored at the address called `number` is the current value
+divided by two." This results in:
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"vdots25",
+		{ val: 4, id: "a" },
+		{ val: "return address" },
+		"vdots25",
+		{ val: "0x1A", id: "number" },
+		{ val: "...", id: "<-sp" },
+	]}
+	scale={40}
+	cellWidth={120}
+	width={500}
+/>
+
+Notice how the value in the address called `a` is now `4`. When the stack
+pointer goes back to where it left off and we call `printf()`, we get the
+value of `a` as expected — `4`.
+
+<Mem
+	data={[
+		"...",
+		"...",
+		"vdots25",
+		{ val: 4, id: "a" },
+		{ val: "...", id: "<-sp" },
+		"vdots25",
+		{ val: "0x1A", id: "number" },
+	]}
+	scale={40}
+	cellWidth={120}
+	width={500}
+/>
+
+This demonstrates the difference between the two functions.
+`halve_by_reference` is a _pass-by-reference function_, while
+`halve_by_value` is a _pass-by-value_ function. In a _pass-by-value_
+function, the function's parameters (in our example, `number`) are _copies_
+of the arguments passed. But in a _pass-by-reference_ function, the
+function's parameters are references of the arguments passed — the
+originals. These memory savings are particularly valuable when the
+arguments passed are potentially massive objects — a record of users or
+extremely large numbers.
+
+This discussion leads to another observation: pass-by-reference functions
+are more memory-efficient than pass-by-value functions, since we avoid the
+need to make copies. The downside, however, is that pass-by-reference
+functions can make programs difficult to reason about. If we're passing a
+value through hundreds of functions, each modifying that value, we can
+easily lose track of what's happening to the value and where. This can lead
+to functions that are harder to debug, as bugs might originate in either
+(1) the function itself, (2) the arguments passed to the function —
+requiring us to trace to earlier functions, or (3) both.
+
+### Pass-by-object-reference
+
+As an aside, some languages use another form of indirection called
+**pass-by-object**. Consider the following code's output:
+
+```c
+struct Point {
+	int x;
+	int y;
+};
+
+void zero1(Point &obj1) {
+	obj1 = (Point) {.x = 0, .y = 0};
+}
+
+void zero2(Point obj2) {
+	obj2 = (Point) {.x = 0, .y = 0};
+}
+
+int main() {
+	Point a = {.x = 1, .y = 1};
+	Point b = {.x = 5, .y = 5};
+
+	printf("a = {x: %d, y: %d}\n", a.x, a.y);
+	printf("b = {x: %d, y: %d}\n", b.x, b.y);
+
+	zero1(a);
+	zero2(b);
+
+	printf("a = {x: %d, y: %d}\n", a.x, a.y);
+	printf("b = {x: %d, y: %d}\n", b.x, b.y);
+	return 0;
+}
+```
+
+```bash
+a = {x: 1, y: 1}
+b = {x: 5, y: 5}
+a = {x: 0, y: 0}
+b = {x: 5, y: 5}
+```
+
+Examining the output, we see that `Point a` is zeroed, but `Point b` is
+not. This is an example of pass-by-object-reference. This is not all that
+difference from passing by reference. The only difference is, we're passing
+a reference to some object — a container — rather than a reference to some
+primitive.
+
+We point this out because it's a semantic found in many popular languages,
+particularly Java, C#, and JavaScript. Those languages are all inherently
+pass-by-value, but the value passed is a _reference_.
+
+## Why is the Asterisk Used for Declaration and Dereference?
+
+The two use cases for `*` is seen by some as a poor decision in language
+design. Others see it as a reasonable choice. Regardless of which side of
+the fence we fall on, the decision was intentional, not an accident.
+
+The idea behind the decision is _declaration follows use_, per Dennis
+Ritchie's (one of C's creators) comments. To understand this idea, we just
+need a little more information about pointers.
+
+### Pointer Types
+
+In C/C++, all pointers have types. This means that, when we write:
+
+```c
+int a = 4;
+double *p;
+```
+
+the pointer `p` _cannot_ store `a`'s addof. We can see that this is the
+case when we try to compile the following:
+
+```c
+int main() {
+	int a = 4;
+	double *p = &a;
+}
+```
+
+```bash
+error:
+	cannot initialize a variable
+	of type 'double *' with
+	an rvalue of type 'int *'
+
+					double *p = &a;
+									^   ~~
+	1 error generated.
+```
+
+The error above tells us that variable of type `double *` can't be
+initialized with an _rvalue_ (_right-hand value_) of type `int *`. This is
+because data types ultimately tell the process how far along memory it
+should read for a value.
+
+For example, say we had a 64-bit program. The datatype `double` indicates
+that the data stored spans 8 bytes. So, the processor will read 8 addresses
+total, starting from the first. The datatype `int`, however, might only
+spans 4 bytes. This means that, _if_ we could use a `double` to point to an
+`int`, the processor would read 4 bytes _more_ than necessary. We do not
+want that to happen, because we have no idea what's inside the the four
+additional bytes.
+
+What if it was the other way around? For example, consider the following:
+
+```c
+int main() {
+	double a = 4.2;
+	int *p = &a;
+}
+```
+
+```bash
+error:
+	cannot initialize a variable of
+	type 'int *' with an rvalue of
+	type 'double *'
+
+					int *p = &a;
+							^   ~~
+	1 error generated.
+```
+
+We get the same kind of error. Why? Because now we're _under_ the necessary
+amount. The `double` type (on a 64-bit program) needs 8 bytes, but our
+pointer type says, "Read 4 bytes". This means that we're not going to get
+all of the necessary bits that make up our value `4.2`. Given that floating
+point numbers are not direct representations of a fractional number
+(they're encodings), the value from dereferencing `p` would be nonsensical.
+
+To get a sense of these data types visually (for a 64-bit program), each
+block below equals 1 byte:
+
+<table style={{ width: "90%" }} className="hagoTable">
+	<thead>
+		<tr>
+			<th style={{ width: "10%" }}>Data Type</th>
+			<th>Visual</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>`char`</td>
+			<td>
+				<StaticArray data={[" "]} scale={15} cheight={1} />
+			</td>
+		</tr>
+		<tr>
+			<td>`short`</td>
+			<td>
+				<StaticArray data={[" ", " "]} scale={19} cheight={0.7} />
+			</td>
+		</tr>
+		<tr>
+			<td>`int`</td>
+			<td>
+				<StaticArray
+					data={[" ", " ", " ", " "]}
+					scale={30}
+					cheight={0.4}
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>`long`</td>
+			<td>
+				<StaticArray
+					data={[" ", " ", " ", " ", " ", " ", " ", " "]}
+					scale={50}
+					cheight={0.3}
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>`float`</td>
+			<td>
+				<StaticArray
+					data={[" ", " ", " ", " "]}
+					scale={30}
+					cheight={0.4}
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>`double`</td>
+			<td>
+				<StaticArray
+					data={[" ", " ", " ", " ", " ", " ", " ", " "]}
+					scale={50}
+					cheight={0.3}
+				/>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+So, going back to the notion of _declaration follows use_. The idea is,
+when we write:
+
+```c
+int n;
+```
+
+we can expect that `n` will always be an `int` when used within scope. This
+means that, when we write:
+
+```c
+int *p;
+```
+
+if we want to get a value `int`, we have to write `*p`. Why? Because `p`
+itself doesn't hold an `int`, it holds a memory address. The expression
+that holds the `int` is `*p`. To clarify a little further, suppose the way
+to declare a pointer in C was not `*`, to write out the word
+`getValueAt_𝐴`, where 𝐴 is the pointer variable. Using this hypothetical
+syntax, we get:
+
+```c
+int getValueAt_p
+```
+
+things look a little more obvious — it's just another variable name. If we
+want to get an `int`, we write `getValueAt_p`. At this point, we can likely
+see why there are critics. When we write:
+
+```c
+int a = 4;
+int *p = &a;
+```
+
+the hypothetical syntax would look some like:
+
+```c
+int a = 4;
+int getValueAt_p = 0x0ffadce18f;
+```
+
+where `0x0ffadce18f` is `a`'s addof. But later down the program,
+`getValueAt_p` is evaluated as 4. This is where the notion of _declaration
+follows use_ comes from. The way you _use_ an identifier determines how you
+_declare_ it, rather than the other way around. In way, this is a sensible
+approach because we're almost never actually interested in the value
+`0x0ffadce18f`. Instead, we're more interested in what's _inside_
+`0x0ffadce18f`. Moreover, we can interpret the expression
+`int getValueAt_p` as:
+
+> "When I write `getValueAt_p`, I get an `int`."
+
+Or, in actual C syntax:
+
+> "When I write `*p`, I get an `int`."
+
+On the other hand, it's a little disorienting for a variable to have an
+explicit initial value (some large hexadecimal number), but when evaluated
+without any changes, a different value is returned. Moreover, the fact that
+compiler errors display the type as `int *`, `double *`, and so on, make it
+tempting to write:
+
+```c
+int* p;
+```
+
+as if the `*` were part of the base type, rather than the variable name.
+This, too, is neither wrong nor right (as evidenced by this section's
+title, _Pointer Types_). Many programmers begin their journey with a
+statically-typed language, so it's only natural to think of data in terms
+of type — it reduces complexity. This tendency is strong enough that C++
+programmers generally write,
+
+```c
+int* p;
+```
+
+C programmers write,
+
+```c
+int *p;
+```
+
+and others take a middle ground, writing,
+
+```c
+int * p;
+```
+
+Our choice of style ultimately doesn't matter — it's consistency that
+counts.
+
+## Pointer Syntax Summary
+
+Below is a summary of pointer and reference syntax, followed by various
+descriptions/translations of the syntax in plain language:
+
+1. <mark>`𝑇 *𝑝`</mark>
+
+- Create a new pointer 𝑝.
+- "When I write `*𝑝`, I will get a value of type `𝑇`."
+- "`𝑝` is a variable that will store an address containing a value of type
+  `𝑇.`"
+- "`𝑝` is the name of an address that stores another address containing a
+  value of type `𝑇.`"
+- Common mistake: Failing to initialize `𝑝`.
+
+2. <mark>`𝑇 *𝑝 = 𝑣`</mark>
+
+- Create a new pointer 𝑝, storing the address of `𝑣`.
+- "When I write `*𝑝`, I will get the value of `𝑣`, of type `𝑇`."
+- "When I dereference `𝑝`, I will get the value `𝑣`, of type `𝑇`."
+- "`𝑝` is the name of an address storing the address of `𝑣`."
+- "`𝑝` is the name of an address storing the address named `𝑣`."
+- Example:
+  ```c
+  int main() {
+  	int a = 4;
+  	printf("addof(a) = %p \n", &a);
+  	int *p = &a;
+  	printf("addin(p) = %p \n", p);
+  }
+  ```
+  ```bash
+  addof(a) = 0x7ff7b46e2d18
+  addin(p) = 0x7ff7b46e2d18
+  ```
+
+3. <mark>`*𝑝 = 𝑁`</mark>
+
+- Assuming `𝑝` is a pointer to `𝑣`, stores the value `𝑁` in the address of
+  `𝑣`.
+- "The address named `𝑣` now stores the value `𝑁`."
+- "When I write `*𝑝`, I get `𝑁`."
+- "When I write `𝑣`, I get `𝑁`."
+- Example:
+  ```c
+  int main() {
+  	int a = 4;
+  	printf("valat(a) = %d \n", a);
+  	int *p = &a;
+  	*p = 5;
+  	printf("valat(p) = %d \n", *p);
+  	printf("valat(a) = %d \n", a);
+  }
+  ```
+  ```bash
+  valat(a) = 4
+  valat(p) = 5
+  valat(a) = 5
+  ```
+
+4. <mark>`𝑝 = 𝑥`</mark>
+
+- Assuming 𝑝 is a pointer declared earlier, this syntax really only makes
+  sense if 𝑥 is a pointer — it assigns the address 𝑥.
+- "The variable 𝑝 stores the address 𝑥."
+- "The address named 𝑝 stores the address 𝑥."
+- Common mistake: The syntax _highly likely_ does not make sense if `𝑁` is
+  a literal value. Writing `𝑝 = 5` is akin to saying, the variable `𝑝`
+  stores the memory address `5`, which is unlikely to be a valid memory
+  address.
+- For example, this is ok:
+  ```c
+  int main() {
+  	int a = 4;
+  	printf("addof(a) = %p \n", &a);
+  	int *p = &a;
+  	int *q;
+  	q = p;
+  	printf("addin(p) = %p \n", p);
+  	printf("addin(q) = %p \n", q);
+  }
+  ```
+  ```bash
+  addof(a) = 0x7ff7bb63bd18
+  addin(p) = 0x7ff7bb63bd18
+  addin(q) = 0x7ff7bb63bd18
+  ```
+- But this is not:
+  ```c
+  int main() {
+  	int a = 4;
+  	printf("addof(a) = %p \n", &a);
+  	int *p = &a;
+  	int *q;
+  	q = 5;
+  	printf("addin(p) = %p \n", p);
+  	printf("addin(q) = %p \n", q);
+  }
+  ```
+  ```bash
+  	error:
+  		incompatible integer to pointer conversion
+  		assigning to 'int *' from 'int'
+  					q = 5;
+  							^
+  	1 error generated.
+  ```
+
+5. <mark>`𝑇 &𝑟 = 𝑣`</mark>
+
+- Create a new _reference_ `𝑟` to the variable `𝑣`.
+- "The names `𝑟` and `𝑣` refer to the same address."
+- "When I write `𝑟`, I get the value of `𝑣`."
+- "When I write `𝑣`, I get the value of `𝑟`."
+- "When I make changes to `𝑟`, I make changes to `𝑣`."
+- "When I make changes to `𝑣`, I make changes to `𝑟`."
+- Common mistake: The syntax does not make sense if `𝑣` is a literal value.
+  Writing `&𝑟 = 5` is akin to writing, `0x08afde12 = 5`.
+
+## Pointer Arithmetic
+
+Because memory addresses are numbers, we can perform arithmetic operations
+on the addresses. Before we consider how this works, let's be a little more
+clear about memory. To do so, we'll examine the output of printing the
+individual bytes of some value.
+
+### Printing a Value's Individual Bytes
+
+To print a value's individual bytes, we can use the following function:
+
+```c
+void printBytes(void *ptr, size_t size) {
+	unsigned char *p = (unsigned char*)ptr;
+	unsigned char *q = p;
+	size_t i;
+	printf("\naddress        value\n");
+	for (i = size - 1; i < size; i--) {
+		printf("%p ", q + i);
+		printf("%02hhx ", p[i]);
+		printf("\n");
+	}
+	printf("\n");
+}
+```
+
+A usage example:
+
+```c
+int main() {
+	int n = 3481;
+	printBytes(&n, sizeof(n));
+}
+```
+
+```bash
+address        value
+0x7ff7b48f3d1b 00
+0x7ff7b48f3d1a 00
+0x7ff7b48f3d19 0d
+0x7ff7b48f3d18 99
+```
+
+Examining the output, we see that (addresses truncated for easier reading):
+
+<Mem
+	data={[
+		"vdots1",
+		{ val: "00", a: "0xd1b" },
+		{ val: "00", a: "0xd1a" },
+		{ val: "0d", a: "0xd19" },
+		{ val: "99", a: "0xd18", id: "n" },
+		"vdots1",
+	]}
+	scale={60}
+/>
+
+Changing the truncated addresses to integer values and rearranging the
+cells from top to bottom, we get:
+
+<Mem
+	data={[
+		"vdots1",
+		{ val: "99", a: "3352", id: "n" },
+		{ val: "0d", a: "3353" },
+		{ val: "00", a: "3354" },
+		{ val: "00", a: "3355" },
+		"vdots1",
+	]}
+	scale={60}
+/>
+
+The memory address `3352` contains the hexadecimal value `99`, and the
+address `3352` contains the hexadecimal value `0d`. The remaining addresses
+contain `00`. The number `d99`, in hex, corresponds to the decimal value
+`3481`, the value of `n` in the source code. We write the hex in decimal:
+
+<Mem
+	data={[
+		"vdots1",
+		{ val: "1001 1001", a: "3352", id: "n" },
+		{ val: "0000 1101", a: "3353" },
+		{ val: "0000 0000", a: "3354" },
+		{ val: "0000 0000", a: "3355" },
+		"vdots1",
+	]}
+	cellWidth={60}
+	width={400}
+	scale={60}
+/>
+
+We learn a few things from this output. First, the number of outputs
+corresponds to the data type size of an `int` for a 64-bit program — 4
+byes. Second, the bytes are number consecutively in _little endian_ — the
+data is stored starting from the lowest address to highest address. And
+finally, from our `printBytes` function, it's clear that we can perform
+addition on pointers, since they are ultimately numeric values.
+
+## Arrays
+
+From the section on malloc, we learned that the `malloc(𝑁)` function
+returns the heap memory address of the first byte in 𝑁 bytes. Suppose we
+wrote:
+
+```c
+int *p = malloc(4 * sizeof(unsigned char));
+```
+
+Given that an `unsigned char` is always 1 byte, if we multiply that by 4,
+we should get back 4 bytes in heap memory:
+
+<Mem
+	data={[
+		"vdots1",
+		{ a: "0x5...", val: "..." },
+		{ a: "0x5001", val: "0x3001", id: "p" },
+		"vdots1",
+		{ a: "0x3...", val: "..." },
+		{ a: "0x3004", val: "...", className: "blued" },
+		{ a: "0x3003", val: "...", className: "blued" },
+		{ a: "0x3002", val: "...", className: "blued" },
+		{ a: "0x3001", val: "...", className: "blued" },
+		"vdots1",
+	]}
+	scale={50}
+	width={250}
+/>
+
+If those bytes are contiguous, couldn't we write something like:
+
+```c
+p[0] = 7;
+p[1] = 8;
+p[2] = 9;
+p[3] = 10;
+```
+
+Well, let's try it:
+
+```c
+int main() {
+	char *p = (char *) malloc(4 * sizeof(char));
+	p[0] = 7;
+	p[1] = 8;
+	p[2] = 9;
+	p[3] = 10;
+	for (char i = 0; i < 4; i++) {
+		printf(" %d ", *(p+i));
+	}
+	printf("\n");
+}
+```
+
+```bash
+ 7  8  9  10
+```
+
+Look at that, we get back the values we assigned using the square bracket
+notation often used with arrays.

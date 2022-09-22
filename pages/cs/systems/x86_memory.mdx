@@ -1,0 +1,1476 @@
+import {
+	StaticArray,
+	Matrix,
+	JaggedArray,
+	StackPlot,
+	Stack,
+	Mem,
+} from "../../../components/hago";
+
+# Memory on the x86-64
+
+<div className="outline">
+
+1. [RAM](#ram)
+2. [SRAM vs. DRAM](#sram-vs-dram)
+3. [SDRAM vs. DDR SDRAM](#sdram-vs-ddr-sdram)
+	1. [Non-Volatile Memory](#non-volatile-memory)
+	2. [Disk Memory](#disk-memory)
+	3. [Memory Transactions](#memory-transactions)
+		1. [I/O Bridge](#io-bridge)
+	4. [Locality](#locality)
+	5. [Memory Hierarchy](#memory-hierarchy)
+		1. [Caches](#caches)
+		2. [Cache Hits and Misses](#cache-hits-and-misses)
+		3. [Cache Organization](#cache-organization)
+	6. [Writing Cache-optimized Code](#writing-cache-optimized-code)
+		1. [Contiguous over Connected](#contiguous-over-connected)
+		2. [Exploit Order](#exploit-order)
+		3. [Pass-by-reference over Pass-by-value](#pass-by-reference-over-pass-by-value)
+		4. [Minimize Branches](#minimize-branches)
+		5. [Sorted over Unsorted](#sorted-over-unsorted)
+	7. [Arrays](#arrays)
+	8. [Array Access](#array-access)
+	9. [Looping through an Array](#looping-through-an-array)
+4. [Nested Arrays](#nested-arrays)
+	1. [Accessing Nested Arrays](#accessing-nested-arrays)
+	2. [Accessing Nested Array Elements](#accessing-nested-array-elements)
+	3. [Jagged Arrays](#jagged-arrays)
+	4. [Fixed v. Variable Matrices](#fixed-v-variable-matrices)
+	5. [Structs](#structs)
+		1. [Alignment](#alignment)
+5. [x86-64 Memory Layout](#x86-64-memory-layout)
+	1. [Buffer Overflows](#buffer-overflows)
+
+</div>
+
+So far, much of the data we've used as examples have been simple — `char`s,
+`int`s, and pointers. We'll now consider arrays, structures, and floating
+point numbers. Before doing so, however, let's take broader look at memory.
+
+## RAM
+
+As we saw in the earlier sections on [memory chips](memory), RAM (_Random
+Access Memory_) is a chip composed of _registers_ (byte-addresed memory),
+which are chips composed of _cells_ (a circuit capable of storing a bit).
+For a 64-bit RAM chip, each of its registers contains 64 cells, and on a
+32-bit RAM chip, each of its regsiters contain 32 cells.
+
+Because RAM is a separate chip from the processor, a given RAM chip might
+have a different data interface from the processor. For example, a 32-bit
+RAM chip's interface might operate on the assumption that 32 bits of data
+move at a time, while a 64-bit processor operates on the assumption that 64
+bits move at a time. Given this difference, the most efficient
+implementation of a computer's hardware is to ensure the CPU's assumption
+matches the RAM's assumption (i.e., the CPU's register size matches the
+RAM's bus width).
+
+The easiest way to do so is to simply match the RAM's bus width with the
+CPU's register size: 32-bit processor for 32-bit RAM, 64-bit processor for
+64-bit RAM. While this is the easiest to implement, it's expensive from a
+financial perspective (RAM chips are not cheap). To ease the monetary
+costs, the more common approach is to use multiple RAM chips in parallel: A
+64-bit processor with four 16-bit RAM chips.
+
+Some processors, however, cannot achieve this because the processor's data
+bus itself isn't wide enough. For example, the Motorola 680000 is a 32-bit
+processor, but its data bus is only 16 bits wide. This explains why some
+machines are advertised with the labels 16/32 or 32/64.
+
+## SRAM vs. DRAM
+
+Modern RAM comes in two varieties:
+
+1. SRAM (_static RAM_), and
+2. DRAM (_dynamic RAM_)
+
+The RAM often referred to in computer science courses (and the one those
+somewhat familiar with RAM think of) is DRAM. This is the memory that our
+programs use directly, often referred to as _main memory_. DRAM is
+implemented with 1 transistor per bit.
+
+SRAM is the memory used by the processor's caches and internal registers.
+Unlike DRAM, SRAM cells use 4, 5, or 6 transistors per bit. Consequently,
+SRAM is about ten times faster than DRAM, but over a hundred times more
+expensive monetary wise.
+
+Both DRAM and SRAM are volatile _volatile_ — there must be a constant
+supply of current to keep its cells' values existing. RAM gets its speed
+because the values are stored as voltages rather than switch states, and as
+physics tells us, those voltages will leak over time unless there's a
+continous supply of currrent.
+
+## SDRAM vs. DDR SDRAM
+
+DRAM itself comes in three varieties:
+
+1. ADRAM (_ascnchronous DRAM_, or simply _DRAM_),
+1. SDRAM (_synchronous DRAM_), and
+1. DDR SDRAM (_double data-rate synchronous DRAM_)
+
+ADRAM is the original design and implementation of DRAM. The description
+_asynchronous_ comes from the fact that memory access is not synchronized
+with the computer system's clock.
+
+ADRAM, however, has been largely replaced with SDRAM. These chips use a
+conventional clock signal rather than asynchronous control, as was the case
+with ADRAM. By keeping in sync with the system's clock, SDRAM chips can
+reuse their row addresses.
+
+Moreover, modern chips use a variant of SDRAM called DDR SDRAM. The primary
+difference with these chips: 2 bits are sent per cycle from each out pin.
+With conventional SDRAM, the chip sends 1 bit from the array of memory
+cells to the _data queue_ (a waiting area where bits are sent to the
+processor in the order the bits arrive in the queue, also called _prefetch
+buffer_). This is a a small area of RAM where data is loaded before its
+sent to the CPU. At the rising edge of the clock cycle (e.g., when the
+clock heads towards 1), the data queue releases 1 bit to the bus, off to
+the CPU.
+
+DDR SDRAM, however, sends 1 bit at the leading edge, and 1 bit at the
+falling edge (when the clock heads towards 0). DDR SDRAM accomplishes this
+with a technique called _prefetching_: Using two separate pipelines 𝐴 and 𝐵
+(called _data eyes_) from the memory cells, 1 bit is sent towards the data
+queue through 𝐴, and 1 bit through 𝐵. The bits are then released to the bus
+as usual — only this time, 1 bit is sent on the leading edge, and 1 bit is
+sent on the falling edge. DDR SDRAM is referred to as a _2𝑛-prefetch
+architecture_, as 2 bits are fetched from the cell before they're sent one
+at a time.
+
+DDR SDRAM, however, is outdated. It was replaced with DDR2 (now also
+outdated), which was replaced with DDR3 (close to being outdated), which is
+now close to being entirely replaced with DDR4 (most modern RAM chips). The
+numbering difference corresponds to the size of the data queue. With the
+first version of DDR, the data queue is 2 bits wide. DDR2 is 4 bits wide
+(4𝑛 prefetch), DDR3 and DDR4 are both 8 bits (8𝑛 prefetch; the DDR4 focused
+on improving energy efficiency), and DDR5 is 16 bits. At the time of this
+writing, DDR5 is extremely expensive and has yet to settle in the market.
+
+### Non-Volatile Memory
+
+As mentioned earlier, DRAM and SRAM are both forms of volatile memory. Once
+we've lost power, the information is lost. When we want to ensure data
+remains saved even with power loss, we use non-volatile memory.
+
+The computer system's most important non-volatile memory chip is the
+**Read-only Memory (ROM)** chip. The ROM is where machine level
+instructions are stored, hardcoded during hardware production, as well as
+several other programs:
+
+1. _BIOS (Basic Input/Output System)_. The BIOS is the first program that
+   runs when we turn on our computer. It's what handles and executes all of
+   the necessary startup instructions to get the system running.
+2. _Disk Controllers_. These programs handle the system's controller chip,
+   which is what enables the CPU to communicate with other chips in the
+   system.
+3. _Network interface_. These programs manage the system's _network
+   adapter_, the chip that handles wired (if the system provides it) and
+   wireless network connections to the computer.
+4. _Graphics interface_. These programs manage the system's _graphics
+   processing unit (GPU)_, the chip that handles image output to a display
+   device.
+
+ROM comes in several varieties:
+
+1. **Programmable Read-only Memory (PROM)** PROM is a type of ROM stores
+   the microcode (hardware level instructions) necessary for interpreting
+   electrical currents and voltages as 1s or 0s in the first place. Like
+   ROM, PROM can only be programmed once. PROM chips are still used by
+   video game consoles and smaller devices, but were largely replaced with
+   EPROM for modern computers.
+2. **Eraseable PROM (EPROM)** is PROM that can be re-programmed by erasing
+   the entire chip with ultra violate light or x-rays. Moden computers have
+   replaced EPROM with EEPROM.
+3. **EEPROM** is PROM that can be re-programmed through electronic erasing.
+   Modern computers use EEPROM chips. EEPROM chips themselves have two
+   types: (1) **electrically alterable read-only memory (EAROM)** and (2)
+   **flash memory**. The primary difference between the two is how quickly
+   we can rewrite the ROM chip. With EAROM, we can only erase and rewrite 1
+   bit at time. This is a very slow and voltage-intensive process. Flash
+   memory improves this by allowing users to erase and rewrite hundreds of
+   bits at a time. The downside to EEPROM: The more we erase and rewrite,
+   the more the chip wears out. At present, most flash chips have an upper
+   bound on 100,000 erasings.
+
+Alongside the ROM, modern computers also have _disk memory_ for long-term
+storage. This is the large amount of memory we see in computer
+advertisements. The most common forms are _hard disk drives (HDD)_ and
+_solid state drives (SSD)_, the latter having largely replaced the former.
+
+### Disk Memory
+
+Although solid state drives are becoming more main stream, hard disk drives
+(HDDs) are still used extensively for large-scale memory storage.
+Accordingly, it's helpful to understand some of the basics with HDDs.
+
+All HDDs have a _disk capacity_ — the maximum number of bits that can be
+stored on the HDD. Manufacturers generally express capacity in units of
+_gigabytes (GB)_, where:
+
+$$
+	1\tt{GB} = 10^{9}~\tt{bytes}
+$$
+
+Disk capacity is bounded by several factors:
+
+1. _Recording density_. Measured in bits/inch, this value is the number of
+   bits that can be squeezed into a 1 inch segment of a track on the disk.
+2. _Track density_. Measured in tracks/inch, this is the number of tracks
+   we can squeeze into a 1 inch radial segment.
+3. _Areal density_. Measured in ${\tt{bits}/\tt{in}^2}$, this is the
+   product of the recording and track densities.
+
+### Memory Transactions
+
+Here's a broad overview of how memory connects with the rest of the
+computer system:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656961220/cs/MemoryFlow_wmqt45.svg"
+	}
+	imwidth={"741"}
+	imheight={"262"}
+	caption={"Memory flow"}
+	width={"70"}
+/>
+
+Suppose a line of source code translates to:
+
+```nasm
+movq A, %rax
+```
+
+This is a load operation. Assuming the instruction comes from some
+function, the instruction is somewhere in stack memory. When it comes time
+to execute this instruction, the RAM chip feeds the instruction's bits to
+the memory bus, where it travels to the I/O bridge. The I/O bridge then
+sends the bits onto the system bus, where it goes off to the bus interface,
+then onto the register file.
+
+Each of the rectangles in the register file depicts a CPU register. For
+example, the first rectangle might be `%rax`. The bits from the bus
+interface are placed in the register file, where it is then sent to the
+ALU. The ALU takes these bits, performs its computations, and feeds its
+results back to the register file.
+
+In our sample instruction above, we're instructing the system to move
+whatever's at the address `A` into the register `%rax`. So, the ALU sends
+the bits corresponding to this instruction to the register file, which are
+then sent to the RAM chip, again down the buses. The RAM chip receives
+these bits, and sends the whatever value is in `A` in response. The bits
+travel down the bus line, ultimately getting stored in the `%rax`'s slot in
+the register file. All of this happens in microseconds.
+
+#### I/O Bridge
+
+We can think of the _I/O bridge_ as the system's King's Cross station —
+where all of the system's buses meet. The disk controller, graphics
+adapter, network adapter, and USB controller (a chip for managing devices
+like wired mice and keyboards) all have buses that connect to the I/O
+bridge. More specifically, these buses connect to the _I/O bus_, which
+feeds to the I/O bridge. From the I/O bridge are the two buses seen
+earlier, the _system bus_ (leading to the CPU) and the _memory bus_
+(leading to main memory).
+
+Each chip connected to the I/O bus has a _port address_. This a specific
+address in memory dedicated to the particular chip. For example, for some
+computer system 𝑆, the graphics adapter (for managing image output to a
+device like a monitor) might have dedicated regions in memory for the
+adapter.
+
+Whenever we want to read or write to some device managed by the chip, the
+relevant instruction sent from the CPU will include the port address. When
+the I/O bridge receives this instruction, it routes the instruction to the
+relevant port address, where it is then received by the managing chip. That
+chip then sends the instruction to the connected device, which executes the
+instruction accordingly.
+
+For example, say we wanted to read some piece of data 𝐷 from our hard disk.
+The CPU's recieves the instruction, outputting the relevant bits to include
+the managing chip's port address. In this case, that chip is the _disk
+controller_. The I/O bridge receives these bits and the port address, and
+sends the bits down to the disk controller. The disk controller receives
+the bits and reads the disk's sector containing 𝐷. Once it retrieves 𝐷, it
+performs a _direct memory access (DMA)_ to transfer 𝐷 into main memory.
+
+By using _DMA_, the disk controller doesn't have to bother the CPU with
+transferring the data to main memory. This allows the CPU to perform other
+computations while it waits for the data 𝐷 to get to main memory. Once 𝐷 is
+in memory, an _interrupt bit_ is sent to the CPU, where it's received at a
+special pin called the _interrupt pin_. This alerts the CPU that the data
+is now in memory.
+
+### Locality
+
+Accessing memory takes time. Ranking memory technologies from fastest to
+slowest read-write speeds, we get:
+
+1. SRAM
+2. DRAM
+3. SSD
+4. HDD
+
+These speeds go downhill if the system allocated memory for our programs
+randomly. Accordingly, computer systems use memory allocation techniques
+guided by the principle of **locality**:
+
+> **locality principle**. A program 𝑃, more often than not, will use data
+> and instructions with addresses near or equal to those they have used
+> recently.
+
+In memory allocation, the locality principle results in two phenomenon:
+
+1. _Temporal locality_: If a datum or an instruction is recently
+   referenced, it will likely have the same address as it did previously.
+2. _Spatial locality_: If a datum or an instruction ${B_0}$ is commonly
+   associated with another datum or instruction ${B_1,}$ it's likely that
+   ${B_0}$ and ${B_1}$ are in close proximity to one another in memory.
+
+### Memory Hierarchy
+
+A computer system's memory consists of various tiers, going from fastest
+(and most financially expensive) to slowest (cheapest):
+
+1. _CPU registers_. The CPU registers are the fastest memory devices on the
+   system. However, they're also the smallest and most expensive. The only
+   things these registers store are the words retrieved from the L1 cache.
+2. _L1 cache (SRAM)_. The L1 cache holds the cache lines its fed from the
+   L2 cache.
+3. _L2 cache (SRAM)_. The L2 cache holds the cache lines from the L3 cache.
+4. _L3 cache (SRAM)_. The L3 cache holds the cache lines fed from the RAM
+   chip.
+5. _main memory/RAM (DRAM)_. Main memory holds disk blocks retrieved from
+   local disks.
+6. _local secondary storage (local disks)_. The local disks hold files.
+7. _remote secondary storage (e.g., web servers)_. These are remote disks
+   that hold files.
+
+As we go further down the hierarchy above, we get further and further from
+the CPU. We also get increasingly larger memory capacities.
+
+#### Caches
+
+A **cache** is a memory device used to temporarily hold a small amount of
+data. Specifically, it's a staging area for a small part of a large piece
+of data. The idea: For each level ${L}$ in the memory hierarchy presented
+earlier, the memory device used in the level serves as a cache for the
+level directly below it (${L+1}$).
+
+Caches are a direct application of locality. Say a program 𝑃 runs, and it
+needs 48 bytes of data now, and 12 bytes of data later. This totals 72
+bytes of data; far more than the capacity of the fastest memory devices on
+the system. Caches are a way to get around this problem:
+
+1. First, assume the 48 bytes and the 12 bytes exist at the same level in
+   the memory hiearchy.
+2. The 48 bytes are more pertinent than the 12 bytes in terms of need, so a
+   _copy_ of those 48 bytes go up the memory hierarchy.
+3. At the next level, perhaps the first 24 bytes are more pertinent than
+   the other 24 bytes. So, 24 bytes bytes are copied to the next memory
+   device up the hierarchy, and 24 bytes remain at the level in _cache_.
+4. At the next level, perhaps only 12 of the 24 bytes are more pertinent
+   than the other. So, 12 bytes remains at the level in cache, and the
+   other 12 bytes are copied.
+5. The process continues until we're at the processor's _word-size_. For
+   the x86-64, this is 64 bits — 8 bytes.
+
+This achieves a key goal in memory systems: Creating a large pool of
+storage that costs as much as the cheap storage near the hierarchy's
+bottom, all while serving data to programs at the rate of the fastest
+storage near the top.
+
+Importantly, the bytes don't necessarily move up the hiearchy in halves.
+They can move at either a fixed size or a variable size. For example, an
+HTML file from a webpage can be either 10 kilobytes or 2 megabytes
+(hopefully not). That webpage is served from a web server. When we visit
+that page, a copy of it is cached in the next level's memory device — disk
+memory.
+
+#### Cache Hits and Misses
+
+Given what we now know about caching, it follows that whenever we execute a
+program, there are two possible scenarios for the program's data:
+
+1. The data is cached at the current level, or
+2. the data is _not_ stored at the current level
+
+If it's scenario (1), then we have a **cache hit**. The system reads the
+data directly.
+
+If it's scenario (2), we have a **cache miss** — the system must fetch the
+data from the cache at the level below, and place it in the current level.
+Because caches get smaller as we go up the hierarchy, the system will
+likely will have to overwrite data in cache. Which data is overwritten? It
+depends on the memory device's _replacement policy_. Generally, there are
+two kinds:
+
+1. _Random replacement policies_ are replacement rules where a random block
+   in cache is selected for overwrite.
+2. _Lease recently used policies_ are replacement rules where blocks least
+   recently used (i.e., last used further in time) are selected for
+   overwrite.
+
+Needless to say, we don't want cache misses. They result in additional
+instructions for fetching, copying, and replacement. That said, some cache
+misses are unavoidable.
+
+There are three kinds of cache misses:
+
+1. _Cold misses_. These are unavoidable misses. They occur because the
+   cache starts empty.
+2. _Capacity misses_. These misses occur when the _working set_'s size
+   exceeds the cache's size. For example, we might have a loop that
+   iterates over an array of structs. If those structs are large tree
+   structures, we'll more than likely hit capacity misses — they're far too
+   large for the cache. Some of these misses are avoidable, others are not.
+   Again, these are tradeoffs we have to deal with.
+3. _Conflict misses_. These misses occur because the cache is large enough
+   to hold the data, but the cache is designed to only copy data from a
+   particular area 𝐴 of the memory device in the level below it. Thus, any
+   data not stored in 𝐴 will result in a miss. This is restriction is
+   generally found in the highest rungs of the memory hierarchy — the
+   processor registers, L1 cache, and others close to the CPU.
+
+#### Cache Organization
+
+Like the diagrams we saw with main memory, caches are divided into blocks:
+
+| block index | data      |
+| ----------- | --------- |
+| 000         | 0000 0000 |
+| 001         | 0000 0000 |
+| 010         | 0000 0000 |
+| 011         | 0000 0000 |
+| 100         | 0000 0000 |
+| 101         | 0000 0000 |
+| 110         | 0000 0000 |
+| 111         | 0000 0000 |
+
+Each address in main memory maps to exactly one of the cache blocks. For
+example if our cache is only 4-bytes large, the following addresses in main
+memory might map as follows:
+
+| main memory address | cell      | cache index |
+| ------------------- | --------- | ----------- |
+| 0x01                | 0000 0000 | 000         |
+| 0x02                | 0000 0000 | 001         |
+| 0x03                | 0000 0000 | 010         |
+| 0x04                | 0000 0000 | 011         |
+| 0x05                | 0000 0000 | 000         |
+| 0x06                | 0000 0000 | 001         |
+| 0x07                | 0000 0000 | 010         |
+| 0x08                | 0000 0000 | 011         |
+
+This is the simplest approach to implementing a cache — _direct mapping_.
+The contents of the frequently accessed main memory addresses are stored in
+their corresponding cache block. When we need that data, we check the
+cache. If it isn't there, we fetch it from main memory.
+
+Problem: How do we determine which cache block goes to which memory
+address? Well, we can do so with the modulus operator. If the cache
+contains ${2^k}$ blocks, then the data at memory address ${i}$ goes to the
+cache block with the index:
+
+$$
+	i \bmod 2^k
+$$
+
+This is one way to compute the mapping. We could also use the addreses
+least-significant bits. For example, addresses ending in `00` map to the
+cache block with with the index `00`, addresses ending `01` map to the
+cache block with the index `01`, and so on.
+
+But what if we get an instruction to read the contents of a particular
+address? If each block in the register can map to multiple addresses, how
+do we know we're going to the right address? To solve this problem, we add
+_tag bits_:
+
+| tag | block index | data      |
+| --- | ----------- | --------- |
+| 0   | 000         | 0000 0000 |
+| 1   | 001         | 0000 0000 |
+| 1   | 010         | 0000 0000 |
+| 1   | 011         | 0000 0000 |
+
+Assuming the tag and block indices are properly mapped to the respective
+memory address, we can determine which address the cache line maps to by
+reading the tag and block index together:
+
+| memory address |
+| -------------- |
+| 0x0000         |
+| 0x1001         |
+| 0x1010         |
+| 0x1011         |
+
+With this basic understanding, let's add a bit more detail.
+
+A _cache_ consists of memory cells grouped into **lines**. The lines are
+then grouped into **sets**:
+
+| set        | line 0     | line 1     | ...        | line 𝑛     |
+| ---------- | ---------- | ---------- | ---------- | ---------- |
+| 0          | 0000 0000  | 0000 0000  | ...        | 0000 0000  |
+|            | 0000 0000  | 0000 0000  | ...        | 0000 0000  |
+| 1          | 0000 0000  | 0000 0000  | ...        | 0000 0000  |
+|            | 0000 0000  | 0000 0000  | ...        | 0000 0000  |
+| ${\vdots}$ | ${\vdots}$ | ${\vdots}$ | ${\vdots}$ | ${\vdots}$ |
+| 𝑛          | 0000 0000  | 0000 0000  | ...        | 0000 0000  |
+
+How many sets and lines there are varies by processor. Generally, however,
+cache can be measured in two dimensions:
+
+1. The number of lines per set, given by the equation:
+
+   $$
+   	E = 2^n
+   $$
+
+   where ${n \in \NN}$.
+
+2. The number of sets, which is given by the equation:
+
+   $$
+   	S = 2^s
+   $$
+
+   where ${s \in \NN.}$
+
+The memory device's placement policy determines which of the sets a
+particular address goes, and which of the lines within that set the address
+is stored.
+
+Within each cache line, there are three key components:
+
+1. 𝐵 bytes, where ${B \in \NN.}$ These bytes are where the actual data are
+   stored.
+2. A set of _tag_ bits that identify the block's memory address.
+3. A _valid bit_ — a single bit to indicate whether the line is valid.
+
+The total cache size ${C}$ is given by the equation:
+
+$$
+	C = S \cdot E \cdot B = 2^s \cdot 2^n \cdot B
+$$
+
+The values for ${s}$ and ${n}$ will depend on the memory device's
+manufacturer. Suppose the CPU receives an instruction to read the data at
+main memory address 𝐴.
+
+Upon receipt, the CPU sends the bits comprising 𝐴 to cache memory. If the
+cache doesn't have the data inside address 𝐴, it will fetch the contents of
+𝐴 from main memory, and store them in the cache. But if the cache does have
+a copy of 𝐴's contents, it will send 𝐴 back to the CPU.
+
+The memory device can determine whether 𝐴's contents already exist
+somewhere in its lines because of how addresses are formatted.
+
+| 𝑡    | 𝑠         | 𝑏           |
+| ---- | --------- | ----------- |
+| 0..0 | 000...000 | 0000...0000 |
+
+Each block has the address format above: 𝑡 bits for the tag, 𝑠 bits for the
+set's index in the line, and 𝑏 bits for the block's offset (equal to the
+number of 𝐵 bytes the block can store). To determine if 𝐴 exists in the
+block, all the cache memory device has to do is:
+
+1. Look at the the 𝐴 address's set index bits. This tells the cache which
+   _set_ the address 𝐴's mapped cell might exist in.
+2. Go to the set.
+3. Look at the tag bits in the 𝐴 address. This tells the cache which _line_
+   within the set the address 𝐴 might be mapped to. If the tag bits don't
+   yield the 𝐴 address, then we have a cache miss: the data to be retrieved
+   from address 𝐴 in main memory, brought to the cache, the line's
+   occupants are evicted, and data retrieved from 𝐴 becomes the new
+   occupant. If the tag bits do match, then we go to the next step.
+4. Use the 𝑏 bits to determine where in the 𝐵 bytes the data starts.
+
+How do we know that the data inside those bytes is correct? Through the
+_valid bit_ we mentioned earlier. If the line contains some garbage value,
+that bit will be set to 0. Otherwise, it's 1.
+
+### Writing Cache-optimized Code
+
+There are several ways to ensure our code is using the cache optimally:
+
+#### Contiguous over Connected
+
+Given an equal choice between a connected data structure (e.g., a linked
+list) and a contiguous data structure (e.g., an array), use the contiguous
+data structure. Arrays are _much more_ cache friendly than linked lists
+because of spatial locality — the data are all close together.
+
+#### Exploit Order
+
+When working with matrices or jagged arrays, always be cognizant of whether
+the language uses row- or column-major ordering. If the language uses
+row-major ordering (the vast majority of languages), increment the column
+index first, then increment the rows. If the language uses column-major
+ordering, increment the row index first, then increment the columns. This
+is a common point of neglect for those unaware of the language's indexing
+system.
+
+For example, say we had a 2-dimensional matrix in some language:
+
+```rust
+int M = [
+	[1, 2],
+	[3, 4]
+]
+```
+
+Now suppose we're asked to perform some operation on each element in the
+matrix:
+
+```rust
+for (int i = 0; i < 2; i++) {
+	for (int j = 0; j < 2; j++) {
+		M[i][j];
+	}
+}
+```
+
+This is cache friendly code. The cache unfriendly version is swapping the
+`i` and the `j`:
+
+```rust
+for (int i = 0; i < 2; i++) {
+	for (int j = 0; j < 2; j++) {
+		M[j][i];
+	}
+}
+```
+
+There are few reasons to write something like the above, but it does
+happen.
+
+#### Pass-by-reference over Pass-by-value
+
+When we pass by value, the callee gets a copy of the value, and then once
+the callee is done, that copy is destroyed. This can often be a needless
+use of memory, processing time, and cache resources.
+
+#### Minimize Branches
+
+The more branches we have, the more the system must read data from memory.
+And the more often the system must read data from memory, the more likely
+we are to encounter cache misses.
+
+#### Sorted over Unsorted
+
+If our data can be given some sort of order, we minimize the amount of
+unpredictable branches. The more unpredictable branches we have, the more
+likely we are to experience cache misses.
+
+### Arrays
+
+In C, arrays are allocated as follows:
+
+$$
+   T~~A[\ell]
+$$
+
+where ${T}$ is a data type, ${A}$ is the array's name, and ${\ell}$ is the
+length of the array. Writing the syntax above results in the allocation of
+${\ell \cdot S(T)}$ bytes in memory, where ${S(T)}$ is the data type's
+size. Below is a diagram of different data type arrays, where each
+rectangle is 1 byte. From left to right, an array of 4 `char` values, an
+array of 4 `int` values, an array of 4 `double` valeus, and an array of 4
+string values.
+
+<StackPlot
+	data={[4, 16, 32, 32]}
+	axisGroups={["char[4]", "int[4]", "double[4]", "char *s[4]"]}
+	height={600}
+	scale={50}
+/>
+
+Suppose we wrote the following code in C:
+
+```c
+int a[5] = {6,3,1,2,5};
+int b[5] = {8,7,3,2,9};
+int c[5] = {9,2,1,0,7};
+```
+
+In memory, we might get something that looks like:
+
+<Mem
+	data={[
+		{ val: 6, id: "a" },
+		{ val: 3 },
+		{ val: 1 },
+		{ val: 2 },
+		{ val: 5 },
+		{ val: 8, id: "b" },
+		{ val: 7 },
+		{ val: 3 },
+		{ val: 2 },
+		{ val: 9 },
+		{ val: 9, id: "c" },
+		{ val: 2 },
+		{ val: 1 },
+		{ val: 0 },
+		{ val: 7 },
+	]}
+	dataSize={4}
+	scale={60}
+	height={450}
+/>
+
+The addresses for each of these memory cells belongs to a region called the
+**stack**. Importantly, there's no guarantee that the arrays are allocated
+side by side. There could very well be other occupied bytes separating the
+arrays.
+
+### Array Access
+
+Suppose we had the following array of `int`s named `val` (indices at the
+bottom and the memory offset at the top):
+
+<StaticArray
+	data={[
+		{ val: 1, ant: "+0" },
+		{ val: 5, ant: "+4" },
+		{ val: 2, ant: "+8" },
+		{ val: 1, ant: "+12" },
+		{ val: 3, ant: "+16" },
+	]}
+	scale={30}
+/>
+
+We can draw the following conclusions:
+
+| Reference  | Type    | Value                           |
+| ---------- | ------- | ------------------------------- |
+| `val[4]`   | `int`   | 3                               |
+| `val`      | `int *` | x                               |
+| `val+1`    | `int *` | x+4                             |
+| `&val[2]`  | `int *` | x+8                             |
+| `val[5]`   | `int`   | _garbage value_ (out of bounds) |
+| `*(val+1)` | `int`   | 5 (equivalent to `val[1]`)      |
+| `val+i`    | `int *` | x+4i (equivalent to `&val[i]`)  |
+
+To drill in our understanding of array accessing and pointers, suppose we
+have the following declarations in C:
+
+```c
+int A[3]      /*  an array of 3 ints;              */
+int *B;       /*  a pointer to an int              */
+int *C[3];    /*  an array of pointers to ints     */
+int (*D)[3];  /*  a pointer to an array of 3 ints  */
+```
+
+then the following results are true:
+
+| Declaration   | Does it compile?                                                                                |
+| ------------- | ----------------------------------------------------------------------------------------------- |
+| `A`           | yes: returns the address of of the first byte in `A[3]`                                         |
+| `*A`          | yes: returns the value inside the first byte in `A[3]`                                          |
+| `**A`         | no: this expression dereferences an `int`, not a pointer                                        |
+| `sizeof(A)`   | yes: returns 12 (total bytes composing `A`)                                                     |
+| `sizeof(*A)`  | yes: returns 4 (the size of the first element, an `int`)                                        |
+| `B`           | yes: we're referring to a random memory address                                                 |
+| `*B`          | yes: but we're dereferencing a random memory location                                           |
+| `**B`         | no: we're dereferencing the result of dereferencing a random memory location                    |
+| `sizeof(B)`   | yes: returns 8 (the size of a pointer)                                                          |
+| `sizeof(*B)`  | yes: returns 4 (the size of an `int`)                                                           |
+| `C`           | yes: returns the address of the pointer array                                                   |
+| `*C`          | yes: returns the first element in the array, a pointer to an `int`                              |
+| `**C`         | yes: returns the `int` inside the first pointer element                                         |
+| `sizeof(C)`   | yes: returns 24 (the size of the bytes composing the pointer array; ${8 \times 3 = 24}$)            |
+| `sizeof(*C)`  | yes: returns 8 (the size of the first element, a pointer to an `int`)                           |
+| `sizeof(**C)` | yes: returns 4 (the size of the first element inside the first pointer, an `int`)               |
+| `D`           | yes: returns the pointer to the array of `int`s                                                 |
+| `*D`          | yes: returns the to the array of `int`s                                                         |
+| `**D`         | yes: returns the first element in the array of `int`s                                           |
+| `sizeof(D)`   | yes: returns 8 (the size of the first element, a pointer to an array of `int`s)                 |
+| `sizeof(*D)`  | yes: returns 12 (the size of the bytes composing the `int` array)                               |
+| `sizeof(**D)` | yes: returns 4 (the size of the bytes composing the first element in the `int` array, an `int`) |
+
+### Looping through an Array
+
+With the basics of arrays out of the way, let's look at what looping
+through an array looks like in Assembly. Say we had the following code:
+
+```c
+void increment(int *arr) {
+   size_t i;
+   for (i = 0; i < 4; i++) {
+      arr[i]++;
+   }
+}
+
+```
+
+Simple enough. The `increment` function takes an array of `int`s, loops
+over each element four times, incrementing at each iteration. In Assembly,
+this code might look like:
+
+```nasm
+movl $0, %eax               # i = 0
+jmp .L3                     # go to comparison label
+.L4:                        # loop label
+   addl $1 (%rdi, %rax, 4)  # arr[i]++
+   addq $1, %rax            # i++
+.L3:                        # comparison label
+   cmpq $4, %rax            # compare i and 4
+   jbe .L4                  # if the comparison is true, goto the loop label
+   rep; ret                 # return
+```
+
+## Nested Arrays
+
+Array can consist of pointers to arrays. This leads to data structures like
+_matrices_:
+
+<Matrix scale={20} />
+
+and _jagged arrays_:
+
+<JaggedArray scale={30} />
+
+In C, we declare nested arrays with the syntax:
+
+$$
+   \mm{$T$ $A$[$R$][$C$]}
+$$
+
+where ${T}$ is the nested array's type, ${R}$ is the index of each array
+(the "row"), and ${C}$ is the index of each element in each array (the
+"column"). For example, the expression:
+
+```c
+int arr[4][5];
+```
+
+results in a matrix consisting of 4 arrays, each with 5 elements:
+
+<Matrix
+	data={[
+		[" ", " ", " ", " ", " "],
+		[" ", " ", " ", " ", " "],
+		[" ", " ", " ", " ", " "],
+		[" ", " ", " ", " ", " "],
+	]}
+	scale={20}
+/>
+
+This results in a data structure with the size:
+
+$$
+   R \times C \times S(T)
+$$
+
+where ${R}$ is the number of arrays, ${C}$ is the number of elements in
+each array, and ${S(T)}$ is the size of the nested array's type. Thus, for
+the earlier matrix, we have a data structure that consumes:
+
+$$
+   4 \times 5 \times 4 = 80
+$$
+
+bytes of memory.
+
+As we can likely tell, there's a design choice involved with implementing
+nested arrays. Because memory is just one large array of bytes, nested
+arrays, at lower levels, are actually a flat, linear data structure.
+Accordingly, we have two choices:
+
+1. Store each element in the nested array _row by row_ (the **row-major
+   ordering approach**), or
+2. Store each element in the nested array _column by column_ (the
+   **column-major ordering approach**).
+
+To illustrate, suppose we instantiate the following nested array:
+
+```c
+char A[3][3] = {
+   {7,6,5},
+   {2,0,3},
+   {9,8,4},
+}
+```
+
+The approaches are compared below (row-major ordering to the left,
+column-major ordering to the right):
+
+<Grid cols={2}>
+	<Mem
+		data={[
+			{ val: 7, className: "blue" },
+			{ val: 6, className: "blue" },
+			{ val: 5, className: "blue" },
+			{ val: 2, className: "red" },
+			{ val: 0, className: "red" },
+			{ val: 3, className: "red" },
+			{ val: 9, className: "green" },
+			{ val: 8, className: "green" },
+			{ val: 4, className: "green" },
+		]}
+	/>
+	<Mem
+		data={[
+			{ val: 7, className: "blue" },
+			{ val: 2, className: "red" },
+			{ val: 9, className: "green" },
+			{ val: 6, className: "blue" },
+			{ val: 0, className: "red" },
+			{ val: 8, className: "green" },
+			{ val: 5, className: "blue" },
+			{ val: 3, className: "red" },
+			{ val: 4, className: "green" },
+		]}
+	/>
+</Grid>
+
+Of these two approaches, C uses the former, row-major ordering. Languages
+that use column-major ordering include Fortran, Matlab, GNU Octave, S-Plus,
+R, Julia, Scilab, and Rasdaman.
+
+### Accessing Nested Arrays
+
+To access a nested array's row, the following rule applies:
+
+> _Lemma_. Let 𝐴 be a nested array, where each array in 𝐴 contains 𝑁
+> elements of type 𝑇. Then:
+>
+> $$
+>   \mm{𝐴[i] = 𝐴 + (i ⨉ 𝑁 ⨉ 𝑆(𝑇))}
+> $$
+>
+> where 𝑆(𝑇) is the size of type 𝑇 in bytes.
+
+For example, say we had the following nested array:
+
+```c
+int arr[3][3] = {
+   {1,2,3},
+   {3,4,5},
+   {6,7,8},
+}
+```
+
+When we write `arr[0]`, we ask ask for the first row, which is the array
+`{1,2,3}`. When we write `arr[2]`, we ask for the third row, which is the
+array `{6,7,8}`. Suppose we wrote a function that takes an index and
+returns the corresponding row:
+
+```c
+int *get_row(size_t index) {
+   return arr[index];
+}
+```
+
+In Assembly, this code might look something like:
+
+```nasm
+# %rdi = index
+leaq   (%rdi, %rdi, 4),  %rax    # 3 * index
+leaq   arr(,%rax,4),     %rax    # arr + (12 * index)
+```
+
+### Accessing Nested Array Elements
+
+To access nested array elements, the following rule applies:
+
+> _Lemma_. Let 𝐴 be a nested array, where each array in 𝐴 contains 𝑁
+> elements of type 𝑇. Then:
+>
+> $$
+>   \mm{𝐴[i][j] = 𝐴 + (i ⨉ 𝑁 ⨉ 𝑆(𝑇)) + (j ⨉ 𝑁)}
+> $$
+>
+> where 𝑆(𝑇) is the size of type 𝑇 in bytes.
+
+### Jagged Arrays
+
+Alternatively, nested arrays can take the form of a jagged array:
+
+<JaggedArray
+	data={[
+		[2, 3, 1],
+		[6, 8, 3, 5, 7],
+		[9, 0, 1, 4],
+		[1, 3],
+		[1],
+		[1, 2, 6, 7],
+		[1, 7],
+	]}
+	scale={40}
+/>
+
+Here, each row index is a pointer to an array. This complicates things
+somewhat. Because each row element is a pointer of 8 bytes, the following
+procedure applies:
+
+1. Get the pointer to the row array.
+2. Access the element within the row array.
+
+As we can likely tell, jagged arrays are less efficient than just using
+plain row-major ordering — we have to do two memory reads.
+
+### Fixed v. Variable Matrices
+
+Consider these three functions of C code:
+
+```c
+#define N 16
+typedef int fix_matrix[N][N];
+int fixed_matrix_element(fix_matrix Arr, size_t i, size_t j) {
+   return Arr[i][j];
+}
+```
+
+```c
+#define IDX(n, i, j) ((i) * (n) + (j))
+int variable_matrix_element1(size_t n, int *Arr, size_t i, size_t j) {
+   return Arr[IDX(n, i, j)];
+}
+```
+
+```c
+int variable_matrix_element2(size_t n, int Arr[n][n]) {
+   return Arr[i][j];
+}
+```
+
+Of these three functions, `fixed_matrix_element()` is the most efficient.
+This is because the compiler know ahead of time how large the matrix is,
+allowing it to avoid the additional cycles of having to compute the
+multiplication step in the index arithmetic. Of course,
+`fixed_matrix_element()` comes at the cost having a more general function
+that can handle matrices of various sizes.
+
+If we did want a more general function, we'd have to use
+`variable_matrix_element2()`. The `variable_matrix_element1()` function is
+the old way of writing variable matrix functions. However, because
+compilers like gcc have gotten smarter, we no longer need to explicitly
+provide the indexing formula.
+
+### Structs
+
+Structs are commonly used container in C. For example:
+
+```c
+struct S {
+   int Arr[4];
+   size_t i;
+   struct S *next;
+}
+```
+
+In memory, the structure is arranged as a block of memory large enough to
+hold all of the fields. Thus, we get something that looks like:
+
+<StaticArray
+	data={[
+		{ val: "...", class: "red", ant: "Arr[0]" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red", ant: "Arr[1]" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red", ant: "Arr[2]" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red", ant: "Arr[3]" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "red" },
+		{ val: "...", class: "grey", ant: "i" },
+		{ val: "...", class: "grey" },
+		{ val: "...", class: "grey" },
+		{ val: "...", class: "grey" },
+		{ val: "...", class: "grey" },
+		{ val: "...", class: "grey" },
+		{ val: "...", class: "grey" },
+		{ val: "...", class: "grey" },
+		{ val: "...", class: "blue", ant: "next" },
+		{ val: "...", class: "blue" },
+		{ val: "...", class: "blue" },
+		{ val: "...", class: "blue" },
+		{ val: "...", class: "blue" },
+		{ val: "...", class: "blue" },
+		{ val: "...", class: "blue" },
+		{ val: "...", class: "blue" },
+	]}
+	pointers={[{ val: "p", i: 0 }]}
+	width={900}
+/>
+
+Above, each block counts as 1 byte. The pointer `p` points to an instace of
+the struct `S`. Thus, whenever we instantiate this struct, we allocate 32
+bytes of memory. The diagram illustrates several facts about structs:
+
+1. The fields are ordered according to their declaration. This means that
+   it's up to the programmer to determine the most compact way of
+   organizing the fields.
+2. The compiler determines the overall size and positions of the fields. At
+   the machine level, the processor has no understanding of what a struct
+   is.
+
+Suppose we write a functione that access the element at index `idx` of the
+`Arr` field. We do so by writing:
+
+```c
+int *get_element_at(struct S *p, size_t idx) {
+   return &p->a[idx];
+}
+```
+
+when the compiler sees the `&p->a[idx]`, it makes the following
+computation:
+
+$$
+   \mm{p + (4 ⨉ idx)}
+$$
+
+That is, it goes to the address where the struct instance resides, and
+reads up to ${4 \times \mm{idx}.}$ This results in the Assembly code:
+
+```nasm
+# assume r is in %rdi, idx is in %rsi
+leaq (%rdi, %rsi, 4), %rax
+ret
+```
+
+#### Alignment
+
+Suppose we defined a struct as follows:
+
+```c
+struct rec {
+   int a[4];
+   int i;
+   struct rect *next;
+}
+```
+
+This struct consumes:
+
+$$
+   (4 \. 4) + (8) + (8) = 16 + 16 = 32
+$$
+
+bytes of memory. Wait. Why is that `i` consuming 8 bytes of memory?
+Shouldn't it be 4? The answer is because of _alignment_. The rule is as
+follows:
+
+> _Rule_. If a primitive data type requires 𝑘 bytes, then the address of an
+> instance of that data type must be a multiple of 𝑘.
+
+For example, suppose we defined a struct as:
+
+```c
+struct S {
+   char c;
+   int i[2];
+   double v;
+} *p
+```
+
+Without alignment, we would get something that looks like:
+
+<StaticArray
+	data={[
+		{ val: "...", ant: "c" },
+		{ val: "...", ant: "i[0]" },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "...", ant: "i[1]" },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "...", ant: "v" },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+	]}
+	pointers={[
+		{ val: "p", i: 0 },
+		{ val: "p+1", i: 1 },
+		{ val: "p+5", i: 5 },
+		{ val: "p+9", i: 9 },
+	]}
+	width={500}
+	scale={80}
+/>
+
+Here, the `char c` causes the pointer indices to go off. With alignment, we
+get a different picture:
+
+<StaticArray
+	data={[
+		{ val: "...", ant: "c" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "...", ant: "i[0]" },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "...", ant: "i[1]" },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "...", ant: "v" },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "end" },
+	]}
+	pointers={[
+		{ val: "p", i: 0 },
+		{ val: "p+4", i: 4 },
+		{ val: "p+8", i: 8 },
+		{ val: "p+16", i: 16 },
+		{ val: "p+24", i: 24 },
+	]}
+	width={700}
+/>
+
+In the diagram above, the cells containing 𝑝 are called _padding bytes_. By
+inserting these bytes, we see that the bytes are allocated in such a way
+that the offsets from the struct's pointer `p` is a multiple of their
+primitive type. `char` is allocated 1 byte (offsetting from the pointer by
+1), the `int`s within the array are allocated in multiples of 4 (offsetting
+from the pointer as a multiple of 4), and the `double` is allocated as a
+multiple of 8 (offsetting from the pointer as a multiple of 8).
+
+Why go through this trouble? Because it's far more expensive — efficiency
+wise — to offset pointers with values that are not multiples of the
+primitive datatype's size. This is because memory is accessed in chunks of
+4 bytes (for a 32-bit system) or 8 bytes (for a 64-bit system).
+
+The general rule: For each primitive data type in the struct, the largest
+data type determines the largest alignment 𝑘. If the struct, without
+padding, ends on an address that is _not_ a multiple of 𝑘, then the
+compiler will insert padding to ensure the struct ends on an address that
+is a multiple of 𝑘. Thus, in the diagram above, we see that the struct ends
+at `p+24`, which is a multiple of 8. This corresponds to ${𝑘 = 8,}$ the
+size of the largest primitive data type in the struct, a `double`.
+
+Note that because of this rule, the way we arrange our declarations can
+result in more or less padding. In our example struct `S`, it just so
+happens that the arrangement of the declarations doesn't change much. We
+would still need 7 bytes of padding. For example, if we had instead made
+the declarations as:
+
+```c
+struct S {
+   double V;
+   int i[2];
+   char c;
+} *p;
+```
+
+we still see 7 bytes of padding:
+
+<StaticArray
+	data={[
+		{ val: "...", ant: "v" },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "...", ant: "i[0]" },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "...", ant: "i[1]" },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "..." },
+		{ val: "...", ant: "c" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "𝑝" },
+		{ val: "end" },
+	]}
+	pointers={[
+		{ val: "p", i: 0 },
+		{ val: "p+8", i: 8 },
+		{ val: "p+12", i: 12 },
+		{ val: "p+16", i: 16 },
+		{ val: "p+24", i: 24 },
+	]}
+	width={700}
+/>
+
+## x86-64 Memory Layout
+
+On an x86-64 system, the entire system's memory addresses can be viewed as
+such:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656611228/cs/memoryLayout.drawio_cj4rdj.svg"
+	}
+	imwidth={"312"}
+	imheight={"362"}
+	caption={"Memory layout"}
+	width={"50"}
+/>
+
+Each of the rectangles corresponds to a particular region of memory. Thus,
+whenever we run a program, the parts that require certain regions will
+receive addresses within the relevant region. For example, if we need stack
+memory, we will get addresses from the stack region, and if we need heap
+memory, we will get addresses from the heap region. A rough overview of
+these regions:
+
+- The _stack_ (also called the _runtime stack_) is where local variables
+  are allocated. Importantly, the stack has a limit of 8 megabytes (8000
+  addresses). Note that the diagram is not drawn to scale. If it were, we
+  would barely see the stack. Indeed, the stack is a very small region.
+  This is design choice intended to prevent against runaway recursion. The
+  moment we exceed 8 megabytes, our program will exit with a segmentation
+  fault in C (or, in other languages, a _stack overflow_).
+- The _heap_ provides memory we manually request. In C, this is done with
+  `malloc()` or `calloc()`, and in C++, this is done with the keyword
+  `new`.
+- The _data_ region is where statically allocated data is stored — global
+  variables, static variables (both declared inside and outside of
+  functions), string constants, and so on.
+- The _shared libraries_ region stores instructions for system wide code.
+  For example, for C and C++, the implementation of `malloc`, `calloc`, and
+  `new` are found in this region of memory.
+- The _text_ region stores the executable machine instructions resulting
+  from the compiler and the linker. For example, when we compile a C
+  program called `main.c`, we might see a lone file that just says `main`.
+  When we run `./main` in our terminal, the instructions inside `main` are
+  loaded into this region, where they are then executed by the processor.
+
+On the x86-64, we have a 64-bit address space. This yields ${2^{64}}$
+memory addresses. However, within the 64-bits, only the low order 48 bits
+are used to address memory addresses available to us users. The upper bits
+(bits 47 to 63), are used by the operating system's _kernel_ to hold data
+necessary to running programs.
+
+A key point about how memory is allocated between these regions: There is
+no fixed rule for how a program allocates memory within these regions. The
+general order of the regions applies, but how memory is allocated within
+the regions varies. An array of pointers could be allocated at higher
+addresses in the heap (closer to the stack), with later pointers allocated
+at lower addresses (closer to the data), or vice versa.
+
+### Buffer Overflows
+
+Consider the following code:
+
+```c
+typedef struct {
+   int a[2];
+   double d;
+} struct_t
+
+double fun(int i) {
+   volatile struct_t s;
+   s.d = 3.14;
+   s.a[i] = 1084939492;
+   return s.d;
+}
+```
+
+Printing the output of `fun`, we see some peculiar results:
+
+```bash
+fun(0) => 3.14000000
+fun(1) => 3.14000000
+fun(2) => 3.13999996
+fun(3) => 2.00000610
+fun(4) => segmentation fault
+fun(8) => 3.14000000
+```
+
+This tells us a few things. First, it seems that when we assign larger
+integer values at an index beyond `2` (the array field `a`'s upper bound),
+we start impacting pieces of the double `d`. Moreover, once we get to hit
+the byte offset from `a` by 4, we hit a _critical state_. But then, at
+index `8`, we're ok again. All of this illustrates how tricky memory
+allocation can be, and why we can't necessarily rely on pointer arithmetic
+to ensure safety.
+
+Allowing users to exceed memory sizes allocated for an array leads to a
+security vulnerability called **buffer overflow**. Undoubtedly, buffer
+overflows are the most common technical cause for security problems.
+
+The most common form of buffer overflows: Unchecked lengths of string
+inputs. For example, a user input field takes a password of length 10, but
+the system makes no checks against password inputs longer than 10. By
+feeding extremely large strings into the program, the stack can grow beyond
+the 8MB limit. This kind of attack is often called **stack smashing**.
+
+Unchecked string input lengths stem from a general lack of awareness with
+certain library functions. Take for example the Unix function `gets()`.
+These days, most compilers will throw all sorts of warnings about using
+this function, given how dangerous it. Simply put, the `gets()` function is
+roughly implemented as follows:
+
+```c
+char *gets(char *dest) {
+   int c = getchar();
+   char *p = dest;
+   while (c != EOF && c != '\n') {
+      *p++ = c;
+      c = getchar();
+   }
+   *p = '\0';
+   return dest;
+}
+```
+
+The `gets()` function works by taking some user input stream, reading each
+character in that stream, and storing it in a memory buffer. As long as it
+hasn't reached the end of the file (for a file input) or the string
+terminator (for a string input), `gets()` will continue allocating memory
+and storing characters — there's no check against how large that input is.
+Moreover, there's no way to specify an upper limit on the number of
+characters to read (since the `gets()` function is stored in the shared
+libraries region, which is read only).
+
+The same problems exist for `strcpy` and `strcat` (C library functions for
+copying strings of arbitrary length) as well as `scanf`, `fscanf`, and
+`sscanf` (when given the `%s` conversion specification).
+
+To illustrate, here's an example of source vulnerable to a buffer overflow:
+
+```c
+void echo() {
+   char arr[4];
+   gets(arr);
+   puts(arr);
+}
+void call_echo() {
+   echo();
+}
+```
+
+That `char` array — the buffer in question — can only store 4 characters.
+That is far, far too small. As is, there's nothing stopping an attacker
+from passing a hundred, a thousand, or even a million characters.

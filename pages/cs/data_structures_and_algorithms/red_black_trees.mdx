@@ -1,0 +1,230 @@
+import {BinaryTree} from "../../../components/illus/components/BinaryTree/BinaryTree";
+
+# Red-black Trees
+
+<BinaryTree data={[
+	[{val:30,focus:`black`}, [{val:20,focus:`black`},50]],
+	[20, [10, null]],
+	[10, [{val:`a`,focus:`black`,label:true}, {val:`b`,focus:`black`,label:true}]],
+	[50, [{val:40,focus:`black`}, {val:60,focus:`black`}]],
+	[40, [{val:`c`,focus:`black`,label:true},{val:`d`,focus:`black`,label:true}]],
+	[60, [{val:`e`,focus:`black`,label:true}, 70]],
+	[70, [{val:`f`,focus:`black`,label:true}, {val:`g`,focus:`black`,label:true}]],
+]}
+scale={70}
+/>
+
+Red-black trees are a height-balanced binary search tree, much like 2-3 trees
+and AVL trees. Its distinguishing properties are as follows:  
+
+1. Every node has a color, red or black (in numeric terms, a `0` or `1`).
+2. The tree's root is always black.
+3. The null nodes are always black.
+4. If a node is red, then its parent and its chilren must be black.
+5. All newly inserted nodes are initially red.
+6. The height ${\H}$ of a red-black tree is bounded as follows:
+	$$
+		\lg n \lte \H \lte 2 \lg n
+	$$
+
+## Insertion
+
+To illustrate insertion, we use the following set of keys:
+
+$$
+	\set{10,20,30,50,40,60,70,80,4,8}
+$$
+
+Start with the first key, 10. This creates the node: 
+
+<BinaryTree data={[
+	[{val:10,focus:`black`}, [null,null]],
+]}
+scale={70}
+height={50}
+/>
+
+Note that this node must have the color black, per _Property 2._ Next, we insert
+the key 20:
+
+<BinaryTree data={[
+	[{val:10,focus:`black`}, [null,20]],
+]}
+scale={70}
+edgeLength={20}
+tighten={50}
+height={50}
+/>
+
+Then we insert the key 30:
+
+<BinaryTree data={[
+	[{val:10,focus:`black`}, [null,20]],
+	[20, [null,30]],
+]}
+scale={70}
+edgeLength={40}
+tighten={50}
+height={70}
+/>
+
+Now we've run into trouble. Under _Property 4_, that 30 must be black. This
+situation is called a __red-red conflict__. For brevity, we'll call the node
+causing this conflict — here, 30 — the _rascal_. Red-red conflicts are resolved
+through recoloring and rotation. We examine each in turn.
+
+### Recoloring
+
+The easiest approach is recoloring. To illustrate this approach, suppose we had
+the following tree:
+
+<BinaryTree data={[
+	[{val:`g`,focus:`black`}, [`u`,`p`]],
+	[`u`, [{val:`z`,label:true,focus:`black`},{val:`y`,label:true,focus:`black`}]],
+	[`p`, [{val:`z`,label:true,focus:`black`},`n`]],
+]}
+scale={60}
+/>
+
+Above, we have a red-red conflict resulting from the rascal ${n.}$ ${\n}$ has
+the parent ${\p,}$ the _pibling_ ${\u,}$ and the _grandparent_ ${\g.}$ In
+recoloring, we perform the following procedure:
+
+1. Starting from the rascal to the root:
+	1. Change ${\p}$'s color to black.
+	2. Change ${\u}$'s color to black.
+	3. Change ${\g}$'s color to red, unless ${\g}$ is the root.
+
+The end result:
+
+<BinaryTree data={[
+	[{val:`g`,focus:`black`}, [{val:`u`,focus:`black`},{val:`p`,focus:`black`}]],
+	[`u`, [{val:`z`,label:true,focus:`black`},{val:`y`,label:true,focus:`black`}]],
+	[`p`, [{val:`z`,label:true,focus:`black`},`n`]],
+]}
+scale={60}
+/>
+
+### Rotation
+
+Recoloring only addresses the situation where the rascal has a pibling. It does
+not address the situation where the rascal has no piblings. There are two such
+cases:
+
+<Grid cols={2}>
+
+<BinaryTree data={[
+	[{val:`g`,focus:`black`}, [{val:`u`,focus:`black`,label:true},`p`]],
+	[`p`, [{val:`z`,label:true,focus:`black`},`n`]],
+]}
+scale={90}
+/>
+
+<BinaryTree data={[
+	[{val:`g`,focus:`black`}, [{val:`u`,focus:`black`,label:true},`p`]],
+	[`p`, [`n`, {val:`z`,label:true,focus:`black`}]],
+]}
+scale={90}
+/>
+
+<figcaption>case 1</figcaption>
+
+<figcaption>case 2</figcaption>
+
+</Grid>
+
+For both cases, we must rotate, similar to how rotations are done with AVL
+trees. In case 1, we perform a _zig-zig rotation_, and in case 2, we perform a
+_zig-zag rotation_. The end result for both:
+
+<BinaryTree data={[
+	[{val:`g`,focus:`black`}, [`p`,`n`]],
+]}
+scale={60}
+edgeLength={60}
+tighten={50}
+height={90}
+/>
+
+In sum, we have the following requirements during the insertion process:
+
+1. If a red-red conflict occurs, do the following:
+	1. If the rascal has a black pibling, perform a recoloring.
+	2. Else:
+		1. If the rascal is the left-child of its parent, perform a zig-zig
+		rotation.
+		2. If the rascal is the right-child of its parent, perform a zig-zag
+		rotation.
+		
+Returning to our insertion process, we see that the rascal has no pibling and is
+the right-child of its parent. So, we perform a zig-zag rotation (equivalent to
+the RR-rotation we saw with AVL trees).
+
+<BinaryTree data={[
+	[{val:10,focus:`black`}, [20,30]],
+	[30, [{val:`a`,focus:`black`,label:true},{val:`b`,focus:`black`,label:true}]],
+	[20, [{val:`c`,focus:`black`,label:true},{val:`d`,focus:`black`,label:true}]],
+]}
+scale={60}
+edgeLength={60}
+tighten={50}
+height={90}
+/>
+
+Now we add the next key, 50: 
+
+<BinaryTree data={[
+	[{val:10,focus:`black`}, [20,30]],
+	[30, [{val:`a`,focus:`black`,label:true},50]],
+	[20, [{val:`b`,focus:`black`,label:true},{val:`c`,focus:`black`,label:true}]],
+]}
+scale={60}
+edgeLength={60}
+tighten={50}
+height={90}
+/>
+
+We have another red-red conflict. This time, the rascal has a pibling, and thati
+pibling is red. Accordingly, we perform a _recoloring_:
+
+<BinaryTree data={[
+	[{val:10,focus:`black`}, [{val:20,focus:`black`},{val:30,focus:`black`}]],
+	[30, [{val:`a`,focus:`black`,label:true},50]],
+	[20, [{val:`b`,focus:`black`,label:true},{val:`c`,focus:`black`,label:true}]],
+]}
+scale={60}
+edgeLength={60}
+tighten={50}
+height={90}
+/>
+
+Now we insert the next key, 40. This node becomes the left-child of 50:
+
+<BinaryTree data={[
+	[{val:10,focus:`black`}, [{val:20,focus:`black`},{val:30,focus:`black`}]],
+	[30, [{val:`a`,focus:`black`,label:true},50]],
+	[20, [{val:`b`,focus:`black`,label:true},{val:`c`,focus:`black`,label:true}]],
+	[50, [40,{val:`d`,focus:`black`,label:true}]],
+	[40, [{val:`e`,focus:`black`,label:true},{val:`f`,focus:`black`,label:true}]],
+]}
+scale={60}
+edgeLength={90}
+tighten={50}
+height={120}
+/>
+
+We get another red-red conflict. The parent is red, and the rascal 40 has no
+piblings. So, we perform a zig-zag rotation:
+
+<BinaryTree data={[
+	[{val:20,focus:`black`}, [{val:10,focus:`black`},{val:40,focus:`black`}]],
+	[40, [30,50]],
+	[30, [{val:`e`,focus:`black`,label:true},{val:`f`,focus:`black`,label:true}]],
+	[50, [{val:`e`,focus:`black`,label:true},{val:`f`,focus:`black`,label:true}]],
+	[10, [{val:`e`,focus:`black`,label:true},{val:`f`,focus:`black`,label:true}]],
+]}
+scale={60}
+edgeLength={90}
+tighten={50}
+height={120}
+/>

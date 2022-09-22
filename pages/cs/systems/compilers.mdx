@@ -1,0 +1,651 @@
+import {LinkedList} from "../../../components/illus/components/LinkedList/LinkedList";
+
+<Metadata
+	title={"Compilers"}
+	description={"Notes on compilers"}
+	keywords={"compilers, computer architecture, computer systems"}
+/>
+
+# Compilers
+
+<q>
+
+_"Trying to outsmart a compiler defeats much of the purpose of using one."_
+
+Brian Kernighan & P.J. Plauger, ~The Elements of Programming Style~ 11
+(1978).
+
+</q>
+
+<div className="outline">
+
+1. [Basic Concepts](#basic-concepts)
+	1. [What is a compiler?](#what-is-a-compiler)
+		1. [Anatomy of a Compiler](#anatomy-of-a-compiler)
+2. [The Tokenizer](#the-tokenizer)
+	1. [Lexical Analysis](#lexical-analysis)
+	2. [Grammars](#grammars)
+		1. [Describing Grammar](#describing-grammar)
+3. [Parsing](#parsing)
+4. [Code Generation](#code-generation)
+	1. [Symbol Tables](#symbol-tables)
+		1. [Managing Symbol Table Memory Usage](#managing-symbol-table-memory-usage)
+	2. [The Code Writer](#the-code-writer)
+		1. [Handling Variable Declarations](#handling-variable-declarations)
+		2. [Handling Variable Usage](#handling-variable-usage)
+	3. [Nested Scoping](#nested-scoping)
+	4. [Handling Expressions](#handling-expressions)
+
+</div>
+
+This chapter covers notes on compilers and language design. The notes below
+assume knowledge from the [Virtual Machines](virtual_machines) chapter.
+
+## Basic Concepts
+
+This section provides an overview of some basic concepts. The subsections
+are kept brief, as later sections will build on the concepts in further
+detail.
+
+### What is a compiler?
+
+Simply put, a compiler is a program that translates text in one language
+(called the _source language_) to another (called the _target language_).
+It might perform numerous other tasks alongside translation — optimization,
+enforcing security, ensuring compliance with the target language's rules —
+but its principle task is translation.
+
+For most compilers, the source language is some high-level language; e.g.,
+Java, C++, C, Python, Swift, etc. The target language is some language a
+little "closer to the metal" — Java bytecode or some other virtual machine
+language, varieties of Assembly, or for some languages, machine code. This
+is a key point to keep in mind. Generally, compilers fall into three
+categories:
+
+1. **Two-tiered compilers** are compilers that take source code inputs and
+   return virtual machine code outputs. The virtual machine code outputs
+   then translated by the relevant virtual machine into machine code.
+2. **Single-tiered compilers** are compilers that take source code inputs
+   and output straight to either the system's Assembly language or the
+   system's machine language.
+
+#### Anatomy of a Compiler
+
+Most compilers — two- or single-tiered — have the following anatomy:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655676706/cs/compiler_anatomy_i4qon8.svg"
+	}
+	caption={"The compiler's components"}
+	width={"70"}
+	imwidth={"681"}
+	imheight={"241"}
+/>
+
+From the diagram, we see that a compiler consists of three main components:
+
+1. A **tokenizer**,
+2. A **parser**, and
+3. A **code generator**.
+
+The first two components are encapsulated in a larger module called the
+**syntax analyzer**. We begin by considering the tokenizer.
+
+## The Tokenizer
+
+### Lexical Analysis
+
+Suppose we had the following code snippet:
+
+```nasm
+if (x < 0) {
+	// determines the sign
+	return "negative input";
+}
+```
+
+The snippet above contains various characters: `i`, `f`, `(`, `x`, `<`, and
+so on. To create meaning, a language can a particular character a meaning
+(e.g., the symbol `<` has the meaning "less than"), or a group of the
+characters meaning (e.g., the grouping `if` marks the introduction of a
+sufficient condition). In the world of programming languages, these basic
+units — a character or group of characters — are called **tokens**.
+
+> _Informal Definition_. A _token_ is a string of characters that has a
+> meaning.
+
+The language can further classify these tokens into **token types**. For
+example, a simple language might have the following token types:
+
+1. keywords,
+2. symbols,
+3. integers,
+4. strings,
+5. identifiers
+
+For example, the program above might result in outputs that look like any
+of the following:
+
+```nasm
+// in some implementation A
+<keyword> if </keyword>
+<symbol> { </symbol>
+<identifier> x </identifier>
+```
+
+```nasm
+// in some implementation B
+{ token: "if", type: "keyword" }
+{ token: "{", type: "symbol" }
+{ token: "x", type: "identifier" }
+```
+
+```nasm
+// in some implementation C
+["if", "keyword"]
+["{", "symbol"]
+["x", "identifier"]
+```
+
+Ultimately, how the token is represented is entirely up to the designer. In
+the first approach, an XML-like output is used; in the second, a
+struct-like output; and in the third, a jagged array.
+
+Broadly, a tokenizer is program the performs the following:
+
+1. abstracts the compiler input as a **token stream**,
+2. ensures the token stream continues flowing so long as there are inputs,
+   and
+3. supply the current token value and type, and
+
+To put this in object-oriented pseudocode, the tokenizer might look like
+the following:
+
+```nasm
+const tokenizer = new Tokenizer("program.file");
+tokenizer.advance();
+while (tokenizer.hasMoreTokens()) {
+	// tokenize tokens
+}
+```
+
+### Grammars
+
+A language needs more than just tokens to convey meaning. For example,
+consider this sequence of words:
+
+```nasm
+hates sprouts she brussels
+```
+
+Each word has a meaning, but all together, the sequence doesn't make much
+sense. If we put the sequence in another order:
+
+```nasm
+she hates brussels sprouts
+```
+
+Now it makes sense. Programming languages are the same way. For the
+language to convey meaning, it must have rules for how tokens should be
+arranged. The set of all these rules is called the language's **grammar**.
+
+> _Informal Definition_. A _grammar_ is a set of rules for how tokens must
+> be arranged to create valid language constructs.
+
+#### Describing Grammar
+
+A grammar consists of **grammatical rules**. To help us describe a
+grammatical rule, we'll use a simple notation system before graduate on to
+a more formal system called _Backus-Naur Form_.
+
+All grammatical rules consist of a left-hand side naming the rule, and a
+right-hand side describing how the rule is composed. For example, we can
+define a small subset of the English language as follows:
+
+$$
+\begin{aligned}
+	&\seq{sentence}: \seq{nounPhrase} \seq{verbPhrase} \\
+	&\seq{nounPhrase}: \seq{determiner?} \seq{noun} \\
+	&\seq{verbPhrase}: \seq{verb} \seq{nounPhrase} \\
+	&\seq{noun}: \tt{apple} | \tt{he} | \tt{she} | \tt{bananas} | \ldots \\
+	&\seq{verb}: \tt{ate} | \tt{shared} | \tt{loves} | \tt{grows} | \ldots \\
+	&\seq{determiner}: \tt{the} | \tt{to} | \tt{my} | \tt{a} | \ldots \\
+\end{aligned}
+$$
+
+The grammatical rules above allow us to write sentences like:
+
+```nasm
+he grows bananas
+he grows the bananas
+she ate the apple
+he shared the bananas
+```
+
+From the simple notation, we see that grammatical rules fall under two
+broad categories:
+
+1. **Terminal rules** are rules where the right hand side defines only
+   constants. The name terminal is descriptive — it's the end of the road
+   when we break down a language's construct.
+2. **Non-terminal rules** are all other rules in the language. These are
+   rules that can be further decomposed into simpler constructs, all the
+   way down to terminal rules.
+
+The simple notation allows us to define a programming language's grammar.
+For example, some language's grammar might be described as follows:
+
+```nasm
+statement :  ifStatement
+				  |  whileStatement
+				  |  letStatement
+```
+
+The notation above tells us the following:
+
+> A `statement` is either (1) an `ifStatement`, (2) a `whileStatement`, or
+> (3) a `letStatement`.
+
+Of course, we can have one or more statements in the language. To describe
+this, we write:
+
+```nasm
+statement  :  ifStatement
+				   |  whileStatement
+				   |  letStatement
+statements : statement*
+```
+
+Here, we denote one or more statements with an asterisk. Let's describe the
+`ifStatement`:
+
+```nasm
+ifStatement : 'if' '(' expression ')' '{' statement '}'
+					  | 'if' '(' expression ')' '{' statements '}'
+```
+
+The description above tells us the following:
+
+> An `ifStatement` starts with the token `if`, followed by the token `(`,
+> followed by an expression, followed by the token `{`, followed by one or
+> more statements, and ending with the token `}`.
+
+The `whileStatement`'s description follows the same form:
+
+```nasm
+whileStatement : 'while' '(' expression ')' '{' statement '}'
+						   | 'while' '(' expression ')' '{' statements '}'
+```
+
+The `letStatement` has a fairly short description, but includes some new
+rules:
+
+```nasm
+letStatement : 'let' identifier '=' expression ';'
+```
+
+Let's first define the identifier rule:
+
+```nasm
+identifier : a string not beginning with a digit
+```
+
+This is a terminal rule. It tells us that an `identifier` is a string not
+beginning with a digit. For the `expression` rule, we have the following:
+
+```nasm
+expression : term (op term)?
+```
+
+This rule provides that an expression is a term, followed by one or more
+`(op term)`. The question mark denotes "one or more" optional parts. What's
+a term? Let's define it:
+
+```nasm
+term : identifier | constant
+```
+
+This description provides that a `term` is either (1) an identifier, or (2)
+a constant. A constant is then defined as a decimal number:
+
+```nasm
+constant : a decimal number
+```
+
+And finally, an `op` is defined as any one of the following tokens:
+
+```nasm
+op : '+' | '-' | '=' | '>' | '<'
+```
+
+Putting all of this together, we have:
+
+```nasm
+statement  :  ifStatement
+				   |  whileStatement
+				   |  letStatement
+statements : statement*
+ifStatement : 'if' '(' expression ')' '{' statement '}'
+					  | 'if' '(' expression ')' '{' statements '}'
+whileStatement : 'while' '(' expression ')' '{' statement '}'
+						   | 'while' '(' expression ')' '{' statements '}'
+letStatement : 'let' identifier '=' expression ';'
+identifier : a string not beginning with a digit
+expression : term (op term)?
+term : identifier | constant
+constant : a decimal number
+op : '+' | '-' | '=' | '>' | '<'
+```
+
+The compiler uses these rules to determine if we have **syntax errors**.
+For example, from the rules above, we can determine that this expression is
+valid in the language:
+
+```nasm
+let pi = 3.14;
+```
+
+but this expression is not:
+
+```nasm
+let pi = 3.14
+```
+
+Why? Because we're missing the token `;`. Likewise, this statement is valid
+in the language:
+
+```nasm
+if (x < 0) {
+	let x = 0;
+}
+```
+
+but this statement is not:
+
+```nasm
+if x < 0 {
+	let x = 0;
+}
+```
+
+Here, we're missing the tokens `(` and `)`. How does the compiler know
+we've violated a grammatical rule? Through the **parser**.
+
+## Parsing
+
+Parsing is the act of verifying that a given input conforms to a language's
+grammar. More interestingly, as we verify the grammar, we steadily uncover
+the input's grammatical structure. This reveals a key insight that
+separates computers from humans. Humans have a truly remarkable ability to
+uncover grammatical structure quickly. Even if the input we receive doesn't
+follow a grammatical rule we're familiar with, we can quickly uncover the
+input's grammatical structure, and ultimately, meaning. This ability is
+most obvious when we read poetry.
+
+Computers, on the other hand, do not have this ability. The tiniest
+deviation from the established rules — a missing semicolon or closing curly
+brace — is enough for it to throw its hands in the air and say, "You don't
+make sense."[^note_parsing]
+
+[^note_parsing]:
+    Of note, some compilers are getting better at handling these small
+    mistakes, parsing the remaining expressions to determine if it can
+    uncover structure and meaning despite the error.
+
+## Code Generation
+
+Consider the following pseudocode in some high-level language:
+
+```nasm
+int sum = x * (1 + rate)
+```
+
+The code generator's job is to take this source code, and output something
+that looks like:
+
+```nasm
+push x
+push 1
+push rate
++
+*
+pop sum
+```
+
+This is pseudo VM code. From the virtual machine code section, we know that
+real VM code has no notion of `x`, `rate`, or `sum`. Instead, all it has
+our virtual memory segments. Thus, a more accurate pseudo VM code would
+look like:
+
+```nasm
+push argument 2
+push constant 1
+push static 0
+add
+call Math.multiply 2
+pop local 3
+```
+
+Accordingly, the code generator's job is fairly challenging. It must output
+code that matches the VM code's specifications. This requires the code
+generator determine a number of things, including:
+
+- Whether a variable is a field, static, local, or an argument,
+- whether each variable is the first, second, third, fourth, etc. of its
+  particular type.
+
+For the code generator to make these determinations, the language's
+designers must first make distinctions betwee variables. For example, some
+object-oriented language might have code that looks like the following:
+
+```nasm
+class Foo {
+	field int x, y;
+	static int pointCount;
+
+	method int distance(Point other) {
+		var int dx, dy;
+		let dx = x - other.getX();
+		let dy = y - other.getY();
+		return Math.sqrt((dx*dx) + (dy*dy));
+	}
+}
+```
+
+Design-wise, the language might distinguish the variables as follows:
+
+1. _Class-level variables_ map to field and static variables (the variables
+   inside the class but outside methods).
+2. _Subroutine-level variables_ map to argument and local variables (the
+   variables inside the methods).
+
+For all these variables, there are several properties at the virtual
+machine level:
+
+1. name (an _identifier_ in the higher-level language),
+2. type (`int`, `char`, `bool`, a _class name_),
+3. kind (`field`, `static`, `local`, `argument`),
+4. scope (_class level_, _subroutine level_)
+
+For a sufficiently complex language, these properties can comprise a great
+amount of data. For most modern compilers, that data is handled with a
+**symbol table**.
+
+### Symbol Tables
+
+Using the same pseudocode from earlier:
+
+```nasm
+class Foo {
+	field int x, y;
+	static int pointCount;
+
+	method int distance(Point other) {
+		var int dx, dy;
+		let dx = x - other.getX();
+		let dy = y - other.getY();
+		return Math.sqrt((dx*dx) + (dy*dy));
+	}
+}
+```
+
+a symbol table might look like the following:
+
+| `name`       | `type` | `kind`   | `#` |
+| ------------ | ------ | -------- | --- |
+| `x`          | `int`  | `field`  | `0` |
+| `y`          | `int`  | `field`  | `1` |
+| `pointCount` | `int`  | `static` | `0` |
+
+Above, we see four columns. The `name` column provides the name for each
+variable, the `type` the type, etc. The `#` is a running count of times the
+kind variable kind has appeared, starting at `0`. Thus, after the variable
+`y`, we have two field variables, yielding the `1` we see in the `#` column
+
+The class method is a little different. Here, the symbol table might look
+like the following:
+
+| `name` | `type`  | `kind`     | `#` |
+| ------ | ------- | ---------- | --- |
+| `this` | `Point` | `argument` | `0` |
+
+Why doesn't this look like the other symbol table? Because this is a _class
+method_. If it were a function, we would have just three variables: `dx`,
+`dy`, and `other`. And because it's a method, it can only act on the
+current object. The rest of the symbol table is as we'd expect:
+
+| `name`  | `type`  | `kind`     | `#` |
+| ------- | ------- | ---------- | --- |
+| `this`  | `Point` | `argument` | `0` |
+| `other` | `Point` | `argument` | `1` |
+| `dx`    | `int`   | `local`    | `0` |
+| `dy`    | `int`   | `local`    | `1` |
+
+#### Managing Symbol Table Memory Usage
+
+Because symbol tables can grow very large, languages like Java and C#
+generate symbol tables at two levels:
+
+1. At the class-level (called **class-level symbol tables**), and
+2. at the subroutine-level (called **subroutine-level symbol tables**)
+
+Once the classes or subroutines are no longer needed, the symbol tables are
+forgotten. This ensures that the symbol tables do not consume an inordinate
+amount of memory.
+
+As we can likely tell, the sizes of our symbol tables depend on how many
+types and kinds the language has. The more primitive types or variable
+kinds the language has, the larger the resulting symbol table. The less
+primitive types and kinds, the smaller the resulting symbol table. This
+indicates a tradeoff.
+
+The fewer primitive types and kinds a language has, the more efficient it
+is, but the less expressive. The more primitive types and kinds a language
+has, the the more expressive it is, but at the cost of efficiency.
+
+### The Code Writer
+
+The program responsible for creating and updating the symbol table is the
+**codewriter**. To do so, the codewriter must do two things:
+
+1. Handle variable declarations, and
+2. Handle variable usage
+
+#### Handling Variable Declarations
+
+All of the following are examples of variable declarations in some
+language:
+
+```nasm
+double y = 1;
+class Foo {
+	field n = 0;
+	static int count;
+}
+```
+
+When the codewriter encounters these declarations, it _writes_ to the
+symbol table. Importantly, that's the only thing the codewriter does with
+variable declarations. It does not output code of its own.
+
+For function arguments, the codewriter performs the same task: It writes
+each argument to the symbol table, just as it would the other variables
+above. But again, as we saw previously, in an OOP language, the first
+symbol table entry a codewriter will enter when it encounters a class
+method is an entry for the `this` identifier.
+
+#### Handling Variable Usage
+
+Variable usage occurs when we have something like the following:
+
+```nasm
+let x = y - other.getX();
+```
+
+Suppose this statement appears in a class method. When the codewriter sees
+the variable `y`, it looks it up in the current symbol table (the
+subroutine-level symbol table). If the codwriter does not find it, it looks
+it up in the class-level symbol table. If the codewriter doesn't find it
+there, it throws an error — something along the lines of
+`"variable undefined".`
+
+### Nested Scoping
+
+In languages like Java and C++, programmers have access to unlimited nested
+scoping. For example, say we had the following pseudocode in such a
+language:
+
+```nasm
+class foo {
+	// code_block_1
+	method f() {
+		// code_block_2
+		let x;
+		{
+			// code_block_3
+			let x;
+			{
+				// code_block_4
+				let x;
+				for (let i = 0; i < arr.length; i++) {
+					// code_block_5
+					{
+						// code_block_6_a
+						let x;
+					}
+					{
+						// code_block_6_b
+						let x;
+					}
+				}
+			}
+		}
+	}
+}
+```
+
+In the code above, every opening curly brace and its closing curly brace
+denotes _scope_. Because these are all separate scopes, the identifier `x`
+can be reused multiple times throughout the code. How is this accomplished?
+By creating a _linked list_ of symbol tables.
+
+As we saw earlier, when a program is fed to the compiler, it will first
+look for the main entry point. In languages like C++, this is indicated by
+the function `main()` and in Java, by the class `Main`. Focusing on the
+compiler's codewriter, a symbol table is created for the program. When the
+codewriter encounters a scope (e.g., a method), it creates symbol table for
+that method, and then _links_ that symbol table to the class- or
+program-level symbol table. When it encounters a scope within the method,
+it creates another symbol table for that scope, and links that scope to the
+method's symbol table. And when it encounters another scope it links that,
+and so on. This results in a linked list that looks like:
+
+<LinkedList
+	data={["scope4", "scope3", "scope2", "scope1", "method", "class"]}
+	width={380}
+/>
+
+where each node in the linked list is a symbol table.
+
+### Handling Expressions

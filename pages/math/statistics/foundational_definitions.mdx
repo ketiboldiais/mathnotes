@@ -1,0 +1,363 @@
+import {DotPlot} from "../../../components/illus/components/DotPlot/DotPlot";
+
+
+# Foundational Definitions & Concepts
+
+1. [Population](#population)
+   1. [Samples](#samples)
+   2. [Statistics](#statistics)
+   3. [Parameters](#parameters)
+   4. [Representative Samples](#representative-samples)
+   5. [Variables & Data](#variables--data)
+2. [Categories of Data](#categories-of-data)
+   1. [Discrete & Continuous Data](#discrete--continuous-data)
+   2. [Random Sampling](#random-sampling)
+      1. [Simple Random Sampling](#simple-random-sampling)
+      2. [Stratified Sampling](#stratified-sampling)
+      3. [Cluster Sampling](#cluster-sampling)
+      4. [Systematic Sampling](#systematic-sampling)
+   3. [Bad Sampling](#bad-sampling)
+3. [Measurement](#measurement)
+   1. [Categorical Data](#categorical-data)
+   2. [Ordinal Data](#ordinal-data)
+   3. [Interval Data](#interval-data)
+   4. [Ratio Data](#ratio-data)
+
+Statistics is the study, collection, analysis, interpretation, and
+presentation of data. For example, consider the following _dot plot_:
+
+<DotPlot
+	data={[5, 5.5, 6, 6, 6, 6.5, 6.5, 6.5, 6.5, 7, 7, 8, 8, 9, 12]}
+	xMin={3}
+	xMax={13}
+	xLabel={"\\text{hours of sleep}"}
+	labelOffsetY={5}
+	labelOffsetX={10}
+	labelFontSize={0.6}
+	marginLeft={10}
+	id={"dotPlot1"}
+/>
+
+This plot visualizes the results of some survey on the hours of sleep the
+respondents are getting. Does this tell us that most people are getting
+about 6.5 hours of sleep? Does it tell us that 8 hours, as commonly
+recommended, isn't all that common? That anything beyond 12 or less than 6
+is "rare?" These are the kinds of questions that statistics answers.
+
+There are two tasks usually done in statistics:
+
+1. Organizing and summarizing data. The methods for accomplishing this task
+   are collectively called **descriptive statistics**.
+2. Drawing conclusions from data. The methods for accomplishing this task
+   are collectively called **inferential statistics**.
+
+With this introduction, let's define some basic terms in statistics.
+
+## Population
+
+In statistics, data is generally collected from some **population**. A
+population is a set — a collection of entities or objects. The members of
+this set might be people, companies, animals, dollars, and so on.
+
+### Samples
+
+Some populations are so large that we can't possibly collect data from
+every single member of the population. For example, it's infeasible to
+collect data from every single voter in the United States. Because of these
+limitations, we instead select a **sample** of the population. A sample is
+a subset of the larger population.
+
+### Statistics
+
+From the sample data, we can calculate one or more **statistics** — some
+number representing a property of the sample. For example, from a survey of
+a sample of college students, we might calculate the average grade point
+average. Say that average is 3.5. The number 3.5 is a statistic — it's a
+number that represents a property of the sample; namely, the average GPA.
+
+### Parameters
+
+All statistics are estimates of a **parameter** of the population. A
+parameter is a property of the entire population. For example, the average
+GPA calculated from the preceding example is an estimate of the average GPA
+for _all_ college students.
+
+### Representative Samples
+
+Because all statistics are estimates of some parameter, a principal task in
+statistics is answering the question: How accurate is this statistic in
+estimating the parameter? Simply put, a statistic's accuracy depends on
+whether the sample is a **representative sample**. A sample is considered
+representative only if it contains the population's characteristics. For
+example, if we wanted to know the average GPA for all biology majors, then
+we should be surveying biology majors rather than just any major.
+
+### Variables & Data
+
+As mentioned earlier, populations have characteristics. Some of those
+characteristics can be determined — e.g., how tall the population member
+is, where the population member lives, yes or no to a particular question,
+and so on. Each of these determinable characteristics is called a
+**variable**.
+
+In statistics, there are two kinds of variables:
+
+1. A **numerical variable** is a variable that can be defined as a value of
+   some unit. For example, weight in kilograms, height in meters, or time
+   in seconds.
+2. A **categorial variable** is a variable that places a person or object
+   into a category. For example, the categories of all 50 U.S. states, the
+   parties Democrat, Republican, or Independent, or the federal income tax
+   brackets.
+
+The values of these variables — numerical or categorical — are call
+**data**.
+
+## Categories of Data
+
+Generally, data falls into two categories:
+
+1. **Qualitative data** is data resulting from categorizing or describing
+   population characteristics. For example, from a survey of the
+   population, we might gather qualitiative data on the members' ethnic
+   groups or the car they drive. Qualitative data is also called
+   **categorical data**.
+2. **Quantitive data** is data resulting from counting or measuring
+   population characteristics. For example, from a survey of the
+   population, we might gather quantitative data like the members' weights,
+   yearly income, or the number of their dependents.
+
+### Discrete & Continuous Data
+
+Quantitative data consists of two further categories:
+
+1. **Quantitative discrete data (QDD)** is quantiative data that results
+   from counting. Because QDD results from counting, QDD ultimately
+   consists of integers. For example, the number of junk mail an individual
+   receives per day might be 0, 5, or 100, but not 4.8.
+2. **Quantiative continuous data (QCD)** is quantitative data that results
+   from measurement. As such, this data might take on _real number values_.
+   For example, the lengths of phone calls might be 2.4, 1.8, or 6.7
+   minutes.
+
+### Random Sampling
+
+Earlier, we mentioned how sampling is a principle concern of statistics. To
+obtain a representative sample, we follow a key definition:
+
+> **definition**. Let ${x}$ be some sample of population ${P.}$ ${x}$ is a
+> representative sample of ${P}$ if, and only if, ${x}$ has the same
+> characteristics as ${P.}$
+
+To satisfy this definition, statisticians employ **random sampling**. In
+random sampling, a sample is chosen by ensuring that each member of the
+population has an equal chance of being selected. There are many ways to
+ensure this condition.
+
+For all the methds presented below, there are a few points to keep in mind:
+
+1. True random sampling requires sampling _with replacement_. That is, if
+   we pull out 𝐴 from a list of names, we must put 𝐴 back in the list of
+   names to preserve the possibility of selecting 𝐴 more than once.
+   Although true random sampling is the ideal, it's often too expensive to
+   do in practice.
+2. Fortunately, at large sample sizes, there's little to no difference
+   between the two. The issue really only comes up small sample sizes.
+
+#### Simple Random Sampling
+
+The easiest method is **simple random sampling**. With this approach, we
+select a **sample size** ${n,}$ and from the population ${P,}$ we select
+${n}$ members at random. How do we select at random? Well, if the members
+consisted of people, we could write their names on slips of paper, put the
+slips in a hat, and randomly pull from the hat.
+
+A more sophisticated approach:
+
+1. Select a sample ${S}$ comprising ${n}$ members from population ${P.}$
+2. For each member member of ${S,}$ assign a two digit number.
+3. Generate random numbers.
+4. For each of the random numbers, the matching two digit numbers is a
+   selection.
+
+For example, suppose there are 20 voters in some district, and we want a
+sample size of 10. For each of the voters, we assign the numbers 01, 02,
+03, ..., 20. We then generate random numbers with either a calculator or
+some other piece of software. The random number generator might yield
+0.9829, 0.325, 0.1582, 0.0683, and so on. For each of these randomly
+generated numbers, we read the first matching two digit number as a
+selection. For example, from the preceding list, we see 0.1582, so the
+voter assigned 15 is selected. We then see 0.06, so the voter assigned 06
+is selected.
+
+#### Stratified Sampling
+
+Another random sampling method is **stratified sampling**. The procedure is
+as follows:
+
+1. Divide the population into ${n}$ groups.[^strata]
+2. From each group, take a _proportionate_ number of members.
+
+[^strata]: These groups are called **strata** (singular **stratum**).
+
+#### Cluster Sampling
+
+Alternatively, we can also employ **cluster sampling** as another random
+sampling approach:
+
+1. Divide the population into clusters (groups),
+2. randomly select some of the cluster,
+3. all the members of the selected clusters form the cluster sample.
+
+#### Systematic Sampling
+
+**Systematic sampling** is useful if we already have a list of all the
+population members.
+
+1. Randomly select a starting position 𝑖 in the list.
+2. From 𝑖, select every ${n^{\tt{th}}}$ member of the list.
+
+### Bad Sampling
+
+Whenever we we're asked, "Is this sample representative?," there are three
+questions we should ask ourselves:
+
+1. Were there **sampling errors**? The actual process of collecting the
+   sample might have led to errors. Common forms of sampling errors:
+   - A sample isn't large enough.
+   - A sample is small enough that it should've been done with replacement.
+   - The sample is selected from the wrong population.
+2. Were there **non-sampling errors**? Errors might be caused not by the
+   sampling process itself, but factors outside the process. For example:
+   - Surveys are sent, but it's so long that people mindlessly click
+     through them.
+   - The measurement device is not calibrated/is incorrect.
+3. Was there a **sampling bias**? A sampling bias occurs when the sampling
+   process causes some members of the population to be more likely to be
+   selected than others. We often see this done in political media. A
+   right-wing group might run a survey that only gathers responses from
+   whites. Call-in surveys, in general, are inherently biased: We're more
+   likely to get responses from people willing to answer the phone than
+   people who aren't.
+
+## Measurement
+
+Given some dataset 𝐷, the way we measure 𝐷 is called 𝐷's **level of
+measurement**. The dataset's level of measurement determines the data's
+_kind_. There are four kinds of data, presented below.
+
+### Categorical Data
+
+> **Definition**. Let 𝑆 be a set of non-numeric values (commonly strings)
+> and ${s_1, s_2, s_3, \ldots, s_n \subset 𝑆.}$. Then a datum 𝑑 is
+> considered a _categorical datum_ iff ${𝑑 \in s_n.}$
+
+Examples include:
+
+- categories, colors, names
+- nationality
+- music genres
+- ethnicity
+- gender
+- yes or no responses to questions
+
+Because categorical data is measured purely in qualitative terms, there is
+not inherent order — it makes no difference if we plot the _yes_ responses
+first and the _no_ responses second. Categorical data cannot be used in
+calculations directly (it makes no sense to compute _yes_ plus _no_).
+
+As an aside, if the size of the ${S}$ is 2 (${\text{card}(S) = 2 }$), then
+the data is called **dichotomous data**. For example, if the set ${S}$
+consists of only `"yes"` and `"no"` or `"agree"` and `"disagree"`, each
+data point is considered _dichotomous datum_.
+
+With categorical data, the only thing we can do is group the values. E.g.,
+one datum goes into the "British" bucket, another goes into the "Afghani"
+bucket. However, we cannot sort the values — "British" comes before
+"French."
+
+### Ordinal Data
+
+> **Definition**. Let 𝑆 be a sorted array of ordinal values (commonly
+> strings). A datum 𝑑 is considered an _ordinal datum_ iff ${𝑑 \in 𝑆.}$
+
+Examples of ordinal data:
+
+- The US News rankings of the top universities,
+- the responses "excellent, good, satisfactory, unsatisfactory" to some
+  survey
+
+With ordinal data, the only two things we can do are: (1) group the values,
+and (2) sort the values. Moreover, the fact that the values are sorted does
+not tells us the relative distances between the values. E.g., the fact that
+Yale Law School ranks higher than Harvard Law School does not tells us that
+it's five, ten, or a thousand times better than Harvard Law School.
+
+### Interval Data
+
+> **Definition**. Let 𝐼 be an interval of ${\RR}$ _without_ a lower bound
+> (called a _meaningful zero_), and where each member of 𝐼 is equidistant
+> from their left and right neighbors. A datum 𝑑 is considered an _interval
+> datum_ iff ${𝑑 \in 𝐼.}$
+
+Examples:
+
+- Temperature scale data
+- Dates
+- Time intervals on a 12-hour clock (there's 6am and 6pm)
+- pH scale data
+- IQ data
+
+Interval data is a sorted array of numeric values, where each value is a
+member of some interval, and each interval is equidistant without common
+starting point (called a _meaningful zero_). Because there isn't a common
+starting point, we can't draw conclusions of the form:
+
+> 𝐴 𝑥 than 𝐵
+
+where 𝐴 and 𝐵 are data points and 𝑥 is some predicate like:
+
+- "is smarter",
+- "is 𝑛 times larger",
+- "is 𝑛 times hotter"
+- "is 𝑛 times colder"
+
+For all of those conclusions, we can always pick a starting point that's
+further before 𝐴. For example, say we have an interval of times:
+
+$$
+   [\ldots, \tt{12pm}, \tt{1pm},\tt{2pm},\tt{3pm},\tt{4pm},\tt{5pm}]
+$$
+
+The ellipses indicate that there infinitely many other possible data values
+before 1pm. Saying that 4pm is twice as late as 2pm is true only if the
+starting point was 12pm. But, because that starting point is not
+${\tt{12pm},}$ the statement makes no sense — _twice as late with respect
+to what?_
+
+With interval data, we can perform these computations:
+
+1.  Grouping: Determining if one datum falls in one interval or another.
+2.  Relational: Determining if one datum is greater than another.
+3.  Addition: We can add and subtract the data, provided we account for any
+    differences between the data's interval.
+
+We cannot multily or divide interval data since there is no meaningful
+zero. E.g., it makes no sense to say that "12pm is twice as late as 3pm.""
+
+### Ratio Data
+
+> **Definition**. Let 𝐼 be an interval of ${\RR}$ _with_ a lower bound
+> (called a _meaningful zero_), and where each member of 𝐼 is equidistant
+> from their left and right neighbors. A datum 𝑑 is considered an _interval
+> datum_ iff ${𝑑 \in 𝐼.}$
+
+Examples of ratio data include:
+
+- Kelvin scale data
+- Tax income backet data
+- Age data (0 to 100+ years)
+- Time intervals on a 24-hour clock
+
+The key difference betwen ratio data and interval data is that we have a
+meaningful zero. And because we have a meaningful zero,

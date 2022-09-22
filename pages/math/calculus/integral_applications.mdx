@@ -1,0 +1,563 @@
+import { Plot } from "../../../components/hago/";
+import { Plot as Plot2 } from "../../../components/illus/components/Plot/Plot";
+
+<Metadata
+  title={'Integration Applications'}
+  description={'Notes on applications of integrations.'}
+  keywords={'integration, calculus, probability'}
+/>
+
+# Common Applications of Integrals
+
+These notes provide an overview of places where integrals frequently show
+up.
+
+<div className={`outline`}>
+
+1. [Weighted Average](#weighted-average)
+2. [Probability](#probability)
+3. [Numerical Integration](#numerical-integration)
+   1. [Riemann Summation](#riemann-summation)
+   2. [Trapezoidal Rule](#trapezoidal-rule)
+   3. [Simpson's Rule](#simpsons-rule)
+   4. [Caveats to Numerical Integration](#caveats-to-numerical-integration)
+
+</div>
+
+## Weighted Average
+
+The idea of a weighted average is that we take the integral of some
+function from ${a}$ to ${b,}$ and multiply it by some _weight_, and divide
+it by the total weighting:
+
+$$
+ \dfrac
+ {\displaystyle \integral{a}{b} f(x) \cdot w(x)~dx}
+ {\displaystyle \integral{a}{b} w(x) dx}
+$$
+
+This definition isn't that unusual. Think about the average we computed in
+grade school. We have some list of values:
+
+$$
+ \seq{v_1, v_2, v_3, v_4, \ldots, v_n}
+$$
+
+and we divide the sum of all these values by the number of terms:
+
+$$
+ \dfrac
+  {v_1 + v_2 + v_3 + v_4 + \ldots + v_n}
+  {n}
+$$
+
+This is the _discrete version_ of an average — what we know as the
+_arithmetic mean_. The _continuous version_ of an average is the definition
+above: a _weighted average_. Of note, many statistics textbooks often
+define the weighted average as:
+
+$$
+ \overline{x}_{wtd} = \dfrac
+  {\dsum{i=1}{n} w_i x_i}
+  {\dsum{i=1}{n} w_i}
+$$
+
+The notion of a weighted average brings us to one of the most important
+applications of integration in the modern era: probability.
+
+## Probability
+
+Suppose we had the following graph:
+
+<Plot data={[
+  {f:(x)=>1-x**2}
+]}
+domain={[-2,2]}
+range={[0,1.5]}
+scale={70}
+/>
+
+if we picked a point "at random" in the region ${0 \ltn y \ltn 1-x^2,}$ what is
+the probability that ${x \gtn \frac{1}{2}?}$ Casting this question in
+probability terms, this question asks for the probability:
+
+$$
+  \P \paren{x \gtn \frac{1}{2}}
+$$
+
+From the perspective of calculus, a probability is simply a special kind of
+ratio. Specifically, a ratio of the part of something to the whole of something:
+
+$$
+  \dfrac{\tt{part}}{\tt{whole}}
+$$
+
+The part that we're interested in:
+
+<Plot data={[
+  {f:(x)=>1-x**2, integrate:[0.5,1,`x`]}
+]}
+domain={[-2,2]}
+range={[0,1.5]}
+scale={70}
+/>
+
+This is a straightforward integration problem. That area is:
+
+$$
+  \dfrac{\displaystyle \int_{\frac{1}{2}}^{1} 1-x^2 ~dx}
+  {\displaystyle \int_{-1}^{1} 1-x^2 ~dx}
+$$
+
+As we saw with the weighted average, the weighting factor here is:
+
+$$
+  w(x) = 1-x^2
+$$
+
+And just to be more explicit, our starting point is ${-1,}$ and our ending point
+is ${b = 1.}$ Working out the computation, we get:
+
+$$
+  \P \paren{x \gtn \frac{1}{2}} = \dfrac{5}{32}
+$$
+
+We can generalize this computation with the following formula:
+
+$$
+  \P(x_1 \ltn x \ltn x_2) 
+  = 
+  \dfrac
+  {\tt{part}}
+  {\tt{whole}}
+  =
+  \dfrac
+  {\displaystyle \int_{x_1}^{x_2} w(x) ~ dx}
+  {\displaystyle \int_{a}^{b} w(x) ~ dx}
+$$
+
+Let's consider an example taken from the real world. Suppose we're on a manhunt
+for a wanted criminal. We've narrowed down their possible location to the
+following:
+
+<Plot2 
+  geo={[
+    {type:"circle", xy:[0,0], r:4, class:`redCircle`},
+    {type:"circle", xy:[0,0], r:6, class: `blueCircle`},
+    {type:"ray", start:[0,0], end:[3.5,0]},
+    {type:"ray", start:[0,0], end:[0,5.5]},
+    {type:`label`, xy:[0.5,3], id:`r_2`,fontSize:1.1},
+    {type:`label`, xy:[2,-0.05], id:`r_1`,fontSize:1.1},
+  ]}
+  noAxes={true}
+  scale={70}
+/>
+
+The question: What are the odds that the crook is somewhere in the blue region?
+To simplify our computation, we make the following assumption:
+
+<dfn>
+
+The number of hits is proportional to ${ce^{-r^2},}$ where ${c}$ is a constant,
+${e}$ is Euler's number, and ${r}$ is the radius.
+
+</dfn>
+
+This assumption effectively states that the number of hits is a normal
+distribution in terms of a given a radius. To understand what this assumption
+implies, let's take a look at the plot of the function ${f = e^{-r^2}.}$
+
+<Plot data={[
+  {f:(x) => Math.E ** (-1 * (x ** 2))}
+]}
+domain={[-4,4]}
+range={[-0.5,1.2]}
+scale={70}
+axesLabels={[`radius`,`hits`]}
+margins={[50,50,50,50]}
+ticks={0}
+id={`ia0`}
+/>
+
+Suppose that, instead of a manhunt, we were throwing darts. When we make the
+assumption above, we're stating that, if we threw millions of darts, more of
+them would land closer to the middle (the _top of the bell curve_), and fewer of
+them would land towards the lower and upper ends.
+
+Question: Why specifically do we use the function ${f = e^{-r^2}?}$ Why not some
+other function? This is probability question rather than a calculus question, so
+we won't answer it in detail (it's akin to asking why we would use one kinematic
+equation over another given a physics problem). It's simply the most accurate
+model for our purposes. When the Germans bombed London during the Second World
+War, the British miliary found that among all the possible functions they could
+use to predict where the bombs might land, the function ${f = e^{-r^2}}$ proved
+to be the most accurate.
+
+That said, it's important to note some nuances to the model (the graph of ${f =
+e^{-r^2}}$). The model isn't saying that, if everyone in the world threw darts,
+they'd hit the bullseye. What it's saying is, if everyone in the world threw
+darts, many more of them would be closer to the bullseye than further
+(otherwise, no one would play darts). In other words, there's a difference
+between the most likely place to hit (the _mode_) and what happens on _average_.
+
+Viewed this way, the area we're interested in is the area between ${r_1}$ and
+${r_2,}$ _rotated_ (rotated because the actual area is a circle):
+
+<Grid cols={2}>
+
+<Plot data={[ {f:(x) => Math.E ** (-1 * (x ** 2)), integrate:[0.8,1.4,`x`]}, ]}
+domain={[-4,4]} range={[-0.5,1.2]} scale={100} axesLabels={[`radius`,`hits`]}
+margins={[50,50,50,50]} ticks={0} id={`ia1`} />
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662915439/math/normal_distribution_3d_iyp1wk.svg"}
+imwidth={"268"} imheight={"251"} caption={"70"} width={"70"} />
+
+</Grid>
+
+
+
+We can find this area through the _method of shells_. Our bounds are ${r_1}$ and ${r_2:}$
+
+$$
+  \int_{r_1}^{r_2} \iff r_1 \ltn r=x \ltn r_2
+$$
+
+Next, we know that the circumference of a circle is given by ${C = 2 \pi r.}$
+This gives us our first term:
+
+$$
+  \int_{r_1}^{r_2} (2 \pi r)
+$$
+
+Now we need the height (since the figure is rotated). This height is given by
+the plot's function: 
+
+$$
+  \int_{r_1}^{r_2} (2 \pi r) \cdot e^{-r^{2}}
+$$
+
+then we multiply by the thickness of the plot:
+
+$$
+  \int_{r_1}^{r_2} (2 \pi r) \cdot e^{-r^{2}}~~dr
+$$
+
+Expanding the integral for evaluation:
+
+$$
+  \eqs{
+    \int_{r_1}^{r_2} (2 \pi r) \cdot e^{-r^{2}}~~dr &= \deval{-\pi e^{-r^2}}{r_1}{r_2} \\[1em]
+    &= \pi (e^{-{r_1}^2} - e^{-{r_2}^2})
+  }
+$$
+
+This gives us the part:
+
+$$
+  \tt{part} = c \pi (e^{-{r_1}^2} - e^{-{r_2}^2})
+$$
+
+Notice that we attached a constant ${c}$ to the expression. Why? Because the
+crook could be any sector of the blue region. By attaching the constant ${c,}$
+we account for the situation where it takes ${c}$ attempts to get to the right
+sector.
+
+Now we want the whole. To find the whole, we assume that ${r}$ can range from ${0}$ to infinity.
+
+$$
+  0 \lte r \ltn \infty
+$$
+
+We accomplish two things by making this assumption: (1) We cover all of the
+possible values of ${r}$ that are relevant to our analysis, and (2) we get the
+whole in numeric form much more cleanly. If ${r}$ lies in this range, then the
+whole is simply taking the part to the limits:
+
+$$
+  \eqs{
+    \tt{part} &= c \pi (\ll{r_1}{0} e^{-{r_1}^2} - \ll{r_2}{\infty} e^{-{r_2}^2}) \\[1em]
+    &= c \pi (1 - 0) \\[1em]
+    &= c \pi (1) \\[1em]
+    &= c \pi
+  }
+$$
+
+The probability of finding the crook in the blue region, then, is:
+
+$$
+  \eqs{
+    \P (r_1 \ltn r \ltn r_2) = \dfrac{\tt{part}}{\tt{whole}} &= \dfrac{c \pi (e^{-{r_1}^2} - e^{-{r_2}^2})}{c \pi} \\[1em]
+    &= \dfrac{\cancel{c} \cancel{\pi} (e^{-{r_1}^2} - e^{-{r_2}^2})}{\cancel{c} \cancel{\pi}} \\[1em]
+    &= e^{-{r_1}^2} - e^{-{r_2}^2}
+  }
+$$
+
+## Numerical Integration
+
+Many integrals do not have formulas and require evaluation by a computer.
+Computers achieve these computations through _numerical integration_. There are
+several approaches to performing numerical integration. Let's examine each approach.
+
+### Riemann Summation
+
+One approach is to compute as many rectangles beneath the curve as possible.
+I.e., the _Riemann Sum_.
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662920600/math/riemann_sum_numeric_integration_anmqqr.svg"}
+imwidth={"253"} imheight={"337"} caption={"Riemann sum"} width={"45"} />
+
+With the Riemann Sum approach, the ${\Delta x}$ is the increment value of the
+for-loop. That gives us the width of our rectangles:
+
+$$
+  (a=x_0) \ltn x_1 \ltn x_2 \ltn \ldots \ltn (x_n = b) 
+$$
+
+The height of each rectangle is given by the evaluating the function at each ${x_i,}$ where ${i = 0,1,2,\ldots,n:}$
+
+$$
+  f(x_0), f(x_1), f(x_2), \ldots f(x_n)
+$$
+
+The approximated integral, then, is simply:
+
+$$
+  (f(x_0) + f(x_1) + f(x_2) + \ldots + f(x_{n-1})) \cdot \Delta x
+$$
+
+This is the _left-hand approach_ (the rectangle's upper left-hand corner marks
+the end of the rectangle's upward growth). We could also use the _right-hand_
+and _midpoint_ approaches alternatively:
+
+<Fig
+  link={"https://res.cloudinary.com/sublimis/image/upload/v1662923186/math/riemann_sum_approachs_kmprdz.svg"}
+  imwidth={"627"}
+  imheight={"231"}
+  caption={"approaches"}
+  width={"100"}
+/>
+
+The differences between these approaches comes down to which ${x}$ we want the
+height evaluated for. With the right-hand approach, the expression changes to:
+
+$$
+  (f(x_1) + f(x_2) + f(x_3) + \ldots + f(x_{n})) \cdot \Delta x
+$$
+
+The midpoint approach is a little more elaborate, and requires computing the halfway point between ${x_{i-1}}$ and ${x_i:}$
+
+$$
+  \small
+  \paren{f \paren{\dfrac{x_1 - x_0}{2}} + f \paren{\dfrac{x_2 - x_1}{2}} +  f
+  \paren{\dfrac{x_3 - x_2}{2}} + \ldots + f \paren{\dfrac{x_{n} -
+  x_{n-1}}{2}}}\cdot \Delta x
+$$
+
+The problem with all of these approaches — or, more generally, the Riemann Sum
+approach — is that it's terribly inefficient in practice. Not only must we loop
+through an interval that could potentially comprise thousands of ${x}$s, we must
+also evaluate a potentially complicated function with those ${x}$s.
+
+### Trapezoidal Rule
+
+An alternative approach is the _Trapezoidal Rule_. This approach can be thought
+of as a variation of the Riemann Sum. The primary difference being we
+approximate the area with trapezoids rather than rectangles.
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662925343/math/trapezoid_rule_rfzzz6.svg"}
+imwidth={"252"} imheight={"337"} caption={"trapezoid rule"} width={"45"} />
+
+The area for each trapezoid is given by the expression:
+
+$$
+  \Delta x \paren{\dfrac{f(x_{i-1}) + f(x_{i})}{2}}
+$$
+
+The approximated area, then, is the sum of all these trapezoids:
+
+$$
+  \Delta x \paren{  \dfrac{y_0 + y_1}{2} + \dfrac{y_1 + y_2}{2} + \ldots +
+  \dfrac{y_{n-2} + y_{n-1}}{2} + \dfrac{y_{n-1} - y_n}{2}}
+$$
+
+where ${y_i, i = 0,1,2,\ldots,n}$ is the height of each trapezoid:
+
+$$
+  y_i = \dfrac{f(x_{i-1}) + f(x_{i})}{2}
+$$
+
+This sum can be further simplified:
+
+$$
+  \Delta x \paren{ \dfrac{y_0}{2} + y_1 + y_2 + \ldots + y_{n-1} + \dfrac{y_n}{2}}
+$$
+
+The term ${\dfrac{y_1 + y_2}{2}}$ reduces to ${y_1}$ because half of ${y_1}$
+appears twice in the expression. This reduction continues throughout the
+expression until the very last, ${y_n}$ (there's no other half of ${y_n}$).
+
+If we think about the trapezoidal rule a little more carefully, we'd realize
+that it's just the average of the left-hand Riemann sum and the right-hand
+Riemann sum. Geometrically, that average removes the overlap caused by
+approximating areas with rectangles.
+
+While the trapezoidal rule returns a better approximated area, it still suffers
+from the inefficiency we saw with Riemann sums. A better approach is Simpson's
+Rule.
+
+
+### Simpson's Rule
+
+With Simpson's Rule, we still iterate over an interval. The difference, however,
+is that we focus on two pairs of shapes, rather than the rectangle-by-rectangle
+approach we saw with Riemann sums and the trapezoid-by-trapezoid approach with
+the trapezoid rule. We do this by having a parabola pass through three points:
+
+<Fig
+  link={"https://res.cloudinary.com/sublimis/image/upload/v1662929756/math/simpsons_rule_pyzhi8.svg"}
+  imwidth={"337"}
+  imheight={"220"}
+  caption={"Simpson's Rule"}
+  width={"80"}
+/>
+
+The three points — marked above as ${y_0,}$ ${y_1,}$ and ${y_2}$ — lie on the
+parabola, with ${y_0}$ and and ${y_2}$ equidistance from ${y_1.}$
+
+The area beneath this parabola is the approximation we want. Looking at the
+diagram above, it's not apparent that this is a good approximation, given how
+much over lap there is. However, if we made ${\Delta x}$ small enough, we'd find
+that it's actually a very good approximation, especially when we consider the
+fact that most real-world functions have few inflection points (relative to
+modern computing power).
+
+Let's say the blue curve above is the plot of some function ${f(x),}$ and the
+parabola passing through the points ${y_0,}$ ${y_1,}$ and ${y_2}$ is the
+function ${p(x).}$ We want the area beneath ${p(x):}$ 
+
+$$
+  \int_{a}^{b} p(x) ~dx
+$$
+
+Since ${a}$ and ${b}$ are equidistant from one another, we can denote them as:
+
+$$
+  a = -h \\
+  b = h
+$$
+
+Therefore, the area beneath ${p(x)}$ is given by the integral:
+
+$$
+  \int_{-h}^{h} p(x) ~dx
+$$
+
+Since the plot of ${p(x)}$ is a parabola, we know that ${p(x)}$ is a quadratic
+function:
+
+$$
+  p(x) = Ax^2 + Bx + C
+$$
+
+where ${A,}$ ${B,}$ and ${C}$ are constants. Expanding the integral:
+
+$$
+  \eqs{
+    \int_{-h}^{h} p(x) ~dx &= \int_{-h}^{h} Ax^2 + Bx + C ~dx \\[1em]
+    &= \deval{\dfrac{Ax^3}{3} + \dfrac{Bx^2}{2} + Cx}{-h}{h}
+  }
+$$
+
+Now let's evaluate. The first thing to note is that the ${B}$ term isn't
+necessary. This is because ${Ax^2}$ and ${C}$ are both even functions, and we're
+integrating over an area that's symmetric (we're going from ${-h}$ to ${h}$).
+Thus, we get the following evaluation:
+
+$$
+  \eqs{
+    \deval{\dfrac{Ax^3}{3} + \dfrac{Bx^2}{2} + Cx}{-h}{h} = \dfrac{2Ah^3}{3} + 2Ch
+  }
+$$
+
+So, we now have the expression:
+
+$$
+  \dfrac{2Ah^3}{3} + 2Ch
+$$
+
+We want to rewrite this expression to be purely in terms of what we're given.
+Namely, ${y_0,}$ ${y_1,}$ and ${y_2.}$ Let's factor out one of the ${h}$s to get
+closer to a parabola:
+
+$$
+  \dfrac{h}{3} \paren{ 2Ah^2 + 6C  }
+$$
+
+To get our terms ${y_0,}$ ${y_1,}$ and ${y_2,}$ we plug them into our
+original. Why are we allowed to do this? Because all three points lie on the
+parabola.
+
+$$
+	\eqs{
+    p(h) &= Ah^2 + Bh + C = y_2 \\
+    p(-h) &= Ah^2 - Bh + C = y_0
+  }
+$$
+
+Using the facts above, we can infer that:
+
+$$
+  \eqs{
+    y_2 + y_0 &= Ah^2 + Bh + C + Ah^2 - Bh + C \\
+    &= 2Ah^2 + 2C
+  }
+$$
+
+We can now see the terms we want. Let's isolate them:
+
+$$
+  2Ah^2 = y_0 + y_2 - 2C
+$$
+
+What do we do about that ${2C}$ term? Well, if we returned to our diagram, we'd
+find that ${C}$ is actually ${y_1.}$ Remember, ${p(x)}$ is a parabola. Thus, we
+have:
+
+$$
+  2Ah^2 = y_0 + y_2 - 2y_1
+$$
+
+Rewriting our evaluated integral with our newly-inferred facts:
+
+$$
+  \dfrac{h}{3} \paren{ y_0 + y_2 - 2y_1 + 6y_1 } = \dfrac{h}{3} \paren{y_0 +
+  4y_1 + y_2}
+$$
+
+Thus, Simpson's Rule tells us:
+
+$$
+  \int_{a}^{b} f(x)~dx \approx \dfrac{b-a}{3} \paren{ f(a) + 4 f \paren{\dfrac{a+b}{2}} + f(b) } 
+$$
+
+### Caveats to Numerical Integration
+
+Remember that numerical integration techniques are all still subject to the laws
+of calculus. This may seem trivial to say, but it's very easy to forget these
+laws when we're deep into writing or debugging some program. In particular,
+numerical integration techniques fail for non-smooth functions. This shouldn't
+be surprising — chances are, those non-smooth functions are non-differentiable.
+The techniques also go awry for rational functions where the denominator starts
+approaching perilously close to 0. At those values, the approximation is
+essentially a blackbox and all bets are off: Whatever values we get will depend
+on how the programming language handles division by zero.
+
+Additionally, numerical integration techniques are subject to the problems of
+floating point arithmetic. Even the most sophisticated computer algebra systems
+can have difficulty with certain integrals. All of these caveats demonstrate
+that before we ever carry out a computation, we must be certain about both the
+mathematical principles at play, alongside the limitations of modern
+computation.

@@ -1,0 +1,783 @@
+<Metadata
+	title={"Floating Point Numbers"}
+	description={"Notes on floating point numbers"}
+	keywords={"Floating point numbers"}
+/>
+
+# Floating Point Numbers
+
+This section covers notes on floating point numbers. Earlier, we saw that
+integers can be easily represented in binary. But what about reals? If we
+want to represent reals, we need a method of representing numbers like:
+
+```
+{ 3.14, 8.99, 1.01, 1.0, 0.33333 }
+```
+
+Question: How do we represent these numbers in binary?
+
+## Fixed Point Binary
+
+One method is **fixed point representation**. The idea behind fixed point
+is simple. Given some register that stores a number, some of the register's
+bits are used to represent the whole number portion and some are used for
+the fractional. For example, given a register of size 14:
+
+```
+ 0 1 1 0 0 1 0 0      1 1 0 0 1 0
+|---- whole ----| |-- fractional --|
+```
+
+Between these two portions is an imaginary binary point (called the **fixed
+point**):
+
+```
+ 0 1 1 0 0 1 0 0  •    1 1 0 0 1 0
+|---- whole ----|  |-- fractional --|
+```
+
+From there, we can interpret the bits just as we would in decimal:
+
+| -128 | 64  | 32  | 16  | 8   | 4   | 2   | 1   | •   | 1/2 | 1/4 | 1/8 | 1/16 | 1/32 | 1/64 |
+| ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- | ---- |
+| 0    | 1   | 1   | 0   | 0   | 1   | 0   | 0   | •   | 1   | 1   | 0   | 0    | 1    | 0    |
+
+To convert to decimal, we just add up the place values:
+
+| -128 | 64  | 32  | 16  | 8   | 4   | 2   | 1   | •   | 1/2 | 1/4 | 1/8 | 1/16 | 1/32 | 1/64 |
+| ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- | ---- |
+| 0    | 1   | 1   | 0   | 0   | 1   | 0   | 0   | •   | 1   | 1   | 0   | 0    | 1    | 0    |
+
+```
+64 +32 +4 +1/2 +1/4 +1/32
+    	 = 100.78125
+```
+
+In the examples above, the fixed point representation used ones-complement
+to represent negative real numbers. If the system used twos-complement
+instead, it would be far more limited in how many numbers it could
+represent. Consider a system with 4-bit registers that supports both
+floating point numbers _and_ two's complement.
+
+The largest positive number this system can represent is:
+
+| -1  | 1/2 | 1/4 | 1/8 |
+| --- | --- | --- | --- |
+| 0   | 1   | 1   | 1   |
+
+```
+1/2 + 1/4 + 1/8 = 0.5 + 0.25 + 0.125 = 0.875
+```
+
+The smallest positive number:
+
+| -1  | 1/2 | 1/4 | 1/8 |
+| --- | --- | --- | --- |
+| 0   | 0   | 0   | 1   |
+
+```
+0 + 0 + 0 + 1/8 = 0.125 = 0.125
+```
+
+The smallest negative number:
+
+| -1  | 1/2 | 1/4 | 1/8 |
+| --- | --- | --- | --- |
+| 1   | 1   | 1   | 1   |
+
+```
+-1 + 1/2 + 1/4 + 1/8 = -1 + 0.5 + 0.25 + 0.125 = -0.125
+```
+
+and the largest negative number:
+
+| -1  | 1/2 | 1/4 | 1/8 |
+| --- | --- | --- | --- |
+| 1   | 0   | 0   | 0   |
+
+```
+-1 + 0 + 0 + 0 = -1 + 0 + 0 + 0 = -1
+```
+
+To visualize this range:
+
+```
+-1                 0        0.875
+|------------------|----------|
+```
+
+This is a very limited range. That said, fixed-point binary is extremely
+fast. That speed is why fixed-point binary is still used in systems where
+time efficiency takes precedence over accuracy:
+
+- digital signal processing,
+- graphics processing,
+- finance (as we'll see later, rounding in floating point is difficult
+  enough to cause legal liability),
+- JPEG compression algorithms,
+- electricity meters (fixed-point binary processors are much cheaper to
+  produce, and accuracy issues with electricity meters can be resolved via
+  physics — a topic outside this article's scope).
+
+In all of these systems, performance is far more important than accuracy.
+These systems handle tasks that we want done _asap_, accurate or otherwise.
+
+Importantly, for any given binary representation of real numbers, there are
+some numbers we can never accurately represent. For example, the number
+${\frac{1}{10}.}$ We can easily represent this in decimal (0.1), because
+the base in decimal is 10. However, because the base in binary is 2, we
+cannot logically add up powers of two to a power of 10. This isn't some
+limitation with processors. It's just a mathematical fact. The number
+${\frac{1}{3}}$ cannot be accurately represented in decimal or binary, but
+it can easily be presented in ternary: 0.1.
+
+## Floating Point Binary
+
+Outside of the applications listed previously, most systems use **floating
+point representation** for real numbers. Floating point representations are
+colloquially called _floats_.
+
+First, floats are based on standard scientific notation:
+
+$$
+\begin{aligned}
+	2.99 \times 10^{8} &= 299~000~000 \\
+	1.4 \times 10^{-4} &= 0.00014 \\
+	5.2 \times 10^{11} &= 520~000~000~000
+\end{aligned}
+$$
+
+Just as a refresher, we can expand scientific numbers by shifting
+("floating") the dot (decimal point) to the right 𝑛 places (or left for
+-𝑛), where 𝑛 is the exponent's value:
+
+$$
+\begin{aligned}
+	2.99 \times 10^{8} \\
+	&29.9~~~\tt{1 place} \\
+	&299.0~~~\tt{2 places} \\
+	&2~990.0~~~\tt{3 places} \\
+	&29~900.0~~~\tt{4 places} \\
+	&299~000.0~~~\tt{5 places} \\
+	&2~990~000.0~~~\tt{6 places} \\
+	&29~900~000.0~~~\tt{7 places} \\
+	&299~000~000.0~~~\tt{8 places} \\
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+	1.4 \times 10^{-4} \\
+	&0.14~~~\tt{1 place} \\
+	&0.014~~~\tt{2 places} \\
+	&0.0014~~~\tt{3 places} \\
+	&0.00014~~~\tt{4 places} \\
+\end{aligned}
+$$
+
+Scientific notation has the form:
+
+$$
+	m \times 10^{n}
+$$
+
+We call ${n}$ the **exponent**, and ${m}$ the **mantissa** (or
+**significand**). At this point, we can state the following proposition:
+
+> **proposition.** Given a representation of the form ${m \times 10^n,}$ the
+> more digits ${n}$ comprises, the more _precise_ ${m \times 10^n}$ is.
+
+> **proposition.** Given a representation of the form ${m \times 10^n,}$ the
+> more digits ${m}$ comprises, the more _accurate_ ${m \times 10^n}$ is.
+
+A quick refresher of accuracy versus precision:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1661101551/cs/acc_v_prec_fv9hp4.svg"
+	}
+	imwidth={"377"}
+	imheight={"261"}
+	caption={"Accuracy vs. Precision"}
+	width={"60"}
+/>
+
+For example, if the exponent can only comprise 2 digits, the most we can
+float the dot is 99 places.
+
+These basic ideas can be applied on processors. Say we were designing a
+16-bit processor:
+
+```
+□□□□ □□□□ □□□□ □□□□
+```
+
+We want to represent real numbers as well, so we make the following
+decision: the 10 bits to the left will represent the mantissa `M`, and the
+6 bits to the right will represent the exponent `E`:
+
+```
+ □□□□ □□□□ □□      □□□□□□
+|----- M ----|  |--- E ---|
+```
+
+At the same time, we want to use twos-compliment for both portions (we'll
+see why in a moment). So, we reserve the leftmost bit in both portions for
+the sign bit:
+
+```
+ ■□□□ □□□□ □□      ■□□□□□
+|----- M ----|  |--- E ---|
+```
+
+Now, this is where we part ways with floating point. We place the imaginary
+binary point immediately to the right of the sign bit:
+
+```
+ ■•□□□ □□□□ □□      ■□□□□□
+|-•---- M ----|  |--- E ---|
+```
+
+The sign bit, then, is the left-most bit in the register. Now, let's say we
+the bits are initialized as follows:
+
+```
+ 0•110 1000 00      000011
+|-•---- M ----|  |--- E ---|
+```
+
+Because the sign bit is `0`, we can conclude that the mantissa is a
+positive number. If the sign bit were instead `1`:
+
+```
+ 1•110 1000 00      000011
+|-•---- M ----|  |--- E ---|
+```
+
+we would have a negative number. This is where we see the benefit of using
+two's complement for the exponent. If the leftmost bit is `0`, then the
+exponent is positive:
+
+```
+ 0•110 1000 00      000011
+|-•---- M ----|  |--- E ---|
+```
+
+This tells us that the dot should be floated to the right. To conver the
+number to decimal, we first convert the exponent to decimal. In the example
+above, the exponent is `000011`:
+
+| -32 | 16  |  8  |  4  |  2  |  1  |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+|  0  |  0  |  0  |  0  |  1  |  1  |
+
+This yields:
+
+```
+0 + 0 + 0 + 0 + 1 + 1 = 3
+```
+
+This tells us that we have:
+
+$$
+	\mm{M} \times 2^3
+$$
+
+In turn, this tells us that the imaginary point should float to the right
+by 3 places:
+
+```
+  0•110 1000 00      000011    (0 float)
+  01•10 1000 00      000011    (1 float)
+  011•0 1000 00      000011    (2 floats)
+  0110• 1000 00      000011    (3 floats)
+ |----- M -----|  |----E----|
+```
+
+Trailing zeroes on the righthand side are insignificant. So, we can clean
+up:
+
+```
+0110•1
+```
+
+All we have to do next is interpret this as a _fixed point_ binary number,
+but with a slight twist. We must remember whether the leftmost bit in the
+original binary number was a `1` or `0`. If it was `0`, then the decimal
+represented by the binary digit immediately after the dot must be positive.
+If it was a `1`, then the decimal must be negative. In this example, the
+leftmost bit was a `0`, so the decimal must be positive:
+
+|  4  |  2  |  1  |  •  | 0.5 |
+| :-: | :-: | :-: | :-: | :-: |
+|  1  |  1  |  0  |  •  |  1  |
+
+tallying to decimal, we get:
+
+```
+0 + 4 + 2 + 0 + 0.5 = 6.5
+```
+
+To see that this approach works for very small numbers, let's consider a
+negative exponent:
+
+```
+ 0•100 0000 00      111110
+|-•---- M ----|  |--- E ---|
+```
+
+Computing the exponent:
+
+| -32 | 16  |  8  |  4  |  2  |  1  |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+|  1  |  1  |  1  |  1  |  1  |  0  |
+
+```
+-32 + 16 + 8 + 4 + 2 + 0 = -2
+```
+
+So, we must float the dot to the left by two places:
+
+```
+  0•100 0000 00        000011    (0 float)
+  0•0100 0000 00       000011    (-1 float)
+  0•00100 0000 00      000011    (-2 floats)
+ |----- M -------|  |----E----|
+```
+
+Chopping off the insiginifcant bits, we get:
+
+```
+0•001
+```
+
+|  1  |  •  | 1/2 | 1/4 | 1/8 |
+| :-: | :-: | :-: | :-: | :-: |
+|  0  |  •  |  0  |  0  |  1  |
+
+```
+0 + 0 + 0 + 1/8 = 0 + 0 + 0 + 0.125 = 0.125
+```
+
+The method works for negatives as well:
+
+```
+ 1•110 1000 00      000011
+|-•---- M ----|  |--- E ---|
+```
+
+Once more, we convert the exponent:
+
+| -32 | 16  |  8  |  4  |  2  |  1  |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+|  0  |  0  |  0  |  0  |  1  |  1  |
+
+The conversion yields:
+
+```
+0 + 0 + 0 + 0 + 1 + 1 = 3
+```
+
+So, we must float to the right by 3:
+
+```
+ 1•110 1000 00      000011    (0 floats)
+ 11•10 1000 00      000011    (1 float)
+ 111•0 1000 00      000011    (2 floats)
+ 1110• 1000 00      000011    (3 floats)
+|----- M -----|  |--- E ---|
+```
+
+Cleaning up:
+
+```
+1110•1
+```
+
+Because the leftmost bit is `1`, we have:
+
+| -8  |  4  |  2  |  1  | 1/2 |
+| :-: | :-: | :-: | :-: | :-: |
+|  1  |  1  |  1  |  0  |  1  |
+
+which yields:
+
+```
+-8 + 4 + 2 + 0 + 0.5 = -1.5
+```
+
+Finally, a very small negative number:
+
+```
+ 1•100 0000 00      111110
+|-•---- M ----|  |--- E ---|
+```
+
+Converting the exponent:
+
+| -32 | 16  |  8  |  4  |  2  |  1  |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+|  1  |  1  |  1  |  1  |  1  |  0  |
+
+```
+-32 + 16 + 8 + 4 + 2 + 0 = -2
+```
+
+Go back to the mantissa, and float to the left by 2:
+
+```
+ 1•100 0000 00        111110   (0 floats)
+ 0•1100 0000 00       111110   (1 float)
+ 0•01100 0000 00      111110   (2 floats)
+|------ M ------|  |--- E ---|
+```
+
+Cleaning up:
+
+```
+0•0011
+```
+
+Now, to convert this number to decimal, we must remember that the leftmost
+bit in the original number was a `1` (recall our earlier rule about
+remembering the leftmost bit of the original number):
+
+|  1  |  •  | 1/2 | -1/4 | 1/8 |
+| :-: | :-: | :-: | :--: | :-: |
+|  0  |  •  |  0  |  1   |  1  |
+
+```
+0 + 0 + (-0.25) + 0.125 = -0.125
+```
+
+## Precision vs. Accuracy
+
+Recall our earlier discussion on precision and accuracy. When it comes
+representing numbers, the word _precision_ refers to the number of bits
+used to represent a number. _Accuracy_ refers to how close that
+representation is to the true number.
+
+For example, consider the real number 0.125 in decimal. With a binary
+system, we can represent this number both _precisely_ and _accurately_:
+
+|  1  |  •  | 0.5 | 0.25 | 0.125 |
+| :-: | :-: | :-: | :--: | :---: |
+|  0  |  •  |  0  |  0   |   1   |
+
+The real number 0.1, however, cannot be represented with complete
+precision:
+
+|  1  |  •  | 0.5 | 0.25 | 0.125 |
+| :-: | :-: | :-: | :--: | :---: |
+|  0  |  •  |  0  |  0   |   1   |
+
+This gives us 0.125. If we had more bits for the exponent, we can gain more
+precision:
+
+| Max Exponent Bits |  1  |  •  | 0.5 | 0.25 | 0.125 | 0.0625 | 0.03125 | 0.015625 | 0.0078125 | 0.00390625 | Decimal    |
+| :---------------: | :-: | :-: | :-: | :--: | :---: | :----: | :-----: | :------: | :-------: | :--------: | ---------- |
+|         4         |  0  |  •  |  0  |  0   |   1   |   0    |         |          |           |            | 0.125      |
+|         6         |  0  |  •  |  0  |  0   |   0   |   1    |    1    |    0     |           |            | 0.09375    |
+|         8         |  0  |  •  |  0  |  0   |   0   |   1    |    1    |    0     |     0     |     1      | 0.09765625 |
+
+With floats, the more bits we have in the mantissa, the more precise our
+represented number is. Precision is good, so why don't we just give more
+bits for the mantissa? It's financially expensive. To have more bits, we
+need a larger register, and to have larger registers, we need more cash to
+buy the materials. Because of this hurdle, early processors varied widely
+in how many bits they designated for the mantissa. This led to widespread
+incompatibility. In turn, this led to a chaotic world of computing —
+machines couldn't communicate with one another because of all the different
+specifications.
+
+To see how problematic this is, consider the differences in floating-point
+representation for different mantissa sizes:
+
+<table className={"xoxo"}>
+	<thead>
+		<tr>
+			<th></th>
+			<th>Register Size</th>
+			<th>Mantissa Size</th>
+			<th>Exponent Size</th>
+			<th>Range</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>__System A__</td>
+			<td>8</td>
+			<td>4</td>
+			<td>4</td>
+			<td>
+				<table>
+					<tbody>
+						<tr>
+							<td></td>
+							<td>Binary</td>
+							<td>Decimal</td>
+						</tr>
+						<tr>
+							<td>Largest Mantissa</td>
+							<td>0111</td>
+							<td>5</td>
+						</tr>
+						<tr>
+							<td>Smallest Positive Mantissa</td>
+							<td>0001</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>Largest Positive Exponent</td>
+							<td>0111</td>
+							<td>8</td>
+						</tr>
+						<tr>
+							<td>Largest Negative Exponent</td>
+							<td>1000</td>
+							<td>-8</td>
+						</tr>
+						<tr>
+							<td>Largest Positive Number</td>
+							<td>0111 0000</td>
+							<td>112</td>
+						</tr>
+						<tr>
+							<td>Smallest Positive Number</td>
+							<td>0001 1000</td>
+							<td>0.00488281</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>__System B__</td>
+			<td>8</td>
+			<td>5</td>
+			<td>3</td>
+			<td>
+				<table>
+					<tbody>
+						<tr>
+							<td></td>
+							<td>Binary</td>
+							<td>Decimal</td>
+						</tr>
+						<tr>
+							<td>Largest Mantissa</td>
+							<td>01111</td>
+							<td>15</td>
+						</tr>
+						<tr>
+							<td>Smallest Positive Mantissa</td>
+							<td>00001</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>Largest Positive Exponent</td>
+							<td>011</td>
+							<td>4</td>
+						</tr>
+						<tr>
+							<td>Largest Negative Exponent</td>
+							<td>100</td>
+							<td>-4</td>
+						</tr>
+						<tr>
+							<td>Largest Positive Number</td>
+							<td>01111 011</td>
+							<td>7.5</td>
+						</tr>
+						<tr>
+							<td>Smallest Positive Number</td>
+							<td>0001 100</td>
+							<td>0.00390625</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+Importantly, with a register size of 8, there are only ${2^8 = 256}$
+possible bit patterns. If the system doesn't support real number
+representation, then only 256 unique values can be represented. In the
+section on normalization, we'll see that if a system _does_ support real
+number representation, that range is even smaller.
+
+The more bits we give to the mantissa, the more precise our representations
+are. But more bits for the mantissa means less bits for the exponent. And
+the less bits we give the exponent, the less accurate our representation
+is. This is a tough tradeoff. If we want more precision, we'll have to give
+up some accuracy. If we want more accuracy, we'll have to give up some
+precision.
+
+### Accumulating Errors
+
+Because of limitations in floating point arithmetic, many computations that
+appear benign and straightforward can lead to very strange results.
+Consider the following computation in JavaScript:
+
+```javascript
+let x = 0.1;
+console.log(x);
+x += 0.2;
+console.log(x);
+x -= 0.2;
+console.log(x);
+```
+
+```bash
+0.1
+0.30000000000000004
+0.10000000000000003
+```
+
+For some applications, these errors are insignificant. However, they can
+very quickly become significant:
+
+```javascript
+let x = 0.1;
+console.log(x);
+x += 0.2;
+console.log(x);
+x -= 0.2;
+console.log(x);
+x *= 1e17;
+console.log(x);
+```
+
+```bash
+0.1
+0.30000000000000004
+0.10000000000000003
+10000000000000004
+```
+
+Of course, such large computations arguably should not be done in
+JavaScript. The language was never designed for intensive numeric
+computations. Best to use Julia or Matlab for such tasks. Nevertheless,
+those languages aren't immune either — they're just better at handling (and
+in many cases, hiding) these errors.
+
+### Tips for Handling Floating Point Arithmetic
+
+The following are some helpful guidelines in working with floating point
+numbers.
+
+**Add numbers of similar small magnitude before adding larger magnitude
+numbers.** This tip comes directly from our previous discussion. The
+further away two floating point numbers, the larger the gap, and the larger
+the gap, the more likely we are to lose precision. For example, consider
+the output of the following code:
+
+```javascript
+let x = 0.1;
+let y = 0.09;
+console.log(x);
+console.log(y);
+x += 0.2;
+y += 0.21;
+console.log(x);
+console.log(y);
+```
+
+```bash
+0.1
+0.09
+0.30000000000000004
+0.3
+```
+
+Above, we see that adding `0.09 + 0.21` yields a more accurate result that
+simply adding `0.1 + 0.2`. This is because `0.09` and `0.21` are closer in
+magnitude than `0.1` and `0.2`.
+
+**Compute the Fractionals as Integers, then Convert to Floats.** This is a
+fairly straightforward tip. Computer systems handle integers better than
+they do floats. Accordingly, if we know that certain computations will
+always be performed with same-magnitude floats, we can separate those
+computations, perform them as integers, then return the result as a float.
+For example, consider the following code:
+
+```javascript
+let x = 9.999;
+let y = 9.998;
+let z = x - y;
+console.log(z);
+```
+
+```bash
+0.0010000000000012221
+```
+
+We can rewrite this computation as:
+
+```javascript
+let x = 9.999;
+let y = 9.998;
+let z = (x * 1000 - y * 1000) / 1000;
+console.log(z);
+```
+
+```bash
+0.001
+```
+
+**Multiplying Tiny Numbers Against Extremely Large Numbers is Almost Always
+a Bad Idea.** When multiplying and dividing floats, we _always_ want to
+keep the operands as close to each other as possible. Consider the
+following computation:
+
+```javascript
+let x = (1 / 77770) * (1 / 11110) * (99990 * 199990 * 22220);
+console.log(x);
+```
+
+```bash
+514259.99999999994;
+```
+
+This is a good example of how bad overflow and underflow can be. The result
+is way, way off. We should be seeing repeating decimals:
+
+```
+51402.857142857142857142857142857142857142857142857142857142857142...
+```
+
+To prevent this disaster, we want to rearrange how the computation is
+performed:
+
+```javascript
+let x = (99990 / 77770) * (22220 / 11110) * 19990;
+console.log(x);
+```
+
+```bash
+51402.857142857145
+```
+
+**Turn off the Code Formatter and Linter.** Code formatters (e.g.,
+Prettier) and linters often take liberties in inserting or removing
+parentheses from expressions. Some of these modifications are _bad_, not so
+much because the developers don't consider floating point sensitivity, but
+because they can't possibly predict every possible way to write an
+expression. Accordingly, if we want to ensure a particular expression is
+always written as is, we must ensure that the code formatter or linter
+doesn't go anywhere near such code.
+
+## IEEE-754
+
+As mentioned earlier, the widespread variations in floating specifications
+led to a wild west of computer systems. To establish order, IEEE (the
+Institute of Electrical and Electronics Engineers) created the **IEEE-754
+standard**. IEEE is an organization that creates many standards, and the
+754 denotes that the standard was the 754th standard created by IEEE.
+
+Under IEEE-754, processor manufacturers have two options if they want to be
+IEEE-754 compliant:
+
+1. The mantissa comprises 24 bits (called **single precision**).
+2. The mantissa comprises 53 bits (called **double precision**).

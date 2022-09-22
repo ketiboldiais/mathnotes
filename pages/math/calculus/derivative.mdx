@@ -1,0 +1,600 @@
+import { Plot } from "../../../components/illus/components/Plot/Plot";
+
+<Metadata
+	title={"The Derivative"}
+	description={"Introduction to derivatives"}
+	keywords={"calculus, precalculus, derivatives"}
+/>
+
+# The Derivative
+
+<q>
+_“Zeno was concerned, as a matter of fact, with three problems, each presented by motion, but each more abstract than motion, and capable of a purely arithmetical treatment. These are the problems of the infinitesimal, the infinite, and continuity.”_
+
+Bertrand Russell, _Recent Work on the Principles of Mathematics_, ~4 The
+International Monthly~ 83 (1901).
+
+</q>
+
+At its core, calculus is the study of the relationships between functions.
+Before we rigorously examine these relationships, we begin by building some
+intuition, using this concept of "function relationships" as a guide.
+
+Suppose we have two functions: ${d}$ and ${s.}$ These two functions could
+be anything. If we're talking physics, we might say the function ${f}$ is a
+function of distance, and the function ${s}$ is a function of speed. If
+we're talking graphs in pure mathematics, however, we can think of ${f}$ as
+how high or low the graph climbs, and ${s}$ as how steep &mdash; the slope
+&mdash; the graph moves up or down. That "steepness" can also be
+interpreted as how quickly we climb or descend.
+
+Our first function, ${f,}$ must take inputs. We can denote those inputs
+with ${t,}$ or with ${x.}$ Let's use ${t.}$ This gives us the first
+function's name: ${f(t).}$ Let's say the second function is called ${s(t)}$
+That function ${s(t)}$ has a variety of names:
+
+$$
+	\begin{aligned} &s(t) = \dfrac{df}{dt} \\[1em] &s(t) = \dfrac{d}{dt} f \\[1em] &s(t) = f' \end{aligned}
+$$
+
+All this said, let's consider the simplest case of the relationship between
+these two functions. Suppose we're travelling at constant speed. If we're
+travelling at constant speed, then the graph of ${s(t)}$ would be flat. Say
+it's ${4 \text{ m/s}.}$ Then ${s(t) = 4.}$ This means that after ${1}$
+second, we've travelled ${4}$ meters. After ${2}$ seconds, ${8}$ meters.
+And after ${3}$ seconds, ${12}$ meters. Where ${s(t) = 4,}$ we have:
+
+$$
+	f(t) = 4t
+$$
+
+This reveals that ${f(t) = [s(t)]t,}$ or, more concisely, ${f = st.}$
+Notice that when the slope is constant, algebra suffices. The slope is
+obtained by simply dividing the distance by the time:
+
+$$
+	s = s(t) = \dfrac{df}{dt} = \dfrac{d}{dt}f = f' = \dfrac{f(t)}{t} = \dfrac{f}{t}
+$$
+
+And viewed in a different direction:
+
+$$
+	f = st = \dfrac{df}{dt}(t) = \left( \dfrac{d}{dt} f \right)t = f' \cdot t = \left( \dfrac{f(t)}{t} \right) \cdot t = \left( \dfrac{f}{t} \right) = st
+$$
+
+Now suppose we wanted to find our speed along two particular times. Say our
+speed at ${t_0,}$ a particular starting point in time, and at ${t_1,}$ the
+end point in time. In that case, what we're asking for is really:
+
+$$
+	s = \dfrac{df}{dt} = f' = \dfrac{d}{dt} f = \dfrac{f(t_1) - f(t_0)}{t_1 - t_0} = \dfrac{\Delta f}{\Delta t}
+$$
+
+Say our speed varies. We might imagine the graphs to appear as:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655069431/math/twoFuncDerivative_euzkmv.svg"
+	}
+	caption={"Two functions"}
+	width={"50"}
+	imwidth={"362"}
+	imheight={"174"}
+/>
+
+This is in line with our intuition. The graph of ${f}$ shows that we cover
+a lot of distance at first, then begin to plateau, eventually stopping. The
+graph of ${s}$ accurately describes this situation in terms of speed. We're
+moving pretty fast at first, but then slow down, eventually stopping. This
+discussion illustrates the purpose of **differential calculus**. It is the
+mathematics that allows to understand ${f}$ through ${s,}$ and ${s}$
+through ${f.}$
+
+There are several ways to define a derivative. One way is to define the
+derivative geometrically. Another way is to define the derivative
+analytically. Yet another way is to define the derivative in terms of
+physics. And yet another way is to define it in terms of measurements.
+
+For the next few sections, we will focus on how to **differentiate**
+&mdash; computing the derivative of a function. Question: How do we find
+the tangent line to a point ${P(x_0, y_0)}$ on some line ${y = f(x)?}$ We
+could just draw it[^tangent_note]:
+
+[^tangent_note]:
+    The word _tangent_ is derived from the Latin _tangens_, meaning
+    &#8220;touching.&#8221;
+
+Now, we can draw the above easily by hand, but how do we get a computer to
+do it? This is an overarching theme for the materials that follow: How do
+we answer these questions computationally? This is an **imperative
+inquiry** &mdash; it asks a "how to" question. And to even begin answering
+this question, we must understand the underlying propositions. What do we
+know is true? What is false? These are **declarative inquiries** &mdash;
+they ask "what is" questions.
+
+To begin, we know that the equation of a line is ${y - y_0 = m(x - x_0),}$
+where ${m}$ is the **slope** of the line. There are two propositions we
+need to determine what the tangent line is. First, what are the coordinates
+of the point ${P(x_0, y_0)?}$ Well, we know that ${y_0 = f(x_0).}$ Second,
+what is the slope ${m?}$
+
+Here we have our first bit of terminology. We will now part ways with
+${m,}$ and use the more formal term for the slope: ${f'(x_0)}$ (read: "The
+derivative of ${f.}$") The answer to this question is some number
+${f'(x_0),}$ and it is the focus of the materials that follow.
+
+> __definition__. ${f'(x_0),}$ the > _derivative_ of ${f}$ at ${x_0,}$ is the
+> slope ${m}$ of the tangent line > to ${y = f(x)}$ at the point
+> ${P(x_0, y_0).}$
+
+We still have a problem. Why did we draw the line the way we did in the
+diagram above? Why couldn't it have been this green line:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655069544/math/secant_line_fryqgn.svg"
+	}
+	caption={"Secant line"}
+	width={"50"}
+	imwidth={"185"}
+	imheight={"138"}
+/>
+
+How do we know that the green line is not a tangent line, but the red line
+is a tangent line? The green line crosses at some other point, call it
+${Q.}$ But, this is not what prevents the green line from being a tangent
+line, because the tangent line itself could very well cross multiple
+points.
+
+The green line is what we call the **secant line**. If we think of the
+point ${Q}$ as getting closer and closer to ${P,}$ then the slope of the
+secant line will get closer and closer to the slope of the tangent line. If
+we draw the secant line close enough, then we get the tangent line.
+
+> __definition__. The **tangent line** is the limit of the secant lines
+> ${\overleftrightarrow{\rm PQ}}$ as ${Q}$ tends to ${P,}$ where ${P}$ is
+> fixed.
+
+This is the geometric interpretation of the derivative. Now we turn to an
+analytic interpretation of the derivative (interpreting the derivative in
+terms of symbols and formulas). Let's first draw the points ${P}$ and ${Q}$
+again:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655069623/math/PQ_mzvqro.svg"
+	}
+	caption={"The line PQ"}
+	width={"50"}
+	imwidth={"223"}
+	imheight={"176"}
+/>
+
+Above, we see just a secant line. The length ${\Delta x}$ is the change in
+${x,}$ and the length ${\Delta f}$ is the change in ${f.}$ Given these two
+lengths, we define the slope of the secant line as:
+
+$$
+	m_{secant} = \dfrac{\Delta f}{\Delta x}
+$$
+
+From the definition of the tangent line above, we can also define the slope
+of the tangent line:
+
+$$
+	m_{tangent} = \lim\limits_{\Delta x \to 0} \dfrac{\Delta f}{\Delta x}
+$$
+
+This is still too general. Let's make things much more explicit. First,
+let's write the numerator of ${m_{secant},}$ ${\Delta f,}$ more explicitly.
+Recall that the point ${P}$ has the coordinates ${(x_0, f(x_0)).}$ We also
+need a formula for the point ${P.}$ If ${P}$ has the ${x}$-coordinate
+${x_0,}$ then ${x}$-coordinate of ${Q}$ must be ${(x_0 + \Delta x).}$ Thus,
+the point ${Q}$ has the coordinates
+${(x_0 + \Delta x, f(x_0 + \Delta x)).}$ Now we can write another formula
+for the derivative:
+
+> __definition__. The derivative is defined by the following formula:
+
+$$
+	m = f'(x_0) = \lim\limits_{\Delta x \to 0} \dfrac{f(x_0 + \Delta x) - f(x_0)}{\Delta x}
+$$
+
+This formula is called the **difference quotient**. Above, we have some new
+notation, ${\lim\limits_{\Delta x \to 0}.}$ This is called a **limit**.
+Let's define this notation informally (a more formal definition is provided
+in a later section):
+
+> __definition__. The notation:
+>
+> $$
+> 	\lim\limits_{x \to a} f(x) = L
+> $$
+
+reads as, &#8220;The limit of ${f(x)}$ as ${x}$ approaches ${a}$ equals
+${L.}$&#8221; If the values of ${f(x)}$ are arbitrarily close to ${L}$
+(i.e., as close to ${L}$ as we'd prefer) by making ${x}$ sufficiently close
+to ${a}$ on either the left- or right-hand side of ${a,}$ but ${x \neq a}$
+then we write ${\lim\limits_{x \to a} f(x) = L.}$
+
+This is an extremely important formula, and it forms the foundation for the
+materials that follow. It is the formula that allows us to compute the
+value of ${m,}$ or more appropriately, ${f'(x).}$ All that said, let's see
+it in action.
+
+Suppose we have the function ${f(x) = \dfrac{1}{x}.}$ What is the
+derivative of this function? All we're going to do is plug in the function
+to the previous formula. Visually, what we're doing is taking a point on
+the hyperbola and determine the tangent line through that point. This is a
+geometric objective, but we are accomplishing it algebraically.
+
+$$
+	\lim\limits_{\Delta x \to 0}\dfrac{\Delta f}{\Delta x} = \lim\limits_{\Delta x \to 0}\dfrac{\dfrac{1}{x_0 + \Delta x} - \dfrac{1}{x_0}}{\Delta x}
+$$
+
+Now we simplify:
+
+$$
+	\begin{aligned}
+		f'\left(\dfrac{1}{x}\right) &= \lim\limits_{\Delta x \to 0} \dfrac{\Delta f}{\Delta x} \\
+		&= \lim\limits_{\Delta x \to 0}\dfrac{\dfrac{1}{x_0 + \Delta x} - \dfrac{1}{x_0}}{\Delta x} \\
+		&= \lim\limits_{\Delta x \to 0}\dfrac{1}{\Delta x} \left( \dfrac{x_0 - (x_0 + \Delta x)}{x_0(x_0 + \Delta x)} \right) \\
+		&= \lim\limits_{\Delta x \to 0}\dfrac{1}{\Delta x} \left( \dfrac{\cancel{x_0} - (\cancel{x_0} + \Delta x)}{x_0(x_0 + \Delta x)} \right) \\
+		&= \lim\limits_{\Delta x \to 0}\dfrac{1}{\Delta x} \left( \dfrac{- \Delta x}{x_0(x_0 + \Delta x)} \right) \\
+		&= \lim\limits_{\Delta x \to 0}\dfrac{1}{\cancel{\Delta x}} \left( \dfrac{- \cancel{\Delta x}}{x_0(x_0 + \Delta x)} \right) \\
+		&= \lim\limits_{\Delta x \to 0}-\dfrac{1}{x_0(x_0 + \Delta x)} \\
+		&= -\dfrac{1}{x_0^2}
+	\end{aligned}
+$$
+
+Notice what the final output of ${f'}$ is. First, it's a negative value.
+This conforms to the tangent line sloping down. Second, as ${x}$ tends
+towards infinity, ${f'}$ gets less and less steep. ${f'}$ corresponds to
+this characteristic as well. As ${x_0}$ becomes a very large number,
+${-\dfrac{1}{x_0^2}}$ becomes a smaller and smaller in magnitude.
+
+Let's go back to some notation. So far, we've seen several:
+
+- ${y = f(x)}$
+- ${\Delta y = \Delta f}$
+
+We also saw this notation for the derivative:
+
+$$
+	f'
+$$
+
+The notation above is called **Newton's notation**. Another set of
+notations for the derivative (all of the notations below mean the same
+thing):
+
+$$
+	\dfrac{df}{dx} \equiv \dfrac{dy}{dx} \\[2em]
+	\dfrac{d}{dx}f \equiv \dfrac{d}{dx}y
+$$
+
+This notation is called **Leibniz's notation**. Newton's notation is by far
+the most concise, but of course, that comes at the cost of omitting a great
+deal of information. Both notations, however, are used extensively, and
+often together.
+
+Arguably, the simplest functions to consider the derivatives for are the
+following: (1) constant functions; (2) power functions; (3) polynomial
+functions; and (4) exponential functions. Exploring the derivatives for
+these functions provides clear applications of the preceding section's
+concepts, as well as several key insights to differentiation.
+
+## Derivative of a Constant
+
+Consider the function ${f(x) = C,}$ where ${C}$ is a constant. Applying the
+definition of a derivative:
+
+$$
+	\begin{aligned} f'(x) &= \lim\limits_{h \to 0} \dfrac{f(x + h) - f(x)}{h} \\[1em] &= \lim\limits_{h \to 0} \dfrac{c - c}{h} \\[1em] &= \lim\limits_{h \to 0} 0 \\[1em] &= 0 \end{aligned}
+$$
+
+We can support this algebraic analysis by examining the graphs of constant
+functions:
+
+<Plot
+	functions={[
+		{ f: (x) => 2, color: "var(--red)" },
+		{ f: (x) => 3, color: "var(--blue)" },
+		{ f: (x) => -4, color: "var(--green)" },
+	]}
+	scale={60}
+/>
+
+Above, we see the graphs of ${f(x) = 2,}$ ${f(x) = 3,}$ and ${f(x) = -4.}$
+These functions do not "slope." They stay constant. Based on our analyses ,
+we have the following theorem:
+
+> __theorem__. Derivative of a Constant. Given the constant function
+> ${f(x) = C,}$
+>
+> $$
+> 	\dfrac{d}{dx} (c) = 0
+> $$
+
+## Derivatives of Power Functions
+
+Let's now consider the derivative of ${f(x) = x^n,}$ where
+${n \in \ZZ^{+}.}$ In other words, we want to compute:
+
+$$
+	\dfrac{d}{dx} x^n
+$$
+
+Let's start by examining various power function graphs:
+
+<Grid cols={4} rows={2}>
+
+<Plot
+	functions={[{ f: (x) => x ** 1, color: "var(--red)" }]}
+	id={"pf1"}
+	caption={"f(x) = x^1"}
+/>
+
+<Plot
+	functions={[{ f: (x) => x ** 2, color: "var(--red)" }]}
+	id={"pf2"}
+	caption={"f(x) = x^2"}
+/>
+
+<Plot
+	functions={[{ f: (x) => x ** 3, color: "var(--blue)" }]}
+	id={"pf3"}
+	caption={"f(x) = x^3"}
+/>
+
+<Plot
+	functions={[{ f: (x) => x ** 4, color: "var(--green)" }]}
+	id={"pf4"}
+	caption={"f(x) = x^4"}
+/>
+
+<Plot
+	functions={[{ f: (x) => x ** 5, color: "var(--purple)" }]}
+	id={"pf5"}
+	caption={"f(x) = x^5"}
+/>
+
+<Plot
+	functions={[{ f: (x) => x ** 6, color: "var(--purple)" }]}
+	id={"pf6"}
+	caption={"f(x) = x^6"}
+/>
+
+<Plot
+	functions={[{ f: (x) => x ** 7, color: "var(--purple)" }]}
+	id={"pf7"}
+	caption={"f(x)=x^7"}
+/>
+
+<Plot
+	functions={[{ f: (x) => x ** 8, color: "var(--purple)" }]}
+	id={"pf8"}
+	caption={"f(x)=x^8"}
+/>
+
+</Grid>
+
+Consider the simplest case, where ${n = 1.}$ If ${n = 1,}$ then
+${f(x) = x^n = x^1 = x.}$ The graph of ${f(x) = x}$ is a straight vertical
+line, which has a slope of ${1.}$ Thus, we have:
+
+> __theorem__: Derivative of ${f(x) = x.}$ Given the function ${f(x) = x,}$
+>
+> $$
+> 	\dfrac{d}{dx} (x) = 1
+> $$
+
+But about the more general case, ${x^n?}$ For this case, we return to our
+expression, ${\dfrac{\Delta f}{\Delta x}:}$
+
+$$
+	\dfrac{(x + \Delta x)^n - x^n}{\Delta x}
+$$
+
+Notice that we wrote ${x}$ instead of ${x_0.}$ We did so because ${x_0}$
+isn't meaninful in this particular computation. ${x}$ can be any fixed
+value of ${x,}$ and we aren't so much concerned about what the value is.
+However, we state explicitly that ${x}$ is a fixed value, and ${\Delta x}$
+is a moving value.
+
+To manipulate our expression, we must understand what the
+${n^{\text{\scriptsize{th}}}}$ power of a sum is. To do so, we use a
+theorem from discrete mathematics, called the binomial theorem.
+
+The expression ${(x + \Delta x)^n}$ can be rewritten as:
+
+$$
+	(x+\Delta x)_1 \cdot (x+\Delta x)_2 \cdot \ldots \cdot (x+\Delta x)_n
+$$
+
+If we expand this multiplication, the first term in the product is ${x^n.}$
+Next, we have a second term of the form ${x^{n-1}\Delta x.}$
+
+How many times does this term occur? ${n}$ times, since we are multiplying
+${(x + \Delta x)}$ by itself ${n}$ times. Thus, we have:
+
+$$
+	x^n + nx^{n - 1}\Delta x
+$$
+
+With just these terms, we have enough to continue computing the derivative,
+per the binomial theorem. According to the binomial theorem:
+
+$$
+	(x + \Delta x)^n = \sum\limits_{k = 0}^{n} \dbinom{n}{k}x^{n - k}(\Delta x)^k
+$$
+
+From this proposition, when ${k \geq 2,}$ we will always obtain terms
+containing ${\Delta x}$ in powers of 2, 3, 4, 5, and so on. Because of this
+implication, we can write the sum as:
+
+$$
+	(x + \Delta x)^n = x^n + nx^{n - 1}\Delta x + O((\Delta x)^2)
+$$
+
+The term ${O(\Delta x)^2}$ encapsulates what we call "junk terms," at least
+in the context of continuous mathematics, and more specifically, in the
+context of ${\Delta x \mapsto 0}$. The ${O(\Delta x)^2}$ actually
+represents:
+
+$$
+	(\Delta x)^2 \sum\limits_{k = 2}^{n} \binom{n}{k}x^{n - k} = (\Delta x)^2 \left( \binom{n}{2}x^{n-2} + \binom{n}{3}x^{n-3} \Delta x + \ldots - (\Delta x)^{n-2} \right)
+$$
+
+Importantly, as ${\Delta x \to 0,}$ we have the equation:
+
+$$
+	\lim\limits_{\Delta x \to 0} \dfrac{o(\Delta x)}{\Delta x} = 0
+$$
+
+Let's get back to our manipulation. With our application of the binomial
+theorem, we can rewrite our difference quotient as:
+
+$$
+\begin{aligned}
+	\dfrac{\Delta f}{\Delta x} &= \dfrac{1}{\Delta x}((x + \Delta x)^n - x^n) \\
+	&= \dfrac{1}{\Delta x}(x^n + nx^{n-1}\Delta x + O((\Delta x)^2) - x^n) \\
+	&= nx^{n-1} + \dfrac{O((\Delta x)^2)}{\Delta x}
+\end{aligned}
+$$
+
+Now all we do is apply the limit (recall what we concluded from the
+binomial theorem earlier):
+
+$$
+\begin{aligned}
+	\lim\limits_{\Delta x \to 0} \dfrac{\Delta f}{\Delta x} &= \lim\limits_{\Delta x \to 0} \left(nx^{n-1} + \dfrac{O((\Delta x)^2)}{\Delta x}\right) \\
+	&= nx^{n-1} + 0 \\
+	&= nx^{n-1}
+\end{aligned}
+$$
+
+Accordingly, we have the following theorem:
+
+> Theorem: The Power Rule. The derivative of ${x^n}$ where ${n}$ is some
+> positive integer (i.e., ${n \in \ZZ^{+},}$) is defined as:
+
+$$
+	\dfrac{d}{dx} (x^n) = nx^{n - 1}
+$$
+
+The theorem above extends to polynomials. This means that we can now
+compute the derivatives of the power functions:
+
+$$
+	\begin{aligned}
+		\frac{d}{dx} x^2 &= 2x \\[1em]
+		\frac{d}{dx} x^3 &= 3x^2 \\[1em]
+		\frac{d}{dx} x^4 &= 4x^3 \\[1em]
+		\frac{d}{dx} 2x^5 &= (2)(5x^4) = 10x^4
+	\end{aligned}
+$$
+
+## Constant Multiples
+
+Consider the function ${f(x) = \dfrac{3x^6}{2}.}$ What is the derivative of
+this function? To begin, we can rewrite this function as:
+${f(x) = \dfrac{3}{2} x^6.}$ Rewriting it this way, we see that
+${\dfrac{3}{2}}$ is really just a constant. Accordingly, we can construct a
+more general form for this function: ${f(x) = C \cdot g(x),}$ where
+${C = \dfrac{3}{2}}$ and ${g(x) = x^6.}$
+
+Thinking more generally, let's forget about the original problem and think
+about applying the derivative definition to a function of the form
+${f(x) = C \cdot g(x).}$ We have:
+
+$$
+	\begin{align} f'(x) &= \lim\limits_{h \to 0} \dfrac{f(x + h) - f(x)}{h} \\[1em] &= \lim\limits_{h \to 0} \dfrac{C g(x + h) - C g(x)}{h} \\[1em] &= \lim\limits_{h \to 0} C \left[ \dfrac{g(x + h) - g(x)}{h} \right] \\[1em] &= C \lim\limits_{h \to 0} \dfrac{g(x + h) - g(x)}{h} \\[1em] &= C g'(x) \end{align}
+$$
+
+The transition from line (3) to (4) follows from the limit law for
+multiplication. From the analysis above, we have the _Constant Multiple
+Rule_:
+
+> _Theorem: Constant Multiple Rule_. Given the function
+> ${f(x) = C \cdot g(x),}$ where ${C}$ is a constant and ${C \in \RR,}$
+
+$$
+	f'(x) = C \cdot g'(x)
+$$
+
+Accordingly, the derivative of ${f(x) = \dfrac{3x^6}{2}}$ is
+${f'(x) = \dfrac{3}{2} \cdot \dfrac{d}{dx} (x^6) = \dfrac{3}{2} \cdot (6x^5).}$
+In other words, ${f'(x) = 9x^5.}$
+
+## The Rate of Change
+
+In the previous sections, we saw two interpretations of the derivative: (1)
+a geometric interpretation, and (2) an algebraic interpretation. Now we
+turn to another: a physical interpretation. By physical, we are referring
+to an interpretation of the derivative in terms of applied mathematics.
+Under the physical interpretation, we think of the derivative as a _rate of
+change_.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655346504/math/average_rate_of_change_dtsdtj.svg"
+	}
+	caption={"Rate of change"}
+	width={"40"}
+	imwidth={"328"}
+	imheight={"312"}
+/>
+
+Referencing the diagram above, ${\dfrac{\Delta x}{\Delta y}}$ represents
+the average rate of change. The derivative ${\dfrac{dy}{dx},}$ however,
+represents the _instantaneous rate of change_. The concept of instantaneous
+rate of change underlies numerous fields, the most obvis of which are in
+physics:
+
+- Where ${q}$ is a charge and ${t}$ is time, ${\dfrac{dq}{dt}}$ represents
+  current.
+
+- Where ${s}$ is a distance ${t}$ is time, ${\dfrac{ds}{dt}}$ represents
+  speed.
+
+For example, suppose that we drop a large block from a building 80 meters
+high. Using the acceleration due to gravity (9.807 ${m/s^2}$), we have the
+following formula:
+
+$$
+	h = 80 - 5t^2
+$$
+
+where ${h}$ is the height and ${t}$ is time.
+
+Thus, at ${t = 0,}$ we are at the very top of the building.
+${h = 80 - 0 = 80.}$ At ${t = 4,}$ we are at the bottom
+${h = 80 - 5(4)^2 = 80 - 80 = 0.}$ The average speed of the block falling
+is the change in ${h}$ divided by the change in ${t:}$
+
+$$
+\begin{aligned}
+	\dfrac{\Delta h}{\Delta t} &= \dfrac{h_f - h_0}{t_f - t_0}  \\
+	&= \dfrac{0 - 80}{4 - 0}  \\
+	&= -20 m/s
+\end{aligned}
+$$
+
+Thus, the average speed of the block falling is ${20 m/s.}$ What is the
+speed of the block the moment it hits the pavement? To answer this
+question, we need to compute the instantaneous speed:
+
+$$
+\begin{aligned}
+&h = 80 - 5t^2 \\
+&\dfrac{d}{dt} h = 0 - 10t \\
+&= -10t
+\end{aligned}
+$$
+
+Thus, at the point of impact, we have ${t = 4,}$ so ${h' = -40 m/s.}$ Thus,
+the speed of the block at the moment of impact is ${40 m/s.}$ Physically
+interpreting the derivative is not just limited to physics. In meteorology,
+we use derivatives to compute temperature gradients, which are what cause
+airflows (which in turn are what cause winds and storm systems).

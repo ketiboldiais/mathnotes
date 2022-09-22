@@ -1,0 +1,622 @@
+import { CartProd, Plot } from "../../../components/hago";
+import { Plot as Plot2 } from "../../../components/illus/components/Plot/Plot";
+
+# Probability
+
+These notes provide an overview of probability.
+
+## Sample Space
+
+A _sample space_ is a set of possible outcomes. We can think of it as a list
+of events: heads, tails, rolling a four with a dice, picking the queen of
+hearts, a stock increasing in value, a car crashing into another. Sample spaces,
+however, are a special set of outcomes because of two key properties:
+
+1. Its members are _mutually exclusive_. That is, if we pull one thing out of
+   the set, we won't also pull another thing out. Put in probability terms, if
+   one event occurs, we can rest assured that another event in the set won't
+   occur. For example, if we flip heads, we won't also flip tails.
+2. It is _collectively exhaustive_ — it contains all the possible outcomes of an
+   experiment. For example, if the experiment is flipping a coin, then the
+   sample space ${\set{\tt{heads}, \tt{tails}}}$ is collectively exhaustive.
+
+Consider rolling a tetrahedral die twice. The sample space can be viewed as:
+
+<CartProd x={[1,2,3,4]} y={[1,2,3,4]}/>
+
+Above, we have a sample space of size 16. This is an example of a _discrete
+sample space_ — a sample space of finite size. Some samples, however, are
+_continuous sample spaces_ — sample spaces of infinite size. For example,
+the set of all points on a dart board:
+
+<Plot2 geo={[{type:"circle",xy: [0,0], r:1, class:"blueCircle"}]} scale={70}
+domain={[-2,2]} />
+
+Ther are infinitely many points on this dart board. Because of its infinite
+nature, we often express such sample spaces by writing:
+
+$$
+	\Omega = \set{ (x,y) | x^2 + y^2 = 1 }
+$$
+
+This idea — assigning probabilities to events rather than outcomes — applies to
+discrete sample spaces. For example, if the experiment is flipping a coin and
+the sample space consists of only heads or tails, what we are really assigning
+probabilities to is a sample space that looks like:
+
+$$
+	\set{ \set{\tt{heads}},\set{\tt{tails}} }
+$$
+
+That is, a sample space where the events are singletons — sets with only one
+element.
+
+## Axioms of Probability
+
+There's a distinction between _events_ and _outcomes_. As we saw, a sample space
+is a set of possible outcomes. An __event__ is a subset of the sample space. We
+assign probabilities to _events_, not outcomes. Why? Because of sample spaces
+can be infinite sets. Consider the dart board example. What is the probability
+that, if we threw a dart, it would land at some point ${(x,y)?}$ The answer is
+zero. No matter how hard we tried, it would always land at some point
+
+$$
+	(x.000 \ldots 001, y. 000 \ldots 0001)
+$$
+
+because there are infinitely many points! Obviously, we do not want to say zero
+every time someone asks for a probability. We avoid this problem by assigning
+probabilities to subsets rather than individual outcomes. Thus, given a sample
+space ${\Omega,}$ what we're interested is not some outcome ${x}$ in
+${\Omega,}$ but a set of outcomes ${E}$ in ${\Omega:}$
+
+<Plot2
+	geo={[
+		{type: "rectangle",
+			xy: [0, 0],
+			w: 20,
+			h: 12,
+			class: "yellowRectangle"},
+		{ type: "circle", xy: [0, 0], r: 5, class: "blueCircle" },
+		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
+		{ type: "label", id: "E", xy: [-0.5, 1], fontSize: 2 },
+	]}
+ marginTop={0}
+ marginBottom={0}
+ noAxes={true}
+ scale={40}
+ id={"event"}
+/>
+
+If we get an outcome inside ${E,}$ we say that ${E}$ _occurred_. If we don't get
+an oucome inside ${E,}$ we say that ${E}$ _did not occur_. 
+
+We can now lay some ground rules about assigning probabilities:
+
+1. A _probability_ ${\P}$ must be a real number between ${0}$ and ${1}$
+   inclusive: ${\set{\P \in \RR | 0 \lte \P \lte 1}.}$
+2. If we assign an event ${E}$ the probability ${\P=0,}$ then we are expressing
+   the notion: "I am certain ${E}$ _will not_ occur."
+3. If we assign an event ${E}$ the probability ${\P=1,}$ then we are expressing
+   the notion: "I am certain ${E}$ _will_ occur."
+
+Moreover, there are three axioms that every probability model must obey
+(which in turn means we can rely on these facts when interpreting the models):
+
+<dfn>
+
+__Nonnegativity Axiom of Probability.__ Let ${\P(A)}$ be the probability
+assigned to some event ${A.}$ Then ${\P}$ is nonnegative.
+
+$$
+	\P(A) \gte 0
+$$
+
+</dfn>
+
+<dfn>
+
+__Normalization Axiom of Probability.__ Let ${\P(\Omega)}$ be the probability of
+some sample space ${\Omega.}$ Then:
+
+$$
+	\P(\Omega) = 1
+$$
+
+</dfn>
+
+<dfn>
+
+__Additivity Axiom of Probability.__ Let ${\P(A)}$ be the probability of some
+event ${A,}$ and ${\P(B)}$ be the probability of some event ${B.}$ Then:
+
+$$
+	(A \cap B = \nil) \implies \P(A \cup B) = \P(A) + \P(B)
+$$
+
+</dfn>
+
+Let's briefly think about the additivity axiom. Whenever we see the notation:
+
+$$
+	A \cap B
+$$
+
+in the context of probability, we read it as: "${A}$ occurs _and_ ${B}$ occurs."
+Visually, this refers to the outcomes within the intersection of ${A}$ and
+${B:}$
+
+<Plot2
+	geo={[
+		{type: "rectangle",
+			xy: [0, 0],
+			w: 20,
+			h: 12,
+			class: "yellowRectangle"},
+		{ type: "circle", xy: [-2, 0], r: 5, class: "blueCircle" },
+		{ type: "circle", xy: [2, 0], r: 5, class: "redCircle" },
+		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
+		{ type: "label", id: "A \\cap B", xy: [-1.5, 1], fontSize: 1.5 },
+		{ type: "label", id: "A", xy: [-6, 2], fontSize: 1.5 },
+		{ type: "label", id: "B", xy: [5, 2], fontSize: 1.5 },
+	]}
+ marginTop={0}
+ marginBottom={0}
+ noAxes={true}
+ scale={40}
+ id={"and_event"}
+/>
+
+When we see the notation:
+
+$$
+	A \cup B
+$$
+
+we read it as: "${A}$ occurs, ${B}$ occurs, or both ${A}$ and ${B}$ occur." In
+this case, ${A \cup B}$ refers to all the events within ${A,}$ ${B,}$ and both
+${A}$ and ${B.}$
+
+<Plot2
+	geo={[
+		{type: "rectangle",
+			xy: [0, 0],
+			w: 20,
+			h: 12,
+			class: "yellowRectangle"},
+		{ type: "circle", xy: [-2, 0], r: 5, class: "redCircle" },
+		{ type: "circle", xy: [2, 0], r: 5, class: "redCircle"  },
+		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
+		{ type: "label", id: "A \\cup B", xy: [-1.5, 5.6], fontSize: 1.5 },
+		{ type: "label", id: "A", xy: [-6, 2], fontSize: 1.5 },
+		{ type: "label", id: "B", xy: [5, 2], fontSize: 1.5 },
+	]}
+ marginTop={0}
+ marginBottom={0}
+ noAxes={true}
+ scale={40}
+ id={"or_event"}
+/>
+
+Next, when we see the notation:
+
+$$
+	A \cap B = \nil
+$$
+
+we read it as: "${A}$ and ${B}$ are mutually exclusive." The notation indicates
+that the events are _disjoint_. Visually, this appears as:
+
+<Plot2
+	geo={[
+		{type: "rectangle",
+			xy: [0, 0],
+			w: 20,
+			h: 12,
+			class: "yellowRectangle"},
+		{ type: "circle", xy: [-5, 0], r: 4.5, class: "blueCircle" },
+		{ type: "circle", xy: [5, 0], r: 4.5, class: "redCircle" },
+		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
+		{ type: "label", id: "A", xy: [-5, 3], fontSize: 1.5 },
+		{ type: "label", id: "B", xy: [4.5, 3], fontSize: 1.5 },
+	]}
+ marginTop={0}
+ marginBottom={0}
+ noAxes={true}
+ scale={40}
+ id={"xor_event"}
+/>
+
+The additivity axiom tells us that the probability of ${A}$ _or_ ${B}$ occuring
+is the sum of both these probabilities. But what about that rule where a
+probability must be less than or equal to 1? Why isn't that an axiom? That rule
+isn't stated as an axiom because of a common characteristic of mathematics as a
+field: If it doesn't need to be said, don't say it. In this case, the rule
+doesn't need to be said because we can derive it from the three axioms.
+
+From the normalization axiom, we know that ${\P(\Omega) = 1.}$ From the
+partition rule of set theory, we know that:
+
+$$
+	P(\Omega) = \P(A \cup A^{\c}).
+$$
+
+That is, the sample space consists of the set ${A}$ with the complement of ${A}$
+(the set of all things outside of ${A}$ and inside ${\Omega,}$ denoted
+${A^{\c}}$). Then, by the third axiom, we have:
+
+$$
+	\P(A) + \P(A^{\c}) = 1
+$$
+
+Because probabilities are nonnegative real numbers per the nonnegativity axiom,
+we can rewrite this equation as:
+
+$$
+	\P(A) = 1 - \P(A^{\c}).
+$$
+
+And since probabilities are nonnegative (again by the nonnegativity axiom), the
+smallest ${\P(A^{\c})}$ can be is ${0}$ (any smaller and it becomes negative,
+which violates the nonnegativity axiom) and the largest it can be is ${1}$ (any
+larger and ${1-\P(A^{\c})}$ is negative, which also violates the nonnegativity
+axiom). Thus, it follows that: 
+
+$$
+	\P(A) \lte 1
+$$
+
+Because of its derived nature, we can state this as a lemma rather than axiom:
+
+<dfn>
+
+__lemma i.__ Let ${\P(A)}$ be the probability of some event ${A.}$ Then:
+
+$$
+	\P(A) \lte 1
+$$
+
+</dfn>
+
+Using just the three axioms, we can analyze the probabilities of multiple
+events. Suppose we had three disjoint events:
+
+<Plot2
+	geo={[
+		{type: "rectangle",
+			xy: [0, 0],
+			w: 20,
+			h: 12,
+			class: "yellowRectangle"},
+		{ type: "circle", xy: [-6.5, 0], r: 3, class: "blueCircle",id:`A`},
+		{ type: "circle", xy: [0, 0], r: 3, class: "redCircle",id:`B`},
+		{ type: "circle", xy: [6.5, 0], r: 3, class: "purpleCircle",id:`C`},
+		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
+	]}
+ marginTop={0}
+ marginBottom={0}
+ noAxes={true}
+ scale={40}
+ id={"multi_event"}
+/>
+
+The probability of ${A}$ occurring, ${B}$ occurring, ${C}$ occurring, or all
+three occurring together is written as:
+
+$$
+	\P(A \cup B \cup C)
+$$
+
+The additivity axiom tells us how to determine the probability of two events,
+but how do we deal with three? Well, set theory tells us that the union
+operation is associative. Thus: 
+
+$$
+	\P(A \cup B \cup C) = \P((A \cup B) \cup C)
+$$
+
+Because ${A,}$ ${B,}$ and ${C}$ are disjoint, ${A \cup B}$ and ${C}$ are
+disjoint. Thus, we have:
+
+$$
+	\begin{aligned}
+		 \P(A \cup B \cup C) &= \P(A \cup B) + \P(C) \\
+		 &= \P(A) + \P(B) + \P(C)
+	\end{aligned}
+$$
+
+This yields another useful lemma:
+
+<dfn>
+
+__lemma ii.__ Let ${E_1, E_2, \ldots, E_n}$ be disjoint events in sequence.
+Then:
+
+$$
+	\P\paren{\bigcup\limits_{i=1}^{n}E_i} = \P(E_1) + \P(E_2) + \ldots \P(E_n)
+$$
+
+
+</dfn>
+
+Let's apply these rules we've just derived to the experiment of rolling two
+tetrahedral die:
+
+<CartProd x={[1,2,3,4]} y={[1,2,3,4]}/>
+
+We make the assumption that each outcome is equally likely. That is, all
+of the outcomes above (the tuples) have a ${1/16}$ chance of occuring. We will
+revisit this assumption at length later.
+
+1. What is the probability of rolling 1 followed by a 1, or rolling 1 followed
+by a 2? Answer: Applying the additivity law, we have:
+
+$$
+	\begin{aligned}
+		 \P(\set{(x,y) | \set{x=1},~ y \in \set{1,2}}) &= \P((1,1)) + \P((1,2)) \\
+		 &= 1/16 + 1/16 \\
+		 &= 2/16 \\
+		 &= 1/8
+	\end{aligned}
+$$
+
+2. What is the probability of rolling one on the first roll? Here, we're looking
+   for the probability of the set of all outcomes where ${x=1:}$
+
+$$
+		\begin{aligned}
+			\P(\set{x=1}) &= \P((1,1)) + \P((1,2)) + \P((1,3)) + \P((1,4))  \\
+			&= 1/16 + 1/16 + 1/16 + 1/16 \\
+			&= 4/16 \\
+			&= 1/4
+		\end{aligned}
+$$
+
+
+3. What is the probability that ${x + y}$ is odd? Here, we use a tiny bit of
+   number theory. The number of odd integers in a given sequence is given by the
+   formula:
+	 
+	$$
+	\C = 
+	\begin{cases}
+		\begin{aligned}
+				&\ceil{\dfrac{a_n - a_1}{2} + 1} &\tt{if}~~~a_n, a_1 \in \tt{even} \\[1em]
+				&\ceil{\dfrac{a_n - a_1}{2}} &\tt{else}
+		\end{aligned}
+	\end{cases}
+	$$
+
+
+	Here, the sequence is ${\seq{1,2,3,4}.}$ Thus, the number of odd integers is:
+
+	$$
+		\ceil{\dfrac{4-1}{2}} = \ceil{1.5} = 2 
+	$$
+
+	Since the natural numbers are well-ordered, the number of even integers is
+	simpl ${n-\C,}$ where ${n}$ is the number of terms.  Next, odd integers are
+	integers of the form ${2k + 1,}$ and even integers are integers of the form
+	${2k,}$ where ${k \in \NN.}$ Thus, to roll an odd integer, we must roll an odd
+	and an even. Therefore, we have:
+
+	$$
+		\begin{aligned}
+			 \P(\set{(x,y) | x+y \in \OO}) &= \P(\set{x \in \OO, y \in \EE}) +
+			 \P(\set{x \in \EE, y \in \OO}) \\
+			 &= (2/16 + 2/16) + (2/16 + 2/16) \\
+			 &= 4/16 + 4/16 \\
+			 &= 8/16
+		\end{aligned}
+	$$
+
+4. What is the probability that the minimum of two rolls is 2? Here, we're asked
+   for the probability of ${\P(\min(x,y)=2).}$ Here, it's helpful to think about
+   the cases where the minimum is 2: (a) When ${x=2}$ and ${y=2,}$ (b) when
+   ${y=2}$ and ${x \gtn y,}$ and (c) when ${x=2}$ and ${y \gtn x.}$ For case
+   ${a,}$ we only have outcome, so our first term is:
+
+$$
+	\P(\min(x,y)=2) = 1/16
+$$
+
+	 For case (b), we have two: ${(3,2)}$ and ${(4,2).}$ This gives us the next
+	 two terms:
+
+$$
+	\P(\min(x,y)=2) = 1/16 + 1/16 + 1/16
+$$
+
+	And for case (c), we have two again: ${(2,3)}$ and ${(2,4):}$
+
+$$
+	\P(\min(x,y)=2) = 1/16 + 1/16 + 1/16 + 1/16 + 1/16
+$$
+
+	Therefore:
+
+$$
+	\P(\min(x,y)=2) = 5/16
+$$
+
+## The Discrete Uniform Law
+
+In the previous questions, we made the assumption that all the outcomes are
+equally likely. Put formally, by making that assumption, we rely on the premise
+that the sample space obeys the _Discrete Uniform Law._
+
+<dfn>
+
+__discrete uniform law.__ Let ${A}$ be an event within the sample space ${\Omega}$. If all the outcomes of ${A}$
+are equally likely, then:
+
+$$
+	\P(A) = \dfrac{\card(A)}{\card(\Omega)}
+$$
+
+</dfn>
+
+That is, the probability of ${A}$ is the number of elements of ${A}$ divided by
+the number of elements of the sample space. If we assume that all outcomes are
+equally likely (i.e., the discrete uniform law applies), then computing
+probabilities reduces to counting. Of course, that doesn't make the computation any
+easier. In later sections, we'll see that counting can get hairy very quickly —
+it's why there's an entirely separate mathematical field devoted to it, _combinatorics_.
+
+## Continuous Uniform Law
+
+For continous sample spaces, we apply the _Continuous Uniform Law._ An explicit
+statement of this law requires a little more background information, so we'll
+delay this task to a later section. For now, we'll simply describe it:
+
+<dfn>
+
+Given an event ${x,}$ the probability of ${x}$ occurring is the area of ${x.}$
+
+</dfn>
+
+
+For example, suppose we had the following plane:
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662836342/math/cul_cmljfd.svg"}
+imwidth={"280"} imheight={"253"} caption={"board"} width={"50"} />
+
+What is the probability of landing at some point ${(x,y)}$ such that ${x + y
+\lte 1/2?}$ Well, it's simply the area beneath the curve ${x + y = 1/2.}$ Or, in
+perhaps more familiar notation:
+
+$$
+	y = \dfrac{1}{2} - x
+$$
+
+This area is simply the integral:
+
+<Grid cols={2}>
+
+
+$$
+	\small
+	\begin{aligned}
+			\P(x+y \lte 1/2) &= \int_{0}^{1/2} \dfrac{1}{2} - x~dx \\[1em]
+			&= \int_{0}^{1/2} \dfrac{1}{2}~dx + \int_{0}^{1/2} x~dx \\[1em]
+			&= \paren{\left. \dfrac{1}{2}x + C \right \vert_{0}^{1/2}} - \paren{\left. \dfrac{x^2}{2} + C \right \vert_{0}^{1/2}} \\[1em]
+			&= \dfrac{1}{4} - \dfrac{1}{8} \\[1em]
+			&= \dfrac{1}{8}
+	\end{aligned}
+$$
+
+<Plot data={[
+	{f: (x) => 0.5-x, integrate:[0,0.5,'x']}
+]}
+domain={[0,1.5]}
+range={[0,1.5]}
+/>
+
+</Grid>
+
+Of course, we could have just calculated the area using the triangle area
+formula:
+
+$$
+	\begin{aligned}
+		\P (x + y \lte 1/2) &= \dfrac{(1/2) \cdot (1/2)}{2} \\[1em]
+		&= \dfrac{(1/4)}{2} \\[1em]
+		&= \dfrac{1}{8}
+	\end{aligned}
+$$
+
+We demonstrate the calculus approach because in the real world, most continuous
+sample spaces have far more complicated shapes that require us to apply
+calculus, and for the thorniest problems, real analysis.
+
+Computing probabilities, however, is an entirely separate exercise from building
+and interpreting the arguments that those computations must support. Sometimes
+it's geometry, sometimes it's calculus, and occassionally it's real and complex
+analysis. For the remaining sections, this author will assume that the reader
+has some background in these areas. 
+
+### Nuances to the Axiom of Additivity
+
+The previous discussion on continuous sample spaces raises a subtle point about
+the axiom of additivity. Earlier, we saw the following lemma:
+
+$$
+	\P\paren{\bigcup\limits_{i=1}^{n}E_i} = \P(E_1) + \P(E_2) + \ldots \P(E_n)
+$$
+
+Let's suppose our sample space is the unit square, as used in the previous
+section:
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662836342/math/cul_cmljfd.svg"}
+imwidth={"280"} imheight={"253"} caption={"board"} width={"50"} />
+
+Suppose we were interested in the probability of some part of this square:
+
+<Plot2
+	geo={[
+		{type: "rectangle",
+			xy: [0, 0],
+			w: 10,
+			h: 10,
+			class: "yellowRectangle"},
+		{ type: "circle", xy: [0,0], r: 2, class: "blueCircle", id:`A`},
+		{ type: "label", id: "1", xy: [-6, 6.4], fontSize: 2 },
+		{ type: "label", id: "1", xy: [5, -5], fontSize: 2 },
+		{ type: "label", id: "0", xy: [-6, -5], fontSize: 2 },
+	]}
+ marginTop={0}
+ marginBottom={0}
+ scale={40}
+ noAxes={true}
+ id={"us"}
+/>
+
+Intuitively, we can think of this square as being comprised of infinitely many points. Building on this intuition, we can infer that the area of the square, in total, is:
+
+$$
+	\A = \bigcup\limits_{x,y}~\set{(x,y)}
+$$
+
+Next, we know that the total probability of ${\A}$ is ${1,}$ and it's the sum of
+all the elements ${(x,y):}$
+
+$$
+	\P(\A) = 1 = \sum_{x,y} \P(\set{(x,y)})
+$$
+
+But now we have a problem. The area of just a single point ${(x,y)}$ is 0. So we
+have:
+
+$$
+	\P(\A) = 1 = \sum_{x,y} \P(\set{(x,y)}) = 0 + 0 + \ldots + 0 = 0
+$$
+
+We've just concluded that ${1 = 0.}$ What went wrong? The culprit is the implicit equality we made:
+
+$$
+	\bigcup\limits_{x,y}~\set{(x,y)} = \sum_{x,y} \P(\set{(x,y)})
+$$
+
+We missed a very subtle part of the lemma: _in sequence_. The union:
+
+$$
+	\bigcup\limits_{x,y}~\set{(x,y)}
+$$
+
+will never exhaust the entire unit square. The unit square is an uncountable
+set; it has far more elements than any sequence could have. From this caveat,
+let's rewrite our lemma as a cautionary measure:
+
+<dfn>
+
+__lemma ii.__ Let ${E_1, E_2, \ldots, E_n}$ be disjoint events in sequence.
+Then:
+
+$$
+	\P\paren{\bigsqcup\limits_{i=1}^{n}E_i} = \P(E_1) + \P(E_2) + \ldots \P(E_n)
+$$
+
+
+</dfn>

@@ -1,0 +1,348 @@
+# Reference
+
+1. [Number Sets](#number-sets)
+2. [Number Theory](#number-theory)
+   1. [Parity](#parity)
+   2. [Divisibility](#divisibility)
+      1. [Rational Numbers](#rational-numbers)
+
+This page serves as a reference for commonly used mathematical
+propositions. The propositions are organized by topic.
+
+## Number Theory
+
+**First Corollary of Associativity.** Let ${a,b \in \ZZ^+.}$
+
+$$
+	a + b = 0 \implies \begin{cases}
+	\begin{aligned}
+		b &= -a \\
+		a &= -b
+	\end{aligned}
+	\end{cases}
+$$
+
+**Second Corollary of Associativity.** Let ${a \in \ZZ^+.}$
+
+$$
+	a = -(-a) = 0
+$$
+
+**Third Corollary of Associativity.** Let ${a,b \in \ZZ^+.}$ Then:
+
+$$
+\begin{aligned}
+	-(a+b) = -a + (-b) \\
+	-(a+b) = -a - b
+\end{aligned}
+$$
+
+**First Law of Closure.**
+
+$$
+	(a,b \in Z^+) \implies (a + b \in Z^+)
+$$
+
+**Second Law of Closure.**
+
+$$
+	(a,b \in Z^-) \implies (a + b \in \ZZ^-)
+$$
+
+**First Law of Closure, Corollary 1.** Let ${a,b \in \ZZ^+.}$
+
+$$
+	a + b = c \implies \begin{cases}
+		\begin{aligned}
+			a &= c - b \\
+			b &= c - a
+		\end{aligned}
+	\end{cases}
+$$
+
+**Cancellation Law of Addition.** Let ${a,b \in \ZZ^+.}$ Then:
+
+$$
+	(a + b = a + c) \implies (b = c)
+$$
+
+**Zero Addition Law.** Let ${a \in \ZZ^+.}$ Then:
+
+$$
+	(a + b = a)  \implies (b = 0)
+$$
+
+**Commutative Law of Multiplication.** Let ${a,b \in \ZZ.}$ Then:
+
+$$
+	ab = ba
+$$
+
+**Associative Law of Multiplication.** Let ${a,b \in \ZZ.}$ Then:
+
+$$
+	(ab)c = a(bc)
+$$
+
+**Identity Law of Multiplication.** Let ${a \in \ZZ.}$ Then:
+
+$$
+	1a = a
+$$
+
+**Zero Multiplication Law.** Let ${a \in \ZZ.}$ Then:
+
+$$
+	0a = 0
+$$
+
+**Distributive Law 1.** Let ${a,b,c \in \ZZ.}$ Then:
+
+$$
+	a(b+c) = ab + ac
+$$
+
+**Distributive Law 2.** Let ${a,b,c \in \ZZ.}$ Then:
+
+$$
+	(b+c)a = ba + ca
+$$
+
+**Negativity Law of Multiplication.** Let ${a \in \ZZ.}$ Then:
+
+$$
+	(-1)a = -a
+$$
+
+**General Negativity Law of Multiplication.** Let ${a \in \ZZ.}$ Then:
+
+$$
+	-(ab) = (-a)b = a(-b)
+$$
+
+**Negativity Law of Multiplication: Corollary 1.** Let ${a,b \in \ZZ.}$
+Then:
+
+$$
+	(-a)(-b) = ab
+$$
+
+**Definition of a Power.** Let ${m,n \in \ZZ^+.}$ Then:
+
+$$
+	a^{m+n} = a^m a^n
+$$
+
+**Products of a Power Law.** Let ${m,n \in \ZZ^+.}$ Then:
+
+$$
+	(a^m)^n = a^{m \cdot n}
+$$
+
+**Distributions of a Power Law.** Let ${m,n \in \ZZ^+.}$ Then:
+
+$$
+	(ab)^n = a^n b^n
+$$
+
+**Expansion 1.** Let ${a,b \in \ZZ.}$ Then:
+
+$$
+	(a+b)^2 = a^2 + 2ab + b^2
+$$
+
+**Expansion 2.** Let ${a,b \in \ZZ.}$ Then:
+
+$$
+	(a-b)^2 = a^2 - 2ab + b^2
+$$
+
+**Expansion 3.** Let ${a,b \in \ZZ.}$ Then:
+
+$$
+	(a + b)(a - b) = a^2 - b^2
+$$
+
+### Parity
+
+**Definition: Even Number.** Let ${a,k \in \ZZ.}$ Then:
+
+$$
+	(a = 2k) \implies a \in \bb{E}
+$$
+
+where ${\bb{E}}$ is the set of all even integers.
+
+**Definition: Odd Number.** Let ${a,k \in \ZZ.}$ Then:
+
+$$
+	(a = 2k + 1) \implies (a \in \bb{O})
+$$
+
+where ${\bb{O}}$ is the set of all odd integers.
+
+**Sum of Evens Theorem.** The sum of evens is an even.
+
+$$
+	(a,b \in \bb{E}) \implies (a + b \in \bb{E})
+$$
+
+**Sum of Even & Odd Theorem.** The sum of an even and an odd is an odd.
+
+$$
+	(a \in \bb{E}) \land (b \in \bb{O}) \implies (a + b \in \bb{O})
+$$
+
+**Sum of Odd & Odd Theorem.** The sum of an odd and an odd is an even.
+
+$$
+	(a \in \bb{O}) \land (b \in \bb{O}) \implies (a + b \in \bb{E})
+$$
+
+**Product of Even Rule.** The product of an even and any positive integer
+is an even.
+
+$$
+	(a \in \bb{E}) \land (b \in \ZZ^+) \implies (ab \in \bb{E})
+$$
+
+**Square Parity Rule.** Let ${a \in \ZZ.}$ Then:
+
+$$
+	\begin{aligned}
+		a \in \bb{E} &\iff a^2 \in \bb{E} \\
+		a \in \bb{O} &\iff a^2 \in \bb{O}
+	\end{aligned}
+$$
+
+I.e.:
+
+- If ${a^2}$ is even, ${a}$ is even.
+- If ${a}$ is even, ${a^2}$ is even.
+- If ${a^2}$ is odd, ${a}$ is odd.
+- If ${a}$ is odd, ${a^2}$ is odd.
+
+**Cube Parity Rule.** Let ${a \in \ZZ.}$ Then:
+
+$$
+	\begin{aligned}
+		a \in \bb{E} \iff a^3 \in \bb{E} \\
+		a \in \bb{O} \iff a^3 \in \bb{O} \\
+	\end{aligned}
+$$
+
+I.e.:
+
+- If ${a^3}$ is even, ${a}$ is even.
+- If ${a}$ is even, ${a^3}$ is even.
+- If ${a^3}$ is odd, ${a}$ is odd.
+- If ${a}$ is odd, ${a^3}$ is odd.
+
+**Parity Rule of -1.** Let ${n \in \ZZ^+.}$
+
+$$
+\begin{aligned}
+	n \in \bb{E} &\implies (-1)^n = 1 \\
+	n \in \bb{O} &\implies (-1)^n = -1
+\end{aligned}
+$$
+
+### Divisibility
+
+**Definition: Divisibility.** Let ${d \in Z^+,}$ ${n \in \ZZ.}$ Then:
+
+$$
+	d \divs n \iff n = dk ~\tt{where}~ k \in \ZZ.
+$$
+
+**Divisibility Corollary 1.**
+
+$$
+	d \divs n \implies \begin{cases}
+		\begin{aligned}
+			&\tt{$d$ divides $n$} \\
+			&\tt{$n$ is divisible by $d$} \\
+			&\tt{$n$ divided by $d$ has remainder 0}
+		\end{aligned}
+	\end{cases}
+$$
+
+**Divisibility Corollary 2.** Let ${a \in \ZZ^+}$ and ${b,c \in \ZZ.}$ Then:
+
+$$
+	(a \divs b) \land (a \divs c) \implies (~~~a \divs (b+c)~~~)
+$$
+
+I.e., if ${a}$ divides ${b}$ and ${a}$ divides ${c,}$ then ${a}$ divides
+${b+c.}$
+
+**Divisibility Corollary 3.** Let ${a \in \ZZ^+}$ and ${b,c \in \ZZ.}$ Then:
+
+$$
+	(a \divs b) \implies (a \divs bc)
+$$
+
+I.e., if ${a}$ divides ${b,}$ then ${a}$ divides any multiple of ${b.}$
+
+**Divisibility Chaining Rule.** Let ${a \in \ZZ^+}$ and ${b,c \in \ZZ.}$
+Then:
+
+$$
+	(a \divs b) \land (b \divs c) \implies (a \divs c)
+$$
+
+I.e., if ${a}$ divides ${b}$ and ${b}$ divides ${c,}$ then ${a}$ divides
+${c.}$
+
+**General Divisibility Chaining Rule.** Let ${a \in \ZZ^+}$ and
+${b,c \in \ZZ.}$ Then:
+
+$$
+\begin{aligned}
+	(a \divs b) \land (b \divs c) \implies (a \divs mb + nc) \\[1em]
+	\tt{where} m,n \in \ZZ
+\end{aligned}
+$$
+
+I.e., if ${a}$ divides ${b}$ and ${b}$ divides ${c,}$ then ${a}$ divides
+the sum of multiples of ${b}$ and multiples of ${c.}$
+
+#### Rational Numbers
+
+**Definition: Rational Number.** Let ${m \in \ZZ,}$ and ${n \in \ZZ^+}$ Then:
+
+$$
+	\dfrac{m}{n} \in \bb{Q}
+$$
+
+where ${\bb{Q}}$ is the set of all rational numbers.
+
+**Cross Multiplication Rule.** Let ${m,n,r,s \in \ZZ,}$ ${n \neq 0,}$ and
+${s \neq 0.}$ Then:
+
+$$
+	\dfrac{m}{n} = \dfrac{r}{s} \iff ms = rn
+$$
+
+**Convention: Indistinction of 𝑚/1.** Let ${m \in \ZZ.}$ Then:
+
+$$
+	\dfrac{m}{1} = m
+$$
+
+Therefore, ${\ZZ \subset \bb{Q}.}$ I.e., all integers are rationals, but not
+all rationals are integers.
+
+**Cancellation Rule of Rationals.** Let ${a,n \in \ZZ^{\pm}}$ and
+${m \in \ZZ.}$ Then:
+
+$$
+	\dfrac{am}{an} = \dfrac{m}{n}
+$$
+
+**Cancellation Rule of Rationals: Corollary 1.** Let ${n \in \ZZ^+}$ and
+${m \in \ZZ.}$ Then:
+
+$$
+	\dfrac{-m}{n} = \dfrac{m}{-n}
+$$

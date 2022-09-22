@@ -1,0 +1,777 @@
+import { Scatter } from "../../../components/hago";
+
+<Metadata
+	title={"Code Optimization"}
+	description={"Notes on code optimization"}
+	keywords={
+		"computer architecture, computer systems, code optimization, C, compilers, Assembly"
+	}
+/>
+
+# Code Optimization
+
+It's easy to think that performance comes down to asymptotic complexity. In
+reality, the fact that an algorithm runs in constant time does not mean
+it's the fastest possible algorithm. _Constant factors matter_.
+
+The best places to start looking when we want to really optimize code:
+
+1. algorithms,
+2. data representations,
+3. procedures,
+4. loops
+
+## Optimizing Compilers
+
+Modern compilers are sophisticated programs that provide a variety of
+features:
+
+1. efficient allocation of registers,
+2. selecting and ordering code translations in what they determine as the
+   most efficient ordering (a process called _scheduling_),
+3. finding and eliminating dead code,
+4. finding and eliminating minor inefficiencies/redundancies
+
+We might be tempted to start looking at compilers for optimization, but the
+fact is, they generally will not improve asymptotic efficiency. It is up to
+the programmer to determine the best overall algorithm. That said, there
+are certain things we can do to help the compiler. There are also things we
+can do that will hinder the compiler.
+
+### Reducing Code Motion
+
+When we write code, we want to be cognizant of **code motion** — how often
+a computation is performed. The most common example is recomputing constant
+values over and over again inside a loop. For example, consider the
+following code:
+
+```c
+void set_row(double *a, double *b, long i, long n) {
+	long j;
+	for (j = 0; j < n; j++) {
+		a[n*i + j] = b[j];
+	}
+}
+```
+
+Here, the value `n * i` is computed over and over again within the loop,
+when it doesn't have to be. What we can instead do is initialize this as a
+value outside the loop:
+
+```c
+void set_row(double *a, double *b, long i, long n) {
+	long j;
+	int ni = n*i;
+	for (j = 0; j < n; j++) {
+		a[ni + j] = b[j];
+	}
+}
+```
+
+### Reducing Costly Operations
+
+Another area for optimization is replacing costly operations with simpler
+ones. For example, addition, multiplication, and division can often be
+replaced with bitshifts. For example, instead of computing:
+
+```c
+int y = 2;
+int x = 16 * y;
+```
+
+a less expensive computation would be:
+
+```c
+int y = 2;
+int x = y << 4;
+```
+
+Of course, how useful this is depends on the cost of the multiply or divide
+instructions on the machine. Modern machines tend to use less CPU cycles
+for these operations, leading to low cost savings from using the bit shift
+approach.
+
+### Sharing Common Subexpressions
+
+It's often the case that a program's expressions follow a general form. For
+example, consider the following code for navigating through a matrix:
+
+```c
+up   = val[ (i-1)*n + j   ];
+down = val[ (i+1)*n + j   ];
+down = val[ (i*n)   + j-1 ];
+down = val[ (i*n)   + j+1 ];
+
+sum = up + down + left + right;
+```
+
+Examining the code above, there are three unique multiplication expressions
+that must be computed. With just some algebraic manipulation, we can reduce
+that number to 1:
+
+```c
+long inj = i*n + j
+up   = val[ inj - n ];
+down = val[ inj + n ];
+down = val[ inj - 1 ];
+down = val[ inj + 1 ];
+
+sum = up + down + left + right;
+```
+
+### Limitations on Compiler Optimization
+
+As much as compilers have gotten smarter, there's a rule that even
+compilers today won't cross: The compiler must not change the program's
+behavior. This stems from the fact that the compiler's core task is to
+translate the programmer's high-level source code into some lower-level
+language, be that Assembly or bytecode. Because of this rule, compilers
+will not perform their optimizations if they find that it would lead to
+different program behavior.
+
+There is, however, one exception to the rule: If the program uses
+nonstandard language features (also called _language extensions_), the
+compiler is free to make the decisions necessary to translating the
+program. This exception exists to ensure compiler writers aren't burdened
+with accomodating every possible language feature (otherwise we'd have very
+few, if any, compiler writers).
+
+Language features are usually provided by some compiler for the language.
+For example, the GCC compiler extends C by allowing programmers to give
+branch likelihoods. This effectively provides hints to the compiler:
+
+```c
+#define likely(x)    __builtin_expect((x), 1)
+#define unlikely(x)  __builtin_expect((x), 0)
+
+void f(int arg) {
+	if (unlikely(arg == 0)) {
+		call_this_function();
+		return;
+	} else {
+		call_that_function();
+	}
+}
+```
+
+This feature, however, will not work with other compilers — e.g., clang.
+
+Additionally, there are limitations on how far a compiler will optimize
+code. First, for most compilers today, optimization analysis is limited to
+procedures. An analysis of the entire program would be far too expensive.
+Some compilers go a bit further, like GCC. GCC will perform its
+optimization analyses based on its read of an entire file, but not be
+comparing code in different files.
+
+Second, much of the analysis is limited to _static data_. Currently, it's
+diffcult to write compilers that can predict runtime inputs.
+
+## Optimization Blockers
+
+Consider the following code that lower cases a string:
+
+```c
+void lower(char *s) {
+	size_t i;
+	for (i = 0; i < strlen(s); i++) {
+		if (s[i] >= 'A' && s[i] <= 'Z') {
+			s[i] -= ('A' - 'a');
+		}
+	}
+}
+```
+
+Passing increasingly longer string to this function, we get the following
+time plot, where the 𝑥-axis is the number of characters, and the 𝑦-axis is
+the number of clock cycles used to complete the function:
+
+<Scatter
+	data={[
+		[0, 0],
+		[10, 2],
+		[500, 21],
+		[1000, 45],
+		[1500, 83],
+		[2000, 157],
+		[2500, 215],
+		[3000, 309],
+		[3500, 389],
+		[4000, 504],
+		[4500, 603],
+		[5000, 825],
+		[5500, 922],
+		[6000, 1140],
+		[6500, 1297],
+		[7000, 1469],
+		[7500, 1715],
+		[8000, 1844],
+		[8500, 2101],
+		[9000, 2347],
+		[9500, 2686],
+		[10000, 2984],
+		[10500, 3150],
+		[11000, 3614],
+		[11500, 3803],
+		[12000, 4204],
+	]}
+	scale={50}
+/>
+
+Interestingly, this is not a linear function. In fact, this is growing in
+quadratic time — ${O(n^2).}$ Why? Because of the call to `strlen()`. We're
+looping through the character array, and at each iteration, we make a call
+to `strlen()`. And the way `strlen()` works: It loops through the character
+array, counting each character until it reaches the string terminator.
+
+The simplest fix is to take the `strlen()` call out of the loop:
+
+```c
+void lower(char *s) {
+	size_t i;
+	size_t string_length = strlen(s);
+	for (i = 0; i < string_length; i++) {
+		if (s[i] >= 'A' && s[i] <= 'Z') {
+			s[i] -= ('A' - 'a');
+		}
+	}
+}
+```
+
+Why didn't the compiler catch this? Because it doesn't know if there's
+anything happening to the string `s` elsewhere. Maybe the string is growing
+each time. Maybe its shrinking. The compiler cannot tell, so it takes the
+conservative approach: "I will translate your code as is."
+
+### Instruction-level Parallelism
+
+Roughly, the modern CPU can be viewed as follows:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656633293/cs/modernCPU_design_p5q1je.svg"
+	}
+	imwidth={"748"}
+	imheight={"481"}
+	caption={"Rough schematic of the modern CPU"}
+	width={"80"}
+/>
+
+At any given moment, different parts of the processor may be working at the
+same time. For example, as operation bits are sent to the functional units,
+addresses are being sent to the instruction cache, and operation results
+are being sent to the retirement unit. This phenomenon is called
+**parallelism**.
+
+Parallelism has its limits. Ultimately, it depends on how many functional
+units the processor has. For example, the schematic above shows a processor
+with three arithmetic units. Because each of these units have the same
+purpose — performing arithmetic — we can perform three different arithmetic
+operations at the same time. Alongside the load, store, and branch units,
+we can perform loading and arithmetic at the same time, branching and
+storing at the same time, branching, storing, loading, and arithmetic at
+the same time, and so on.
+
+Let's consider an example. Say we had the following C code:
+
+```c
+typedef struct {
+	size_t length;
+	int *data;
+} Vector;
+
+/**
+ * Gets a vector element and stores it in the pointer val
+ **/
+int get_vector_element(Vector *v, size_t idx, int *val) {
+	if (idx >= v->length) {
+		return 0;
+	}
+	*val = v->data[idx];
+	return 1;
+}
+/**
+ * Creates a instance of a vector
+ **/
+Vector *newVector(size_t length, int *arr) {
+	Vector *v = (Vector*)malloc(sizeof(Vector));
+	v->length = length;
+	v->data = (int*)malloc(sizeof(int)*length);
+	size_t i;
+	for (i = 0; i < length; i++) {
+		v->data[i] = arr[i];
+	}
+	return v;
+}
+/**
+ * Returns the vector length
+ **/
+size_t get_vector_length(Vector *v) {
+	return v->length;
+}
+/**
+ * Prints the vector
+ **/
+void print_vector(Vector *v) {
+	long i;
+	for (i = 0; i < get_vector_length(v); i++) {
+		int val;
+		get_vector_element(v, i, &val);
+		printf("%d", val);
+	}
+}
+/**
+ * Sums all of the vector's elements
+ **/
+void sum_vector_element(Vector *v, int *destination) {
+	long int i;
+	*destination = 0;
+	for (i = 0; i < get_vector_length(v); i++) {
+		int val;
+		get_vector_element(v, i, &val);
+		*destination = *destination + val;
+	}
+}
+
+int main() {
+	Vector *v = newVector(5, (int[]){1,2,3,4,5});
+	int result = 0;
+	sum_vector_element(v, &result);
+	printf("result=%d\n", result);
+}
+/**
+ * Note: The syntax (int[]){1,2,3,4,5}
+ * is called compound literal syntax.
+ * It allows us to pass an array argument
+ * without having to first initialize
+ * it in the stack then passing a pointer
+ **/
+```
+
+```bash
+15
+```
+
+The key functions to focus on are `sum_vector_element()` and
+`get_vector_element()`. For the `sum_vector_element()` function, the time
+(𝑇) it takes to execute the function is given by the equation:
+
+$$
+	𝑇 = (\cc{𝐶} \times 𝑛) + \cc{O}
+$$
+
+where ${\cc{C}}$ is the number of cycles per element and ${\cc{O}}$ is the
+overhead. ${\cc{C}}$ can be determined by recording the function's
+execution time with an increasing number of elements.[^cpu_cycle_note] The
+slope of the best fit line is ${\cc{C}.}$ For example, if the slope of the
+line is 9.0, then it takes roughly 9 CPU cycles to execute the function for
+${n}$ elements.
+
+Running the code above with different data types (rewriting the code above
+as needed) we get the following data (numeric values is the time 𝑇):
+
+<table>
+	<thead>
+		<tr>
+			<th>Vector Element Type</th>
+			<th colSpan={2}>`int`</th>
+			<th colSpan={2}>`double`</th>
+		</tr>
+		<tr>
+			<th>Operation</th>
+			<th>`sum_vector_element()`</th>
+			<th>`product_vector_element()`</th>
+			<th>`sum_vector_element()`</th>
+			<th>`product_vector_element()`</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>no optimizations</td>
+			<td>21.34</td>
+			<td>20.02</td>
+			<td>19.92</td>
+			<td>20.18</td>
+		</tr>
+		<tr>
+			<td>with optimization</td>
+			<td>1.22</td>
+			<td>3.03</td>
+			<td>3.04</td>
+			<td>4.98</td>
+		</tr>
+	</tbody>
+</table>
+
+The optimizations made:
+
+1. Move the `get_vector_length()` call outside the loop.
+2. Avoid a bounds check on each cycle.
+3. Accumulate the sum/product in a temporary variable.
+
+Thus, for the `sum_vector_element()` function, the optimized code appears
+as follows:
+
+```c
+void sum_vector_element(Vector *v, int *destination) {
+	long i;
+	long length = get_vector_length(v);
+	int t = 0;
+	int *d = v->data;
+	for (i = 0; i < length; i++) {
+		t = t + d[i];
+	}
+	*destination = t;
+}
+```
+
+The CPU cycle savings are drastic because the x86-64 is a **superscalar
+processor** — a processor that can issue and execute multiple instructions
+in one cycle. This is done by the processor retrieving instructions from
+the instruction stream, and then scheduling them dynamically.
+
+[^cpu_cycle_note]:
+    CPU cycles can be counted by using the `rdtsc()` function:
+
+        ```c
+        static __inline__ unsigned long long rdtsc(void) {
+        	unsigned long long int x;
+        	__asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
+        	return x;
+        }
+
+        int main() {
+        	unsigned long long cycles = rdtsc();
+        	cycles = rdtsc() - cycles;
+        	printf("Time is %d\n", (unsigned)cycles);
+        	return 0;
+        }
+        ```
+
+## Pipelining
+
+One technique that can save CPU cycles is _pipelining_. The idea: If we
+have some very complicated computation, we use less resources if divide the
+computation into stages, passing partial computations from stage to stage.
+For example, consider the following code:
+
+```c
+int mult(int a, int b, int c) {
+	int x = a * b;
+	int y = a * c;
+	int z = x * y;
+	return z;
+}
+```
+
+The pipeline for the multiplication operations can be viewed as such:
+
+<table>
+	<thead>
+		<tr>
+			<th colSpan={8}>Time</th>
+		</tr>
+		<tr>
+			<th></th>
+			<th>1</th>
+			<th>2</th>
+			<th>3</th>
+			<th>4</th>
+			<th>5</th>
+			<th>6</th>
+			<th>7</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Stage 1</td>
+			<td>`a*b`</td>
+			<td>`a*c`</td>
+			<td></td>
+			<td></td>
+			<td>`x*y`</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Stage 2</td>
+			<td></td>
+			<td>`a*b`</td>
+			<td>`a*c`</td>
+			<td></td>
+			<td></td>
+			<td>`x*y`</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Stage 3</td>
+			<td></td>
+			<td></td>
+			<td>`a*b`</td>
+			<td>`a*c`</td>
+			<td></td>
+			<td></td>
+			<td>`x*y`</td>
+		</tr>
+	</tbody>
+</table>
+
+Each of the unoccupied cells are places where we can peform other
+computations. If we had instead written:
+
+```c
+int mult(int a, int b, int c) {
+	return (a * b) * (a * c);
+}
+```
+
+we would've taken 21 cycles to complete the computation. This is 3 times
+more than the 7 cycles we would use if we had broken it up into smaller
+instructions. With the approach above if have another function 𝑓 that
+relies on `mult()`'s return value, 𝑓 must wait 21 CPU cycles before it can
+execute.
+
+Pipelining is particularly useful when we consider the most costly
+operations on modern processors. For the Haswell CPU, the data is as
+follows:
+
+| Instruction                     | Latency | Cycles/Instruction |
+| ------------------------------- | ------- | ------------------ |
+| load/store                      | 4       | 1                  |
+| `int` multiplication            | 3       | 1                  |
+| `int`/`long` division           | 3-30    | 3-30               |
+| `float`/`double` multiplication | 5       | 1                  |
+| `float`/`double` addition       | 3       | 1                  |
+| `float`/`double` division       | 3-15    | 3-15               |
+
+Knowing this, we can combine parallelism and pipelining to get the
+`sum_vector_element()` function's CPU cycle consumption down even further.
+The optimization:
+
+```c
+void sum_vector_element(Vector *v, int *destination) {
+	long i;
+	long length = get_vector_length(v);
+	long limit = length-1;
+	int t = 0;
+	int *d = v->data;
+	for (i = 0; i < limit; i+=2) {  // unroll the loop
+		t = t + (d[i] + d[i+1]);  // reassociate
+	}
+	for (; i < length; i++) {  // handle any remaining elements
+		t = t + d[i];
+	}
+	*destination = t;
+}
+```
+
+Above, we used two different techniques: _loop unrolling_ and
+_reassociation_. We unrolled the loop because it allows us to add two
+elements at the same time, and we can add two elements at the same time
+because of parallelism. We made the reassociation `(d[i] + d[i+1])` because
+by associating them together, we ensure that the instruction doesn't have
+to wait for `t` to get retrieved. Making the same optimization with
+`product_vector_element()`, we have the following results:
+
+<table>
+	<thead>
+		<tr>
+			<th>Vector Element Type</th>
+			<th colSpan={2}>`int`</th>
+			<th colSpan={2}>`double`</th>
+		</tr>
+		<tr>
+			<th>Operation</th>
+			<th>`sum_vector_element()`</th>
+			<th>`product_vector_element()`</th>
+			<th>`sum_vector_element()`</th>
+			<th>`product_vector_element()`</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>no optimizations</td>
+			<td>21.34</td>
+			<td>20.02</td>
+			<td>19.92</td>
+			<td>20.18</td>
+		</tr>
+		<tr>
+			<td>with first optimization</td>
+			<td>1.22</td>
+			<td>3.03</td>
+			<td>3.04</td>
+			<td>4.98</td>
+		</tr>
+		<tr>
+			<td>with second optimization</td>
+			<td>1.01</td>
+			<td>1.48</td>
+			<td>1.48</td>
+			<td>2.48</td>
+		</tr>
+	</tbody>
+</table>
+
+We could go further:
+
+```c
+void sum_vector_element(Vector *v, int *destination) {
+	long i;
+	long length = get_vector_length(v);
+	long limit = length-1;
+	int *d = v->data;
+	int x0 = 0;
+	int x1 = 0;
+	for (i = 0; i < limit; i+=2) {  // stepping by two
+		x0 = x0 + d[i]; // accumulate odd elements in one temp
+		x1 = x1 + d[i+1]; // accumulate even elements in another temp
+	}
+	for (; i < length; i++) {  // handle any remaining elements
+		x0 = x0 + d[i];
+	}
+	*destination = x0 + x1;
+}
+```
+
+Here we use the technique of _separate accumulation_. Making this change,
+we now have:
+
+<table>
+	<thead>
+		<tr>
+			<th>Vector Element Type</th>
+			<th colSpan={2}>`int`</th>
+			<th colSpan={2}>`double`</th>
+		</tr>
+		<tr>
+			<th>Operation</th>
+			<th>`sum_vector_element()`</th>
+			<th>`product_vector_element()`</th>
+			<th>`sum_vector_element()`</th>
+			<th>`product_vector_element()`</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>no optimizations</td>
+			<td>21.34</td>
+			<td>20.02</td>
+			<td>19.92</td>
+			<td>20.18</td>
+		</tr>
+		<tr>
+			<td>with first optimization</td>
+			<td>1.22</td>
+			<td>3.03</td>
+			<td>3.04</td>
+			<td>4.98</td>
+		</tr>
+		<tr>
+			<td>with second optimization</td>
+			<td>1.01</td>
+			<td>1.48</td>
+			<td>1.48</td>
+			<td>2.48</td>
+		</tr>
+		<tr>
+			<td>with third optimization</td>
+			<td>0.80</td>
+			<td>1.48</td>
+			<td>1.48</td>
+			<td>2.48</td>
+		</tr>
+	</tbody>
+</table>
+
+At this point, we're starting to see diminishing returns. We're also
+starting to write code that get's a little too close to obfuscation. This
+is the core dilemma of lower-level optimization: We have to make decisions
+at the margins of efficiency and readability.
+
+### Branches
+
+For branches, the general rule of thumb is: _Avoid unpredictable branches
+whenever possible_. Modern processors maintain a branch table that let's
+them predict where the program is headed next, but all of that goes out the
+window when we have a branch that requires the processor to unravel all of
+the work it's done before. We can help the processor by providing the
+branch's test conditions well ahead of time. For example, consider the this
+function that decodes a hex digit:
+
+```c
+int hex_digit_to_decimal(unsigned char c) {
+  if (c >= '0' && c <= '9') return c - '0';
+  if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+  if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+  return -1;
+}
+```
+
+The first optimization we can make is to use `else if` and `else` branches.
+Otherwise, all of the branches must be evaluated:
+
+```c
+int hex_digit_to_decimal(unsigned char c) {
+  if (c >= '0' && c <= '9') return c - '0';
+  else if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+  else if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+  else return -1;
+}
+```
+
+The second optimization we can make is to replace the characters with the
+numeric ASCII values (assuming there are other checks to ensure that only
+ASCII-encoded characters are provided):
+
+```c
+int hex_digit_to_decimal(unsigned char c) {
+  if (c >= 48 && c <= 57) return c - 48;
+  else if (c >= 65 && c <= 70) return c - 65 + 10;
+  else if (c >= 97 && c <= 102) return c - 97 + 10;
+  else return -1;
+}
+```
+
+The third optimization we cane make is to move the exit case to the top (we
+want to exit as soon as possible):
+
+```c
+int hex_digit_to_decimal(unsigned char c) {
+	if (c < 48 && c > 102) return -1;
+  else if (c >= 48 && c <= 57) return c - 48;
+  else if (c >= 65 && c <= 70) return c - 65 + 10;
+  else return c - 97 + 10;
+}
+```
+
+Again, all of this is assuming that security measures are in place, and
+that the argument passed is ASCII encoded.
+
+The ultimate optimization to branching, however, is to not branch at all.
+This sounds silly, but it's a valid consideration that's often neglected.
+There are cases where branching can be replaced by either (1) replacing the
+branch structure with a hardcode data structure, or (2) using a ternary
+operator instead of an if-else structure.
+
+For example, these two operations are applicable to the
+`hex_digit_to_decimal()` function we wrote. Instead of using a branching
+structure, we can construct a _lookup table_ and use a ternary operator
+(most compilers will translate this into a negation followed by a
+right-shift):
+
+```c
+int hex_digit_to_decimal(unsigned char c) {
+	int ASCIIHexToInt[] ={
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, -1, -1, -1, -1, -1, -1,
+		-1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	};
+	int result = ASCIIHexToInt[c];
+	return (result >= 0 ? result : -1);
+}
+```

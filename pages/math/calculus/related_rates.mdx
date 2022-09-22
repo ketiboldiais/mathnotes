@@ -1,0 +1,196 @@
+<Metadata
+	title={"Related Rates"}
+	description={"Notes on related rates in calculus."}
+	keywords={"calculus, differential calculus, related rates"}
+/>
+
+# Related Rates
+
+Consider the following problem:
+
+> **problem**. A traffic enforcement camera lies thirty feet straight from
+> the road. A vehicle approaches the camera, and the camera's radar bounces
+> off the vehicle. The camera reads the vehicle as fifty feet away. The
+> camera also reads vehicle as travelling at eighty feet per second. The
+> speed limit is ninety feet per second (or sixty-five miles per hour).
+> Question: Is the vehicle speeding?
+
+As usual, we begin by drawing a diagram. We know that the camera lies
+thirty feet straight from the road, so it forms a right angle. And since
+the camera reads the vehicle as fifty feet away, we have a Heronian
+triangle,[^heron_note] specifically a ${3:4:5}$ triangle:
+
+[^heron_note]:
+    A <i>Heronian triangle</i> is a triangle whose side lengths and area
+    are all integers, named after the Greek mathematician Hero of
+    Alexandria.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656700692/math/speed_trap_related_rates_efjrxz.svg"
+	}
+	imwidth={"182"}
+	imheight={"118"}
+	caption={"Speed trap setup"}
+	width={"20"}
+/>
+
+The next step is to <i>name</i> our quantities. We'll use ${t}$ for time,
+measured in seconds.
+
+$$
+	t \coloneqq time~~(\text{s})
+$$
+
+Next, we want to denote some quantities directly on our diagram:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656700746/math/speed_trap_related_rates1_kmzkes.svg"
+	}
+	imwidth={"201"}
+	imheight={"116"}
+	caption={"Denoting the quantities with variables"}
+	width={"40"}
+/>
+
+In our diagram above, we made the following definitions:
+
+1. ${x = 40}$ (the ${x}$ distance from the camera)
+2. ${D = 50}$ (the ${x}$ distance between the camera and vehicle)
+3. ${\text{SL} = 90 \frac{\text{ft}}{\text{s}}}$ (the speed limit)
+4. ${\dfrac{dD}{dt} = 80 \frac{\text{ft}}{\text{s}}}$ (the approach speed)
+
+Why did we denote ${x = 40?}$ Because the problem boils down to determining
+whether this proposition is true:
+
+$$
+	\dfrac{dx}{dt} > (\text{SL} = 95)
+$$
+
+We also denoted ${D = 50}$ because the dstiance between the camera and the
+vehicle varies. This is all to show that whenever we deal with variable
+quantities, we always want to give them variable names. Constants, on the
+other hand, come down to personal style. In some problems, we might want to
+give constants variable names to avoid numeric distractions. In others, we
+might not want to give constants separate names because numeric quantities
+can provide intuition.
+
+Now, the first thing to note is that we're moving towards the camera. This
+means that the approach speed is actually:
+
+$$
+	\dfrac{dD}{dt} = -80 \frac{\text{ft}}{\text{s}}
+$$
+
+In other words, the speed is decreasing at
+${80 \frac{\text{ft}}{\text{s}}.}$ Returning to our diagram, we want to
+express a relationship between the triangle's lengths. Here, we rely on the
+pythagorean theorem:
+
+$$
+	x^2 + 30^2 = D^2
+$$
+
+At this point, we'll want to differentiate. Here, the easiest approach is
+to use implicit differentiation. We'll differentiate the entire equation
+with respect to time. In doing so, we want to keep mind not to just
+substitute ${40}$ into ${x.}$ Why? Because ${x}$ is variable. Performing
+the implicit differentiation:
+
+$$
+	\begin{aligned} \dfrac{d}{dx} x^2 + \dfrac{d}{dx} 30^2 &= \dfrac{d}{dx} D^2 \\[1em] 2x \dfrac{dx}{dt} + 0 &= 2D \dfrac{dD}{dt} \\[1em] 2x \dfrac{dx}{dt} &= 2D \dfrac{dD}{dt} \end{aligned}
+$$
+
+With the derivative in place, now we can substitute ${x}$ for ${40:}$
+
+$$
+	\begin{aligned} 2(40) \dfrac{dx}{dt} &= 2(50)(-80) \\[1em] 80 \dfrac{dx}{dt} &= 2(50)(-80) \\[1em] \cancel{80} \dfrac{dx}{dt} &= 2(50)(-1)\cancel{(80)} \\[1em] \dfrac{dx}{dt} &= -100 \end{aligned}
+$$
+
+This gives us our answer:
+
+$$
+	\left(\left\lvert \dfrac{dx}{dt} \right\rvert = 100 \frac{\text{ft}}{\text{s}}\right) > 90 \frac{\text{ft}}{\text{s}}
+$$
+
+So yes, the vehicle was, in fact, speeding. Assuming, of course, that there
+were no calibration issues with the camera and all the necessary elements
+of the traffic offense are met.
+
+Let's consider another problem:
+
+> **problem**. A conical tank with a top radius of four feet and a depth of
+> ten feet is being filled with water at a rate of two cubic feet per
+> minute. How fast is the water rising when the water reaches a depth of
+> five feet?
+
+Once again, we begin by diagramming:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656700904/math/conic_tank_related_rates_oelpnd.svg"
+	}
+	imwidth={"221"}
+	imheight={"145"}
+	caption={"Conic tank"}
+	width={"30"}
+/>
+
+Looking at our diagram, we see that the cross-section depicting the water
+presents similar triangles. Thus:
+
+$$
+	\dfrac{r}{h} = \dfrac{4}{10}
+$$
+
+Next, we know from geometry that the volume of a cone is given by the
+formula:
+
+$$
+	V = \dfrac{1}{3}(\pi r^2)h
+$$
+
+Next, we're told that the tank is being filled at a rate of two cubic feet
+per minute, so we have:
+
+$$
+	\dfrac{dV}{dt} = 2 ~\frac{\text{ft}^3}{\text{min}}
+$$
+
+Finally, we want to formulate our question:
+
+> What is ${\dfrac{dh}{dt}}$ when ${h = 5?}$
+
+From our ratio ${r/h = 4/10,}$ we can easily express ${r}$ as a function of
+${h:}$
+
+$$
+	r = \dfrac{2}{5}h
+$$
+
+Substitute the expression into ${V:}$
+
+$$
+	\begin{aligned} V &= \dfrac{1}{3} \pi \left(\dfrac{2}{5}h\right)^2 h \end{aligned}
+$$
+
+At this point, we want to just implicitly differentiate. We don't want to
+try and solve for ${h,}$ because just looking at that equation, we can tell
+that we'll end up with a cubic root, and that can easily turn nasty.
+
+$$
+	\begin{aligned} \dfrac{d}{dt} V &= \dfrac{d}{dt} \dfrac{1}{3} \pi \left(\dfrac{2}{5}h\right)^2 h \\[1em] \dfrac{dV}{dt} &= \dfrac{\pi}{3} \left( \dfrac{2}{5} \right)^2 \dfrac{d}{dt} h^3 \\[1em] \dfrac{dV}{dt} &= \dfrac{\pi}{3} \left( \dfrac{2}{5} \right)^2 3h^2 \dfrac{dh}{dt} \end{aligned}
+$$
+
+Now we can plug in the numbers:
+
+$$
+	\begin{aligned} 2 &= \dfrac{\pi}{3} \left( \dfrac{2}{5} \right)^2 (3)(5)^2 \dfrac{dh}{dt} \\[1em] 2 &= \dfrac{\pi}{3} \dfrac{2}{5} \dfrac{2}{5} (3)(5)(5) \dfrac{dh}{dt} \\[1em] \cancel{2} &= \dfrac{\pi}{\cancel{3}} \dfrac{\cancel{2}}{\cancel{5}} \dfrac{2}{\cancel{5}} (\cancel{3})(\cancel{5})(\cancel{5}) \dfrac{dh}{dt} \\[1em] 1 &= 2 \pi \dfrac{dh}{dt} \\[1em] \dfrac{1}{2 \pi} &= \dfrac{dh}{dt} \end{aligned}
+$$
+
+So, when ${h = 5,}$ we have:
+
+$$
+	\dfrac{dh}{dt} = \dfrac{1}{2\pi} ~\frac{\text{ft}}{\text{min}}
+$$

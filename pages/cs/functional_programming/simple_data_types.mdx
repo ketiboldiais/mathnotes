@@ -1,0 +1,783 @@
+# Simple Data Types
+
+ML has the following base types:
+
+| Type     | Sample Values                         | Comment                                                   |
+| -------- | ------------------------------------- | --------------------------------------------------------- |
+| `unit`   | `()`                                  | a trivial data type with a single value.                  |
+| `bool`   | `true`, `false`                       | standard boolean values                                   |
+| `int`    | `0`, `1`, `179`, `~5`                 | integer values                                            |
+| `real`   | `0.0`, `3.14`, `~2.24`                | equivalent of floats in other languages; rational numbers |
+| `char`   | `#"a"`, `#newline`                    | characters                                                |
+| `string` | `"foo"`, `""`, `" "`, `"hello world"` | this is NOT the same as a list of characters              |
+
+## Expressions & Variable Bindings
+
+Before we study ML, we must first understand its foundational terminology
+and concepts. In ML, a program is a sequence of **bindings**. Each
+**binding** has a **type**, which is checked. If it the binding passes its
+type-check, then it is **evaluated**.
+
+A binding's type depends on its **static environment** &mdash; roughly, the
+_types_ of the preceding bindings. How a binding is evaluated depends on
+its **dynamic environment** &mdash; roughly, the _values_ of the preceding
+bindings. The term **environment** usually refers to the dynamic
+environment, and the term **context** usually refers to the static
+environment. The following are some common expressions in ML:
+
+### If-expressions
+
+The if-expression takes the form:
+
+> if ${c}$ then ${e_1}$ else ${e_2}$
+
+${b}$ must be an expression of type bool. ${e_1}$ and ${e_2}$ must have the
+same types. The result same as ${e_1}$ and ${e_2.}$
+
+### And-expression
+
+The and-expression takes the form:
+
+> ${e_1}$ andalso ${e_2}$
+
+${e_1}$ and ${e_2}$ must both be of type bool. The result will also be of
+type bool.
+
+### Or-expression
+
+The or-expression takes the form:
+
+> ${e_1}$ orelse ${e_2}$
+
+${e_1}$ and ${e_2}$ must both be of type bool.
+
+### Not-expression
+
+The not-expression has the form:
+
+> NOT ${e}$
+
+${e}$ must be of type bool.
+
+### Addition Expresions
+
+The addition expression has the form:
+
+> ${e_1}$ + ${e_2}$
+
+Either:
+
+1. Both ${e_1}$ and ${e_2}$ are both of type int, or
+2. both ${e_1}$ and ${e_2}$ are both of type real
+
+The result is same as ${e_1}$ and ${e_2}$
+
+### Subtraction Expression
+
+The subtraction expression is written as:
+
+> ${e_1}$ - ${e_2}$
+
+Either:
+
+1. Both ${e_1}$ and ${e_2}$ are both of type int; or
+2. both ${e_1}$ and ${e_2}$ are both of type real
+
+The result is same as ${e_1}$ and ${e_2}$
+
+### Real Division Expression
+
+The real division expression has the syntax:
+
+> ${e_1}$/${e_2}$
+
+where ${e_1}$ and ${e_2}$ must both be of type real.
+
+### Integer Division
+
+The integer division expression has the syntax:
+
+> ${e_1}$ div ${e_2}$
+
+where ${e_1}$ and ${e_2}$ must both be of type int.
+
+### Multiplication Expression
+
+The multiplication expression:
+
+> ${e_1}$ \* ${e_2}$
+
+Either:
+
+1. Both ${e_1}$ and ${e_2}$ are both of type int; or
+2. both ${e_1}$ and ${e_2}$ are both of type real
+
+The result is same as ${e_1}$ and ${e_2}$ ${e_1 \cdot e_2.}$
+
+### Comparison Expressions
+
+The comparison expressions all look like what we'd see in other languages:
+
+> ${e_1}$ < ${e_2}$
+
+> ${e_1}$ > ${e_2}$
+
+> ${e_1 \leq e_2}$
+
+> ${e_1 \geq e_2}$
+
+${e_1}$ and ${e_2}$ must both be of type `int` or both be of type `real`.
+The result is a `bool`. The one outlier is equality:
+
+> ${e_1}$ == ${e_2}$
+
+${e_1}$ and ${e_2}$ must both be either:
+
+1. unit,
+2. int,
+3. char, or
+4. string.
+
+They cannot be of type real.
+
+### Concatenation Expression
+
+The concatenation expression takes the form:
+
+> ${e_1}$^${e_2}$
+
+where ${e_1}$ and ${e_2}$ must both be string. The result is the
+concatenation of ${e_1}$ and ${e_2.}$
+
+## Variable Binding
+
+There are many kinds of bindings in ML, but the simplest binding is the
+**variable binding**. It takes the general form:
+
+$$
+	\mm{val $v$ = $e$}
+$$
+
+In the syntax above, `val` is akeyword, ${v}$ is the _variable_, and ${e}$
+is any expression. The semicolon is optional, but it is necessary in a REPL
+(read-eval-print loop) to inform the _interpreter_ that the binding is
+complete.
+
+Every binding in ML has a**scope**, which we can think of as &#8220;where
+it can be used.&#8221; The example above tells us the _syntax_ for a
+variable binding (how to write it), but it does not tell us the _semantics_
+(how the binding is type-checked and evaluated; its meaning). The semantics
+of a variable binding are largely determined by the `⟨expression⟩`.
+
+To type check the variable binding, the interpreter uses the _current
+static environment_ (the types of preceding bindings) to type check the
+`⟨expression⟩`. Once the `⟨expression⟩` is type-checked, the interpreter
+produces a _ new static environment _ where the `⟨variable⟩` has the type
+of the the `⟨expression⟩`.
+
+To evaluate the variable binding, the interpreter uses the _current dynamic
+environment_ (the _values_ of the preceding bindings) to evaluate the
+`⟨expression⟩`. Once the `⟨expression⟩` is evaluated, the interpreter
+produces a _ new dynamic environment _ where the current dynamic
+environment now includes `⟨variable⟩` with the value of the
+`⟨expression⟩`'s evaluation.
+
+What is a **value**? A*value* is an expression that cannot be further
+simplified &mdash; i.e., there is no more work to be done. For example,
+`10` is a value, but `5 + 5` is not. Both `10` and `5 + 5`, however, are
+_expressions_. In ML, all values are expressions, but not all expressions
+are values. From the facts above, we have different _kinds of expressions_.
+These kinds are defined as such.
+
+| Kind of Expression | Syntax                                                                        | Type-checking                                                                                                                                               | Evaluation                                                                                                                                                                                       |
+| ------------------ | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| integer constant   | a sequence of digits                                                          | type int in any static environment to itself in any dynamic environment (it is a value)                                                                     |
+| addition           | ${a}$ + ${b}$ where ${a}$ and ${b}$ are expressions                           | type int if and only if ${a}$ and ${b}$ have type int in the same static environment; else does not type-check                                              | evaluate ${a}$ to ${v}$ and ${b}$ to ${w}$ in the same static environment, where ${v}$ and ${w}$ are values; then produce the sum of ${v}$ and ${w}$                                             |
+| variables          | a sequence of letters, underscores, etc.                                      | look up the variable in the current static environment and use that type                                                                                    | look up the variable in the current dynamic environment and use that type                                                                                                                        |
+| conditionals       | if ${a}$ then ${b}$ else ${c}$ where ${a,}$ ${b,}$ and ${c}$ are expressions. | type-checks only if (1) ${a}$ has type `bool`, and (2) ${b}$ and ${c}$ have the same type. The type of the whole expression is the type of ${b}$ and ${c.}$ | using the current dynamic environment, evaluate ${a.}$ If the result is true, the result of ${b}$ is the overall result. If the result is false, then the result of ${c}$ is the overall result. |
+| boolean constants  | either true or false                                                          | type bool in any static environment.                                                                                                                        | to itself in any dynamic environment (it is a value)                                                                                                                                             |
+| comparison         | ${a}$ < ${b}$ where ${a}$ and ${b}$ are expressions                           | type bool if and only if ${a}$ and ${b}$ have type int in the same static environment; else does not type-check                                             | in the same dynamic environment, evaluate ${a}$ to ${v}$ and ${b}$ to ${w}$ where ${v}$ and ${w}$ are values; produce true if ${v}$ is less than ${w,}$ otherwise false.                         |
+
+Whenever we learn a new construct in a programming language, there are
+three things we must seek out and ingrain in memory:
+
+1. What is the construct's syntax?
+2. What is the rule for type-checking the construct?
+3. What is the rule for evaluating the construct?
+
+## Variable Immutability
+
+In ML, bindings are immutable. This is in stark contrast to languages like
+Java, Python, and JavaScript. Once we write:
+
+```sml
+val x = 8+9;
+```
+
+we create a dynamic environment where `x` maps to{" "} `17`. In this new
+dynamic environment, `x` will always map to `17`. Unlike languages like
+Java, there is no _assignment statement_ to change what `x` maps to.
+
+Now, we are free to later write:
+
+```sml
+val x = 20;
+```
+
+but all this does is create a _different dynamic environment_ where
+`x = 20` **shadows** `x = 8+9`.
+
+## Function Bindings
+
+To define and use functions in ML, we create **function bindings**. For
+those coming from a Python or Java background, functions in ML work much
+the same way, with a few stark differences: (1) There is no notion of a
+_class_; (2) there is no notion of a `return` statement. As an example,
+consider a function that computes ${x^y}$ iff ${y \geq 0:}$
+
+```sml
+fun pow (x:int, y:int) = (* correct only for y >= 0 *)
+	if y = 0
+		then 1
+	else x * pow(x,y-1)
+```
+
+The general syntax for a function in ML:
+
+$$
+	\mm{fun $f$ ($a_1$ : $t_1$, ..., $a_n$ : $t_n$) = } \\
+	~~e_1
+	~~\vodts
+	~~e_n
+$$
+
+In the syntax above the definition is prefaced by the keyword `fun`. ${f}$
+is the function's name. It takes arguments ${a_1 \ldots a_n}$ of types
+${t_1 \ldots t_n}$. The function's body is defined by the expressions
+${e_1 \ldots e_n}$.
+
+### Function Type-checking
+
+To type check a function, the interpreter type-checks the function's body,
+`⟨expressions⟩`, in a static environment, consisting of (1) all the earlier
+bindings and (2) `arg-1` mapped to `type-1` ... `arg-n` mapped to `type-n`.
+Because the static environment also includes `⟨function-name⟩`, the
+function's body `⟨expressions⟩` can include a call to `⟨function-name⟩`
+(i.e., a*recursive function call*).
+
+### Evaluating Functions
+
+A function is a value; we are merely adding `⟨function-name⟩` to be called
+later. Thus, `⟨function-name⟩` is included in the dynamic environment in
+the function body and for subsequent bindings.
+
+However, `⟨function-name⟩` is not included in the preceding bindings, so
+the order in which functions are defined is critical (i.e., the interpreter
+cannot &#8220;jump forward&#8221; to a function definition later down the
+program to evaluate the current expression).
+
+### Function Calls
+
+Function bindings are only useful if we can _call_ them. To do so, we write
+a **function call**. The syntax:
+
+$$
+	f \space (a_1, \ldots, a_n)
+$$
+
+The parentheses are optional if there is exactly one argument:
+
+$$
+	f \space a
+$$
+
+Here is an example of a function call:
+
+```sml
+fun pow (x:int, y:int) = (* correct only for y >= 0 *)
+	if y=0
+		then 1
+	else x * pow(x, y-1)
+
+fun cube (x:int) =
+	pow(x, 3)
+
+val ans = cube(4)
+```
+
+## Recursive Functions
+
+ML is a language that encourages recursion. While there are looping
+constructs, ML implements them awkwardly. Because recursion is effectively
+mandatory when using ML, it is important that we are as comfortable with
+recursion as possible.
+
+A **recursive** function is a function that calls itself. Because the
+function calls itself, we must always have a **base case** &mdash; a call
+to the function that immediately returns a value, ending the line of calls
+made. The recursive function also requires an **inductive case** &mdash;
+all other calls not handled by the base case; the function calls itself
+with smaller and smaller arguments.
+
+### Linear Recursion
+
+Here is a simple example: We want a function called `reverse(L)` that takes
+a list `L` and reverses the order of its elements. For example, given the
+list `[0, 1, 2]`, return `[2, 1, 0]`.
+
+First question: What is the base case? Here, the base case is the empty
+list, `[]`. Next question: Is the hypothesis true for the base case? I.e.,
+if the argument `[]` is passed, do we get back a reverse of `[]`? Yes, it
+is. The reverse of `[]` is `[]`. In other words, `reverse([]) = []`.
+
+Third question: What is the inductive step? To perform the inductive step,
+we consider a simple case. Suppose `L` has only one element; `[0]`. Let's
+say that the head of `L` is `h`, and the tail of `L` is the list `T`. In
+the case of a single element &mdash; `[0]` &mdash; `h` is `0` and `T` is
+`[]`. To construct the reverse then, we want to reverse `T` and insert to
+its end `h`. Thus, for the single element `[0]`, the reverse is `[0]`.
+
+Now consider a two-element list, `[0, 1]`. Here, `h` is `0` and `T` is
+`[1]`. We take the tail of the list, `[1]`, reverse that, `[1]`, and insert
+`0` &mdash; [1, 0].
+
+The function:
+
+```sml
+fun reverse(L) =
+	if L = nil
+		then nil
+	else reverse(tl L) @ [hd L]
+
+val list1 = [0, 1, 2, 3, 4]
+val list2 = reverse(list1)
+```
+
+```bash
+val reverse = fn : ''a list -> ''a list
+val list1 = [0,1,2,3,4] : int list
+val list2 = [4,3,2,1,0] : int list
+```
+
+The function above is an example of **linear recursion**: Each recursive
+call either (1) results in another recursive call with a smaller argument,
+or (2) results in the base case. However, we can also perform _nonlinear
+recursion_.
+
+### Nonlinear Recursion
+
+In **nonlinear recursion**, the recursion involves more than one recursive
+call.
+
+## Pairs
+
+As we already know, a good programming language provides ways of building
+compound data from simpler data. The simplest way of forming compound data
+in ML is through **pairs**. To build a pair, we use the following syntax:
+
+$$
+	(e_1, e_2)
+$$
+
+When a pair is built, ${e_1}$ is evaluated to ${v_1}$ and ${e_2}$ is
+evaluated to ${v_2}$. In doing so, the pair, as a whole, is evaluated to
+${(v_1, v_2)}$, a value. Because a pair is evaluated to a value, a pair can
+consist of pairs:
+
+$$
+	(P_1, P_2) \\ [1em] \darr \\[0.3em] (v_1, v_2) \\ [1em] \darr \\[0.3em] ((e_1, e_2) (e_1, e_2))
+$$
+
+The type of a pair is `t1 * t2` where ${t_1}$ is the type of the first
+part, ${v_1,}$ and ${t_2}$ is type of the second part, ${v_2.}$
+
+To access the values ${v_1}$ and ${v_2}$ in a pair, we must write a
+function. The following is a function that accesses and sums the parts of a
+pair:
+
+```sml
+fun sum_two_pairs (pr1 : int*int, pr2 : int*int) =
+	(#1 pr1) + (#2 pr1) + (#1 pr2) + (#2 pr2)
+```
+
+Notice how we access the parts with `#1` and `#2`. Here is another function
+that takes a pair to return an answer with two parts, a quotient, and a
+remainder:
+
+```sml
+fun div_mod (x : int, y : int) =
+	(x div y, x mod y)
+```
+
+Here is another function that sorts a pair:
+
+```sml
+fun sort_pair(pr : int*int) =
+	if (#1 pr) < (#2 pr)
+		then pr
+	else ((#2 pr), (#1 pr))
+```
+
+## Tuples and Lists
+
+A pair is really a 2-tuple. ML allows us to have ${n-\text{tuples}.}$ For
+example, a 3-tuple (a triple):
+
+```sml
+(*
+	a 3-tuple
+	type: int*int*int
+*)
+(2, 4, 6)
+```
+
+### Nesting Tuples
+
+Tuples are of fixed but **arbtirary arity** &mdash; we can nest tuples
+however much we would like:
+
+```sml
+(*
+	Below is a 3-tuple containing a 2-tuple
+	Type: int*(int*int)*int
+*)
+
+(2, (4, 6), 8)
+
+(*
+Below is a 2-tuple containing a 2-tuple
+Type: int*(bool*int)
+*)
+
+(2, (true, 4))
+```
+
+## Lists
+
+We can nest pairs as much as we would like, but it can be difficult to
+determine how many parts are in a pair, since the type determines the
+amount of data contained in a pair. To get around this difficulty, ML
+provides **lists**. A list containing ${n}$ values is initialized with the
+following syntax:
+
+$$
+	\mm{[$v_1$, $v_2$, \ldots, $v_n$]}
+$$
+
+Note that unlike tuples, lists are **homogeneous** &mdash; a list's members
+must all be of the same type.
+
+The _empty list_,`[]`, is the list with 0 elements. However, while it does
+not have any elements, it is a value nevertheless, and it evaluates to
+itself immediately. With the empty list `[]`,`null` evaluates to true. For
+non-empty lists, `null` evaluates to `false`. Here are some useful
+operators for lists:
+
+| Operator | Semantics                                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `null`   | evaluates to true if the list is the empty list []; otherwise false for non-empty lists                             |
+| `hd`     | return the first element of the list; i.e., the head of the list; if the list is empty, an exception is raised      |
+| `t1`     | return the list without the first element; i.e., the tail of the list; if the list is empty, an exception is raised |
+
+Here are some functions operating on lists:
+
+```sml
+fun sum_list (x_list : int list) =
+	if null x_list
+		then 0
+	else hd(x_list) + sum_list(t1 x_list)
+
+fun countdown (x : int) =
+	if x=0
+		then []
+	else x :: countdown(x-1)
+
+fun append (x_list : int list, y_list : int list) =
+	if null x_list
+		then y_list
+	else (hd x_list) :: append(t1 x_list, y_list)
+
+```
+
+Functions using lists are almost always recursive because a list has an
+unknown length. When writing recursive functions for lists, there are two
+things to determine:
+
+1. The base case: What should the result be for an empty list?
+2. The recursive case: How can the answer be expressed in terms of the
+   answer for the rest of the list?
+
+Thinking of terms of recursion rather than loops and assignment statements
+can both simplify a problem considerably, as well as yield a greater
+understanding of the problem parameters.
+
+## Let Expressions.
+
+In ML, the `let` expression is what gives us _local bindings_, and as an
+expression, we can place it anywhere an expression may be placed. The `let`
+expression takes the form:
+
+$$
+	\mm{let $b_1$, $b_2$, \dots $b_n$ in $e$ end}
+$$
+
+Above: Each ${b}$ is a binding, ${e}$ is an expression, and the symbols
+`let`, `in`, and `end` are keywords.
+
+To evaluate a `let` expression, we evaluate each ${b}$ using all earlier
+bindings in evaluating the `let` expression and create a larger environment
+for the subsequent bindings.
+
+Recall that every binding in ML has a scope. For the `let` expression, the
+scope of a binding contained therein is the later bindings in that `let`
+expression, and the _body_ of the `let` expression &mdash; the expression
+${exp.}$ The value of the entire `let` expresion is the value of ${e.}$
+Accordingly, the type of the entire `let` expression is the type of the
+value of ${e.}$ Here is a simple `let` expression:
+
+```sml
+let val x = 1
+in
+	(let val x = 2 in x+1 end) + (let val y = x+2 in y+1 end)
+end
+```
+
+`let` expressions in ML are extremely handy with functions. For example, we
+can use a`let` expression to bind a function, since a function is itself a
+binding. This leads to common design pattern:
+
+> Convention. If a*helper function* is needed by only one other function
+> and is unlikely to be useful elsewhere, we ought to bind it locally to
+> the parent function:
+
+For example, here is a function that produces the list `[1, 2, ..., 𝑥]`:
+
+```sml
+fun countUp_from_1 (x:int) =
+	let fun count (from:int, to:int) =
+		if from=to
+			then to :: []
+		else from :: count(from+1, to)
+	in
+		count(1,x)
+	end
+```
+
+How does the code above work? First, we defined a function called
+`countUp_from_1()`. This function consumes an `int` type value, stored in
+the `int` type variable `x`. Inside the body of `countUp_from_1`, we
+execute the function `count()`. The function `count` is _local_ to the
+function `countUp_from_1()`. How? Because we defined it through a let
+expression inside the body of `countUp_from_1`.
+
+Now, `count()` takes two arguments: (1) an `int` type value stored in the
+`int` type variable `from`, and (2) an `int` type value stored in the `int`
+type variable `to`. However, given that the function `countUp_from_1()`
+calls the function `count()` with the arguments `1` and `x`, the variable
+`from` is bound to the value `1`, and the variable `to` is bound to
+whatever `int` type value we passed as an argument into `countUp_from_1()`.
+
+Inside `count()`, we ask several questions. First, `from=to`, which is, Is
+`from` equal to `?` If it is, then return the singleton list `[to]`. If it
+not, then ask the second question, `else`. The answer to `else` is always
+`true`, so we return a list starting with `from` and ending with
+`count(from+1, to)`. So, for example, `countUp_from_1(5)`, where
+`countUp_from_1` is ${f}$ and `count` is ${c}$
+
+$$
+\begin{aligned}
+	&\mm{f(5)} \\
+	&\mm{c(1, 5)} \\
+	&\mm{[1, c(2, 5)]} \\
+	&\mm{[1, 2, c(3, 5)]} \\
+	&\mm{[1, 2, 3, c(4, 5)]} \\
+	&\mm{[1, 2, 3, 4, c(5, 5)]} \\
+	&\mm{[1, 2, 3, 4, 5]} \\
+\end{aligned}
+$$
+
+Although the algorithm works, there is room for optimization. First, notice
+that `count()`'s first parameter, `from:int`, always has the value `1`.
+Second, notice that `count()`'s second parameter, `to:int`, is always the
+value stored in `countUp_from_1()`'s second parameter, `x`. Can we use `x`?
+Of course! Never forget the core rule of dynamic environments in ML: To
+evaluate a binding, we use all of the preceding bindings. Accordingly,
+`count()` is absolutely free to use `x`. Thus, we can write the function
+more concisely:
+
+```sml
+fun countUp_from_1 (x:int) =
+	let fun count (from:int) =
+		if from = x
+			then x::[]
+		else from :: count(from+1)
+	in
+		count 1
+	end
+```
+
+The optimization above demonstrates a common technique in functional
+programming:
+
+> In defining functions, reuse variables within the function's scope.
+
+Be aware: The technique above is unique to functional programming
+languages. Unfortunately, many languages absolutely prohibit such
+practices. In functional programming &mdash; and programming in general
+&mdash; local variables should be preferred over _global variables_. For
+starts, locals make code easier to read rather than globals. For example,
+consider the following function that returns the maximum value in a list:
+
+```sml
+fun max (x_list : int list) =
+	if null x_list
+		then 0
+	else if null (t1 x_list)
+		then hd x_list
+	else if hd x_list > max(t1 x_list)
+		then hd x_list
+	else max(t1 x_list)
+```
+
+The code above asks 4 different questions:
+
+1. Is `x_list` the empty list?
+   - Yes ${\implies}$ evaluate to `0`.
+   - No ${\implies}$ ask the next question.
+2. Is the tail of `x_list` the empty list? (i.e., Is the list a singleton
+   list?)
+   - Yes ${\implies}$ evaluate to the head of `x_list`.
+   - No ${\implies}$ ask the next question.
+3. Is the head of `x_list` greater than the maximum of the tail of the
+   list?
+   - Yes ${\implies}$ evaluate to the head of `x_list`
+   - No ${\implies}$ ask the next question.
+4. `else`.
+   - evaluate to the maximum of the tail of the list.
+
+What is the problem with this algorithm? The problem is we are calling
+`max()` twice recursively. This is an example of a common recursive error,
+the **exponential blowup** &mdash; `max()` asks for `max()` twice, and in
+both those `max()` calls, `max()` is asked twice (now 4 `max()` calls), and
+in each of those 4 `max()` calls, `max()` is asked twice (now 16 `max()`
+calls), etc. If we passed into `max()` the value of `countUp_from_1(100)`,
+we would execute ${2^{100}}$ calls.
+
+`let` expressions solve this problem: Compute the{" "} `max` of the tail
+once, store that result in `tail_max`, and use `tail_max` as the
+comparison:
+
+```sml
+fun max (x_list : int list) =
+	if null x_list
+		then 0
+	else if null (t1 x_list)
+		then hd x_list
+	else
+		let val tail_max = max(t1 x_list)
+		in
+			if hd x_list > tail_max
+				then hd x_list
+			else tail_max
+		end
+```
+
+With the code above, we go through the same first two questions, and if
+they are both `false`, then we go through the `else` question: First, bind
+the value of the max of the list's tail to the variable `tail_max`. If the
+head of `x_list` is greater than `tail_max`, evaluate to the head of
+`x_list`. Otherwise, evaluate to `tail_max`. So, for example, suppose we
+wrote `max([1, 2, 3, 4, 5])`. Where `max()` is ${M,}$ `hd` is ${h}$, `t1`
+is ${t,}$ ${\ell}$ is `[1, 2, 3, 4, 5]`, and ${v}$ is `tail_max`:
+
+$$
+	\begin{aligned}
+		&\mm{M($\ell$)} \\
+		&\mm{M([1, 2, 3, 4, 5])} \\
+		&\mm{h($\ell$) > v} \\
+		&\mm{h($\ell$) > M(t($\ell$))} \\
+		&\mm{1 > M([2, 3, 4, 5])} \\
+		&\mm{1 > (h($\ell$) > v)} \\
+		&\mm{1 > (h($\ell$) > M(t($\ell$)))} \\
+		&\mm{1 > (2 > M([3, 4, 5]))} \\
+		&\mm{1 > (2 > (3 > v))} \\
+		&\mm{1 > (2 > (3 > M(t($\ell$))))} \\
+		&\mm{1 > (2 > (3 > M[4, 5]))} \\
+		&\mm{1 > (2 > (3 > (4 > v)))} \\
+		&\mm{1 > (2 > (3 > (4 > M(t($\ell$)))))} \\
+		&\mm{1 > (2 > (3 > (4 > M([5]))))} \\
+		&\mm{1 > (2 > (3 > (4 > (5 > v))))} \\
+		&\mm{1 > (2 > (3 > (4 > (5 > M(t($\ell$))))))} \\
+		&\mm{1 > (2 > (3 > (4 > (5 > M([])))))} \\
+		&\mm{1 > (2 > (3 > (4 > (5 > 0))))} \\
+		&\mm{1 > (2 > (3 > (4 > (5))))} \\
+		&\mm{1 > (2 > (3 > (5)))} \\
+		&\mm{1 > (2 > (5))} \\
+		&\mm{1 > (5)} \\
+		&\mm{5} \\
+	\end{aligned}
+$$
+
+## Options
+
+There is a small problem with the algorithm above. The answer to the first
+question, `null x_list` is `0`. But this isn't logically correct. The
+maximum value of an empty list isn't zero, because there are no values in
+an empty list to compare with in the first place. We should avoid making
+such illogical statements. So what can we do? We could raise an exception.
+However, a better way would be to use an `option`. In ML, an `option` is a
+data type with only one of two values: `NONE` or `SOME`. The `option` value
+`NONE` represents _nothingness_, or &#8220;carries nothing.&#8221; The
+`option` value `SOME 𝑒`, where ${e}$ is an expression, represents
+_existence_, or &#8220;carries something.&#8221; More specifically, the
+value `SOME 𝑒` will evaluate ${e}$ to a value ${v,}$ at which point
+`SOME 𝑒` becomes the option carrying the one and only value ${v.}$
+
+Like `null`, we can ask whether a value is `SOME 𝑒` or `NONE`. The operator
+`isSome` evaluates to `false` if its argument is `NONE`. And if we want to
+access the value carried by a `SOME`, we use the operator `valOf`. Using
+options, we can rewrite the code above as such:
+
+```sml
+fun max (x_list : int list) =
+	if null x_list
+		then NONE
+	else
+		let val tail_max = max(t1 x_list)
+		in
+			if isSome tail_max andalso valOf tail_max > hd x_list
+				then tail_max
+			else
+				SOME (hd x_list)
+		end
+```
+
+## Errors Generally
+
+Errors in ML fall into three groups: (1) _syntax errors_, (2) _type
+errors_, and (3) _runtime errors_.
+
+**Syntax errors** are errors caused by writing something incorrectly.
+Incorrect meaning we have written something in violation of ML's syntax.
+
+**Type errors** are errors caused by failing to pass a type check. These
+errors occur when we fail to follow the type checking rules; e.g., adding
+an `int` type variable to a`bool` type variable.
+
+**Runtime errors** are errors that occur during evaluation. This might be
+because we used an operator incorrectly, or because we wrote a recursive
+function that _bottoms out_ &mdash; making too many recursive calls such
+that the program terminates.
+
+Errors are not caught by ML can be broadly classified as **logic errors**.
+Here, we complied with syntax and semantics, so we do not see any syntax,
+type, or runtime errors, but our program does something outside of our
+expections. Perhaps it hangs (enters an infinite loop), returns an
+unexpected value, or returns an expected value but not in the way we
+intended.
+
+The errors above all occur in sequence. In other words, in order of
+occurrence, we will see syntax errors, then type errors, then runtime
+errors last. This means that if we see a runtime error, then we did not
+have a syntax or type error, but if we see a syntax error, we do not know
+if there is a type or runtime error, at least not yet.

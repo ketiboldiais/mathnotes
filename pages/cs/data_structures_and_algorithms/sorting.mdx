@@ -1,0 +1,112 @@
+# Sorting Algorithms
+
+The operation of **sorting** is to rearrange a sequence of items into a
+specified rule of order (most commonly numeric ascending order; i.e., least
+to greatest). The notes below cover a suite of sorting algorithms.
+
+## Bubble Sort
+
+In computer science courses, bubble sort is often the first introduction to
+sorting, so we start here. The implementation:
+
+```rust
+bubbleSort(array):
+	for (int i = array.length,  i > 0,  i--):
+		for (int j = 0,  j < i,  j++):
+			if (array[j+1] < array[j]):
+				swap(array[j+1], array[j])
+	return array
+```
+
+Here's a visual, sorting the array `[-1,2,9,7,8,4]`.
+
+| pass | step | array             | array[j] | array[j+1] | swapped |
+| ---- | ---- | ----------------- | -------- | ---------- | ------- |
+| 1    | 1    | [8,1,2,3,4,5,6,7] | 8        | 1          | 1 and 8 |
+|      | 2    | [1,8,2,3,4,5,6,7] | 8        | 2          | 2 and 8 |
+|      | 3    | [1,2,8,3,4,5,6,7] | 8        | 3          | 3 and 8 |
+|      | 4    | [1,2,3,8,4,5,6,7] | 8        | 4          | 4 and 8 |
+|      | 5    | [1,2,3,4,8,5,6,7] | 8        | 5          | 5 and 8 |
+|      | 6    | [1,2,3,4,5,8,6,7] | 8        | 6          | 6 and 8 |
+|      | 7    | [1,2,3,4,5,6,8,7] | 8        | 7          | 7 and 8 |
+| 2    | 8    | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 9    | [1,2,3,4,5,6,7,8] | 2        | 3          | none    |
+|      | 10   | [1,2,3,4,5,6,7,8] | 3        | 4          | none    |
+|      | 11   | [1,2,3,4,5,6,7,8] | 4        | 5          | none    |
+|      | 12   | [1,2,3,4,5,6,7,8] | 5        | 6          | none    |
+|      | 13   | [1,2,3,4,5,6,7,8] | 6        | 7          | none    |
+| 3    | 14   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 15   | [1,2,3,4,5,6,7,8] | 2        | 3          | none    |
+|      | 16   | [1,2,3,4,5,6,7,8] | 3        | 4          | none    |
+|      | 17   | [1,2,3,4,5,6,7,8] | 4        | 5          | none    |
+|      | 18   | [1,2,3,4,5,6,7,8] | 5        | 6          | none    |
+| 4    | 19   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 20   | [1,2,3,4,5,6,7,8] | 2        | 3          | none    |
+|      | 21   | [1,2,3,4,5,6,7,8] | 3        | 4          | none    |
+|      | 22   | [1,2,3,4,5,6,7,8] | 4        | 5          | none    |
+| 5    | 23   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 24   | [1,2,3,4,5,6,7,8] | 2        | 3          | none    |
+|      | 25   | [1,2,3,4,5,6,7,8] | 3        | 4          | none    |
+| 6    | 26   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 27   | [1,2,3,4,5,6,7,8] | 2        | 3          | none    |
+| 7    | 28   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+
+The idea behind bubble sort: We move through the array, comparing the
+current element at index ${i}$ (${n_i}$) against the element at index
+${i+1}$ (${n_{i+1}.}$) If ${n_{i+1} > {n_{i}},}$ we swap the two elements.
+In the table, the pass column indicates one complete loop through the
+array. Notice that we loop through the array 7 times. This follows from the
+fact that the algorithm just swaps adjacent elements. The algorithm has no
+data about whether the entire array is sorted. All it does is loop,
+compare, compare, compare, ..., loop, compare, compare, compare, ..., swap
+if need be.
+
+This is inefficient. After the first pass, the array is completely sorted.
+We're wasting both time and processor resources by continuing to loop and
+compare. We can fix this somewhat with the following change, a tiny
+optimization that requires additional memory:
+
+```rust
+bubbleSort(array):
+	let noSwap
+	for (int i = array.length,  i > 0,  i--):
+		noSwap = true
+		for (int j = 0,  j < i,  j++):
+			if (array[j+1] < array[j]):
+				swap(array[j+1], array[j])
+				noSwap = false
+			if (noSwap) break
+	return array
+```
+
+| pass | step | array             | array[j] | array[j+1] | swapped |
+| ---- | ---- | ----------------- | -------- | ---------- | ------- |
+| 1    | 1    | [8,1,2,3,4,5,6,7] | 8        | 1          | 1 and 8 |
+|      | 2    | [1,8,2,3,4,5,6,7] | 8        | 2          | 2 and 8 |
+|      | 3    | [1,2,8,3,4,5,6,7] | 8        | 3          | 3 and 8 |
+|      | 4    | [1,2,3,8,4,5,6,7] | 8        | 4          | 4 and 8 |
+|      | 5    | [1,2,3,4,8,5,6,7] | 8        | 5          | 5 and 8 |
+|      | 6    | [1,2,3,4,5,8,6,7] | 8        | 6          | 6 and 8 |
+|      | 7    | [1,2,3,4,5,6,8,7] | 8        | 7          | 7 and 8 |
+| 2    | 8    | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 9    | break             | ~        | ~          | ~       |
+| 3    | 10   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 11   | break             | ~        | ~          | ~       |
+| 4    | 12   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 13   | break             | ~        | ~          | ~       |
+| 5    | 14   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 15   | break             | ~        | ~          | ~       |
+| 6    | 16   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 17   | break             | ~        | ~          | ~       |
+| 7    | 18   | [1,2,3,4,5,6,7,8] | 1        | 2          | none    |
+|      | 19   | break             | ~        | ~          | ~       |
+
+By introducing a `noSwap` variable, we've cut down on the amount of steps
+from 28 to 19. The `noSwap` variable effectively tells the algorithm not to
+continue in the inner loop if no swap was performed. This gets straight to
+our previous annoyance: If no swap was performed, we know that the elements
+are sorted, so there's no need to continue looping.
+
+## Selection Sort
+
+Closely related to bubble sort is selection sort. The implementation:

@@ -1,0 +1,668 @@
+import { Plot } from "../../../components/hago";
+
+## Curve Sketching
+
+The process of **curve sketching** is to illustrate the graph of some
+function ${f(x)}$ by using ${f'(x)}$ and ${f''(x),}$ whether ${x}$ is
+positive or negative. To curve sketch, we state some key propositions up
+front:
+
+> **Lemma.** Let ${f}$ be a differentiable function. Then the following
+> propositions are true:
+>
+> 1.  If ${f' > 0,}$ then ${f}$ is increasing.
+> 2.  If ${f' < 0,}$ then ${f}$ is decreasing.
+> 3.  If ${f'' > 0,}$ then ${f'}$ is increasing.
+> 4.  If ${f'' < 0,}$ then ${f'}$ is decreasing.
+
+Put differently, if a function ${f}$ is increasing, then its derivative's
+tangent lines are positive (i.e., becoming less negative). If a function
+${f}$ is decreasing, then its derivative's tangent lines are negative
+(becoming less positive). We can visualize the principles above with a
+rough sketch:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656697440/math/concaveUp_xyvv29.svg"
+	}
+	imwidth={"560"}
+	imheight={"174"}
+	caption={"Concave up"}
+/>
+
+Examining the sketches above, we see that the tangent lines on ${f}$ tend
+negative, corresponding to the graph of ${f'.}$ And with ${f',}$ the
+tangent lines tend positive, corresponding to the graph of ${f''.}$ With
+the graph of ${f'',}$ we see that the tangent lines tend negative, so a
+graph of ${f''',}$ the third derivative, would show a graph with a negative
+slope.
+
+In the case where ${f'' > 0,}$ or when ${f'}$ is increasing, we say that
+${f}$ is **concave up**. And when ${f'' < 0,}$ or when ${f'}$ is
+decreasing, we say that ${f}$ is **concave down**. In the sketches above,
+${f}$ is concave down. Thus, we have the following propositions:
+
+> **lemma**. Let ${f}$ be a differentiable function. Then the following
+> propositions are true:
+>
+> 1.  If ${f'' < 0,}$ then ${f}$ is _concave up_.
+> 2.  If ${f'' < 0,}$ then ${f}$ is _concave down_.
+
+We will denote these two propositions with the following notation:
+
+> **notation**. Given a function ${f,}$ if ${f^{\uparrow}}$ then ${f}$ is
+>
+> _concave up_. If ${f^{\downarrow},}$ then ${f}$ is <i>concave down</i>.
+> If ${f^{\leftrightarrow},}$ then ${f}$ is neither concave up nor concave
+> down.
+
+Let's apply these principles by considering the function
+${f(x) = 3x - x^3.}$ Differentiating this function, we have:
+
+$$
+	f'(x) = 3 - 3x^2
+$$
+
+Factoring the derivative:
+
+$$
+	f'(x) = 3(1 - x^2) = 3(1-x)(1+x)
+$$
+
+We can draw several inferences from examining the derivative's equation. If
+${x = 0,}$ then ${f'(x) = 3.}$ This is a positive number. More generally,
+the factor ${(1-x)(1+x)}$ is positive iff both ${(1-x)}$ and ${(1+x)}$ are
+greater than ${0.}$ Based on this fact, we can express this as an interval:
+
+<Grid cols={2}>
+
+$$
+	(1-x) > 0 \\ 1-x > 0 \\ 1 > x
+$$
+
+$$
+	(1 + x) > 0 \\ 1 + x > 0 \\ x > -1
+$$
+
+</Grid>
+
+Hence, when ${-1 < x < 1,}$ then ${f'(x)}$ is positive. From the
+propositions we saw above, we infer that:
+
+$$
+	-1 < x < 1 \implies f'(x) > 0 \implies \text{$f$ is increasing}
+$$
+
+These aren't the only inferences we can draw. Looking back at the term
+${(1-x)(1+x),}$ we see that it's negative if either of the terms are
+negative. When is ${(1-x)}$ negative? Again we solve for ${x}$ as an
+inequality:
+
+$$
+	(1 - x) < 0 \\ 1 - x < 0 \\ 1 < x
+$$
+
+And ${(1+x) < 0}$ when:
+
+$$
+	(1 + x) < 0 \\ 1 + x < 0 \\ x < -1
+$$
+
+Thus, when ${(x > 1) \lor (x < -1),}$ ${f'}$ is negative. Finally, we can
+determine when ${f'}$ is zero:
+
+<Grid cols={2}>
+
+$$
+	(1 - x) = 0 \\ 1 - x = 0 \\ 1 = x
+$$
+
+$$
+	(1 + x) = 0 \\ 1 + x = 0 \\ x = -1
+$$
+
+</Grid>
+
+Hence, when ${(x = 1) \lor (x = -1),}$ then ${f'}$ is zero. We've gathered
+quite a few inferences just from the derivative:
+
+1. ${-1 < x < 1 \implies f' > 0 \implies}$ ${f}$ is increasing.
+2. ${x > 1 \implies f' < 0 \implies}$ ${f}$ is decreasing.
+3. ${x < -1 \implies f' < 0 \implies}$ ${f}$ is decreasing.
+4. ${x = 1 \implies f' = 0 \implies}$ ${f}$ is constant.
+5. ${x = -1 \implies f' = 0 \implies}$ ${f}$ is constant.
+
+Based on this information, we can sketch the graph as follows:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656697807/math/curve_sketch_1_vcuwhn.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"First attempt at a sketch."}
+	width={"30"}
+/>
+
+Notice the yellow dots above. These points are called **turning points** or
+**inflection points**. They're simply points where the derivative (i.e.,
+the _slope_) changes its sign. Formally:
+
+> **definition**. If ${f'(x_0) = 0,}$ then ${x_0}$ is a _critical point_,
+> and the number ${y = f(x_0)}$ is called a _critical value_.
+
+From the definition above, we see that the critical points are ${(-1, 0)}$
+and ${(1, 0).}$ If we substitue ${x = -1}$ and ${x = 1}$ to the original
+function, ${f(x) = 3x - x^3,}$ we get:
+
+<Grid cols={2}>
+
+$$
+	\begin{aligned} f(-1) &= 3(-1) - (-1)^3 \\ &= -3 - (-1) \\ &= -3 + 1 \\ &= -2 \end{aligned}
+$$
+
+$$
+	\begin{aligned} f(1) &= 3(1) - (1)^3 \\ &= 3 - (1) \\ &= 3 - 1 \\ &= 2 \end{aligned}
+$$
+
+</Grid>
+
+Accordingly, we have the critical points:
+
+$$
+	(-1, -2)\\(1, 2)
+$$
+
+Plotting these points on a graph:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656697905/math/curve_sketch_2_d4tfrl.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"Second attempt at a sketch"}
+	width={"30"}
+/>
+
+Now, from our earlier sketch:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656697807/math/curve_sketch_1_vcuwhn.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"Our earlier first attempt."}
+	width={"30"}
+/>
+
+we know that at the point ${x = -1,}$ we hit ${f' = 0.}$ Before that point
+(x < -1,) ${f}$ is decreasing, and after that point ${(x > -1,)}$ ${f}$ is
+increasing. We also know that at the point ${x = 1,}$ we hit ${f' = 0,}$
+but before that point (${x < 1}$) ${f}$ is increasing, and after that
+point, ${(x > 1),}$ ${f}$ is decreasing. Thus, we know that the graph along
+these points looks like:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656697969/math/curve_sketch_3_zob5rm.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"Third attempt at a sketch."}
+	width={"30"}
+/>
+
+We now continue filling in the gaps. First, it's always a good idea to step
+away from calculus for a moment and revisit the original function, applying
+techniques we learned from basic algebra and precalculus. The original
+function is ${f(x) = 3x - x^3.}$ This tells us that the function's graph
+has the property of crossing the point ${(0,0).}$ We confirm this by
+substituting ${x = 0:}$
+
+$$
+	\begin{aligned} f(0) &= 3(0) - (0)^3 \\ f(0) &= 0 - 0 \\ f(0) &= 0 \end{aligned}
+$$
+
+So, we place that point as well:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698020/math/curve_sketch_4_knuqx6.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"The fourth attempt."}
+	width={"30"}
+/>
+
+Based on these facts alone, we have a wide range of possibilities for what
+this function might look like:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698052/math/curve_sketch_5_h63yq8.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"The fifth attempt."}
+	width={"30"}
+/>
+
+The goal now is to just keep drawing inferences to narrow down the
+possibilities. Looking at the original function, ${f(x) = 3x - x^3,}$ the
+function's equation consists of odd powers, so we know that this ${f}$ is
+an _odd function_. And since ${f}$ is an odd function, we know that the
+graph of ${f}$ is symmetric. Everything that's done on the right is done on
+the left.
+
+Knowing this, the next step is to consider ${f}$'s
+extremeties.[^extremities_note] By this we mean answering the following
+questions:
+
+[^extremities_note]:
+    This consideration is something that we can't perform with graphing
+    calculators. It's essentially asking, What does the graph look like off
+    the graphing calculator's screen?
+
+1. What happens when ${x \to \infty^{+}?}$
+2. What happens when ${x \to \infty^{-}?}$
+
+Let's consider the first question, when ${x}$ goes to positive infinity.
+When ${x}$ is a massive term, then the ${3x}$ term in ${3x - x^3}$ is
+negligible. This implies: When ${x}$ goes to positive infinity, then
+${f(x) = 3x - x^3}$ behaves like ${f(x) = -x^3,}$ which goes to negative
+infinity. Symbolically:
+
+$$
+	\begin{aligned} &\lim\limits_{x \to \infty} (3x - x^3) = \infty^{-} \\ \therefore~~~ & x \to \infty \implies f(x) = 3x - x^3 \sim f(x) = x^3 \end{aligned}
+$$
+
+Next, when ${x}$ goes to negative infinity, then the ${x^3}$ term becomes
+negligble, and ${f(x) = 3x - x^3}$ behaves like ${f(x) = 3x,}$ which tends
+towards positive infinity.
+
+$$
+	\begin{aligned} &\lim\limits_{x \to \infty^{-}} (3x - x^3) = \infty^{+} \\ \therefore~~~ & x \to \infty^{-} \implies f(x) = 3x - x^3 \sim f(x) = 3x \end{aligned}
+$$
+
+This tells us that with ${f(x) = 3x - x^3,}$ the part of the graph before
+the first critical point is pointing up, and the part of the graph after
+the second critical point is pointing down:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698138/math/curve_sketch_6_bg1vte.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"Sixth attempt."}
+	width={"30"}
+/>
+
+At this point, our sketch is getting pretty accurate. All that's left to do
+is to _decorate_. In other words, add more detail. We can do so by
+considering the second derivative:
+
+$$
+	\begin{aligned} f''(x) &= (3 - 3x^2)' \\ &= -6x \end{aligned}
+$$
+
+Examining the expression ${-6x,}$ we know that:
+
+$$
+	\begin{aligned} &x > 0 \implies f'' < 0 \\ &x < 0 \implies f'' > 0 \end{aligned}
+$$
+
+This tells us that:
+
+$$
+	\begin{aligned} &x > 0 \implies f^{\darr} \\ &x < 0 \implies f^{\uparrow} \end{aligned}
+$$
+
+This tells us that where ${x < 0}$, ${f}$ is concave down, and where
+${f > 0,}$ ${f}$ is concave up:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698189/math/curve_sketch_7_tkhmwi.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"Seventh attempt."}
+	width={"30"}
+/>
+
+That's about as complete of a sketch as we can get. Here's the actual graph
+of ${f(x) = 3x - x^3:}$
+
+<Plot data={[{ f: (x) => 3 * x - x ** 3 }]} scale={60} />
+
+That was a pretty accurate sketch. Importantly, the point ${(0,0)}$ is
+where the graph changes from concave up to concave down. We know this
+because ${f''(0) = 0:}$
+
+$$
+	f''(0) = -6(0) = 0
+$$
+
+Because of this special property, this point is called the _inflection
+point_. Let's consider another example. Let's say we want to sketch the
+graph of:
+
+$$
+	f(x) = \dfrac{x + 1}{x + 2}
+$$
+
+The derivative of ${f:}$
+
+$$
+	f'(x) = \dfrac{1}{(x + 2)^2}
+$$
+
+Looking at this derivative, we know that ${f'(x)}$ can never be ${0.}$ In
+other words, ${f'(x) \neq 0.}$ This in turn means that there are only two
+cases for ${f':}$
+
+1. ${f' > 0}$ or
+2. ${f' < 0.}$
+
+This tells us that there are _no critical points_. Why? Because of the
+definition of a critical point: A critical point ${x_0}$ exists if, and
+only if, ${f'(x_0) = 0.}$ And since ${f'(x)}$ can never be ${0,}$ there are
+no points such that ${f'(x_0) = 0.}$
+
+Whenever we encounter a situation like this &mdash; where we still don't
+have enough information after applying calculus &mdash; we want to go back
+to the basics; recall basic algebra and precalculus. Looking at the
+function:
+
+$$
+	f(x) = \dfrac{x+1}{x+2}
+$$
+
+We see that where ${x = -2,}$ ${f}$ is undefined:
+
+$$
+	\begin{aligned} f(-2) &= \dfrac{(-2)+1}{(-2)+2} \\[1em] &= \dfrac{-1}{0} \end{aligned}
+$$
+
+From this deduction, we have the following:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698342/math/rationalSketch_jlzagq.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"Rational sketch attempt 1."}
+	width={"30"}
+/>
+
+By plotting ${x = -2,}$ we effectively impose a border. The function ${f}$
+can never touch that line. The next step, is to answer the following:
+
+> What happens when ${f}$ gets very close to ${x = -2?}$
+
+To answer this question, we keep in mind that there are two possibilities
+for ${f}$ approaching ${x = -2:}$
+
+1. ${f}$ approaches ${x = -2}$ from the right, and
+2. ${f}$ approaches ${x = -2}$ from the left.
+
+When ${f}$ approaches ${x = -2}$ from the right, we write:
+
+$$
+	\large f((-2)^{+})
+$$
+
+And when ${f}$ approaches ${x = -2}$ from the left, we write:
+
+$$
+	\large f((-2)^{-})
+$$
+
+Examining the function, we have the following inferences. When ${f}$
+approaches ${x = -2}$ from the right, we get:
+
+$$
+	f((-2)^{+}) = \dfrac{(-2)^{+}+1}{(-2)^{+}+2} = \dfrac{(-1)^{+}}{(0)^{+}}
+$$
+
+When we write ${(-2)^{+},}$ we mean that it's not quite ${-2.}$ Instead,
+it's just a little more than ${-2,}$ say ${-1.99999.}$ Similarly, when we
+write ${(0)^+,}$ we mean that it's just tiny bit more than ${0.}$ We can
+think of it this way:
+
+$$
+	\dfrac{(-1.9999 \ldots) + 1}{(-1.9999 \ldots) + 2} = \dfrac{-0.9999 \ldots}{0.000 \ldots 0001} = \dfrac{(-1)^{+}}{(0)^{+}}
+$$
+
+In other words, it's some number just a little more than ${-1,}$ divided by
+some number that's just a little more than ${0.}$ This means we have a
+negative number divided by a very, very small positive number. This yields
+negative infinity:
+
+$$
+	\dfrac{(-1)^{+}}{(0)^{+}} = \infty^{-}
+$$
+
+Thus, when ${f}$ approaches ${x = -2}$ from the right, it goes towards
+negative infinity. Next, when ${f}$ approaches ${x = -2}$ from the left, we
+have:
+
+$$
+	f((-2)^{-}) = \dfrac{(-2)^{-}+1}{(-2)^{-}+2} = \dfrac{(-1)^{+}}{(0)^{+}}
+$$
+
+which we can think of as:
+
+$$
+	\dfrac{(-2.000 \ldots 0001 \ldots) + 1}{(-2.000 \ldots 0001 \ldots) + 2} = \dfrac{-1.000 \ldots 0001}{-0.000 \ldots 0001} = \dfrac{(-1)^{+}}{(0)^{-}}
+$$
+
+Here, we have a negative number divided by a very, very small negative
+number. This yields positive infinity:
+
+$$
+	\dfrac{(-1)^{+}}{(0)^{+}} = \infty^{+}
+$$
+
+All together, our analysis yielded several conclusions. When ${f}$
+approaches ${x = -2}$ from the right, it tends towards negative infinity.
+And when ${f}$ approaches ${x = -2}$ from the left, it tends towards
+positive infinity. Symbolically:
+
+1. ${x \to (-2)^{+} \implies f(x) \to \infty^{-}}$
+2. ${x \to (-2)^{-} \implies f(x) \to \infty^{+}}$
+
+Because we have these inferences, we can next consider ${f}$'s extremities
+
+1. What happens when ${x}$ is very large? (i.e., ${x \to \infty^{+}}$)
+2. What happens when ${x}$ is very small? (i.e., ${x \to \infty^{-}}$)
+
+For the first question, we evaluate the limit:
+
+$$
+	\lim\limits_{x \to \infty^{+}} \dfrac{x+1}{x+2}
+$$
+
+This limit is a little difficult to interpret as is, so we rewrite it by
+dividing the numerator and the denominator by ${x:}$
+
+$$
+	\lim\limits_{x \to \infty^{+}} \dfrac{1+ \dfrac{1}{x}}{1+ \dfrac{2}{x}}
+$$
+
+Looking at it this way, we can see that as ${x \to \infty^{+},}$
+${\dfrac{1}{x} \to 0}$ and ${\dfrac{2}{x} \to 0.}$ Thus:
+
+$$
+	\lim\limits_{x \to \infty^{+}} \dfrac{1+ \dfrac{1}{x}}{1+ \dfrac{2}{x}} = \dfrac{1 + 0}{1 + 0} = \dfrac{1}{1} = 1
+$$
+
+Just looking at the rewritten expression, the analysis doesn't change when
+${x}$ tends to negative infinity. We still tend to ${1:}$
+
+$$
+	\lim\limits_{x \to \infty^{-}} \dfrac{1+ \dfrac{1}{x}}{1+ \dfrac{2}{x}} = \dfrac{1 + 0}{1 + 0} = \dfrac{1}{1} = 1
+$$
+
+Thus, we have the following inferences:
+
+1. ${x \to \infty^{+} \implies f(x) \to 1.}$
+2. ${x \to \infty^{-} \implies f(x) \to 1.}$
+
+We can abstract both inferences above as:
+
+$$
+	f(\infty^{\pm}) = 1
+$$
+
+So, putting all of our inferences together, we have:
+
+1. Proposition 1: ${x \to (-2)^{+} \implies f(x) \to \infty^{-}}$
+2. Proposition 2: ${x \to (-2)^{-} \implies f(x) \to \infty^{+}}$
+3. Proposition 3: ${f(\infty^{\pm}) = 1}$
+
+From these propositions, we know that there are two special asymptotes for
+the graph of ${f,}$ namely: ${x = -2}$ and ${y = 1.}$ On a graph:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698512/math/rationalSketch1_md9akw.svg"
+	}
+	imwidth={"262"}
+	imheight={"271"}
+	caption={"Renewed attempt 1"}
+	width={"30"}
+/>
+
+Next, from proposition 1, we know that as we approach ${-2}$ from the
+right, we plunge towards negative infinity:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698548/math/rationalSketch2_vkbda9.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"Second attempt"}
+	width={"30"}
+/>
+
+And from proposition ${2,}$ we know that as we approach ${-2}$ from the
+left, we fly towards positive infinity:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698578/math/rationalSketch3_rs7ywl.svg"
+	}
+	imwidth={"260"}
+	imheight={"271"}
+	caption={"Third attempt"}
+	width={"30"}
+/>
+
+Finally, from proposition ${3,}$ we know that when for very small ${x,}$
+we're tending towards ${y = 1,}$ and for very large ${x,}$ we're also
+tending towards ${y = 1:}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698620/math/rationalSketch4_oewafv.svg"
+	}
+	imwidth={"289"}
+	imheight={"271"}
+	caption={"Fourth attempt"}
+	width={"30"}
+/>
+
+Now we have to consider the missing portions above. The key question is,
+does this graph ever dip into ${y = 1}$ and come back up? The answer is
+
+_no_. Why? Because there are no critical points. If ${f}$ did dip below and
+come back up, we would have a critical point. But we know for a fact that
+there are not. Since ${f' \neq 0,}$ we know that we can never have a
+horizontal tangent line, which means that the the graph of ${f}$ can never
+dip down and come back up. As such, the graph of ${f}$ should look like:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698657/math/rationalSketch5_pefc3n.svg"
+	}
+	imwidth={"267"}
+	imheight={"271"}
+	caption={"Fifth attempt"}
+	width={"30"}
+/>
+
+At this point, we're essentially done, but it's worth doing a few
+double-checks. To do so, we consider the derivatives. First, we rewrite the
+function's expression:
+
+$$
+	f(x) = \dfrac{x+1}{x+2} = \dfrac{x+2-1}{x+2} = 1 - \dfrac{1}{(x+2)}
+$$
+
+The first derivative is now easier to compute:
+
+$$
+	f'(x) = \dfrac{1}{(x+2)^2}
+$$
+
+Examining the first derivative, we easily see that ${f}$ is just a
+hyperbola, so we're correct in sketching a graph consisting of two arms.
+The first derivative also tells us that:
+
+> ${f}$ is increasing on the intervals: ${\infty^- < x < -2,}$ and
+> ${-2 < x < \infty^+}$
+
+It's importat that we specify the interval, because it is _not_ true ${f}$
+is increasing. It's increasing only at a specific point &mdash; where
+${x \neq -2.}$ Next, we consider the second derivative:
+
+$$
+	f''(x) = -\dfrac{2}{(x+2)^3}~~~~(x \neq -2)
+$$
+
+Looking at the second derivative, we can draw the following inferences:
+
+1. ${-2 < x < +\infty \iff f''(x) < 0}$ (concave down)
+2. ${-\infty < x < -2 \iff f''(x) > 0}$ (concave up)
+
+The inferences above tell us that there's no "wiggle" in ${f}$'s graph. In
+other words, it rules out the possibility of one of the arms doing
+something like this:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656698741/math/rationalSketch6_n00xh2.svg"
+	}
+	imwidth={"103"}
+	imheight={"72"}
+	caption={"Possible alternative sketch"}
+	width={"30"}
+/>
+
+And with that, we're done. Here's the actual graph of ${f:}$
+
+<Plot data={[{ f: (x) => 1 - 1 / (x + 2) }]} scale={60} />
+
+Having gone through the examples, here's a general strategy for sketching:
+
+- For basic sketching:
+  1.  Plot any discontinuities (especially infinite discontinuities).
+  2.  Plot the endpoints or where ${x \to \pm \infty.}$
+  3.  Plot any immediate points.
+- For first-derivative-informed sketching:
+  1.  Solve for ${x,}$ where ${f'(x) = 0.}$
+  2.  Plot the resulting critical points and values, if any.
+  3.  Determine whether ${f' < 0}$ or ${f' > 0}$ on each interval between
+      the critical points or discontinuities.
+- Second-derivative-informed sketching:
+  1.  Determine whether ${f'' > 0}$ or ${f'' < 0}$ (concave up or concave
+      down).
+  2.  Solve for ${x,}$ where ${f''(x) = 0.}$
+  3.  Plot the resulting inflection points, if any.

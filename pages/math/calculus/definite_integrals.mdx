@@ -1,0 +1,416 @@
+<Metadata
+	title={'Definite integerals'}
+	description={'Notes on definite integrals'}
+	keywords={'integration'}
+/>
+
+# Definite Integrals
+
+Definite integrals are best introduced by first presenting the problem they
+are intended to solve: Finding the area under a curve. Consider the diagram
+below.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657552845/math/area_under_curve_hc7v7i.svg"
+	}
+	imwidth={"361"}
+	imheight={"246"}
+	caption={"Area under the curve"}
+	width={"60"}
+/>
+
+Here, we're visualizing the graph of some function ${y = f(x).}$ Along the
+graph are some points ${x = a}$ and ${x = b.}$ The area under the curve is
+shaded pink, and is denoted:
+
+$$
+	\int_a^b f(x) ~dx
+$$
+
+The entire expression above is called a **definite integral**. The function
+${f(x)}$ is called the **integrand**, the points ${a}$ and ${b}$ are called
+the **limits** or **bounds** of the integral, and the ${dx,}$ a
+differential, indicates that the variable of integration is ${x.}$ Given
+the bounds ${a}$ and ${b,}$ we say that the integral is over the interval
+${[a, b].}$ The interval ${[a,b]}$ is called the **interval of
+integration**.
+
+To compute the area, we use the following algorithm:
+
+1. Divide the area into rectangles.
+2. Add the areas of the rectangles.
+3. Take the limit as the rectangles get infinitely thin.
+
+For example, suppose we had the following curve:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657552890/math/rectify_1_qambdp.svg"
+	}
+	imwidth={"302"}
+	imheight={"249"}
+	caption={"Initial curve"}
+	width={"30"}
+/>
+
+To find the area beneath the curve over the interval ${[a,b],}$ we start by
+dividing it into rectangles:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657552931/math/rectify_2_tm3aim.svg"
+	}
+	imwidth={"306"}
+	imheight={"249"}
+	caption={"Dividing into rectangles"}
+	width={"30"}
+/>
+
+Notice that some of the rectangles go beyond the curve. If we summate the
+area for each of these rectangles as is, the area under the curve would be
+over the actual area. This is where taking the limit comes in. If we make
+the rectangles thinner, we reduce any over and under estimation:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657552967/math/rectify_3_hcyucu.svg"
+	}
+	imwidth={"306"}
+	imheight={"249"}
+	caption={"Dividing into thinner rectangles"}
+	width={"30"}
+/>
+
+At some point, the rectangles are so infinitesimally thin that any excess
+area is neglibile. With this idea in mind, let's consider an example. Say
+we had the function:
+
+$$
+	f(x) = x^2
+$$
+
+We'll start at ${a = 0}$ and let ${b}$ be arbitrary. Visualizing the area
+beneath the curve as consisting of rectangles:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657553009/math/riemann_sum_parabola_epfco6.svg"
+	}
+	imwidth={"259"}
+	imheight={"215"}
+	caption={"Notice the rectangles"}
+	width={"50"}
+/>
+
+Suppose there are ${n}$ rectangles. We know that the area of rectangle is
+given by the formula:
+
+$$
+	A_r = b \cdot h
+$$
+
+If there are ${n}$ rectangles, then the base length is given by:
+
+$$
+	\dfrac{b}{n}
+$$
+
+Because the base has a length ${b/n,}$ we can determine the height by
+passing ${b/n}$ into the function:
+
+| ${x}$             | ${f(x)}$                             |
+| ----------------- | ------------------------------------ |
+| ${\dfrac{b}{n}}$  | ${ \left( \dfrac{b}{n} \right)^2 }$  |
+| ${\dfrac{2b}{n}}$ | ${ \left( \dfrac{2b}{n} \right)^2 }$ |
+| ${\dfrac{3b}{n}}$ | ${ \left( \dfrac{3b}{n} \right)^2 }$ |
+| ${\vdots}$        | ${\vdots}$                           |
+
+The sum of the areas is thus:
+
+$$
+	\left( \dfrac{b}{n} \right) \left( \dfrac{b}{n} \right)^2 + \left( \dfrac{b}{n} \right) \left( \dfrac{2b}{n} \right)^2 + \left( \dfrac{b}{n} \right) \left( \dfrac{3b}{n} \right)^2 + \ldots + \left( \dfrac{b}{n} \right) \left( \dfrac{nb}{n} \right)^2
+$$
+
+Notice the pattern of the terms. The coefficients go ${1,}$ ${2,}$ ${3,}$
+and so on, up to ${n.}$ The formula reduces to:
+
+$$
+	\left( \dfrac{b}{n} \right)^3 \left( 1 + 2^2 + 3^2 + \ldots + n^2 \right)
+$$
+
+Just to ensure the pattern is clear, we'll write ${1}$ as ${1^2:}$
+
+$$
+	\left( \dfrac{b}{n} \right)^3 \left( 1^2 + 2^2 + 3^2 + \ldots + n^2 \right)
+$$
+
+Question: How big is this quantity:
+
+$$
+	1^2 + 2^2 + 3^2 + \ldots + n^2
+$$
+
+Since we're working with rectangles, a good starting point is to try and
+build a pyramid with a base of ${n \times n.}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657553074/math/pyramid_riemann_sum_q4db4a.svg"
+	}
+	imwidth={"530"}
+	imheight={"248"}
+	caption={"Initial pyramid"}
+	width={"50"}
+/>
+
+In the diagram above, we have two views of the pyramid, a top view and a profile
+view. In the profile view, the slope of the dashed red line is ${2.}$ It follows
+that the next layer is ${(n-1) \times (n-1).}$ This means the total number of
+blocks at the base is ${n^2,}$ the rightmost term in our long expression:
+
+$$
+	1^2 + 2^2 + 3^2 + \ldots + \textcolor{salmon}{n^2}
+$$
+
+If we examine the term a little closer, we see that the term before
+${n^2}$ is ${(n-1)^2:}$
+
+$$
+	1^2 + 2^2 + 3^2 + \ldots + \textcolor{salmon}{(n-1)^2} + n^2
+$$
+
+Corresponding to the total number of blocks for the next layer,
+${(n-1)^2.}$ The volume of a pyramid with a base of side lengths ${n}$ and
+a height of ${n}$ is given by the formula:
+
+$$
+	V_p = \dfrac{1}{3}n^2 \cdot n = \dfrac{1}{3} n^3
+$$
+
+This tells us the following fact:
+
+$$
+	\textcolor{salmon}{\dfrac{1}{3}n^3} < 1^2 + 2^2 + 3^2 + \ldots + (n-1)^2 + n^2
+$$
+
+This new fact (in red) corresponds to the inner pyrmaid, and in turn
+corresponds to a lower bound. We can also capture the outer upper bound
+(the volume of the pyramid denoted by the green dashed line in the diagram)
+with the formula:
+
+$$
+	\dfrac{1}{3}(n+1)^2(n+1)
+$$
+
+Thus, we have:
+
+$$
+	\textcolor{salmon}{\dfrac{1}{3}n^3} < 1^2 + 2^2 + 3^2 + \ldots + (n-1)^2 + n^2 < \textcolor{green}{\dfrac{1}{3}(n+1)^3}
+$$
+
+At this point, we're ready to take the limit. The original expression:
+
+$$
+	\left( \dfrac{b}{n} \right)^3 \left( 1 + 2^2 + 3^2 + \ldots + n^2 \right)
+$$
+
+We want to rewrite this expression as:
+
+$$
+	b^3 \left( \dfrac{1^2 + 2^2 + \ldots + n^2}{n^3} \right)
+$$
+
+Going back to our inequality, we divide by ${n^3:}$
+
+$$
+	\dfrac{\textcolor{salmon}{\dfrac{1}{3}n^3}}{n^3} < \dfrac{1^2 + 2^2 + 3^2 + \ldots + (n-1)^2 + n^2}{n^3} < \dfrac{\textcolor{green}{\dfrac{1}{3}(n+1)^3}}{n^3}
+$$
+
+Reducing, we get:
+
+$$
+	\dfrac{1}{3} < \dfrac{1^2 + 2^2 + 3^2 + \ldots + n^2}{n^3} < \dfrac{1}{3} \left( 1 + \dfrac{1}{n} \right)^3
+$$
+
+As ${n}$ goes to infinity, we see that:
+
+$$
+	\dfrac{1}{3} < \dfrac{1^2 + 2^2 + 3^2 + \ldots + n^2}{n^3} < \dfrac{1}{3} \left( 1 + \cancel{\dfrac{1}{n}}^{n \to \infty \implies 0} \right)^3
+$$
+
+Hence:
+
+$$
+	\dfrac{1}{3} < \dfrac{1^2 + 2^2 + 3^2 + \ldots + n^2}{n^3} < \dfrac{1}{3}
+$$
+
+It follows that the total area under ${x^2}$ is:
+
+$$
+	\int_0^b x^2~dx = \dfrac{1}{3}b^3
+$$
+
+The graph of ${f(x) = x^2:}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657553120/math/integral_parabola_r8bxxk.svg"
+	}
+	imwidth={"259"}
+	imheight={"215"}
+	caption={"Integral of a parabola"}
+	width={"50"}
+/>
+
+## Summation Notation
+
+With our first example done, we introduce another new bit of notation.
+Writing:
+
+$$
+	1 + 2 + 3 + \ldots + n
+$$
+
+is tedious. Accordingly, mathematicians use **summation notation** to
+express the idea of summing the terms in a sequence of numbers:
+
+$$
+	\sum\limits_{i = 1}^{n} a_i = a_1 + a_2 + \ldots + a_n
+$$
+
+Thus, the inequality:
+
+$$
+	\dfrac{1}{3} < \dfrac{1^2 + 2^2 + 3^2 + \ldots + n^2}{n^3} < \dfrac{1}{3} \left( 1 + \dfrac{1}{n} \right)^3
+$$
+
+can be more concisely written as:
+
+$$
+	\dfrac{1}{3} < \dfrac{1}{n^3} \sum\limits_{i = 1}^{n} i^2 < \dfrac{1}{3} \left( 1 + \dfrac{1}{n} \right)^3
+$$
+
+What we showed, then, was that:
+
+$$
+	\lim\limits_{n \to \infty} \dfrac{1}{n^3} \sum\limits_{i = 1}^{n} i^2 = \dfrac{1}{3}
+$$
+
+Similarly, we can write the expression:
+
+$$
+	\left( \dfrac{b}{n} \right) \left( \dfrac{b}{n} \right)^2 + \left( \dfrac{b}{n} \right) \left( \dfrac{2b}{n} \right)^2 + \ldots + \left( \dfrac{b}{n} \right) \left( \dfrac{nb}{n} \right)^2
+$$
+
+as:
+
+$$
+	\sum\limits_{i = 1}^{n} \dfrac{b}{n} \left( \dfrac{ib}{n} \right)^2
+$$
+
+This yields the expression:
+
+$$
+	\begin{aligned} \sum\limits_{i = 1}^{n} \dfrac{b}{n} \left( \dfrac{ib}{n} \right)^2 = \dfrac{b^3}{n^3} \sum\limits_{i = 1}^{n} i^2 \end{aligned}
+$$
+
+Let's consider another example: ${f(x) = x.}$ This function is fairly
+straightforward in terms of a graph:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657553165/math/f_equals_x_oqe0de.svg"
+	}
+	imwidth={"259"}
+	imheight={"216"}
+	caption={"Integral of a simple function"}
+	width={"50"}
+/>
+
+From the graph above, we see that the area beneath the curve is a triangle,
+with sides of length ${b.}$ The area is thus:
+
+$$
+	A = \dfrac{1}{2} b \cdot h = \dfrac{1}{2}b^2
+$$
+
+Notice that we didn't have to do any of the complex calculations we saw
+previously. There is, however, an even simpler example: ${f(x) = 1.}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1657553206/math/f_equals_1_xebbrl.svg"
+	}
+	imwidth={"259"}
+	imheight={"215"}
+	caption={"Integral of another simple function"}
+	width={"50"}
+/>
+
+The area is simply:
+
+$$
+	A = b \cdot h = b \cdot 1 = b
+$$
+
+With these simpler examples, we now have enough to see a pattern:
+
+| ${f(x)}$ | ${\int_0^b f(x)~dx}$ |
+| -------- | -------------------- |
+| ${x^2}$  | ${\dfrac{b^3}{3}}$   |
+| ${x}$    | ${\dfrac{b^2}{2}}$   |
+| ${1}$    | ${b}$                |
+
+Perhaps the pattern isn't so obvious. Let's rewrite the functions with
+powers:
+
+| ${f(x)}$ | ${\int_0^b f(x)~dx}$ |
+| -------- | -------------------- |
+| ${x^2}$  | ${\dfrac{b^3}{3}}$   |
+| ${x^1}$  | ${\dfrac{b^2}{2}}$   |
+| ${x^0}$  | ${\dfrac{b^1}{1}}$   |
+
+Examining this pattern, we might reasonably guess that:
+
+$$
+	\int_0^b x^3~dx = \dfrac{b^4}{4}
+$$
+
+In a later section, we'll see that this guess is correct.
+
+## Summation and Integration
+
+To put things in perspective, let's take a step back and look at the
+relationship between summation and integration from a high-level view. First,
+integration, in the crudest terms, is just "fancy addition." We're trying to
+find a sum, but instead of having all of the terms in front of us, we're given a
+formula for where those terms live. We call it "fancy addition" because we're
+doing a bit more work to get the sum. In fact, to reinforce this idea even
+further, the integral symbol:
+
+$$
+	\Large \int
+$$
+
+is actually called a _medial s_ (or _long s_), and it was how Medieval writers
+in continental Europe wrote the letter 's'. The 's', as we might have guessed by
+now, stands for "summa," the Latin word for "sum." Who chose this symbol? None
+other than the notation wizard himself — Gottfried Leibniz.
+
+Once we view integration this way, we realize that summation and
+integration are simply two sides of the same coin:
+
+<Grid cols={2}>
+
+$$
+	\Large \lim_{n \to \infty} \sum_{i=1}^n f(x_i) \Delta x
+$$
+
+$$
+	\Large \int_{a}^{b} f(x) ~dx
+$$
+
+</Grid>
+
+Summation reveals the discrete side, and integration the continous.

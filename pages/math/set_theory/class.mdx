@@ -1,0 +1,167 @@
+<Metadata
+	title={'Classes'}
+	description={'Notes on axiomatic set theory.'}
+	keywords={'set theory'}
+/>
+
+# Classes
+
+The chapter covers notes on classes. The materials assume having read the
+previous sections on [relations](relations).
+
+<div className="outline">
+
+1. [Objects and Collections](#objects-and-collections)
+2. [Russell's Paradox](#russells-paradox)
+3. [Classes](#classes)
+
+</div>
+
+## Objects and Collections 
+
+Recall that we defined a _set_ as follows:
+
+<dfn>
+
+__set.__ A _set_ is a collection of objects, where each object in the set is
+called a _member_ or _element_ of the set. If an object ${x}$ is an element of
+the set ${X,}$ we write:
+
+$$
+	x \in X
+$$
+
+</dfn>
+
+Generally, the word _object_ refers to some mathematical object. E.g., the
+number ${1}$ or ${\pi.}$ We can think of a _collection_ of these objects as
+essentially a pile of the objects; a box where we place all of the objects.
+
+Collections, as we can likely tell by now, are also _objects_. This leads to a
+few big problems. Let's examine some of them.
+
+## Russell's Paradox
+
+The first big problem is _Russell's paradox_, named after the British
+philosopher Bertrand Russell (1872-1970). When Russell first heard of Cantor's
+notion of sets, he joined an ambitious project to ground all of mathematics in
+set theory. To Russell, and many other logicians, it seemed as if set theory
+is what would ground all of mathematics. For example, the equation:
+
+$$
+	x + 1 = 0
+$$
+
+is just another way of expressing the set:
+
+$$
+	\set{x \in \RR : x = -1}
+$$
+
+or simply:
+
+$$
+	\set{-1}
+$$
+
+Likewise, the statement:
+
+> ${x}$ is a natural number between 0 and 3, inclusive.
+
+Could be expressed as:
+
+$$
+	\set{x \in \NN: 0 \leq x \leq 3}
+$$
+
+or simply:
+
+$$
+	\set{0,1,2,3}
+$$
+
+Thus, it seemd as if we could describe any object in mathematics in the form:
+
+$$
+	\set{\sf{x}:\sf{x}\tt{ has property }\sf{P}}
+$$
+
+or, more concisely:
+
+$$
+	\set{\sf{x} : \sf{P(x)}}
+$$
+
+At some point, however, Russell ran into a problem: Sets are also objects.
+This means that given a set ${X,}$ there's nothing stopping ${X}$ from being a
+member of itself:
+
+$$
+	X = \set{X : \tt{${X}$ is a set and ${X}$ has at least one element}}
+$$
+
+Staring at this statement, Russell defined another set (called _Russell's set_):
+
+<dfn>
+
+__russell's set.__ Russell's set ${\Rr}$ is defined as the set
+
+$$
+	\Rr = \set{\Rr : \tt{${\Rr}$ is a set and ${\Rr}$ is not an element of
+	itself}}.
+$$
+
+</dfn>
+
+
+
+Russell then asked a question: Is ${\Rr}$ an element of itself? Well, there are
+two cases: (1) Either ${\Rr}$ is an element of itself, or (2) ${\Rr}$ is not an
+element of itself. Let's consider these two cases.
+
+__Case (1).__ If ${\Rr}$ is an element of itself, then ${\Rr}$ is in ${\Rr}.$
+But that can't be true, because ${\Rr}$ is not an element of itself by
+definition.  So, case 2 has to be true. Let's look at that case.
+
+__Case (2).__ If ${\Rr}$ is not an element of itself, then great! We satisfy the
+definition. But there's a problem. Because of set theory's axiom of extension,
+the set ${\Rr}$ is, by definition, the set of all elements that are:
+
+1. sets, and
+2. not elements of themselves.
+
+And since ${\Rr}$ is a set, and not an element of itself, it must be a member of
+${\Rr.}$ Which means that ${\Rr}$ is an element itself ... Wait, we just said
+that's false! This conundrum is called _Russell's paradox_.
+
+<dfn>
+
+__russell's paradox.__ Let ${x}$ be a set. Then:
+
+$$
+	x \in x \iff x \notin x
+$$
+
+</dfn>
+
+## Classes
+
+What Russell's paradox demonstrates the following conclusion:
+
+> All sets are collections, but not all collections are sets. 
+
+One such set is Russell's set ${\Rr.}$ Because of these sets, the set theorists
+introduced a new kind of collection, called the _class_.
+
+<dfn>
+
+__class.__ A _class_ is a collection of sets, where each set can be described in
+a given language.
+
+</dfn>
+
+For now, we'll simply think of classes as collections of sets (not that the word
+_collection_ is very important — we can't define it as a "set of sets"). We'll
+also adopt the convention that all sets are classes (but not all classes are
+sets). Thus, whenever we use the word class, we mean a collection of sets.  
+

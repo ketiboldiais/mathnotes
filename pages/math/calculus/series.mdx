@@ -1,0 +1,34 @@
+import { Graph } from "../../../components/hago";
+
+# Series
+
+This article covers notes on sums and series — a natural extension of the
+fundamental theorem of calculus (FTC). As we saw, FTC tells us that we can
+define functions as integrals. However, recall that integrals are also
+expressions of adding up increasingly small rectangles. Accordingly,
+integrals also provide a way of expressing cumulative sums, or **series**.
+And where else have we seen series? Sequences. This presents some
+interesting connections:
+
+<Graph
+	data={[
+		["functions", "integrals"],
+		["derivatives", "functions"],
+		["derivatives", "integrals"],
+		["antiderivatives", "functions"],
+		["antiderivatives", "integrals"],
+		["antiderivatives", "derivatives"],
+		["derivatives", "antiderivatives"],
+		["series", "integrals"],
+		["sequences", "series"],
+	]}
+	textOffsetX={5}
+	textOffsetY={-10}
+	radius={5}
+	blast={60}
+	scale={40}
+	width={300}
+	height={300}
+	straightEdge={false}
+/>
+

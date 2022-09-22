@@ -1,0 +1,483 @@
+<Metadata
+	title={"Limits"}
+	description={"Notes on limits"}
+	keywords={"calculus, limits, precalculus"}
+/>
+
+# Limits
+
+<div className="outline">
+
+1. [What Is a Limit?](#what-is-a-limit)
+2. [Limits & Continuity](#limits--continuity)
+3. [Introduction to Continuity](#introduction-to-continuity)
+4. [Introduction to Discontinuity](#introduction-to-discontinuity)
+5. [Differentiability Implies Continuity](#differentiability-implies-continuity)
+
+</div>
+
+In this article, we discuss the concept of a limit, and its relationship to
+contintuity and discontinuity. The earliest evidence of the concept of a
+limit dates to the 3 B.C. to measure volumes of spheres. Archimedes of
+Syracuse posultated that if you could carve the spheres into smaller pieces
+and approximated the volumes of those pieces, then increasing the number of
+pieces would return the volume of the overall sphere (i.e., the limit of
+the sum of the smaller pieces).
+
+## What Is a Limit?
+
+Here is one definition of a limit:
+
+> _Definition: Limit_. Let ${f}$ be a function defined in an open interval
+> around ${x = a.}$ ${f(a)}$ need not be defined. The number ${l}$ is the
+> limit of ${f}$ as ${x}$ approaches ${a,}$ iff: For any value
+> ${\epsilon > 0,}$ there exists a corresponding value ${\sigma > 0,}$ such
+> that ${0 < \lvert x - a \rvert < \sigma}$ ensures
+> ${\lvert f(x) - l < \epsilon \rvert. }$ We write
+> ${\lim\limits_{x \to a} f(x) = l}$ to denote "The limit of ${f}$ as ${x}$
+> approaches ${a,}$ is ${l.}$"
+
+This is a massive definition, and it's fairly complicated. We state it here
+to be comprehensive, but we won't delve too deeply into it for now.
+Instead, we will think of the limit as a tool that allows us to find the
+slope of a curve at any given point along the curve. Recall that earlier,
+we saw how the limit allows us to find the slope of the tangent line. The
+procedure of finding that slope is the method of differentiation. In later
+sections, we will determine how to find the area under a curve. This
+procedure is called the method of integration. Both methods cannot be done
+with algebra alone. We need limits.
+
+Limits are what allow us to go from the secant line, an approximation of
+the slope at a given point, to the tangent line, a much better
+approximation. The diagram below is a static representation of this
+process. We start with some line ${\overleftrightarrow{\rm pq_7}.}$ ${p}$
+remains fixed, but as we get closer and closer to ${p,}$ (going from
+${q_7}$ towards ${q_1,}$) the approximation gets better and better, until
+we eventually get to something that looks very much like a tangent line.
+The end result: A secant line so close to a tangent line that the
+difference is negligable:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655819641/math/limit1_kaekk2.svg"
+	}
+	caption={"Secant and tangent line"}
+	width={"40"}
+	imwidth={"276"}
+	imheight={"259"}
+/>
+
+A crucial point that cannot be overstated: We never actually get to the
+point ${p.}$ We can get very close, but we never get there. This is because
+our application of the limit is restricted to the secant line. That was our
+starting premise. Without the secant line, the argument is nonsensical. And
+to have a secant line, we need two points. If we arrive at ${p,}$ we no
+longer have two points. Without two points, there is no secant line, and
+without a secant line, the argument falls apart. We never — never — get to
+the point ${p.}$
+
+The idea of the limit (specifically the limit of some value ${x}$ moving
+closer and closer to ${0}$) represents this process of bring some point
+${q}$ closer and closer and closer to ${p.}$ Bring ${q}$ closer and closer
+to ${p}$ is just another way of saying that the distance between ${p}$ and
+${q}$ gets smaller and smaller. Thus, that value ${x}$ that's moving closer
+and closer to ${0}$ is the distance between ${p}$ and ${q.}$
+
+Limits can be investigated through algebraic manipulation; we can treat
+them as terms in and of themselves. This is done through the limit laws:
+
+> Axiom. Where ${a, x, C \in \RR}$:
+>
+> - ${\lim\limits_{x \to a}x = a}$
+> - ${\lim\limits_{x \to a} C = C}$
+
+For example, ${\lim\limits_{x \to 0}5 = 5,}$
+${\lim\limits_{x \to \pi} x = \pi.}$ We then have the following limit laws:
+
+> _Limit Laws_. Suppose ${f(x)}$ and ${g(x)}$ are functions defined for all
+> ${x \neq a}$ over some open interval containing ${a,}$ where
+> ${a \in \RR.}$ Further suppose ${L, M \in \RR,}$ where
+> ${L = \lim\limits_{x \to a}f(x)}$ and ${M = \lim\limits_{x \to a}g(x).}$
+> Finally, suppose ${C}$ is a constant. The following laws hold:
+>
+> 1. _Limit Constant Multiple Law_.
+>    ${\lim\limits_{x \to a}C f(x) = C \cdot \lim\limits_{x \to a}f(x) = cL}$
+> 2. _Limit Sum Law_.
+>    ${\lim\limits_{x \to a}[f(x) + g(x)] = \lim\limits_{x \to a}f(x) + \lim\limits_{x \to a}g(x) = L + M}$
+> 3. _Limit Difference Law_.
+>    ${\lim\limits_{x \to a}[f(x) - g(x)] = \lim\limits_{x \to a}f(x) - \lim\limits_{x \to a}g(x) = L - M}$
+> 4. _Limit Product Law_.
+>    ${\lim\limits_{x \to a}[f(x) \cdot g(x)] = \lim\limits_{x \to a} f(x) \cdot \lim\limits_{x \to a}g(x) = L \cdot M}$
+> 5. _Limit Quotient Law_.
+>    ${\lim\limits_{x \to a} \dfrac{f(x)}{g(x)} = \dfrac{\lim\limits_{x \to a}f(x)}{\lim\limits_{x \to a}g(x)} = \dfrac{L}{M},}$
+>    provided ${M \neq 0}$
+> 6. _Limit Power Law_.
+>    ${\lim\limits_{x \to a}[f(x)]^n = \left( \lim\limits_{x \to a} f(x) \right)^n = L^n,}$
+>    for all ${n \in \NN.}$
+> 7. _Limit Root Law_.
+>    ${\lim\limits_{x \to a}\sqrt[n]{f(x)} = \sqrt[n]{\lim\limits_{x \to a} f(x)} = \sqrt[n]{L};}$
+>    if ${n}$ is odd, for all ${L,}$ if ${n}$ is even, for all
+>    ${L \geq 0,}$ and for all ${f(x) \geq 0.}$
+
+## Limits & Continuity
+
+In this section, we tie limits to continuity. So far, we've been using
+these ideas somewhat sloppily. To make best use of these concepts, we must
+subject them to more rigorous treatment. As a first step, let's define a
+limit informally.
+
+Suppose we have a function, ${f(x).}$ If we can get ${f(x)}$ as close as
+possible to some real number ${A}$ by making ${x}$ as close as possible,
+but not equal, to some real number ${a,}$ then we say that ${f(x)}$ has a
+limit of ${A}$ as ${x}$ approaches ${a.}$ We denote this proposition with
+the notation:
+
+$$
+	\lim\limits_{x \to a} f(x) = A
+$$
+
+In turn, when we write ${\lim\limits_{x \to a} f(x) = A,}$ we say that
+${f(x)}$ converges to ${A}$ as ${x}$ approaches ${a.}$ Some limits are
+relatively easy to compute. We just have to substitute:
+
+$$
+	\lim\limits_{x \to 2} \dfrac{x^2 + 3}{x + 1} = \dfrac{(2)^2 + 3}{(2) + 1} = \dfrac{4 + 3}{3} = \dfrac{7}{3}
+$$
+
+Usually, derivatives are harder to compute than simple limits. This is
+because we are computing the limit of a quotient that takes functions as
+inputs:
+
+$$
+	\lim\limits_{x \to _0} \dfrac{f(x_0 + \Delta x) - f(x_0) }{x - x_0}
+$$
+
+This is a good example of how framing, or rewriting, propositions and
+expressions can dramatically change a problem. Here's an interesting point:
+If we suppose ${x = x_0,}$ then we always get ${\frac{0}{0}.}$ And as we
+know, ${\frac{0}{0}}$ is something we do not want in continuous
+mathematics. In other words, the assumption ${x = x_0}$ doesn't work in the
+context of the difference quotient. Because of this issue, we must always
+have some form of cancellation, or simplification, of the difference
+quotient.
+
+To better understand limits, we need a few more pieces of notation. The
+expression:
+
+$$
+	\lim\limits_{x \to x_0^+} f(x)
+$$
+
+is called the _right-hand limit_. The right-hand limit expresses two
+propositions:
+
+1. ${x}$ is approaching ${x_0,}$ and
+2. ${x > x_0}$
+
+In other words, "${x}$ is approaching ${x_0}$ from the right" (hence, the
+"right-hand limit"). Since ${x > x_0,}$ the two propositions allow us to
+infer that ${x}$ is getting smaller and smaller. In contrast, the
+expression:
+
+$$
+	\lim\limits_{x \to x_0^-} f(x)
+$$
+
+is called the _left-hand limit_. The left-hand limit expresses two
+propositions:
+
+1. ${x}$ is approaching ${x_0}$ and
+2. ${x < x_0}$
+
+Thus, the notation encapsulates the statement, "${x}$ is approaching
+${x_0}$ from the left." Since ${x < 0,}$ this statement implies that ${x}$
+is getting bigger and bigger.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655819800/math/left_and_right_limits_f0iucw.svg"
+	}
+	imwidth={"531"}
+	imheight={"78"}
+	caption={"Left and right hand limits"}
+	width={"50"}
+/>
+
+The left- and right-hand limits are the component propositions of
+${\lim\limits_{x \to x_0} f(x).}$ More formally:
+
+> __definition__. $$ \lim\limits*{x \to x_0} f(x) = L \implies \begin{cases}
+> &\lim\limits*{x \to x*0^-} f(x) = L \\ \\ &\land \\ \\ &\lim\limits*{x
+> \to x_0^+} f(x) = L \end{cases} $$
+
+Notice the direction of the implication. It only goes one way. This is
+because the fact that there are left- and right-hand limits does not imply
+that there is a general limit. However, the fact that there is a general
+limit implies that there are left- and right-hand limits. As we will see
+with infinite discontinuities, a function can have left- and right-hand
+limits without having a general limit.
+
+Having these two notations allows us to decompose difficult limits. Instead
+of trying to tackle the limit by thinking of it all at once, we divide it
+into two parts, (1) the limit from the left, and (2) the limit from the
+right. Limits for piecewise functions are the most likely contenders for
+difficult computation:
+
+$$
+	f(x) = \begin{cases} x + 1 &x > 0 \\[1em] -x + 2 &x < 0 \end{cases}
+$$
+
+Graphically, this function looks like:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655819845/math/piecewise1_am0phm.svg"
+	}
+	imwidth={"259"}
+	imheight={"215"}
+	caption={"Piecewise Function"}
+	width={"40"}
+/>
+
+What is the limit of ${f(x)?}$ The notation we just covered is helpful:
+
+$$
+	\lim\limits_{x \to 0^+} f(x) = \lim\limits_{x \to 0} (x + 1) = 1 \\
+	\lim\limits_{x \to 0^-} f(x) = \lim\limits_{x \to 0} (-x + 2) = 2
+$$
+
+Notice that we did not use ${x = 0}$ as a value.
+
+## Introduction to Continuity
+
+Having elaborated further on limits, we now address the concept of
+continuity. To begin, recall that functions come in various shapes and
+sizes. For example, some functions continue forever. Functions like
+${y = e^x,}$ ${y = \sqrt{x},}$ ${y = \ln x,}$ and the trigonometric
+functions like ${\sin x}$ continue indefinitely. In contrast, there are
+functions that have a "hole" along their graph, like
+${f(x) = \dfrac{x^2 - 1}{x - 1}.}$ Finally, there are functions with two or
+more branches which are not connected. E.g., ${f(x) = \dfrac{1}{x}.}$
+
+We now formalize this phenomenon.
+
+> __definition__. If and only if ${f}$ is continuous at ${x_0,}$ then the
+> limit of ${f(x)}$ as ${x}$ approaches 0 is equal to ${f(x_0).}$
+
+In other words:
+
+> ${f(x)}$ is continuous at ${x_0}$ > >
+> ${\iff \lim\limits_{x \to x_0} f(x) = f(x_0)}$
+
+Functions that continue indefinitely, without any holes, are said to be
+continuous. More specifically, we say that such functions are "continuous
+on its whole domain." If a function ${f}$ is not continous — i.e., does not
+continue indefinitely given its domain — then are three possibilities: (1)
+${f}$ is not continuous at some value (a hole in the function's graph); (2)
+${f}$ is discontinuous at some value (a "jump" in ${f}$'s graph'); or (3)
+${f}$ has a discontinuity at some value (a "break" in the ${f}$'s graph,
+such as a vertical asymptote'). We will explore these possibilities in the
+next section.
+
+Our definition for continuity contains numerous propositions. When we say,
+"${f}$ is continuous at ${x_0}$" we imply:
+
+> ${\lim\limits_{x \to x_0} f(x)}$ exists.
+
+The proposition above then implies:
+
+> ${\lim\limits_{x \to x_0^+} f(x)}$ exists
+> ${\lim\limits_{x \to x_0^-} f(x)}$ exists
+
+I.e., that there are left- and right-hand limits for ${f(x).}$ Moreover,
+continuity implies that these the left- and right-hand limits are the same.
+Furthermore, continuity implies that ${f(x_0)}$ is defined. There can never
+be continuity if ${f(x_0)}$ is undefined. This is why understanding a
+function's domain is critical.
+
+To summarize, to prove a function ${f}$ is continuous at ${x = a}$ we must
+prove that the following propositions are true:
+
+- ${f(a)}$ is defined
+- ${\lim\limits_{x \to a} f(x)}$ exists
+- ${f(a) = \lim\limits_{x \to a} f(x)}$
+
+We should be very clear about defining continuity. When we say that
+${f(x_0)}$ is continuous, we are implying that:
+
+> ${\lim\limits_{x \to x_0} f(x) = f(x_0)}$
+
+The left and right-hand side of the equation above are completely
+independent. At no point is ${x = x_0.}$ In fact, ${x \neq x_0.}$ The limit
+is intended to express what happens when ${f}$ is close to ${x_0.}$
+Earlier, we said that some limits are easy, in that we can just substitute
+values. The limit above is the opposite. These are the kinds of limits that
+are more difficult, in that we cannot simply just substitute values.
+
+The expression ${f(x_0)}$ is the result of an "easy limit" — the kind of
+limit where we can simply substitute. The other expression,
+${\lim\limits_{x \to x_0} f(x)}$ are the more difficult limits. The ones
+where we cannot just use substitution. Instead,
+${\lim\limits_{x \to x_0} f(x)}$ is the kind of limit where we must
+decompose the limit into its left- and right-hand sides or find some form
+of cancellation, then determine whether they are equivalent to ${f(x_0.)}$
+
+## Introduction to Discontinuity
+
+As stated earlier, not all functions are continuous; some functions are
+discontinuous, or discontinuous at certain points. Accordingly, we should
+address these functions briefly. To recap, there if a function is not
+continuous, there are possibilities: (1) The function ${f}$ is not
+continuous at some value (e.g., a hole); (2) the function ${f}$ is
+discontinuous at some some value (e.g., a jump); or (3) the function has a
+discontinuity at some value (e.g., a vertical asymptote). More formally:
+
+For some functions, we can remove these discontinuities. For others, we
+cannot. Formally:
+
+> __definition__. Suppose ${f}$ is a function discontinuous at ${x = a.}$ If
+> ${\lim\limits_{x \to a} f(x)}$ exists, then ${f}$ has a removable
+> discontinuity at ${x = a.}$ Else, ${f}$ has an essential discontinuity at
+> ${x = a.}$
+
+Discontinuity comes in various forms. The first such form we explore are
+the jump discontinuities. A jump discontinuity occurs when both left- and
+right-hand limits exist, but are not equal.
+
+> _Definition: Jump Discontinuity_. A jump discontinuity exists if and only
+> if:
+>
+> 1. ${\exists \lim\limits_{x \to x_0^-} f(x),}$
+> 2. ${\exists \lim\limits_{x \to x_0^+} f(x),}$ and
+> 3. ${\lim\limits_{x \to x_0^-} f(x) \neq \lim\limits_{x \to x_0^+} f(x)}$
+
+The piecewise function we saw earlier is an example of a function with a
+jump discontinuity. One limit was 1, the other limit was 2.
+
+Another form of discontinuity is the removable discontinuity. In a function
+with a removable discontinuity, the left- and right-hand limits are equal,
+but there is some hole, or gap, in the function's graph. For example:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655819904/math/removable_discontinuity_nhnaxw.svg"
+	}
+	imwidth={"330"}
+	imheight={"255"}
+	caption={"Removable discontinuity"}
+	width={"50"}
+/>
+
+Consider, for example, the following functions:
+
+- ${g(x) = \dfrac{\sin x}{x}}$
+- ${h(x) = \dfrac{1 - \cos x}{x}}$
+
+Notice that ${g(0)}$ is undefined. It turns out, however, that ${g(x)}$ has
+a removable discontinuity:
+
+$$
+	\lim\limits_{x \to 0} \dfrac{\sin x}{x} = 1
+$$
+
+Similarly, ${h(0)}$ is also undefined, and ${h}$ also has a removable
+discontinuity:
+
+$$
+	\lim\limits_{x \to 0} \dfrac{1 - \cos x}{x} = 0
+$$
+
+Based on these facts, we say that ${g(x) = \dfrac{\sin x}{x}}$ and
+${h(x) = \dfrac{1 - \cos x}{x}}$ have removable discontinuities at
+${x = 0.}$ The two facts above will be used extensively in later sections
+when we handle the derivatives of trigonometric functions.
+
+The third form of a discontinuity is the infinite discontinuity. Consider
+the function ${f(x) = 1/x.}$ Its graph appears as:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655819944/math/infinite_discontinuity_c2ijri.svg"
+	}
+	imwidth={"261"}
+	imheight={"235"}
+	caption={"Infinite discontinuity"}
+	width={"40"}
+/>
+
+Viewing this graph, ${\lim\limits_{x \to 0^+} \dfrac{1}{x} = \infty.}$ In
+contrast, ${\lim\limits_{x \to 0^-} \dfrac{1}{x} = - \infty.}$ The graph of
+${\dfrac{1}{x}}$ demonstrates that there are, in fact, definite limits of
+${\dfrac{1}{x}.}$ However, there is no such thing as
+${\lim\limits_{x \to 0} \dfrac{1}{x}.}$ Notice this distinction. There are
+left- and right-hand limits, but there is no general limit.
+
+Let's briefly consider the derivative of ${y = \dfrac{1}{x}.}$ We know that
+${y = \dfrac{1}{x} = x^{-1},}$ so ${y' = (-1)(x)^{-2}.}$ In other words,
+${y' = -\dfrac{1}{x^2}.}$ The graph:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655819987/math/derivative_1overX_okwppy.svg"
+	}
+	imwidth={"259"}
+	imheight={"215"}
+	caption={"Derivative in question"}
+	width={"40"}
+/>
+
+Note how the graph looks entirely different from ${\dfrac{1}{x}}$.
+Newcomers to the kingdom of calculus often think that derivatives ought to
+look similar to their undifferentiated forms. This intuition is very
+tempting, and it is very wrong. More often than note, derivatives look
+nothing like their undifferentiated forms, and we must rid ourselves of
+such notions.
+
+The graph of a derivative is a graphical representation of how the
+function's slope changes. In the graph of ${\dfrac{1}{x},}$ the right
+branch's slope gets less steep as we get closer and closer to ${x = 0.}$
+This is why the right branch of ${-\dfrac{1}{x^2}}$ gets closer and closer
+to ${x = 0.}$ Similarly, as the right branch gets closer to ${y = 0,}$ the
+corresponding right branch in ${- \dfrac{1}{x^2}}$ gets closer and closer
+to ${y = 0.}$ The slope of ${\dfrac{1}{x},}$ however, is always negative,
+hence the position of the right branch of ${- \dfrac{1}{x^2}.}$ The same
+analysis goes for the left branch of ${\dfrac{1}{x}.}$
+
+The graph of ${y' = - \dfrac{1}{x^2}}$ confirms our understanding of the
+left- and right-hand limits. ${\lim\limits_{x \to 0} y' = - \infty.}$ This
+general limit implies that ${\lim\limits_{x \to 0^+} y' = - \infty,}$ and
+${\lim\limits_{x \to 0^-} y' = - \infty.}$
+
+${\dfrac{1}{x}}$ and its derivative ${- \dfrac{1}{x^2}}$ is a good example
+of another phenomenon. The function ${y = \dfrac{1}{x}}$ is an odd
+function, and the function ${y' = - \dfrac{1}{x^2}}$ is an even function.
+This is not a coincidence. The derivative of an odd function will always
+return an even function.
+
+There is one final form of discontinuities we might encounter. We
+colloquially call these ugly discontinuities. There are many variants of
+ugly discontinuities, but one that we are likely to encounter most is
+${\lim\limits_{x \to 0} y = \sin \dfrac{1}{x}.}$ There are no left- or
+right- hand limits for this function. This appears to violate our rule
+regarding general limits, but there is a work-around for these functions.
+However, we will not worry about these limits for now. We mention them here
+in the event they appear.
+
+## Differentiability Implies Continuity
+
+Now that we've had a more rigorous treatment of limits, we can now state an
+important theorem in calculus:
+
+> __theorem__. If ${f}$ is differentiable (i.e., there exists a derivative
+> for ${f}$) at ${x_0,}$ then ${f}$ is continuous at ${x_0.}$
+
+This theorem is what underlies the product rule and the quotient rule, two
+critical rules for differentiating.
+
+> _Proof_. The proposition to be proved:
+> ${\lim\limits_{x \to x_0} f(x) - f(x_0) = 0.}$ We can rewrite the
+> proposition as
+> ${\lim\limits_{x \to x_0} \dfrac{f(x) - f(x_0)}{x - x_0} (x-x_0).}$
+> Taking the limit, we have
+> ${\lim\limits_{x \to x_0} \dfrac{f(x) - f(x_0)}{x - x_0} (x-x_0) = f'(x_0) \cdot 0 = 0.}$
+> Thus, ${\lim\limits_{x \to x_0} f(x) - f(x_0) = 0.}$ ${\blacksquare}$

@@ -1,0 +1,1522 @@
+import { Plot } from "../../../components/illus/components/Plot/Plot";
+import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
+
+<Metadata title={'Trigonometry'} description={'Notes on trigonometry'}
+keywords={'trigonometry'} />
+
+# Trigonometry
+
+This chapter provides notes on trigonometry.
+
+## Angles
+
+If two rays originate from the same point, they form an **angle**.
+
+<Plot
+	geo={[
+		{
+			type: "angle",
+			xy: [0, 0],
+			angle: 45,
+			label: { type: "degrees", xy: [1, 1] },
+		},
+	]}
+	id={"angledemo1"}
+	noTicks={true}
+	width={250}
+	height={250}
+	scale={60}
+/>
+
+The ray lying along the 𝑥-axis is called the **initial side**. The ray that
+"sweeps out" is called the **terminal side**. The distance between these
+two rays is an **angle**. When terminal side sweeps out
+_counter-clockwise_, we have a positive angle measure. And when it sweeps
+out _clockwise_, we have a negative angle measure:
+
+<Plot
+	geo={[
+		{
+			type: "angle",
+			xy: [0, 0],
+			angle: -45,
+			label: { type: "degrees", xy: [2, -0.5] },
+		},
+	]}
+	id={"angledemo2"}
+	noTicks={true}
+	width={250}
+	height={250}
+	scale={60}
+/>
+
+If we sweep the terminal side all the way around to the initial side, we
+get ${360^\circ:}$
+
+<Plot
+	geo={[
+		{
+			type: "angle",
+			xy: [0, 0],
+			angle: 360,
+			label: { type: "degrees", xy: [2, -0.5] },
+		},
+	]}
+	id={"angledemo3"}
+	noTicks={true}
+	width={250}
+	height={250}
+	scale={60}
+/>
+
+If we swept a fourth of the way, we get ${90^\circ,}$ given that:
+
+$$
+	\dfrac{360}{4} = 90
+$$
+
+And if we swept half-way, we'd get ${180^\circ}$ (this is where the notion
+of a line having ${180^\circ}$ comes from):
+
+$$
+	\dfrac{360}{2} = 180
+$$
+
+At this point, we should probably ask: Why 360? No real reason, really. At
+least not mathematically. We use 360 because the Mesopotamians — a cradle
+of both human civilization and mathematics — employed a sexigesimal system
+(a system of base 60). The idea of a circle comprising ${360}$ degrees
+stuck long after the Mesopotamians disappeared because later civilizations
+found the the unit incredibly helpful. ${360}$ is considered a _highly
+composite integer_. That is, an integer with many divisors:
+
+$$
+	\begin{Bmatrix}
+		1 & 2 & 3 & 4 & 5 \\
+		6 & 8 & 9 & 10 & 12 \\
+		15 & 18 & 20 & 24 & 30 \\
+		36 & 40 & 45 & 60 & 72 \\
+		90 & 120 & 180 & 360
+	\end{Bmatrix}
+$$
+
+And with more divisors, splitting the pie "fairly" is much easier. We
+appreciate that ease far more when we realize that arithmetic was done with
+Roman numerals up until the 15th century. It's not so easy to give someone
+XVth of something (the division algorithm didn't exist yet). But, if we can
+pretend that something is a pie — 360 — it _does_ become easy: There are XV
+of XXIV total, so just give them a XXIV.
+
+The problem with degrees: They truly have no meaning. It's an entirely
+arbitrary choice. We could have just as easily gotten stuck with ${100}$ or
+${720.}$ Had the Mayans taken the mantle, we might be using some multiple
+of 20 today.
+
+Because 360 is an entirely arbitrary choice, degrees have no meaningful,
+reason-grounded connections to other branches of mathematics. And because
+those connections aren't there, degrees lead to nothing but pain when we
+want to _actually_ talk about angles. That is, treating them as genuine
+mathematical objects, worthy of study, rather than just some convenience in
+life. To give a brief glimpse of this suffering, here's a famous equation,
+using degrees:
+
+$$
+	\sin x^\circ =
+	\dfrac{\pi}{180}x^\circ +
+	\dfrac{\pi^3}{5832000} +
+	\dfrac{(x^\circ)^3}{3!} +
+	\dfrac{\pi^5}{188956800000}
+	- \ldots =
+	\sum_{i=0}^{\infty}(-1)^i
+	\dfrac{\pi^{2i+1}}{180^{2i+1}}
+	\dfrac{x^{\circ^{2i+1}}}{(2i+1)!}
+$$
+
+the same equation, in a far better unit called _radians_:
+
+$$
+	\sin x = x - \dfrac{x^3}{3!} + \dfrac{x^5}{5!} - \ldots = \sum_{i=0}^{\infty} (-1)^i \dfrac{x^{2i+1}}{(2i+1)!}
+$$
+
+## Trigonometric Ratios
+
+In the triangle below, ${\triangle abc}$ and ${\triangle (a+e)d(c+f)}$ are,
+proportionally, exactly the same. This is because of the property of
+_similarity_.
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662512136/math/triangle_xqi0l8.svg"}
+imwidth={"214"} imheight={"172"} caption={"triangle"} width={"40"} />
+
+The concepts of sine, cosine, tangent,  are simply ratios of the sides of
+the triangles.
+
+### Sine
+
+A helpful mnemonic for sine: "Snakes often hide." (sine, opposite,
+hypotenuse).
+
+<dfn>
+
+__sine.__ Let ${\theta}$ be an interior angle of a right triangle. Then the sine
+of ${\theta,}$ denoted ${\sin \theta,}$ is the ratio of the length of the side
+opposite the angle to the length of the hypotenuse.
+
+<Grid cols={2}>
+
+$$
+	\sin \theta = \dfrac{\tt{opposite}}{\tt{hypotenuse}} = \dfrac{a}{h}
+$$
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/sine_v6pwlu.svg"}
+imwidth={"205"} imheight={"181"} caption={"sine"} width={"100"}/>
+
+</Grid>
+
+</dfn>
+
+### Cosine
+
+Cosine: "Centipedes adorn hell." (cosine, adjacent, hypotenuse).
+
+<dfn>
+
+__cosine.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
+cosine of ${\theta,}$ denoted ${\cos \theta,}$ is the ratio of the length of the
+side adjacent to the angle to the length of the hypotenuse.
+
+<Grid cols={2}>
+
+$$
+	\cos \theta = \dfrac{\tt{adjacent}}{\tt{hypotenuse}} = \dfrac{b}{h}
+$$
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/cos_ahktua.svg"}
+imwidth={"205"} imheight={"181"} caption={"cosine"} width={"100"}/>
+
+</Grid>
+
+</dfn>
+
+### Tangent
+
+Tangent: "Termites offend ants" (tangent, opposite, adjacent).
+
+<dfn>
+
+__tangent.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
+tangent of ${\theta,}$ denoted ${\tan \theta,}$ is the ratio of the length of
+the side opposite to the angle to the length of the side adjacent.
+
+<Grid cols={2}>
+
+$$
+	\tan \theta = \dfrac{\tt{opposite}}{\tt{adjacent}} = \dfrac{a}{b}
+$$
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/tan_k58thc.svg"}
+imwidth={"205"} imheight={"181"} caption={"tangent"} width={"100"}/>
+
+</Grid>
+
+</dfn>
+
+### Cotangent 
+
+Cotangent: "Cottages are ominous." (cotangent, adjacent, opposite).
+
+<dfn>
+
+__cotangent.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
+cotangent of ${\theta,}$ denoted ${\cot \theta,}$ is the ratio of the length of
+the side adjacent to the angle to the length of the side opposite.
+
+<Grid cols={2}>
+
+$$
+	\cot \theta = \dfrac{\tt{adjacent}}{\tt{opposite}} = \dfrac{b}{a}
+$$
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/cot_eo7ouk.svg"}
+imwidth={"205"} imheight={"181"} caption={"cotangent"} width={"100"}/>
+
+</Grid>
+
+</dfn>
+
+### Secant
+
+Secant: "Secure houses always" (secant, hypotenus, adjacent).
+
+<dfn>
+
+__secant.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
+secant of ${\theta,}$ denoted ${\sec \theta,}$ is the ratio of the length of
+the hypotenuse to the length of the side adjacent to ${\theta.}$
+
+<Grid cols={2}>
+
+$$
+	\sec \theta = \dfrac{\tt{hypotenuse}}{\tt{adjacent}} = \dfrac{h}{b}
+$$
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/sec_lb2qme.svg"}
+imwidth={"205"} imheight={"181"} caption={"secant"} width={"100"}/>
+
+</Grid>
+
+</dfn>
+
+### Cosecant
+
+Cosecant: "Coruscant helped Obiwan" (cosecant, hypotenuse, opposite).
+
+<dfn>
+
+__cosecant.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
+cosecant of ${\theta,}$ denoted ${\csc \theta,}$ is the ratio of the length of
+hypotenuse to the angle to the length of the side opposite to ${\theta.}$
+
+<Grid cols={2}>
+
+$$
+	\csc \theta = \dfrac{\tt{hypotenuse}}{\tt{opposite}} = \dfrac{h}{a}
+$$
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/csc_u1jzxa.svg"}
+imwidth={"205"} imheight={"181"} caption={"cosecant"} width={"100"}/>
+
+</Grid>
+
+</dfn>
+
+For the rest of these materials, we will use the following variables:
+
+$$
+	\eqs{
+		\Oo &= \tt{the side opposite to $\theta$} \\
+		A &= \tt{the side adjacent to $\theta$} \\
+		H &= \tt{the hypotenuse} \\
+	}
+$$
+
+
+## Ratio Identities
+
+Recall that the divison identity from real number arithmetic tells us that:
+
+$$
+	\dfrac{a}{b} = \dfrac{ \dfrac{a}{c}  } { \dfrac{b}{c} } = \dfrac{a}{\cancel{c}} \cdot \dfrac{\cancel{c}}{b} 
+$$
+
+where ${a,b,c \in \R}$ and ${c \neq 0.}$ We can thus rewrite many of the
+preceding definitions to alternative forms. These forms are called _ratio
+identities_.
+
+### Tangent-sine-cosine Relation (TSCR)
+
+Because tangent is defined as:
+
+$$
+	\tan \theta = \dfrac{\Oo}{A}
+$$
+
+the division identity allows us to write the right-hand side as:
+
+$$
+	\tan \theta = \dfrac{\Oo}{A} = \dfrac{\dfrac{\Oo}{H}}{\dfrac{A}{H}}
+$$
+
+Notice that the numerator and denominator are the definitions of sine and cosine:
+
+$$
+	\sin \theta = \dfrac{\Oo}{H} \\[1em]
+	\cos \theta = \dfrac{A}{H}
+$$
+
+Thus, we have the relationship:
+
+$$
+	\tan \theta = \dfrac{\sin \theta}{\cos \theta} 
+$$
+
+### Cotangent-tangent Relation (CTR)
+
+Cotangent is often characterized as the inverse of tangent. Why? Recall that the cotangent is defined as:
+
+$$
+	\cot \theta = \dfrac{A}{\Oo}
+$$
+
+Using the division identity, we can rewrite right-hand side as:
+
+$$
+	\cot \theta = \dfrac{\dfrac{A}{A}}{\dfrac{\Oo}{A}} = \dfrac{1}{\dfrac{\Oo}{A}}
+$$
+
+That denominator is simply tangent:
+
+$$
+	\cot \theta = \dfrac{1}{\tan \theta}
+$$
+
+### Cotangent-Cosine-Sine Relation (CCSR)
+
+From the relationship of tangent to sine and cosine, we can also define
+cotangent as:
+
+$$
+	\cot \theta = \dfrac{1}{\tan \theta} = \dfrac{1}{\dfrac{\sin \theta}{\cos \theta}}
+$$
+
+This reduces to:
+
+$$
+	\cot \theta = \dfrac{\cos \theta}{\sin \theta}
+$$
+
+### Secant-cosine Relation (SCR)
+
+The definition of secant tells us that:
+
+$$
+	\sec \theta = \dfrac{H}{A}
+$$
+
+Using the division identity, we get:
+
+$$
+	\sec \theta = \dfrac{\dfrac{H}{H}}{\dfrac{A}{H}} = \dfrac{H}{\cancel{H}} \cdot \dfrac{\cancel{H}}{A}
+$$
+
+The denominator in the rewritten expression is simply cosine:
+
+$$
+	\sec \theta = \dfrac{1}{\cos \theta}
+$$
+
+### Cosecant-sine Relation (CSR)
+
+Cosecant is defined as:
+
+$$
+	\csc \theta = \dfrac{H}{\Oo}
+$$
+
+Rewriting the right-hand side with the division identity, we get:
+
+$$
+	\csc \theta = \dfrac{\dfrac{H}{H}}{\dfrac{\Oo}{H}} = \dfrac{H}{\cancel{H}} \cdot \dfrac{\cancel{H}}{\Oo}
+$$
+
+That denominator can be expressed as sine:
+
+$$
+	\csc \theta = \dfrac{1}{\sin \theta}
+$$
+
+### Tangent-cosecant-secant Relation (TCSR)
+
+From [CSR](#cosecant-sine-relation-csr), we know that:
+
+$$
+	\csc \theta = \dfrac{1}{\sin \theta}
+$$
+
+and from [SCR](#cosecant-sine-relation-csr) we know that:
+
+$$
+	\sec \theta = \dfrac{1}{\cos \theta}
+$$
+
+We can therefore infer that:
+
+$$
+	\sin \theta = \dfrac{1}{\csc \theta}
+$$
+
+and:
+
+$$
+	\cos \theta = \dfrac{1}{\sec \theta}
+$$
+
+(The inverse of the inverse gives you the verse). Then, from
+[TSCR](#tangent-sine-cosine-relation-tscr), we know that:
+
+$$
+	\tan \theta = \dfrac{\sin \theta}{\cos \theta}
+$$
+
+Using the alternative definitions of inverse definitions of sine and cosine, we have:
+
+$$
+	\tan \theta = \dfrac{\sin \theta}{\cos \theta} = \dfrac{ \dfrac{1}{\csc \theta} }{\dfrac{1}{\sec \theta}} = \dfrac{1}{\csc \theta} \cdot \dfrac{\sec \theta}{1}
+$$
+
+This yields the relation:
+
+$$
+	\tan \theta = \dfrac{\sec \theta}{\csc \theta}
+$$
+
+### Cotangent-cosecant-secant Relation (CCSR)
+
+Because [cotangent is the inverse of tangent](#cotangent-tangent-relation-ctr),
+[TCSR](#tangent-cosecant-secant-relation-tcsr) tells us that:
+
+$$
+	\cot \theta = \dfrac{1}{\theta} = \dfrac{1}{\dfrac{\sec \theta}{\csc \theta}}
+$$
+
+Thus, we have the relation:
+
+$$
+	\cot \theta = \dfrac{\csc \theta}{\sec \theta}
+$$
+
+### Summary of Ratio Identities
+
+Summarizing, we have the following ratio identities:
+
+<Grid cols={3}>
+
+$$
+	\sin \theta = \dfrac{1}{\csc \theta}
+$$
+
+$$
+	\csc \theta = \dfrac{1}{\sin \theta}
+$$
+
+$$
+	\cos \theta = \dfrac{1}{\sec \theta}
+$$
+
+$$
+	\sec \theta = \dfrac{1}{\cos \theta}
+$$
+
+$$
+	\tan \theta = \dfrac{1}{\cot \theta}
+$$
+
+$$
+	\cot \theta = \dfrac{1}{\tan \theta}
+$$
+
+$$
+	\tan \theta = \dfrac{\sin \theta}{\cos \theta}
+$$
+
+$$
+	\cot \theta = \dfrac{\cos \theta}{\sin \theta}
+$$
+
+$$
+	\sec \theta = \dfrac{1}{\cos \theta}
+$$
+
+$$
+	\tan \theta = \dfrac{\csc \theta}{\sec \theta}
+$$
+
+</Grid>
+
+## Radians
+
+With this understanding of triangles, consider the the following plot:
+
+<Plot geo={[{type:`circle`,xy:[0,0],r:1}]} domain={[-2,2]}id={`c1`} scale={70}/>
+
+This is a circle of radius ${r = 1.}$ In mathematics, this is called the __unit
+circle__.[^note_unit] The unit circle can be algebraically defined with the
+equation:
+
+$$
+	x^2 + y^2 = 1
+$$
+
+[^note_unit]: The form "unit ${S,}$" where ${S}$ is some shape is often used in
+mathematics to describe some simple, easy-to-reason-about object. This object is
+then used as a starting point for inferences. Other instances include the _unit
+square_ (a square whose sides are all of length 1), the _unit triangle_
+(likewise), the _unit pentagon_ (likewise), and so on.
+
+We can express a point on this circle with the familiar
+form ${(x,y).}$ For example, the points ${(1,0),}$ ${(0,-1),}$ ${(-1,0),}$ and
+${(0,1)}$ all lie on the circle:
+
+<Plot geo={[
+	{type:`circle`,xy:[0,0],r:1},
+	{type:`point`,xy:[1,0]},
+	{type:`point`,xy:[0,1]},
+	{type:`point`,xy:[-1,0]},
+	{type:`point`,xy:[0,-1]},
+]} domain={[-2,2]}id={`c2`} scale={70}/>
+
+However, we can also express the a point with the notation:
+
+$$
+	(\cos \theta, \sin \theta)
+$$
+
+<Plot geo={[
+	{type:`circle`,xy:[0,0],r:1},
+	{type:`point`,xy:[1,0]},
+	{type:`point`,xy:[0,1]},
+	{type:`point`,xy:[-1,0]},
+	{type:`point`,xy:[0,-1]},
+	{type:`point`,xy:[0.706,0.706]},
+	{type:`label`,id:`\\theta`,xy:[0.25,0.22],fontSize:1.1},
+	{type:`angle`,xy:[0,0], arms:[1,1], angle:45},
+	{type:`line`, start:[0.706,0], end:[0.706,0.706]},
+]} domain={[-2,2]}id={`c3`} scale={70}/>
+
+Because the graph is a unit circle, the point can also be thought of as lying at
+the edge of a triangle right trangle. And if we can think of the point in this manner, the ${x}$ and ${y}$ coordinates can be expressed as:
+
+$$
+	x = \cos \theta,~~~~y = \sin \theta
+$$
+
+Remember that cosine and sine are just ratios:
+
+$$
+	\cos \theta = \dfrac{\tt{adjacent}}{\tt{hypotenuse}} ~~~~
+	\sin \theta = \dfrac{\tt{opposite}}{\tt{hypotenuse}}
+$$
+
+And since the radius of the circle is ${1,}$ that hypotenuse is 1:
+
+$$
+	\cos \theta = \dfrac{\tt{adjacent}}{1} ~~~~
+	\sin \theta = \dfrac{\tt{opposite}}{1}
+$$
+
+The side adjacent to the angle can be measured in the amount of steps we take
+along the ${x}$ axis, and the side opposite to the angle can be measured in the
+amount of ${y}$ steps we take:
+
+$$
+	\cos \theta = \dfrac{x}{1} ~~~~
+	\sin \theta = \dfrac{y}{1}
+$$
+
+It should now be clear why:
+
+$$
+	(x,y) = (\cos \theta, \sin \theta)
+$$
+
+Now here's the real kicker: We can express _any_ point on the Cartesian plane
+using sine and cosine. Why? Because of that seemingly trivial law we saw earlier
+— the law of similar triangles:
+
+<Plot geo={[
+	{type:`circle`,xy:[0,0],r:0.5},
+	{type:`circle`,xy:[0,0],r:1},
+	{type:`circle`,xy:[0,0],r:1.5},
+	{type:`circle`,xy:[0,0],r:1.25},
+	{type:`point`,xy:[0.353,0.353]},
+	{type:`label`,xy:[0.3,0.6],id:`a`,fontSize:1.2},
+	{type:`point`,xy:[0.706,0.706]},
+	{type:`label`,xy:[0.7,1],id:`b`,fontSize:1.2},
+	{type:`point`,xy:[1.059,1.059]},
+	{type:`label`,xy:[1.1,1.3],id:`c`,fontSize:1.2},
+	{type:`label`,id:`\\theta`,xy:[0.2,0.22],fontSize:1.1},
+	{type:`angle`,xy:[0,0], arms:[1.5,1.5], angle:45},
+	{type:`line`, start:[0.706,0], end:[0.706,0.706]},
+	{type:`line`, start:[1.059,0], end:[1.059,1.059]},
+	{type:`line`, start:[0.353,0], end:[0.353,0.353]},
+]} domain={[-2,2]}id={`c4`} scale={70}/>
+
+The only difference is, the hypotenuse (the circle's radius) changes:
+
+| Point | Radius | ${\cos \theta}$    | ${\sin \theta}$    |
+| ----- | ------ | ------------------ | ------------------ |
+| ${a}$ | 0.5    | ${\dfrac{x}{0.5}}$ | ${\dfrac{y}{0.5}}$ |
+| ${b}$ | 1      | ${\dfrac{x}{1}}$   | ${\dfrac{y}{1}}$   |
+| ${c}$ | 1.5    | ${\dfrac{x}{1.5}}$ | ${\dfrac{y}{1.5}}$ |
+
+We now have a relationship between the Cartesian coordinates, cosine, and sine.
+But how can we make this relationship useful? So far, all we've done is tie
+cosine and sine to ${x}$ and ${y.}$ With Cartesian coordinates, we can write
+${(1,1),}$ ${(3,-1),}$ ${(0,0),}$ or any other pair of real numbers. All we have
+with the trigonometric ratios is that:
+
+$$
+	(x,y) = (\cos \theta, \sin \theta)
+$$
+
+We can fix this by passing in values for ${\theta,}$ just as we'd pass in values
+for ${x}$ and ${y.}$ But what values do we pass for ${\theta?}$ _Radians_. If we
+look closely at the last diagram, we'd see that we marked the angle ${\theta}$
+with a tiny curve. That curve is called an _arc_ — a portion of a circle. This
+is a common convention in geometry, and it reveals what exactly the radian is.
+
+What's the length of that arc? Well, it's a portion of the circumference. The
+circumference ${C}$ of a circle is given by the formula:
+
+$$
+	C = 2 \pi r
+$$
+
+where ${r}$ is the radius and ${\pi}$ is the constant irrational pi. Since the
+unit circle has a radius of ${1,}$ the unit circle's circumference is:
+
+$$
+	C = 2 \pi
+$$
+
+Thus, a _radian_ is simply a fraction of ${2 \pi.}$ Notice that this completely
+removes the radius. It doesn't matter how big or how small a circle is, we can
+always measure some angle whose vertex is at the center of the circle using some
+fraction of ${2 \pi:}$
+
+| Degrees        | Radians          |
+| -------------- | ---------------- |
+| ${-180^\circ}$ | ${- \pi}$        |
+| ${-135^\circ}$ | ${-{3 \pi}/{4}}$ |
+| ${-90^\circ}$  | ${- \pi/2}$      |
+| ${-45^\circ}$  | ${- \pi/4}$      |
+| ${0^\circ}$    | ${0}$            |
+| ${30^\circ}$   | ${\pi/6}$        |
+| ${45^\circ}$   | ${\pi/4}$        |
+| ${60^\circ}$   | ${\pi/3}$        |
+| ${90^\circ}$   | ${\pi/2}$        |
+| ${120^\circ}$  | ${{2 \pi}/{3}}$  |
+| ${135^\circ}$  | ${{3 \pi}/{4}}$  |
+| ${150^\circ}$  | ${{5 \pi}/{6}}$  |
+| ${180^\circ}$  | ${\pi}$          |
+| ${270^\circ}$  | ${{3\pi}/{2}}$   |
+| ${360^\circ}$  | ${2 \pi}$        |
+
+
+
+## The First Pythagorean Identity
+
+From the fact that ${x = \cos \theta}$ and ${y = \sin \theta,}$ we can make
+numerous inferences about the trigonometric ratios. Collectively, these
+inferences are called the _trigonometric identities_.
+
+Since we've established that ${x = \cos \theta}$ and ${y = \sin \theta,}$ we can
+use simple substitution to rewrite the equation of the unit circle:
+
+$$
+	x^2 + y^2 = 1 \implies (\cos \theta)^2 + (\sin \theta)^2 = 1
+$$
+
+<dfn>
+
+__first pythagorean identity.__ Let ${\theta}$ be an subtended by two radii on
+the unit circle. Then:
+
+$$
+	\sin^2 \theta + \cos^2 \theta = 1
+$$
+
+</dfn>
+
+Note that the expression:
+
+$$
+	\sin^2 \theta + \cos^2 \theta = 1
+$$
+
+is really:
+
+$$
+	(\sin \theta)(\sin \theta) + (\cos \theta)(\cos \theta) = 1
+$$
+
+In deriving the remaining identities, we will use this expanded form, but
+express our results in the more conventional notation contained in the
+definition above.
+
+## The Second Pythogrean Identity
+
+Since the trigonometric ratios are just ratios, we can divide each by another.
+Let's divide all of the terms of the first pythogorean identity by ${\cos^2
+\theta:}$
+
+$$
+	\dfrac{(\sin \theta)}{\cos \theta}
+	\dfrac{(\sin \theta)}{\cos \theta} + 
+	\dfrac{(\cos \theta)}{\cos \theta}
+	\dfrac{(\cos \theta)}{\cos \theta}
+	= 
+	\dfrac{1}{\cos \theta}
+	\dfrac{1}{\cos \theta}
+$$
+
+We see some ratios in there that we derived as ratio identities:
+
+$$
+	\tnote{\dfrac{(\sin \theta)}{\cos \theta}}{$\tan \theta$}
+	\tnote{\dfrac{(\sin \theta)}{\cos \theta}}{$\tan \theta$} + 
+	\tnote{\dfrac{(\cos \theta)}{\cos \theta}}{1}
+	\tnote{\dfrac{(\cos \theta)}{\cos \theta}}{1}
+	= 
+	\tnote{\dfrac{1}{\cos \theta}}{$\sec \theta$}
+	\tnote{\dfrac{1}{\cos \theta}}{$\sec \theta$}
+$$
+
+Thus, we have:
+
+$$
+	(\tan \theta)(\tan \theta) + (1)(1) = (\sec \theta)(\sec \theta)
+$$
+
+This gives us the second pythagorean identity:
+
+
+<dfn>
+
+__second pythagorean identity.__ Let ${\theta}$ be an subtended by two radii on
+the unit circle. Then:
+
+$$
+	\tan^2 \theta + 1 = \sec^2 \theta
+$$
+
+</dfn>
+
+## The Third Pythagorean Identity
+
+Just as we did for the second pythogrean identity, let's divide all of the terms of the first pythagorean identity by ${\sin^2 \theta:}$
+
+$$
+	\tnote{\dfrac{(\sin \theta)}{\sin \theta}}{1}
+	\tnote{\dfrac{(\sin \theta)}{\sin \theta}}{1} + 
+	\tnote{\dfrac{(\cos \theta)}{\sin \theta}}{$\cot \theta$}
+	\tnote{\dfrac{(\cos \theta)}{\sin \theta}}{$\cot \theta$}
+	= 
+	\tnote{\dfrac{1}{\sin \theta}}{$\csc \theta$}
+	\tnote{\dfrac{1}{\sin \theta}}{$\csc \theta$}
+$$
+
+We now have the third pythagorean identity:
+
+<dfn>
+
+__third pythagorean identity.__ Let ${\theta}$ be an subtended by two radii on the unit circle. Then:
+
+$$
+	1 + \cot^2 \theta = \csc^2 \theta
+$$
+
+</dfn>
+
+## Summary of Pythagorean Identities
+
+In sum, we have the following Pythogrean identities (the additional identities
+are simple rearrangements of the three we derived):
+
+|                                       |
+| ------------------------------------- |
+| ${\sin^2 \theta + \cos^2 \theta = 1}$ |
+| ${\tan^2 \theta + 1 = \sec^2 \theta}$ |
+| ${1 + \cot^2 \theta = \csc^2 \theta}$ |
+| ${\sin^2 \theta = 1 - \cos^2 \theta}$ |
+| ${\cos^2 \theta = 1 - \sin^2 \theta}$ |
+
+## Root Identities
+
+Given the equation ${x^2 + y^2 = 1,}$ if we solve for ${x}$ and ${y,}$ we get
+the following:
+
+$$
+	x = \pm \sqrt{1 - y^2} \\[1em]
+	y = \pm \sqrt{1 - x^2}
+$$
+
+Since we know that ${x = \cos \theta}$ and ${y = \sin \theta,}$ we can plug these in two get:
+
+$$
+	\cos \theta = \pm \sqrt{1 - \cos^2 \theta} \\[1em]
+	\sin \theta = \pm \sqrt{1 - \sin^2 \theta}
+$$
+
+This gives us the root identity of sine:
+
+<dfn>
+
+__root identity of sine.__ Let ${\theta}$ be an angle subtended by two radii on
+the unit circle. Then:
+
+$$
+	\sin \theta = \pm \sqrt{1 - \cos^2 \theta}
+$$
+
+</dfn>
+
+and the root identity of cosine:
+
+<dfn>
+
+__root identity of cosine.__ Let ${\theta}$ be an angle subtended by two radii
+on the unit circle. Then:
+
+$$
+	\cos \theta = \pm \sqrt{1 - \sin^2 \theta}
+$$
+
+</dfn>
+
+
+## Co-function Identities
+
+Having both radians and the Pythagorean identities allows us to establish a
+relationship between the trigonometric identities and the constant ${\pi.}$
+
+From our discussion of the unit circle, we know that ${\cos \theta}$ gives us
+the number of ${x}$ steps, and ${\sin \theta}$ gives us the number of ${y}$
+steps. ${x}$ and ${y,}$ therefore, correspond to the two legs of a right
+triangle on the unit circle.
+
+As we likely remember from elementary school, the angles of a right triangle sum
+to ${180^{\circ}.}$ Now that we know what radians are, we can reformulate this
+familiar idea:
+
+<dfn>
+
+__sum of triangle angles.__ The sum of the interior angles of a triangle
+is ${\pi.}$
+
+</dfn>
+
+Now, we know that all right triangles have a single ${90^\circ}$ angle, by
+definition. In terms of radians, this means that all right-triangles have a
+single angle with the measure ${\dfrac{\pi}{2}.}$ If we so happen to have a
+right-triangle whose legs are of equal length, then we the law complementary
+angles appies: The sum of those two angles is ${\dfrac{\pi}{2.}}$ And if the law
+of complementary angles applies, we get the following lemma:
+
+<dfn>
+
+__cofunction lemma.__ Let ${\alpha}$ and ${\beta}$ be interior angles of a right-triangle. If ${\alpha = \beta,}$ then:
+
+$$
+	\eqs {
+		\sin \alpha &= \cos \beta \\
+		\sin \beta &= \cos \alpha \\
+	}
+$$
+
+</dfn>
+
+Thus, the magic number (perhaps not so magical) is ${\dfrac{\pi}{2}.}$ Using
+the ratio identities we saw earlier, we have the following _cofunction
+identities_:
+
+$$
+	\sin \theta = \cos \paren{\dfrac{\pi}{2} - \theta}
+$$
+
+$$
+	\sec \theta = \csc \paren{\dfrac{\pi}{2} - \theta}
+$$
+
+$$
+	\tan \theta = \cot \paren{\dfrac{\pi}{2} - \theta}
+$$
+
+$$
+	\cos \theta = \sin \paren{\dfrac{\pi}{2} - \theta}
+$$
+
+$$
+	\csc \theta = \sec \paren{\dfrac{\pi}{2} - \theta}
+$$
+
+$$
+	\cot \theta = \tan \paren{\dfrac{\pi}{2} - \theta}
+$$
+
+
+
+## Sum and Difference Formulas
+
+While the identities we've derived thus far have taken us a long way, we want
+more. To propel us even further, let's see what else we can get out of the unit
+circle.
+
+Suppose there are two points on the graph of ${x^2 + y^2 = 1,}$ separated by a
+distance ${d.}$
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1663094930/math/sum_diff_A_pypyyv.svg"}
+	imwidth={"256"}
+	imheight={"241"}
+	caption={"circle 1"}
+	width={"60"}
+/>
+
+Keeping the points separated by the distance ${d}$ and changing the angle to
+${\alpha - \beta,}$ we get:
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1663095321/math/sum_diff_B_tuaaqg.svg"}
+	imwidth={"316"}
+	imheight={"241"}
+	caption={"circle 2"}
+	width={"70"}
+/>
+
+Applying the distance formula for the two points on the first graph, we have:
+
+$$
+	\eqs {
+		d_1 &= \sqrt{(x_1 - x_0)^2 + (y_1 - y_0)^2} \\
+		&= \sqrt{(\cos \alpha - \cos \beta)^2 + (\sin \alpha - \sin \beta)^2}
+	}
+$$
+
+and for the second graph, we have:
+
+$$
+	\eqs {
+		d_2 &= \sqrt{(x_1 - x_0)^2 + (y_1 - y_0)^2} \\
+		&= \sqrt{ (\cos(\alpha - \beta) - 1)^2 + (\sin(\alpha - \beta) - 0)^2 }
+	}
+$$
+
+Since we maintained the distance, we have:
+
+$$
+	\eqs{
+		d_1 &= d_2 \\
+		\sqrt{(\cos \alpha - \cos \beta)^2 + (\sin \alpha - \sin \beta)^2}
+		&=
+		\sqrt{ (\cos(\alpha - \beta) - 1)^2 + (\sin(\alpha - \beta) - 0)^2 }
+	}
+$$
+
+Squaring both sides of the equation, we get:
+
+$$
+	(\cos \alpha - \cos \beta)^2 + (\sin \alpha - \sin \beta)^2
+		=
+	(\cos(\alpha - \beta) - 1)^2 + (\sin(\alpha - \beta) - 0)^2
+$$
+
+Let's denote the first term on the left-hand side as ${A:}$
+
+$$
+	A = (\cos \alpha - \cos \beta)^2
+$$
+
+Expanding ${A,}$ we get:
+
+$$
+	\eqs{
+	A &= (\cos \alpha - \cos \beta)(\cos \alpha - \cos \beta) \\
+	&=
+	\cos^2 \alpha -
+	2 \cos \alpha \cos \beta
+	+ \cos^2 \beta
+	}
+$$
+
+Now the second term:
+
+$$
+	B = (\sin \alpha - \sin \beta)^2
+$$
+
+Here, we have:
+
+$$
+	\eqs{
+		B &= (\sin \alpha - \sin \beta)(\sin \alpha - \sin \beta) \\
+		&=  
+		\sin^2 \alpha - 2 \sin \alpha \sin \beta + \sin^2 \beta
+	}
+$$
+
+Putting the two together, we get ${A + B:}$
+
+$$
+	\cos^2 \alpha -
+	2 \cos \alpha \cos \beta
+	+ \cos^2 \beta
+	+ \sin^2 \alpha - 2 \sin \alpha \sin \beta + \sin^2 \beta	
+$$
+
+Using the law of commutativity, we can rearrange some of these terms:
+
+$$
+	\cos^2 \alpha
+	+ \sin^2 \alpha
+	- 2 \cos \alpha \cos \beta
+	- 2 \sin \alpha \sin \beta
+	+ \cos^2 \beta
+	+ \sin^2 \beta	
+$$
+
+Rearranged this way, we can see that some terms can be reduced using the first
+Pythagorean identity:
+
+$$
+	\tnote{\cos^2 \alpha + \sin^2 \alpha}{1}
+	- 2 \cos \alpha \cos \beta
+	- 2 \sin \alpha \sin \beta
+	+ 
+	\tnote{\cos^2 \beta + \sin^2 \beta}{1}
+$$
+
+Applying that identity and factoring the two in the second and third terms, we
+get:
+
+$$
+	1 - 2(\cos \alpha \cos \beta - \sin \alpha \sin \beta) + 1 =
+	2 - 2(\cos \alpha \cos \beta - \sin \alpha \sin \beta)
+$$
+
+That's about all we can do for the lefthand side. Let's look at the righthand.
+We'll denote the first term as ${C:}$
+
+$$
+	C = (\cos(\alpha - \beta) - 1)^2
+$$
+
+Expanding this term, we have:
+
+$$
+	\eqs{
+		C &= (\cos(\alpha - \beta) - 1)(\cos(\alpha - \beta) - 1) \\
+		&= \cos^2(\alpha - \beta) - 2 \cos(\alpha - \beta) + 1
+	}
+$$
+
+Finally, for the righthand's second term:
+
+$$
+	D = (\sin(\alpha - \beta) - 0)^2
+$$
+
+Expanding:
+
+$$
+	D = \sin^2(\alpha - \beta)
+$$
+
+Putting the two together, we get ${C + D:}$
+
+$$
+\cos^2(\alpha - \beta) - 2 \cos(\alpha - \beta) + 1	
++ 
+\sin^2(\alpha - \beta)
+$$
+
+Once again, let's the commutative law to rearrange some of the terms:
+
+$$
+\cos^2(\alpha - \beta)
++ \sin^2(\alpha - \beta)
+- 2 \cos(\alpha - \beta) 
++ 1	
+$$
+
+Once again we see terms that can be reduced with the first Pythagorean identity:
+
+$$
+\tnote{\cos^2(\alpha - \beta) + \sin^2(\alpha - \beta)}{1}
+- 2 \cos(\alpha - \beta) 
++ 1	
+$$
+
+Thus, we have:
+
+$$
+	1 - 2 \cos(\alpha - \beta) + 1 =  2 - 2 \cos(\alpha - \beta)
+$$
+
+Let's bring the left and righthand sides back together:
+
+$$
+2 - 2(\cos \alpha \cos \beta - \sin \alpha \sin \beta)
+= 
+2 - 2 \cos(\alpha - \beta)
+$$
+
+Dividing two from both sides:
+
+$$
+1 - \cos \alpha \cos \beta + \sin \alpha \sin \beta
+= 
+1 - \cos(\alpha - \beta)
+$$
+
+Subtracting the 1:
+
+$$
+- \cos \alpha \cos \beta + \sin \alpha \sin \beta
+= 
+- \cos(\alpha - \beta)
+$$
+
+Rearranging:
+
+$$
+\cos(\alpha - \beta)
+=
+\cos \alpha \cos \beta + \sin \alpha \sin \beta
+$$
+
+
+
+We now have our first double-angle formula.
+
+<dfn>
+
+__cosine angle difference formula.__ Let ${\alpha}$ and ${\beta}$ be the interior angles of a right trangle with legs of length 1. Then:
+
+$$
+	\cos(\alpha - \beta) =
+	\cos \alpha \cos \beta + \sin \alpha \sin \beta
+$$
+
+</dfn>
+
+Let's draw another formula. If we replace ${\beta}$ with ${-\beta,}$ the ratios
+remain the same, since we're on the unit circle:
+
+$$
+	\eqs{
+		\cos(\alpha - -\beta) 
+		&= \cos(\alpha + \beta) \\
+		&= \cos \alpha \cos (-\beta) + \sin \alpha \sin (-\beta) \\
+		&= \cos \alpha \cos(\beta) - \sin \alpha \sin \beta
+	}
+$$
+
+This gives us the second double-angle formula.
+
+<dfn>
+
+__cosine angle sum formula.__ Let ${\alpha}$ and ${\beta}$ be the interior
+angles of a right trangle with legs of length 1. Then:
+
+$$
+	\cos(\alpha + \beta) =
+	\cos \alpha \cos \beta - \sin \alpha \sin \beta
+$$
+
+</dfn>
+
+Using this new formula, let's replace ${\alpha}$ with ${\dfrac{\pi}{2} -
+\alpha.}$ This yields:
+
+$$
+	\cos\paren{\frac{\pi}{2} - \alpha + \beta} =
+	\cos \paren{\frac{\pi}{2} - \alpha} \cos \beta - \sin \paren{\frac{\pi}{2} - \alpha} \sin \beta
+$$
+
+Once again, we can apply identities:
+
+$$
+	\small
+	\tnote{\cos\paren{\frac{\pi}{2} - \alpha + \beta}}{$\sin(\alpha - \beta)$} 
+	=
+	\tnote{\cos \paren{\frac{\pi}{2} - \alpha}}{$\sin \alpha$}
+	\cos \beta
+	- \tnote{\sin \paren{\frac{\pi}{2} - \alpha}}{$\cos \alpha$}
+	\sin \beta
+$$
+
+Thus, we have:
+
+$$
+	\sin(\alpha - \beta) = \sin \alpha \cos \beta - \cos \alpha \sin \beta
+$$
+
+This gives us the third double-angle formula:
+
+<dfn>
+
+__sine angle difference formula.__ Let ${\alpha}$ and ${\beta}$ be the interior
+angles of a right trangle with legs of length 1. Then:
+
+$$
+	\sin(\alpha - \beta) = \sin \alpha \cos \beta - \cos \alpha \sin \beta
+$$
+
+</dfn>
+
+We get a fourth double-angle formula by replacing ${\beta}$ with ${-\beta}$ in
+the formula we just derived:
+
+$$
+	\eqs{
+		\sin(\alpha -(- \beta))
+		&= \sin(\alpha + \beta) \\
+		&= \sin \alpha \cos(-\beta) - \cos \alpha \sin(-\beta) \\
+		&= \sin \alpha \cos \beta + \cos \alpha \sin \beta
+	}
+$$
+
+We now have the fourth double-angle formula:
+
+<dfn>
+
+__sine angle sum formula.__ Let ${\alpha}$ and ${\beta}$ be the interior
+angles of a right trangle with legs of length 1. Then: Then:
+
+$$
+	\sin(\alpha + \beta) = \sin \alpha \cos \beta + \cos \alpha \sin \beta
+$$
+
+</dfn>
+
+### Summary: Sum & Difference Formulas
+
+Summarizing, we now have the following formulas:
+
+$$
+	\cos(\alpha - \beta) =
+	\cos \alpha \cos \beta + \sin \alpha \sin \beta
+$$
+
+$$
+	\cos(\alpha + \beta) =
+	\cos \alpha \cos \beta - \sin \alpha \sin \beta
+$$
+
+$$
+	\sin(\alpha - \beta) = \sin \alpha \cos \beta - \cos \alpha \sin \beta
+$$
+
+$$
+	\sin(\alpha + \beta) = \sin \alpha \cos \beta + \cos \alpha \sin \beta
+$$
+
+## The Double Angle Formulas 
+
+The sum and difference formulas provide a powerful arsenal for drawing even more
+formulas. We know that:
+
+$$
+	\sin(\alpha + \beta) = \sin \alpha \cos \beta + \cos \alpha \sin \beta
+$$
+
+There's nothing stopping us from saying ${\alpha = \beta,}$ so let's see what
+happens if we do that:
+
+$$
+	\sin(\alpha + \alpha) = \sin \alpha \cos \alpha + \cos \alpha \sin \alpha
+$$
+
+Simplifying the lefthand side:
+
+$$
+	\eqs{
+		\sin(2\alpha) &= \sin \alpha \cos \alpha + \cos \alpha \sin \alpha \\
+		&= \sin \alpha \cos \alpha + \sin \alpha \cos \alpha  \\
+		&= 2 \sin \alpha \cos \alpha \\
+	}
+$$
+
+This gives us our first double angle formula:
+
+<dfn>
+
+__double-angle formula i.__ Let ${\alpha}$ and ${\beta}$ be the interior
+angles of a right trangle with legs of length 1. Then:
+
+$$
+	\sin(2\alpha) = 2 \sin \alpha \cos \alpha
+$$
+
+</dfn>
+
+Let's do the same for the cosine angle sum formula:
+
+$$
+	\eqs{
+		\cos(\alpha + \alpha) &= \cos \alpha \cos \alpha - \sin \alpha \sin \alpha \\
+		&= \cos^2 \alpha - \sin^2 \alpha \\
+	}
+$$
+
+We now have the second double-angle formula:
+
+<dfn>
+
+__double-angle formula ii.__ Let ${\alpha}$ and ${\beta}$ be the interior
+angles of a right trangle with legs of length 1. Then:
+
+$$
+	\cos(2\alpha) = \cos^2 \alpha - \sin^2 \alpha
+$$
+
+</dfn>
+
+We can manipulate the second double-angle formula to derive a third, using the
+Pythagorean identity:
+
+$$
+	\sin^2 \alpha = 1 - \cos^2 \alpha
+$$
+
+Plugging this identity into the second formula, we get:
+
+$$
+	\eqs{
+		\cos(2\alpha) &= \cos^2 \alpha - \sin^2 \alpha \\
+		&= \cos^2 \alpha - (1 - \cos^2 \alpha) \\ 
+		&= \cos^2 \alpha - 1 + \cos^2 \alpha \\
+		&= 2 \cos^2 \alpha - 1
+	}
+$$
+
+This gives us our third double-angle formula:
+
+<dfn>
+
+__double-angle formula iii.__ Let ${\alpha}$ and ${\beta}$ be the interior
+angles of a right trangle with legs of length 1. Then:
+
+$$
+	\cos(2\alpha) = 2 \cos^2 \alpha - 1
+$$
+
+</dfn>
+
+Let's use the same process, only this time we'll use the identity:
+
+$$
+	\cos^2 \alpha = 1 - \sin^2 \alpha
+$$
+
+Doing so, we get:
+
+$$
+	\eqs{
+		\cos(2 \alpha) &= \cos^2 \alpha - \sin^2 \alpha \\
+		&= (1 - \sin^2 \alpha) - \sin^2 \alpha \\
+		&= 1 - 2 \sin^2 \alpha
+	}
+$$
+
+Now we have a fourth double-angle formula:
+
+<dfn>
+
+__double-angle formula iv.__ Let ${\alpha}$ and ${\beta}$ be the interior
+angles of a right trangle with legs of length 1. Then:
+
+$$
+	\cos(2\alpha) = 1 - 2 \sin^2 \alpha
+$$
+
+</dfn>
+
+#### Summary: Double-angle Formulas
+
+Summarizing the double-angle formulas we've derived:
+
+$$
+	\sin(2\alpha) = 2 \sin \alpha \cos \alpha
+$$
+
+$$
+	\cos(2\alpha) = \cos^2 \alpha - \sin^2 \alpha
+$$
+
+$$
+	\cos(2\alpha) = 2 \cos^2 \alpha - 1
+$$
+
+$$
+	\cos(2\alpha) = 1 - 2 \sin^2 \alpha
+$$
+
+## The Half-angle Formulas
+
+Having derived the double-angle formulas, let's play with the values of
+${\alpha}$ a little. What if we instead defined:
+
+$$
+	2 \alpha = \theta
+$$
+
+Let's plug this in to the third double-angle formula:
+
+$$
+	\cos(\theta) = 2 \cos^2\paren{\dfrac{\theta}{2}} - 1
+$$
+
+Let's transpose 1:
+
+$$
+	\eqs{
+		1 + \cos(\theta) &= 2 \cos^2\paren{\dfrac{\theta}{2}} - 1 + 1 \\[1em]
+		&= 2 \cos^2 \dfrac{\theta}{2} \\
+	}
+$$
+
+We now have:
+
+$$
+	1 + \cos(\theta) = 2 \cos^2 \paren{ \dfrac{\theta}{2} }
+$$
+
+Let's flip the equation:
+
+$$
+	2 \cos^2 \paren{ \dfrac{\theta}{2} } = 1 + \cos \theta
+$$
+
+Now let's divide by ${2:}$
+
+$$
+	\cos^2 \paren{ \dfrac{\theta}{2} } = \dfrac{1 + \cos \theta}{2}
+$$
+
+Taking the square root of both sides:
+
+$$
+\eqs{
+	\sqrt{\cos^2\paren{\dfrac{\theta}{2}}} &= \pm \sqrt{\dfrac{1 + \cos
+	\theta}{2}} \\[1em]
+	\cos \paren{\dfrac{\theta}{2}} &= \pm \sqrt{\dfrac{1 + \cos \theta}{2}}
+}
+$$
+
+This gives us the half-angle formula of cosine:
+
+<dfn>
+
+__half-angle formula of cosine.__ Let ${\theta}$ be an angle. Then:
+
+$$
+	\cos \paren{\dfrac{\theta}{2}} = \pm \sqrt{\dfrac{1 + \cos \theta}{2}}
+$$
+
+</dfn>
+
+If we set ${2\alpha = \theta,}$ in the formula:
+
+$$
+	\cos 2 \alpha = 1 - 2 \sin^2 \alpha
+$$
+
+we get the half-angle formula for sine:
+
+<dfn>
+
+__half-angle formula of sine.__ Let ${\theta}$ be an angle. Then:
+
+$$
+	\sin \paren{\dfrac{\theta}{2}} = \pm \sqrt{\dfrac{1 - \cos \theta}{2}}
+$$
+
+</dfn>

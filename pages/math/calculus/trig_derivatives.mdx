@@ -1,0 +1,469 @@
+<Metadata
+	title={"Trig Derivatives"}
+	description={"Notes on the derivatives of the trigonmetric functions."}
+	keywords={"trigonometry, calculus, precalculus, derivatives"}
+/>
+
+# Derviatives of the Trigonmetric Functions
+
+Let's consider differentiating the sine function:
+
+$$
+	\dfrac{d}{dx} \sin x
+$$
+
+Before we continue, recall these two propositions we saw in the previous
+section:
+
+1. ${\lim\limits_{x \to 0} \dfrac{\sin x}{x} = 1}$
+2. ${\lim\limits_{x \to 0} \dfrac{1 - \cos x}{x} = 0}$
+
+Keep these propositions in mind as we derive the derivatives of the
+trigonometric functions. Now, to differentiate ${\sin x,}$ we use the
+familiar difference quotient, and apply the limit:
+
+$$
+	\dfrac{d}{dx} \sin x = \lim\limits_{\Delta x \to 0} \dfrac{\sin (x + \Delta x) - \sin x}{\Delta x}
+$$
+
+As we saw in the section on limits, we want to reframe this expression. To
+do so, we use a trigonometric identity:
+
+$$
+	\sin (a + b) = \sin a \cos b + \cos a \sin b
+$$
+
+Applying this identity:
+
+$$
+	\dfrac{d}{dx} \sin x = \lim\limits_{\Delta x \to 0} \dfrac{(\sin x \cos (\Delta x) + \cos x \sin (\Delta x)) - \sin x}{\Delta x}
+$$
+
+We cannot just plug in 0 into this limit &mdash; it's one of the trickier
+ones. We must try and group the terms. To group terms, the first thing we
+want to do is gather what we know. From basic trigonometry, we know that
+${\lim\limits_{\Delta x \to 0} \cos(\Delta x)}$ is 1. We also see that
+${\sin x}$ is a common term. Using algebra:
+
+$$
+	\begin{aligned}
+
+		\dfrac{d}{dx} \sin x &= \ll{\Delta x}{x} \paren{\dfrac{\sin x + \cos \Delta x - \sin x}{\Delta x} + \dfrac{\cos x \sin \Delta x}{\Delta x}} \\[2em]
+		&= \ll{\Delta x}{x} \paren{\dfrac{\sin x (\cos \Delta x - 1)}{\Delta x} + \dfrac{\cos x \sin \Delta x}{\Delta x}} \\[2em]
+		&= \ll{\Delta x}{x} \paren{\sin x \left( \dfrac{\cos (\Delta x) - 1}{\Delta x}} + \cos x \paren{\dfrac{\sin \Delta x}{\Delta x} \right)} \\[2em]
+		&= \ll{\Delta x}{x} \sin x \paren{\dfrac{\cos (\Delta x) - 1}{\Delta x}} + \ll{\Delta x}{x} \cos x \paren{\dfrac{\sin \Delta x}{\Delta x}}
+	\end{aligned}
+$$
+
+Now, if we look at the final result from a broad overview, this is really
+just:
+
+$$
+	\dfrac{d}{dx} \sin x = \lim\limits_{\Delta x \to 0} \sin x(m) + \lim\limits_{\Delta x \to 0} \cos x(n)
+$$
+
+where
+
+- ${m = \left( \dfrac{\cos (\Delta x) - 1}{\Delta x} \right),}$ and
+- ${m = \left( \dfrac{\sin \Delta x}{\Delta x} \right)}$
+
+We need a way to get rid of ${m}$ and ${n.}$ To do so, we will use the
+following properties, to be proven later:
+
+1. ${\lim\limits_{\Delta x \to 0} \dfrac{\cos \Delta x - 1}{\Delta x} = 0}$
+2. ${\lim\limits_{\Delta x \to 0} \dfrac{\sin \Delta x}{x} = 1}$
+
+Using these properties, we have:
+
+$$
+	\lim\limits_{\Delta x \to 0} \sin x \underbrace{\cancel{\left( \dfrac{\cos (\Delta x) - 1}{\Delta x} \right)}}_{0} + \cos x \underbrace{\cancel{\left( \dfrac{\sin \Delta x}{\Delta x} \right)}}_{1}
+$$
+
+Above, we have ${(\sin x \cdot 0) + (\cos x \cdot 1).}$ This gives us
+${\cos x.}$ Thus, we now have a specific formula for the derivative of
+${sin x:}$
+
+$$
+	\dfrac{d}{dx} \sin x = \cos x
+$$
+
+Let's now consider the derivative of ${\cos x.}$ The process is similar.
+Again, we start with the diffference quotient:
+
+$$
+	\dfrac{d}{dx} \cos x = \lim\limits_{\Delta x \to 0} \dfrac{\cos (x + \Delta x) - \cos x}{\Delta x}
+$$
+
+Just as we used a trigonometric identity in deriving the derivative of
+${\sin x,}$ we will use another trionometric identity for ${\cos x,}$ the
+angle sum formula:
+
+$$
+	\cos (a + b) = \cos a \cos b - \sin a \sin b
+$$
+
+Applying the angle sum formula, we have:
+
+$$
+
+\begin{aligned}
+	\dfrac{d}{dx} \cos x &= \lim\limits_{\Delta \to 0} \dfrac{\cos x \Delta x - \sin x \sin \Delta x - \cos x}{\Delta x} \\
+
+	&= \lim\limits_{\Delta x \to 0} \left(\dfrac{\cos x \cos \Delta x - \cos x}{\Delta x} + \dfrac{- \sin x \sin \Delta x}{\Delta x}\right) \\
+
+	&= \lim\limits_{\Delta x \to 0} \left(\dfrac{\cos x (\cos \Delta x - 1)}{\Delta x} + \dfrac{- \sin x \sin \Delta x}{\Delta x}\right) \\
+
+	&= \lim\limits_{\Delta x \to 0} \left((\cos x) \dfrac{\cos \Delta x - 1}{\Delta x} + (- \sin x)\left(\dfrac{ \sin \Delta x}{\Delta x}\right)\right) \\
+
+	&= \lim\limits_{\Delta x \to 0} (\cos x) \left(\dfrac{\cos \Delta x - 1}{\Delta x}\right) + \lim\limits_{\Delta x \to 0} (- \sin x)\left(\dfrac{ \sin \Delta x}{\Delta x}\right) \\
+\end{aligned}
+$$
+
+Again, we see that this is really just:
+
+$$
+	\dfrac{d}{dx} \cos x = \lim\limits_{\Delta x \to 0} \cos x(a) + \lim\limits_{\Delta x \to 0} - \sin x(b)
+$$
+
+where,
+
+- ${a = \dfrac{\cos \Delta x - 1}{\Delta x}}$ and
+- ${b = \dfrac{ \sin \Delta x}{\Delta x}}$
+
+We want to get rid of ${a}$ and ${b,}$ so we use the same properties we saw
+earlier:
+
+1. ${\lim\limits_{\Delta x \to 0} \dfrac{\cos \Delta x - 1}{\Delta x} = 0}$
+2. ${\lim\limits_{\Delta x \to 0} \dfrac{\sin \Delta x}{x} = 1}$
+
+Applying the two properties:
+
+$$
+	\begin{aligned} \dfrac{d}{dx} \cos x &= \cos x \underbrace{\cancel{\left( \dfrac{\cos \Delta x - 1}{\Delta x} \right)}}_{0} + (- \sin x) \underbrace{\cancel{\left( \dfrac{\sin \Delta x}{\Delta x} \right)}}_{1} \\[1em] &= \cos x(0) + (- \sin x)(1) \\[1em] &= 0 + (- \sin x) \\[1em] &= - \sin x \end{aligned}
+$$
+
+Thus, we know have a specific formula for the derivative of ${\cos x:}$
+
+$$
+	\dfrac{d}{dx} \cos x = - \sin x
+$$
+
+As an aside, let's think about these formulas a little more carefully to
+contextualize these derivations. Consider the derivative of ${\cos x.}$
+When we evaluate ${\dfrac{d}{dx} \cos x}$ at ${x = 0,}$ then by the
+definition of a derivative, this is
+${\lim\limits_{\Delta x \to 0} \dfrac{\cos (\Delta x) - 1}{\Delta x}.}$
+This limit evaluates to 0, as we saw earlier.
+
+The same phenomenon appears for the derivative of ${\sin x.}$ When we
+evaluate ${\dfrac{d}{dx} \sin x,}$ we are just evaluating
+${\lim\limits_{\Delta x \to 0} \dfrac{\sin \Delta x}{\Delta x}.}$ This
+limit evaluates to 1, again, as we saw earlier.
+
+What this tells us is that the derivatives of ${\sin x}$ and ${\cos x}$ at
+${x = 0}$ yields all the values of ${\dfrac{d}{dx} \sin x}$ and
+${\dfrac{d}{dx} \cos x.}$
+
+To actually understand how we've derived the specific formulas above, we
+must understand the behavior of ${\dfrac{\sin x}{x}}$ and
+${\dfrac{\cos x - 1}{x}}$ when ${x}$ is close to 0. In other words, we must
+prove the properties we've been using:
+
+1. ${\lim\limits_{\Delta x \to 0} \dfrac{\cos \Delta x - 1}{\Delta x} = 0}$
+
+2. ${\lim\limits_{\Delta x \to 0} \dfrac{\sin \Delta x}{x} = 1}$
+
+To construct these proofs, we must use geometry, because ${\sin x}$ and
+${\cos x}$ are geometric propositions. To do so, we'll need to use a
+variable other than ${\Delta x.}$ Namely, ${\theta.}$ We do so because we
+want to go back to thinking about sine and cosine as trigonometric ratios,
+rather than functions. We'll first consider ${\dfrac{\sin x}{x}.}$
+Accordingly, what we are really trying to prove is:
+
+$$
+	\lim\limits_{\theta \to 0} \dfrac{\sin \theta}{\theta} = 1
+$$
+
+Let's first start by looking at the unit circle:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823502/math/calc_arclength1_uctu7d.svg"
+	}
+	imwidth={"238"}
+	imheight={"161"}
+	caption={
+		"A unit circle with a radius of length 1. The arc length subtending the angle theta has a length of theta. Opposite the angle theta, the triangle has a leg of length sine theta. The same triangle has a hypotenuse of length 1."
+	}
+	width={"40"}
+/>
+
+Here, our proof will depend on the followng proposition: When the radius of
+the circle has as length of 1, ${\theta}$ is the length of the arc above
+(highlighted red). Note that this proposition is true only if the angle
+${\theta}$ is measured in radians. It is not true if ${\theta}$ is measured
+in degrees. This an example of why prefer measuring angles in radians
+rather than degrees in mathematics. Recall the definition of sine:
+
+$$
+	\sin \theta = \dfrac{\lvert opposite \rvert }{ \lvert hypotenuse \rvert }
+$$
+
+Since the radius is of length 1, then the hypotenuse is of length 1. Thus,
+the length of the side opposite ${\theta}$ has a length of ${\sin \theta.}$
+Now, for the sake of argument, let's make a copy of that triangle and
+reflect it:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823555/math/calc_arclength2_qohgec.svg"
+	}
+	imwidth={"238"}
+	imheight={"161"}
+	caption={
+		"An equilateral triangle formed by reflecting the original triangle."
+	}
+	width={"40"}
+/>
+
+From the circle above, we see that the total arc length is now
+${2 \theta.}$ We also see that we've formed an isosceles triangle, where
+the green side is of length ${2 \sin \theta,}$ while the blue sides are of
+length ${1.}$ We also see that the interior angle has a measure of
+${2 \theta.}$ With these lengths, the ratio of the green edge of the
+triangle to the arc length is:
+
+$$
+	\dfrac{2 \sin \theta}{2 \theta} = \dfrac{\sin \theta}{\theta}
+$$
+
+Now the question is, why does ${\dfrac{\sin \theta}{\theta}}$ tend to 1 as
+${\theta}$ gets closer and closer to 0? Because as the angle ${\theta}$
+gets very very small, the arc looks more and more like a straight line.
+Moreover, as ${\theta}$ gets closer and closer to 0, the green segment and
+the red arch start to merge.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823638/math/calc_arclength3_fi30wc.svg"
+	}
+	imwidth={"81"}
+	imheight={"31"}
+	caption={
+		"Arc and sine theta start to merge. You can barely see the green."
+	}
+	width={"20"}
+/>
+
+This shows that short curves are nearly straight. Hence, we have:
+
+$$
+	\lim\limits_{\theta \to 0} \dfrac{\sin \theta}{\theta} = 1
+$$
+
+Now let's consider the property
+${\lim\limits_{x \to 0} \dfrac{\cos x - 1}{x} = 0.}$ Again, we want to use
+${\theta.}$ Here, however, because we are thinking about sine and cosine
+geometrically, we want a positive quantity, since we're dealing with
+lengths. So, we perform some manipulation up front:
+
+$$
+	\begin{aligned} \lim\limits_{\theta \to 0} \dfrac{\cos \theta - 1}{\theta} &= \lim\limits_{\theta \to 0} \left( - \dfrac{1 - \cos \theta}{\theta}\right) \\[1em] &= (-1) \cdot \lim\limits_{\theta \to 0} \dfrac{1 - \cos \theta}{\theta} \\[1em] &= 0 \end{aligned}
+$$
+
+Thus, the hypothesis we want to prove is:
+
+$$
+	(-1) \lim\limits_{\theta \to 0} \dfrac{1 - \cos \theta}{\theta} = 0
+$$
+
+The -1 is just a constant, so let's just clean it up a bit more by
+multiplying ${\dfrac{1}{-1}}$ to both sides:
+
+$$
+	\lim\limits_{\theta \to 0} \dfrac{1 - \cos \theta}{\theta} = 0
+$$
+
+To prove the hypothesis above, we focus on the &#8220;gap&#8221; between
+the edge and the arc. Since the distance between the origin and the arc is
+1, this gap has a length of ${1 - \cos \theta.}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823681/math/calc_arclength4_ndyunr.svg"
+	}
+	imwidth={"238"}
+	imheight={"161"}
+	caption={"The gap"}
+	width={"30"}
+/>
+
+Just as we saw with sine, as the angle ${\theta}$ gets very small, the
+distance ${1 - \cos \theta}$ gets very, very small.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823708/math/calc_arclength5_k2sr4y.svg"
+	}
+	imwidth={"45"}
+	imheight={"12"}
+	caption={"An even smaller gap"}
+	width={"20"}
+/>
+
+At some point, the segment ${1 - \cos \theta}$ is 0. Hence, we have the
+following:
+
+$$
+	\lim\limits_{\theta \to 0} \dfrac{\cos \theta - 1}{\theta} = 0
+$$
+
+Note that the limit isn't simply ${\dfrac{0}{0}.}$ This is an example of a
+limit where we aren't just doing a simple plug-and-play. The ${\theta}$ in
+the denominator is the arc length. The ${\theta}$ we're taking to 0 is the
+interior angle. Thus, making the angle ${\theta}$ smaller and smaller, the
+arc length ${\theta}$ is getting closer and closer to 0, but not nearly as
+fast as ${1 - \cos \theta.}$ Remember, the property we're trying to prove
+is a ratio. Thus, because ${\cos \theta - 1}$ approaches 0 faster than the
+arc length ${\theta,}$ the limit of the ratio is 0. To think about this
+more clearly, compare the approximations in the table above. Notice how
+much faster ${1 - \cos \theta}$ approaches 0 compared to ${\theta.}$
+
+The proof above is fairly abstract. Let's see another proof. First, suppose
+there is a point ${P}$ on a unit circle, then move along to ${Q.}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823752/math/poq_circle_ipyzyr.svg"
+	}
+	imwidth={"190"}
+	imheight={"181"}
+	caption={"Unit circle with points P and Q"}
+	width={"40"}
+/>
+
+From the circle above, we see that ${\sin \theta}$ is the vertical distance
+between ${P}$ and the ${\text{$x$-axis}.}$ The ${\Delta \theta}$ is the
+change in the angle, as we move from ${P}$ to ${Q.}$ Accordingly, ${Q}$ is
+the point on the unit circle where the angle measures
+${\theta + \Delta \theta.}$ It follows then that the
+${\text{$y$-coordinate}}$ of ${Q}$ is ${\sin (\theta + \Delta \theta).}$ To
+determine the rate of change of ${\sin \theta}$ with respect to theta
+(i.e., ${\dfrac{d}{d \theta} \sin \theta,}$) we must determine the rate of
+change for ${y = \sin \theta.}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823790/math/poq_circle2_f6zbi7.svg"
+	}
+	imwidth={"190"}
+	imheight={"181"}
+	caption={
+		"Unit circle with points P and Q. What we are looking for is delta y."
+	}
+	width={"30"}
+/>
+
+If we zoomed in on the ${\Delta y}$ above:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823831/math/poq_tri_kzwx55.svg"
+	}
+	imwidth={"43"}
+	imheight={"30"}
+	caption={"Delty y"}
+	width={"15"}
+/>
+
+The curved portion is the part of the circle. We've also drawn a line
+segment from ${P}$ to ${Q.}$ In doing so, we've drawn a right triangle
+${\triangle PQR.}$ Now, we use a concept we saw earlier: Very short pieces
+of curves are nearly straight. This means that the ${\text{arc } PQ}$ is
+essentially the same as the edge ${\overline{\rm PQ}:}$
+
+$$
+	\text{arc } PQ \approx \overline{\rm PQ}
+$$
+
+Now, we know that ${\text{arc } PQ}$ has a length of ${\Delta \theta.}$
+Thus, we know that:
+
+$$
+	\Delta \theta \approx \overline{\rm PQ}
+$$
+
+Great, we have one side down. If we can determine the measure of
+${\angle QPR}$ is, then we can determine ${\Delta y.}$ Geometrically, we
+are trying to find the length of ${\overline{\rm PR.}}$ To think about what
+the measure of ${\angle QPR}$ might be, let's see the line with the whole
+unit circle:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823864/math/poq_circle3_rxne5t.svg"
+	}
+	imwidth={"203"}
+	imheight={"189"}
+	caption={"A tangent line through the circle"}
+	width={"30"}
+/>
+
+Notice that the segment is almost perpendicular to the radius
+${\overline{\rm OP}.}$ When we take the limit, it is just about
+perpendicular:
+
+$$
+	\overline{\rm PQ} \underset{\approx}{\perp} \overline{\rm OP}
+$$
+
+If we rotate the entire construction by ${{90}^\circ,}$ we can see that
+${\angle QPR}$ is roughly the angle ${\theta.}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823907/math/poq_circle4_yzzd2g.svg"
+	}
+	imwidth={"200"}
+	imheight={"203"}
+	caption={"Rotation"}
+	width={"40"}
+/>
+
+Thus, we can conclude:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823940/math/poq_tri2_ndoynt.svg"
+	}
+	imwidth={"34"}
+	imheight={"24"}
+	caption={"Approximate angle"}
+	width={"20"}
+/>
+
+Accordingly:
+
+$$
+	\angle QPR \approx \theta
+$$
+
+With these two propositions: (1)
+${\overline{\rm PQ} \approx \Delta \theta,}$ and (2)
+${\angle QPR \approx \theta,}$ we can now draw the following premise:
+
+$$
+	\Delta y = \overline{\rm PR} \approx (\Delta \theta)\cos \theta
+$$
+
+It is this premise that allows us to reach the proposition we were after:
+
+$$
+	\dfrac{\Delta y}{\Delta \theta} \approx \cos \theta
+$$
+
+And by applying the limit:
+
+$$
+	\lim\limits_{\Delta \theta \to 0} \dfrac{\Delta y}{\Delta \theta} \approx \cos \theta
+$$

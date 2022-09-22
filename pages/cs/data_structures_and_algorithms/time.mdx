@@ -1,0 +1,587 @@
+import { DataTable, CircularQueue, StaticArray } from "../../../components/hago";
+
+# Time Algorithms
+
+A _time algorithm_ is an algorithm associated with parsing, manipulating,
+computing, and more generally working with, time formats. To begin, we'll
+start by presenting the two principle source of issues for time algorithms:
+(1) units of time, and (2) linguistic fence post problems.
+
+## Units of Time
+
+Here is an overview of the various ways we can measure time:
+
+<DataTable
+	data={[
+		["Name", "Length", "Remark"],
+		["nanosecond", "1 ns, 0.000 000 001 s", "One billionth of a second"],
+		["microsecond", "1 µs, 0.000 001 s", "One millionth of a second"],
+		["millisecond", "1 ms, 0.001 s", "One thousandth of a second"],
+		[
+			"jiffy",
+			"1/60 s or 1/50 s",
+			`Used in electronics; also, "I'll be back in a jiffy"`,
+		],
+		["second", "1 s", "SI base unit for time"],
+		["minute", "60 s", ""],
+		["hour", "1 hr, 60 min, 120 s", ""],
+		["day", "1 d, 24 hr, 1440 min, 86400 s", ""],
+		["week", "1 w, 7 d, 168 hr, 10080 min, 604800 s", ""],
+		["month", "1 mo, [28, 31] d", ""],
+		["semester", "18 w", ""],
+		["year", "1 yr, [365, 366] d", ""],
+		["common year", "1 yr, 52 w, 365 d", ""],
+		["leap year", "1 yr 1 d, 52 w + 2 d, 366 d", ""],
+		["olympiad", "4 yr", ""],
+		[
+			"lustrum",
+			"5 yr",
+			"During the Roman empire, the interval between censuses",
+		],
+		["decade", "10 yr", ""],
+		[
+			"indiction",
+			"15 yr",
+			"During the Roman empire, the interval between tax assessments",
+		],
+		["jubilee", "50 yr", ""],
+		["century", "100 yr", ""],
+		["millennium", "1000 yr", ""],
+		["megaannum", "1 Ma, 1000 millenia", "1 million years"],
+		[
+			"galactic year",
+			"1 gy",
+			"The amount of time it takes the solar system to orbit the Milky Way Galaxy's center. Roughly 230 million years.",
+		],
+	]}
+/>
+
+The table above is just a subset of the units of time used by humans. This
+presents the first difficulty with handling time data: the sheer number of
+time units to consider. For a time algorithm to be correct, it work with
+time units correctly.
+
+## Linguistic Fence Posts
+
+The second problem presented is th _linguistic fence post_. This problem
+stems from the way we use language. For example, when we say:
+
+> "𝐴 is due within 2 days of ${x}$."
+
+There are two possible meanings.
+
+1. If we count ${x}$ as ${\text{date}_0:}$
+
+   $$
+   	\tt{date}_0, \tt{date}_1, \cancel{\tt{date}_2}
+   $$
+
+   meaning, 𝐴 is due on ${x + 1.}$ This is the day after ${x.}$
+
+2. If, however, we don't count ${x:}$
+
+   $$
+   	\cancel{\tt{date}_0}, \tt{date}_1, \tt{date}_2
+   $$
+
+   meaning, 𝐴 is due on ${x + 2.}$ This is two days after ${x.}$ $$
+
+Moreover, depending on the context, we might have additional parameters: Do
+we count weekends? Do we count holidays? Is the day 24 hours or business
+days (8 hours)? The same problem exists when we say:
+
+> "𝐴 is due in 2 days."
+
+Suppose that we're told the above on date ${y.}$
+
+1. If we count ${y:}$
+
+   $$
+   	\tt{date}_0, \tt{date}_1, \cancel{\tt{date}_2}
+   $$
+
+   meaning, 𝐴 is due on ${y + 1.}$ This is the day after ${y.}$
+
+2. If we don't count ${y:}$
+
+   $$
+   	\cancel{\tt{date}_0}, \tt{date}_1, \tt{date}_2
+   $$
+
+   meaning, 𝐴 is due on ${y + 2.}$ This is two days after ${x.}$ $$
+
+Unfortunately, the only way to be absolutely certain of the intended
+meaning is through specification.
+
+## Wrap-around Counting
+
+A common operation in time algorithms is modular arithmetic. Accordingly,
+it's imperative that we have a strong understanding of the operation.
+
+First, **modular arithmetic** is a system of arithmetic for the _integers_.
+The arithmetic we're taught in elementary school is a system of arithmetic
+for the _reals_ (or, at least a subset of the reals — it's unlikely that
+we're having children add gargantuan numbers). In real arithmetic, the
+result of an operation could be _any_ real number: either 0, negative, or
+positive.
+
+In modular arithmetic, the result of an operation will "wrap around" a
+certain value once it reaches a particular integer called the **modulus**.
+Let's illustrate with the classic example, the wall clock.
+
+A wall clock displays 12 hours:
+
+<CircularQueue data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]} scale={70} />
+
+Let's say the current time is 8:00am. We'll mark at as `x`.
+
+<CircularQueue
+	data={[1, 2, 3, 4, 5, 6, 7, { val: 8, ant: "x" }, 9, 10, 11, 12]}
+	scale={70}
+/>
+
+3 hours later, we land at 11:
+
+<CircularQueue
+	data={[
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		{ val: 8, ant: "x" },
+		9,
+		10,
+		{ val: 11, ant: "x+3" },
+		12,
+	]}
+	scale={70}
+/>
+
+In another 3 hours, (11+3), we land at 2:
+
+<CircularQueue
+	data={[
+		1,
+		{ val: 2, ant: "x+6" },
+		3,
+		4,
+		5,
+		6,
+		7,
+		{ val: 8, ant: "x" },
+		9,
+		10,
+		{ val: 11, ant: "x+3" },
+		12,
+	]}
+	scale={70}
+/>
+
+Thus, we have: ${8 + 6 = 2.}$ This is what we mean by modular arithmetic.
+For the wall clock, the modulus is ${12.}$ Moreover, we say that this is
+**mod-12 arithmetic**, or **arithmetic mod-12**: For all arithmetic
+operations, once a result's value hits ${12,}$ its value starts back at the
+initial value.
+
+Having seen the basic example, let's add a little more detail.
+
+#### Week Day Determining
+
+Consider the following problem:
+
+> **problem.** Today is Tuesday. What day will it be in 17 days?
+
+Let's start by assigning each day of the week an index, starting at 0:
+
+<CircularQueue
+	data={["SU", "MO", "TU", "WE", "TH", "FR", "SA"]}
+	scale={70}
+	index={true}
+/>
+
+Here, the modulus is 7. If we viewed the diagram above as an array, this
+corresponds to the array's length:
+
+<StaticArray
+	data={["SU", "MO", "TU", "WE", "TH", "FR", "SA"]}
+	scale={40}
+/>
+
+$$
+	\mm{L} = 7
+$$
+
+To determine the weekday 17 days from Tuesday, we first determine Tuesday's
+index. Here, it's 2.
+
+$$
+	\mm{i} = 2
+$$
+
+Then, we add the 17 days to 2:
+
+$$
+	\mm{i} + 17 = 19
+$$
+
+Next, we divide this result by the modulus (the array's length) and obtain
+the remainder:
+
+$$
+\begin{aligned}
+	\dfrac{\mm{i} + 17}{\mm{L}} &= \dfrac{19}{7} \\[1em]
+	&= 2 \mm{rem} 5
+\end{aligned}
+$$
+
+What does this tell us? It tells us that we've gone through 2 cycles plus 5
+positions. That is, we've wrapped around the circulary array 2 timesputting
+us at `SU`, then 5 extra, which is `FRI`.
+
+Here's a simple implementation of a function for answering the problem
+using TypeScript:
+
+{/* prettier-ignore */}
+```typescript
+type Weekday =
+  | 'Sunday'   | 'Monday' | 'Tuesday'  | 'Wednesday'
+  | 'Thursday' | 'Friday' | 'Saturday';
+
+function WhichDay(currentDay: Weekday, days: number) {
+  const weekdays = [
+    'Sunday'   , 'Monday' , 'Tuesday'  , 'Wednesday',
+    'Thursday' , 'Friday' , 'Saturday' ,
+  ];
+  const L = 7;
+  let DayIndex = 0;
+  switch (currentDay) {
+    case 'Monday'    :  DayIndex = 1;  break;
+    case 'Tuesday'   :  DayIndex = 2;  break;
+    case 'Wednesday' :  DayIndex = 3;  break;
+    case 'Thursday'  :  DayIndex = 4;  break;
+    case 'Friday'    :  DayIndex = 5;  break;
+    case 'Saturday'  :  DayIndex = 6;  break;
+		default          :  throw new Error("Unrecognized weekday.");
+  }
+  const sum = DayIndex + days;
+  const index = sum % L;
+  return weekdays[index];
+};
+```
+
+Examining this function, it should be apparent why the `%` operator in
+programming languages is so useful. The `%` operator, in mathematical
+terms, is the _natural number remainder operation_:
+
+> **definition**. Where ${a}$ and ${b}$ are natural numbers, the operation:
+>
+> $$
+> 	a \tmod b
+> $$
+>
+> returns the remainder of ${\dfrac{a}{b}.}$
+
+To truly under what this definition means, we delve briefly into Euclidean
+division.
+
+### Divisibility
+
+Whenever we divide an integer ${a}$ by an integer ${b,}$ we have two
+possible outcomes:
+
+1. ${a}$ can be divided into ${b}$ evenly (no remainder exists).
+2. ${a}$ cannot be divided into ${b}$ evenly (there exists a remainder).
+
+In logic terms:
+
+$$
+	a \div b =
+	\begin{cases}
+		\exists \mm{rem} \\
+		\nexists \mm{rem}
+	\end{cases}
+$$
+
+where ${\mm{rem}}$ is a remainder. For example, 4 can be divided into 2
+evenly. 120 can be divided into 40 evenly. 2, however, cannot be divided
+into 3 evenly, nor can 3 be divided into 2 evenly.
+
+#### Quotient
+
+**Euclidean division** is a mathematical operation based on this idea.
+First, we introduce two operations:
+
+> **quotient**. Let ${a \in \ZZ}$ and ${b \in \ZZ^+.}$ Then:
+>
+> $$
+> 	a \tt{div} b = \floor{\dfrac{a}{b}}
+> $$
+
+The quotient operation works as follows: First, suppose our friend Billy is
+a track and field star competing in a special circular track race. The
+track has a special property. It has numbered sections starting at 0 and
+ending at some natural number ${b}$, the length of the track:
+
+<CircularQueue
+	data={["0", "1", "2", "3", "...", "b-1", "b"]}
+	scale={60}
+	iradius={55}
+/>
+
+The race is won by whoever crosses ${b}$ the most times. Unfortunately,
+Billy has been running in other races and he's pretty tired. He tells us
+that he only has enough energy to cover ${a}$ total segments. The quotient
+tells us that, if Billy can run past ${a}$ segments, he can cross ${b}$ a
+total of ${a \tt{div} b}$ times.
+
+For example, suppose the track is ${3}$ segments long. If Billy only has
+enough energy to cover ${5}$ segments, then we have ${a = 5}$ and
+${b = 3.}$ Thus, starting at the segument numbered 0:
+
+1. Bill passes segment1. He has enough energy for 4 more segments.
+2. Billy passes segment2. He has enough energy for 3 more segments.
+3. Billy passes ${b}$. He's crossed ${b}$ once. Now he only has enough
+   energy for 2 more segments.
+4. Billy segment0. Only 1 more segment.
+5. Billy passes segment1. Bill collapses at segment2.
+
+Billy only crossed ${b}$ once. The entire drama is expressed by writing:
+${5 \tt{div} 3 = 1.}$
+
+Let's be clear that this is _not_ division operation. This is the
+_quotient_ operation. It is a different operation. In fact, it's so
+different that the word "quotient" in this context is a verb. When we
+compute the quotient of two integers ${a}$ and ${b,}$ we _quotientize_
+${a}$ and ${b.}$ This is standard mathematical terminology in group theory.
+
+To see why this verb is necessary, here is the definition of real number
+division:
+
+> **division**. Let ${a, b \in \RR,}$ where ${b \neq 0.}$ Then:
+>
+> $$
+>   a \div b = a \cdot \dfrac{1}{b}
+> $$
+
+This is a very different definition from the previous. Real number division
+is an operation that can take real number inputs — that includes fractional
+numbers like 2.138 and irrational numbers like ${\pi.}$ Quotient, however,
+is an operation that can only take integer inputs. It does not work for
+fractional numbers or irrational numbers. For example, compare the outputs
+for the following functions:
+
+<DataTable
+	data={{
+		f: [
+			(x) => x / 2,
+			(x) => Math.floor(x / 2),
+			(x) => x / 3,
+			(x) => Math.floor(x / 3),
+		],
+		fLabels: [
+			"a(x) = x \\div 2",
+			"f(x) = x~~\\text{div}~~2",
+			"b(x) = x \\div 3",
+			"g(x) = x~~\\text{div}~~3",
+		],
+		domain: [-11, 13],
+		step: 1,
+	}}
+	latex={true}
+/>
+
+The functions ${a}$ and ${b}$ divide ${x}$ by a constant. The functions
+${f}$ and ${g}$ quotientize ${x}$ by a constant.
+
+Importantly, ${a}$ can be negative, but ${b}$ cannot. What does ${a}$ being
+negative mean? Well, it just means that Billy runs backwards along the
+track instead of forwards. When we write ${-5 \text{div} 3 = -2,}$ we're
+saying, if Billy has enough energy to cover 5 segments running backwards
+along the track, he completes ${-2}$ runs along the track:
+
+1. Starts at segment0 (5 remaining).
+2. Billy runs backwards, and crosses ${b}$. That's one cross.
+3. Past segment2. (3 remaining).
+4. Past segment1. (2 remaining).
+5. Past segment0. (1 remaining).
+6. Past ${b.}$ Billy's crossed ${b}$ twice. 0 remaining.
+7. Billy collapses at segment1.
+
+#### Remainder
+
+The third operation we introduce is the _remainder_ operation:
+
+> **remainder**. Let ${a \in \ZZ}$ and ${b \in \ZZ^+.}$ Then:
+>
+> $$
+> \begin{aligned}
+>   a~\tt{rem}~b &= a - b(a~\tt{div}~b) \\[1em]
+>   &= a - b\paren{\floor{\dfrac{a}{b}}}
+> \end{aligned}
+> $$
+
+Relying on our friend Billy once more, the remainder operation tells us
+which segment Billy stops at. Recall that the segments are all labeled with
+natural numbers. Thus, the remainder can never be negative. It's always
+either 0 or a positive number — a natural number.
+
+A few words of caution. The remainder operator is also called the _modulo_
+operator, with some textbooks opting to use the notation ${a \bmod b.}$
+From personal experience, this is a very bad idea. As we'll see later, this
+notation looks too similar to the modular arithmetic notation, and can very
+easily lead to confusion. Accordingly, we will not use this notation, nor
+will we call it the _modulo_ operator. It's the remainder operator, written
+as ${a \tt{rem} b.}$
+
+Next, many programming languages provide the ${\tt{rem}}$ operator as `%`.
+That is, ${a \tmod b}$ is equivalent to ${a \tt{rem} b.}$ It is not,
+however, equivalent. Some programming languages will compute
+${a - b(\ceil{a/b})}$ rather than ${a - b(\floor{a/b})}$ when ${a < 0.}$
+That is, they use the ceiling function for negatives. This is not inline
+with the mathematical definition. Some languages even allow ${b \leq 0,}$
+when again, such a definition does not make much sense from a mathematical
+standpoint. For the ${\tt{rem}}$ operation, ${b}$ is always positive.
+
+#### Euclidean Division
+
+At this point, we can now introduction Euclidean division:
+
+> **euclidean division.** Let ${a \in \ZZ}$ and ${b \in \ZZ^+.}$ Then there
+> exists two unique integers, ${q \in \ZZ}$ and ${r \in \ZZ^+,}$ such that:
+>
+> $$
+> 	a = bq + r~~~\text{and}~~~0 \leq r < b
+> $$
+
+This proposition is also called _the division algorithm_. What are the
+numbers ${q}$ and ${r}$? Well, if we have an integer ${a}$ and positive
+integer ${b,}$ ${q}$ and ${r}$ are given by:
+
+$$
+	\begin{aligned}
+		q &= a \tt{div} b \\
+		r &= a \tt{rem} b
+	\end{aligned}
+$$
+
+The Euclidean algorithm introduces us to the notion of divisibility.
+
+#### Divisibility
+
+Divisibility is defined as follows:
+
+> **divisibility**. Let ${a,b \in \ZZ,}$ where ${b \neq 0.}$ If there exists
+> a ${q \in \ZZ}$ such that ${a = bq,}$ then we say that ${b}$ _divides_ >
+> ${a}$ and write:
+>
+> $$
+> 	b \divs a
+> $$
+>
+> Else, we say that ${b}$ does not divide ${a,}$ and write:
+>
+> $$
+> 	b \nmid a
+> $$
+
+Casting this definition in Euclidean division terms:
+
+> **lemma**. Let ${a,b \in \ZZ}$ and ${b \neq 0.}$ ${b}$ divides ${a}$ iff:
+>
+> $$
+> 	a \tt{rem} |b| = 0
+> $$
+
+Note the use of the absolute value. Remember that the remainder operator is
+defined only for ${b \in \ZZ^+.}$ Alternatively, we can also write:
+
+> Let ${a,b \in \ZZ}$ and ${b \neq 0.}$ ${b}$ divides ${a}$ iff:
+>
+> $$
+> 	\dfrac{a}{b} \in \ZZ
+> $$
+
+From the definition of divisibility, we have the notion of a _multiple_:
+
+> **definition.** Let ${a,b \in \ZZ.}$ Then ${a}$ is a _multiple_ of ${b}$
+> iff ${b \mid a.}$
+
+As well as the notion of a factor:
+
+> **definition.** Let ${a,b \in \ZZ.}$ Then ${b}$ is a _factor_ of ${b}$ iff
+> ${b \mid a.}$
+
+There are several useful properties of divisibility to keep in mind:
+
+> **properties.** Let ${a, b, c \in \ZZ}$ where ${a \neq 0.}$ Then:
+>
+> 1.  If:
+>     - ${(a \divs b)}$
+>     - ${\implies}$ ${(a \divs bc)}$ for _any_ integer ${c.}$
+> 2.  If:
+>     - ${(a \divs b)}$ and
+>     - ${(a \divs c)}$
+>     - ${\implies}$ ${(a \divs b + c)}$
+> 3.  If:
+>     - ${(a \divs b)}$ and
+>     - ${(b \divs c)}$
+>     - ${\implies}$ ${(a \divs c).}$
+
+### Modular Arithmetic
+
+Now that we have the basic constructs of divisibility, we can now examine a
+more formal treatment of modular arithmetic. First, we begin with a
+definition:
+
+> **definition.** Let ${a, b \in \ZZ}$ and ${m \in \ZZ^+.}$ If:
+>
+> $$
+> 	m \divs (a - b)
+> $$
+>
+> then ${a}$ is congruent to ${b}$ modulo ${m,}$ and we write:
+>
+> $$
+> 	a \equiv b~(\bmod~m)
+> $$
+
+Put differently:
+
+> Let ${a,b,m \in \ZZ}$ and ${0 < m.}$ If there exists a ${q \in Z}$ such
+> that:
+>
+> $$
+> 	a-b = mq
+> $$
+>
+> then:
+>
+> $$
+> 	a \equiv b~(\bmod~m)
+> $$
+
+Or, alternatively:
+
+> Let ${a,b,m \in \ZZ}$ and ${0 < m.}$ Iff:
+>
+> $$
+> 	\dfrac{a-b}{m} \in \ZZ
+> $$
+>
+> then:
+>
+> $$
+> 	a \equiv b~(\bmod~m)
+> $$
+
+For example, from the definition above, we know that
+${9 \equiv 3~(\bmod~2)}$. Why? Because:
+
+$$
+	\dfrac{9-3}{2} = \dfrac{6}{2} = 3
+$$
+
+and ${3}$ is an integer.

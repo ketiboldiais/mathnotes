@@ -1,26 +1,690 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+/* Font Imports */
+	/* CMU Serif */
+	@font-face {
+		font-family: 'CMU Serif';
+		font-style: italic;
+		font-weight: normal;
+		src: local('CMU Serif Italic'), url('./fonts/cmunti.woff') format('woff');
+	}
+	@font-face {
+		font-family: 'CMU Serif';
+		font-style: normal;
+		font-weight: bold;
+		src: local('CMU Serif Bold'), url('./fonts/cmunbx.woff') format('woff');
+	}
+	@font-face {
+		font-family: 'CMU Serif';
+		font-style: italic;
+		font-weight: bold;
+		src: local('CMU Serif BoldItalic'), url('./fonts/cmunbi.woff') format('woff');
+	}
+	@font-face {
+		font-family: 'CMU Serif';
+		font-style: normal;
+		font-weight: normal;
+		src: local('CMU Serif Roman'), url('./fonts/cmunrm.woff') format('woff');
+		}
+	@font-face {
+		font-family: "Fira Code";
+		src: url("./fonts/FiraCode-VF.woff2");
+	}
+	@font-face {
+		font-family: "CMU Typewriter";
+		src: url("./fonts/cmunvt.ttf");
+	}
+/* Root Variables */
+:root {
+	--serif: "CMU Serif","Iowan Old Style","Palatino Linotype";
+	--sans_serif: avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	--mono: "Fira Code", Consolas, Monaco, Liberation Mono, "Lucida Console", monospace;
+	/* --dark: rgb(190, 206, 209); */
+	--lightRed: rgb(255, 218, 218);
+	--red: rgb(255, 112, 112);
+	--darkRed: rgb(229, 0, 0);
+	--lightGreen: rgb(227, 255, 227);
+	--green: forestgreen;
+	--paleGreen: rgb(197, 234, 197);
+	--darkGreen: rgb(0, 129, 0);
+	--lightBlue: rgb(112, 255, 234);
+	--blue: teal;
+	--linkBlue: rgb(1, 75, 161);
+	--teal: rgb(83, 191, 191);
+	--paleBlue: rgb(149, 187, 205);
+	--darkBlue: rgb(0, 155, 207);
+	--black: rgb(41, 41, 41);
+	--white: white;
+	--lightGrey: rgb(147, 147, 147);
+	--lavender: rgb(216, 142, 216);
+	--purple: purple;
+	--gold: gold;
+	--paleGold: rgb(255, 251, 233);
+	--darkGold: rgb(125, 77, 0);
+	--orange: rgb(255, 186, 68);
+	--powder: rgb(217, 231, 229);
+
+
+	/* Core Colors */
+	--background-color: #ffffff;
+	--text-color: black;
+	--nav-content-background-color: rgb(255, 255, 255);
+	--card: 1px 5px 9px 3px rgba(73, 73, 73, 0.659);
+
+	/* Heading color */
+	--heading-color: firebrick;
+
+	/* Border */
+	--border: solid thin grey;
+	--box-background-color: rgb(233, 244, 242);
+	--box-border: solid thin rgb(206, 220, 225);
+
+	/* Call number styles */
+	--call-border: solid thin rgb(74, 105, 172);
+	--call-text-color: rgb(74, 105, 172);
+
+	/* Box Shadows */
+	--box-shadow: 0px 1px 0 #bbbbbb, 1px 1px 2px #868686;
+	--drop-shadow: 3px 3px 2px rgba(0, 0, 0, .7)
+	--box-shadow-hover: 1px 1px 2px rgb(228, 228, 228);
+	--box-shadow-border: 1px solid #ececec;
+	--box-shadow-pressed: inset 0.063rem 0.063rem 0.125rem #858585,
+		inset -0.063rem -0.063rem 0.125rem white;
+	--box-shadow-active: 1px 1px 2px rgb(104, 104, 104);
+	--page-box-shadow: 0px 1px 1px #b5b5b5, 1px 1px 4px #c6c6c6;
+
+/* illus palette */
+	/* Binary Trees */
+		--binary-tree-edge-color: firebrick;
+		--binary-tree-node-fill-color: tomato;
+		--binary-tree-text-color: white;
+
+	/* Tree */
+		--tree-edge-color: firebrick;
+		--tree-node-fill-color: tomato;
+		--tree-text-color: var(--white);
+		--tree-annotation-color: var(--text-color);
+		--tree-height-color: var(--text-color);
+		--tree-depth-color: var(--text-color);
+		--tree-level-color: var(--text-color);
+		--tree-balance-factor-color: var(--text-color);
+		--tree-imbalance-factor-color: firebrick;
+		--tree-balance-factor-color: var(--green);
+		--tree-node-mark-fill: var(--blue);
+		--tree-node-mark-stroke: var(--darkBlue);
+		--tree-node-mark-text: var(--white);
+	
+	/* MTrees */
+		--mtree-edge-color: var(--text-color);
+		--mtree-node-fill-color: var(--background-color);
+		--mtree-text-color: var(--text-color);
+
+	/* Sequences */
+		--sequenceElementFill: var(--white);
+		--sequenceElementStroke: var(--black);
+		--sequenceElementTextColor: var(--black);
+		--sequenceElementIndexColor: var(--lightGrey);
+		--sequenceAnnotationColor: var(--red);
+
+	/* Matrices */
+		--matrixElementFill: var(--white);
+		--matrixElementStroke: var(--black);
+		--matrixElementTextColor: var(--black);
+		--matrixIndexColor: var(--lightGrey);
+		--matrixFocusFillColor: var(--black);
+		--matrixFocusTextColor: var(--orange);
+
+	/* Linked Lists */
+		--linkedListDataFieldFill: var(--white);
+		--linkedListDataFieldTextColor: var(--text-color);
+		--linkedListNextFieldFill: var(--paleBlue);
+		--linkedListLinkColor: var(--darkRed);
+		--linkedListIndexColor: var(--lightGrey);
+
+	/* Circular Linked Lists */
+		--circularListDataFieldFill: var(--white);
+		--circularListDataFieldTextColor: var(--text-color);
+		--circularListNextFieldFill: var(--paleBlue);
+		--circularListLinkColor: var(--darkRed);
+		--circularListIndexColor: var(--lightGrey);
+
+	/* Doubly Linked Lists */
+		--doublyLinkedListDataFieldFill: var(--white);
+		--doublyLinkedListTextColor: var(--text-color);
+		--doublyLinkedListNextFieldFill: var(--paleBlue);
+		--doublyLinkedListPrevFieldFill: var(--paleBlue);
+		--doublyLinkedListLinkColor: var(--darkRed);
+		--doublyLinkedListIndexColor: var(--red);
+
+	/* Stacks */
+		--stackFrameFill: var(--darkRed);
+		--stackFrameText: var(--white);
+
+	/* Queues */
+		--queuerFill: var(--white);
+		--queuerTextColor: var(--black);
+		--queuerIndexFill: var(--paleBlue);
+		--queuerIndexTextColor: var(--white);
+		--queuerAnnotationColor: var(--red);
+		--queuerFocusRedFill: var(--darkRed);
+		--queuerFocusRedStroke: var(--darkRed);
+	/* Circular Queues */
+		--circularQueuerFill: var(--paleGreen);
+		--circularQueuerStroke: var(--darkGreen);
+		--circularQueuerTextColor: var(--darkGreen);
+		--circularQueuerIndexColor: var(--lightGrey);
+	/* Parse Tree */
+		--parseTreeEdgeColor: var(--darkRed);
+		--parseTreeTextColor: var(--text-color);
+	/* Dot Plot */
+		--dotPlotCircleFill: var(--background-color);
+		--dotPlotCircleStroke: var(--darkGreen);
+		--dotPlotAxisColor: var(--darkGreen);
+	/* Plot */
+		--point-fill-color: var(--darkRed);
+		--point-stroke-color: var(--darkRed);
+		--plot-axes-color: rgb(175, 191, 199);
+	/* Flow */
+		--flow-stroke-color: var(--text-color);
+		--flow-fill-color: var(--background-color);
+	/* Bipartite Graph */
+		--bipartite-node-fill: #FFE69A;
+		--bipartite-node-stroke: #EC994B;
+		--bipartite-text-color: var(--text-color);
+		--bipartite-edge-color: #e97312;
+}
+/* Global HTML */
+html {
+	scroll-behavior: smooth;
+	background-color: var(--dark);
+	font-family: var(--serif);
+}
+/* Headings */
+h1 {font-size: 1.8rem;}
+h2 { font-size: 1.3rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.2rem; }
+h5 { font-size: 1.15rem; }
+h6 { font-size: 1.1rem; }
+h1,h2,h3,h4,h5,h6 {
+	font-weight: bold;
+	margin: 2rem 0 -0.35em 0; 
+}
+h1 {
+	text-align: center;
+	padding: 0.3em;
+	margin: 2em auto;
+	margin-bottom: 5rem;
+}
+main { counter-reset: part; }
+h2 {counter-increment: part;        counter-reset: subpart;}
+h3 {counter-increment: subpart;     counter-reset: chapter;}
+h4 {counter-increment: chapter;     counter-reset: module;}
+h5 {counter-increment: module;      counter-reset: submodule;}
+h6 {counter-increment: submodule;   counter-reset: submodule;}
+h2::after { content: counter(part); float: right; }
+h3::after { content: counter(part) "." counter(subpart); float: right; }
+h4::after { content: counter(part) "." counter(subpart) "." counter(chapter); float: right; }
+h5::after { content: counter(part) "." counter(subpart) "." counter(chapter) "." counter(module); float: right; }
+h6::after { content: counter(part) "." counter(subpart) "." counter(chapter) "." counter(module) "." counter(submodule); float: right; }
+/* KaTeX */
+span.katex {font-size: 0.98em;}
+.Plot span.mord.texttt {
+	font-family: var(--mono) !important;
+	font-size: 0.5em;
+}
+.katex .texttt {
+	font-family: var(--mono) !important;
+	font-size: 0.9em;
+}
+div.math.math-display {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+.Plot span.mord.text {
+	font-family: var(--serif);
+	font-size: 0.6em;
+}
+/* Table of Contents */
+.outline ol, .outline ul {
+	padding:0 0 0 2em; 
+	margin:0;
+	font-size: 0.85rem;
+}
+.outline {
+	margin: 0 2em;
+	column-count: 2;
+}
+.outline ol li {font-weight: bold;}
+.outline ol li li {font-weight: normal;}
+.outline ol {list-style: decimal;}
+.outline ol ol {list-style: upper-alpha;}
+.outline ol ol ol {list-style: lower-roman;}
+.outline ol ol ol ol {list-style: lower-alpha;}
+.outline ol ol ol ol ol {list-style: decimal;}
+/* KaTeX */
+/* hago table */
+.hagoTable {
+	border: none !important;
+}
+.hagoTable td,
+.hagoTable th {
+	padding: 0;
+	text-align: center;
+	vertical-align: middle;
+	border: none;
+}
+.hagoTable thead tr:nth-child(1) {
+	border-bottom: solid thin var(--text-color);
+}
+.hagoTable td:not(:nth-child(1)) {
+	border-left: solid thin var(--text-color);
+}
+.grid_map_container pre {
+	margin: 2px;
+	height: fit-content;
+}
+.grid_map_container {
+	margin-bottom: -1fr;
+}
+/* Tables */
+table {
+	margin: auto;
+	border-collapse: collapse;
+}
+table ol, table ul {
+	margin: 0 !important;
+	padding: 0 !important;
+	margin-left: 1em !important;
+	padding-left: 2px !important;
+	width: fit-content !important;
+}
+table li::marker { font-size: 0.6em !important; }
+table li {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+table th {font-weight: bold;}
+table th,
+table td {
+	padding: 0.2em;
+	border: none;
+}
+table thead tr {
+	border-bottom: solid thin grey;
+}
+table td {
+	border: thin solid grey; 
+}
+table tr:first-child td,
+table tr:first-child th {
+	border-top: 0;
+}
+table tr td:first-child, 
+table tr th:first-child {
+	border-left: 0;
+}
+table tr:last-child td,
+table tr:last-child th {
+	border-bottom: 0;
+}
+table tr td:last-child,
+table tr th:last-child {
+	border-right: 0;
+}
+.hashtbl table {
+	width: 80%;
+	table-layout: fixed;
+}
+.hashtbl table td, 
+.hashtbl table th {
+	text-align: center;
+}
+.hashtbl table td {
+	border: none;
+	border-left: solid thin grey;
+}
+.numbered table td {
+	border: none;
+	padding: 0.2em 0.6em;
+}
+.numbered table tr {
+	border: none;
+}
+/* def tag */
+dfn strong { font-variant: small-caps; } 
+dfn {
+	display: block;
+	width: 80%;
+	margin: 0 auto;
+}
+/* Links */
+a { color: var(--text-color); }
+a:hover { color: var(--purple); }
+.outline a {text-decoration: none;}
+/* List Styles */
+ol {
+	margin: 0;
+	padding: 0;
+	padding-left: 1.5em;
+}
+ol li {
+	margin: 0.4em 0;
+}
+ul {padding-left: 1.5em;}
+ul li::marker {font-size: 0.7em;}
+ul li {margin: 0.7em 0;}
+/* Reference Tiles */
+div.entry {
+	font-family: "serif_main";
+	font-size: 0.75em;
+}
+div.entry ul {
+	margin: 0 !important;
+	padding: 0 0 0 1em !important; 
+}
+div.entry ul li {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+div.entry .katex {
+	font-size: 1em;
+}
+table.bigEntryTable {
+	font-size: 0.9em;
+	margin: 0 !important;
+	width: 100%;
+}
+table.bigEntryTable table {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+div.entry {
+	display: inline-block;
+	margin: 1px;
+	padding: 0.6em;
+	width: 100%;
+	/* box-shadow: var(--box-shadow); */
+	border: solid thin lightgrey;
+	/* border: var(--box-shadow-border); */
+	/* border-radius: 5px; */
+}
+div.entry h3 {
+	font-size: 1em;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+div.entry ol li::marker {
+	font-size: 0.em;
+	font-family: "CMU Serif";
+}
+div.index_fullwidth {
+	margin: 2% 0;
+	padding: 2%;
+	box-shadow: var(--box-shadow);
+	border: var(--box-shadow-border);
+}
+div.index_chapter {
+	margin: 2% 0;
+	column-count: 3; /* colcount */
+	column-gap: 0.2em;
+}
+div.index_chapter2 {
+	margin: 2% 0;
+	column-count: 2; /* colcount */
+	column-gap: 0.2em;
+}
+div.entry table {
+	margin: 3% auto !important;
+	padding: 0 !important;
+}
+div.entry table {
+	border-collapse: collapse;
+}
+div.entry table th,
+div.entry table td {
+	border: none;
+}
+div.entry table thead tr {
+	border-bottom: solid thin rgb(211, 211, 211);
+}
+div.entry table td,
+div.entry table th {
+	border: solid thin rgb(221, 221, 221);
+}
+div.entry table tr:first-child td,
+div.entry table tr:first-child th {
+	border-top: 0;
+}
+div.entry table tr td:first-child, 
+div.entry table tr th:first-child {
+	border-left: 0;
+}
+div.entry table tr:last-child td,
+div.entry table tr:last-child th {
+	border-bottom: 0;
+}
+div.entry table tr td:last-child,
+div.entry table tr th:last-child {
+	border-right: 0;
+}
+div.grid2 {
+	margin: 0;
+	column-count: 2;
+	column-gap: 0;
+}
+div.grid3 {
+	margin: 0;
+	column-count: 3;
+	column-gap: 0;
+}
+div.grid4 {
+	margin: 0;
+	column-count: 4;
+	column-gap: 0;
+}
+div.entry a {
+	color: var(--text-color);
+	text-decoration: underline;
+}
+div.entry blockquote {
+	border: none;
+}
+div.entry ul { padding: 0; margin: 0 0 0 1.1em; }
+div.entry ul li li { list-style: circle; }
+div.entry ul li li li { list-style: square; }
+div.entry ul li li li li { list-style: circle; }
+div.entry ul li li li li li { list-style: disc; }
+/* Figcaption */
+figcaption {
+	display: block;
+	text-align: center;
+	font-size: 0.9em;
+	margin: 0;
+	padding: 0;
+}
+.grid-container {
+	height:fit-content;
+}
+.grid_map_container {
+	height: min-content;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* Frame */
+table.frame {
+	border: solid thin grey;
+	border-collapse: collapse;
+	font-size: 0.9em;
 }
-
-* {
-  box-sizing: border-box;
+table.frame th {
+	font-weight: normal;
+	border-collapse: collapse;
 }
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+table.frame td, table.frame th {
+	border-collapse: collapse;
+	padding: 2px;
+	margin: 0 !important;
+	border: solid thin grey;
+	text-align: center;
+}
+table.frame small {
+	font-size: 1.1em;
+}
+table.tr {
+	padding: 0;
+	margin: 0 !important;
+	border: solid thin grey;
+	border-collapse: collapse;
+}
+table.frame table {
+	margin: 0 !important;
+	padding: 0 !important;
+	width: 100%;
+	border: solid thin grey;
+	border-collapse: collapse;
+}
+/* Algorithms */
+div.algo {
+	counter-reset: lineNumber -1;
+	border-top: solid thin lightgrey;
+	border-bottom: solid thin lightgrey;
+	padding: 0.5em 0;
+}
+div.algo small { font-size: inherit; }
+div.algo ul {
+	padding: 0;
+	margin: 0;
+}
+div.algo ul li {
+	margin: 0 0 0 0;
+	padding: 0;
+}
+div.algo>ul>li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+div.algo ul li li { list-style:disc; }
+div.algo ul li li li { list-style:circle; }
+div.algo ul li::marker { font-size: 0.8em; }
+div.algo>ul { margin-bottom: 1em; }
+div.algo p {
+	font-size: inherit;
+	padding: 0;
+	margin: 0;
+}
+div.algo ol {
+	padding: 0 0 0 0;
+	margin: 0;
+	list-style: none;
+}
+div.algo ol li {
+	margin: 1px 0;
+	padding: 0;
+	display: block;
+}
+div.algo ol li::before {
+	content: counter(lineNumber);
+	counter-increment: lineNumber;
+	font-family: "CMU Serif";
+	position:relative;
+	display: inline-block;
+	min-width: 15px;
+}
+div.algo ol li { padding-left: 1em; }
+div.algo code {
+	font-family: var(--serif);
+	font-variant: small-caps;
+	font-size: inherit;
+}
+div.algo ol li::before {right: 1em;}
+div.algo ol li li::before { right: 2em; }
+div.algo ol li li li::before { right: 3em; }
+div.algo ol li li li li::before { right: 4em; }
+div.algo ol li li li li li::before { right: 5em; }
+div.lay3 {
+	width: fit-content;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+/* Flex layout */
+div.lay3 article {
+	display: flex;
+	padding: 0 1%;
+}
+div.lay3 section {
+	flex: 1;
+	margin: 0 1%;
+	border-bottom: solid thin lightgrey;
+}
+div.lay3 article:first-child section {
+	border-top: solid thin lightgray;
+}
+/* Pre */
+code {
+	/* font-family: "CMU Typewriter"; */
+	white-space: pre;
+}
+pre {
+	width: 97%;
+	margin: 2% auto;
+	white-space:pre;
+	overflow-x: scroll;
+	tab-size: 3;
+	overflow: auto;
+	padding: 0.5rem 0.6rem;
+	font-size: 1em;
+	border-top: solid thin grey;
+	border-bottom: solid thin grey;
+}
+pre code {
+	font-family: var(--mono);
+	font-size: 0.8em;
+}
+pre:not(.language-rust) {
+	height: 100%;
+	line-height: 1.3;
+}
+/* Side notes */
+div.note {
+	z-index: 5;
+	position: absolute;
+	display: flex;
+	right: 0;
+	margin: 0 5% 0 0;
+	padding: 0;
+	width: 15%;
+	color: rgb(130, 177, 180);
+}
+div.note sup {
+	display: block;
+	margin-top: 5%;
+}
+div.note div.note-content {
+	font-size: 0.85rem;
+}
+/* Reference page diagrams */
+.cb_ref path {
+	stroke-width: 2;
+	fill: rgb(255, 242, 192);
+	stroke: rgb(178, 140, 34);
+}
+aside { font-size: 11px; }
+aside h2 {font-size: 1.5em}
+/* 2-column-layout - full width */
+div.cols2 article {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+}
+/* Media Queries */
+@media (min-width: 1px) and (max-width: 500px) {
+	html {font-size: 12px;}
+	div.index_chapter, 
+	div.index_chapter2,
+	div.index_fullwidth {
+		column-count: 1;
+	}
+}
+@media (min-width: 501px) {
+	html {font-size: 11px;}
 }

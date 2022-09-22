@@ -1,0 +1,1412 @@
+# Compound Data Types
+
+<div className="outline">
+
+1. [Product Types](#product-types)
+	1. [Record Types](#record-types)
+2. [Sum Types](#sum-types)
+	1. [Datatype Bindings](#datatype-bindings)
+	2. [Enumerations](#enumerations)
+3. [Case Expressions](#case-expressions)
+	1. [Pattern Matching in Other Languages](#pattern-matching-in-other-languages)
+4. [Recursive Types](#recursive-types)
+	1. [Expression Trees](#expression-trees)
+5. [Type Synonyms](#type-synonyms)
+6. [Polymorphic Datatypes](#polymorphic-datatypes)
+7. [Pattern Matching & Functions](#pattern-matching--functions)
+	1. [Excursion: Pattern Matching in Swift](#excursion-pattern-matching-in-swift)
+8. [Type Inference & Pattern Matching](#type-inference--pattern-matching)
+	1. [Polymorphic Functions](#polymorphic-functions)
+9. [Polymorphic & Equality Types](#polymorphic--equality-types)
+10. [Nested Patterns](#nested-patterns)
+11. [Exceptions](#exceptions)
+12. [Tail Recursion](#tail-recursion)
+
+</div>
+
+Data types in programming languages fall into two categories: (1) **base
+types**, and (2) __compound types__ (also called _composite types_). We
+avoid using the term _primitive types_ for base types because the word
+_primitive type_ connotes a type that cannot be modified, which is not
+necessarily true of all languages (Swift, for example, allows its base
+types provided by the standard library to be extended). A language's base
+types are the types the language provides by default. These are the types
+that describe the basic values the language understands. In ML, these types
+include `int`, `bool`, `real`, `unit`, etc.
+
+In contrast, composite types are data types that contain other types in
+their definition. The data types `tuple`, `list`, and `option` are all
+examples of a compound data type. More specifically, these are a kind of
+compound data type called an __algebraic data type__.
+
+In ML and most other languages, there are three building blocks to
+constructing a composite type: (1) an __each-of__ type (more formally,
+__product types__); (2) a __one-of__ type (formally a __sum type__); and
+(3) a __self-reference__ type (a __recursive type__). We go over each of
+these in turn.
+
+In an _each-of type_ ${p,}$ the value of type ${p}$ contains multiple
+values, where each value has the type ${t_1,}$ ${t_2,}$ ${\ldots,}$
+${t_n.}$ (Type ${t_i}$) being some base type or other compound type). Thus,
+if we have a value of type ${p,}$ then that value will have values of
+${t_1,}$ ${t_2,}$ _and_ ${t_n.}$
+
+In a _one-of type_ ${s,}$ the value of type ${s}$ contains multiple values,
+where each value is one of ${t_1,}$ ${t_2,}$ ${\ldots,}$ ${t_n.}$ In other
+words, if we have value of type ${s,}$ then the value has values of type
+type ${t_1,}$ ${t_2,}$ _or_ ${t_n.}$
+
+Finally, a value with a _self-reference type_ ${r}$ is a value that
+contains other values of type ${r.}$ I.e., there is some notion of
+self-reference. Types like lists or trees are self-reference types. Why?
+Because values of a list type contain other lists, and values of a tree
+type contain other trees.
+
+Notice that these types correspond to the logical `AND`, `OR`, and the
+axiom of induction. It turns out that with just these three constructs, we
+can describe an enormous amount of data. How? For starters, compound data
+types can nest, so we can have many different combinations of the data
+types above. We might have a recursive-sum type, or a sum-product type, or
+a recursive-sum-product type, etc.
+
+## Product Types
+
+The each-of type is more formally the product type. A product type
+describes the values containing _each of_ the values of type
+${t_1, t_2, \ldots, \textit{ and } \space t_n.}$ Tuples are the most
+obvious example of product type data. A tuple such as `(1, true)` is a
+value of type `int*bool`. The tuple describes the values containing an
+`int` and a `bool`.
+
+### Record Types
+
+One way to create a product type is through a __record type__. In a record
+type, each component has a __named field__. And to each named field, there
+is a value. Creating and instantiating a record type has two results: (1) a
+__record value__, which holds values, and (2) a __record type__, which
+holds types. For example:
+
+```sml
+val student = {name="Jo Ann", age=19, enrolled=true}
+```
+
+```bash
+val student = {age=19,enrolled=true,name="Jo Ann"} :
+{age:int, enrolled:bool, name:string}
+```
+
+In other languages, the canonical example of a record type is the `struct`.
+Above, we created a _record_ called `student`, which contains the fields
+`name`, `age`, and `enrolled`. We can also see the record's type:
+`{age:int, enrolled:bool, name:string}`. Depending on the language
+implementation, we may or may not see a different ordering of the fields.
+This is because records do not have inherent order. It is up to the
+language implementation on how to order the fields. Here, this particular
+implementation of ML went with alphabetical order.
+
+Instantiating the record `student`, we create a record value containing
+`19`, `true`, and `"Jo Ann"`. We also have a record type
+`{age:int, enrolled:bool, name:string}`. If we want to access the values in
+the fields, we use the same hash-syntax we saw with tuples:
+
+```sml
+val student = {name="Jo Ann", age=19, enrolled=true}
+val JoAnnName = #name student
+```
+
+```bash
+val student = {age=19,enrolled=true,name="Jo Ann"} :
+{age:int, enrolled:bool, name:string}
+val JoAnnName = "Jo Ann" : string
+```
+
+Above, we have the __record expression__ `#name student`, and it evaluates
+to a record value. In sum, the general syntax for a record expression:
+
+> ${f_1}$ = ${e_1}$, ${\ldots}$, ${f_n}$ = ${e_n}$
+
+where ${f_1 \ldots f_n}$ are _unique_ field names, and ${e_1 \ldots e_n}$
+are expressions.
+
+Astute observation reveals how closely a record resembles a tuple. In fact,
+tuples _are_ records. Specifically, they are records with numeric field
+names to indicate _position_:
+
+```sml
+val foo = (1, 2, 3)
+val bar = {1=1, 2=2, 3=3}
+```
+
+Above, there are few differences between `foo` and `bar` (if we print bar,
+we get back a tuple, `(1, 2, 3)`). The most obvious of which is the way we
+would access the component values, and that tuples are shorter. To access a
+record with a field name `age`, we would reference the field name `age` to
+access the value stored in that field name. In contrast, we access a
+particular value in a tuple by referencing that value's position—e.g.,
+`(#1 myTuple)` to access the value in position 1. Why not just use records?
+Because tuples are such a common data structure that we provide it a syntax
+of its own; a form of __syntactic sugar__.
+
+Which should we use? It depends on what we are trying to accomplish.
+Records are easier to access in terms of remembering which values are
+associated with which field (at least in comparison to indices). Usually,
+where a particular piece of information is best represented by numerous
+fields, records are the preferred choice, since they allow us to write
+descriptive field names. At the end of the day, it comes down to whether we
+want to refer to values in a collection by position, or by name.
+
+## Sum Types
+
+A sum type describes the values containing a value of _one of_ the types
+${t_1, t_2, \ldots, \textit{ or } \space t_n.}$ An example of sum type data
+is `int option`. Here, the data type either contains an `int` or it does
+not. Functional languages like ML tend to handle sum types succinctly, at
+least as compared to object-oriented languages like Java, where
+sub-classing is almost always required.
+
+### Datatype Bindings
+
+Sum type data provide a good segue to __datatype bindings__. So far, we've
+seen variable bindings, indicated by the use of `val`, and function
+bindings, indicated by the use of `fun`. With datetype bindings, we use the
+symbol `datatype`. To create custom sum types, we create datatype bindings.
+The datatype binding takes the following form:
+
+> datatype ${n}$ = ${a}$ of ${t_0}$ | ${b}$ of ${t_1}$ | ${c}$ of ${t_n}$
+
+where ${n}$ is the name of the datatype; ${a, b, c}$ are constructors; and
+${t_n}$ are existing types.
+
+Each of ${a, b, c}$ are called constructors. A constructor does what its
+name suggests—it constructs instances of the datatype ${n.}$ Those
+instances can be one of three things: ${t_0}$ of type ${n,}$ ${t_1}$ or
+type ${n,}$ or ${t_n}$ of type ${n.}$ When we create a datatype bindings,
+we add all of these possibilities—${t_0}$ of type ${n,}$ etc.—to both the
+static and dynamic environment. For example:
+
+A __constructor__ is just another function. In the case of datatype ${n,}$
+it is a function that returns instances of datatype ${n.}$.
+
+```sml
+datatype fooType = TwoInts of int * int
+        | Str of string
+        | xyz
+val a = Str "Hi"
+val b = Str
+val c = xyz
+val d = TwoInts(1 + 1, 2 + 2)
+val e = a
+```
+
+```bash
+datatype fooType = Str of string | TwoInts of int * int | xyz
+val a = Str "Hi" : fooType
+val b = fn : string -> fooType
+val c = xyz : fooType
+val d = TwoInts (2,4) : fooType
+val e = Str "Hi" : fooType
+```
+
+We can think of the constructs like `Str` and `xyz` as "tags" indicating
+what kind, or __variant__, of `fooType` we have.
+
+This data type defines a new type for a value that can be one of three
+types: (1) `int*int` (constructed by `TwoInts`), (2) `string` (constructed
+by `Str`), or (3) nothing (constructed by `xyz`). These three types
+determine what __variant__ of the data type the value is (e.g., is it an
+`int*int`, a `string`, or nothing). Again, these three entities are called
+constructors. More generally, the three entities are called **tagged
+unions**.
+
+When we include the constructor above, we insert four new entities to the
+environment: (1) a new type called `fooType` to be used like any other
+type; (2) a constructor `TwoInts`; (3) a constructor `Str`; and (4) a
+constructor `xyz`.
+
+Having created the datatype `fooType`, we can instantiate the datatype:
+
+```sml
+val a = Str "Hello" (* evaluates to Str("Hello") *)
+val b = TwoInts(1, 3-2)
+val c = Str (* evaluates to fn : string -> fooType *)
+```
+
+Anytime we create a datatype ${n}$, subsequent values of type ${n}$ are
+made with one of ${n}$'s constructors. Hence the name "one-of type." The
+constructor's return consists of two parts—(1) a tag indicating which
+constructor was used to create the value, and (2) the actual data stored.
+
+Once we've created a datatype, we need a way to access its variants. We do
+so with what we might call __variant-accessing functions__. These functions
+generally take two forms: (1) checking _what_ the variant is, or (2)
+extracting, if any, the data associated with that variant. We've seen some
+of these functions already. The functions `null` and `isSome` check what
+variant a `list` is (is it a `list` or is it `null`) and whether an
+`option` has a some-value respectively. In contrast, the `hd`, `tl`, and
+`valOf` functions all _extract_ data from a given datatype.
+
+### Enumerations
+
+An enumeration, or __an enumerated type__, are one kind of sum type. In
+object-oriented languages, they are often called `enum`s ("eh-nooms"), and
+in R, it is called a `factor`. In formal mathematics and statistics, they
+are broadly referred to as categorical variables. Some examples: U.S.
+currency has many different enumerations: penny, nickel, quarter,
+half-dollar, one-dollar, five-dollar, ten-dollar, twenty-dollar,
+fifty-dollar, a hundred-dollar. Traffic lights in North America have three
+enumerations: red, yellow, green. Here is another example in ML code:
+
+```sml
+datatype suit = Club | Diamond | Heart | Spade
+```
+
+Regardless of what variant of `suit` the value is, that variant can itself
+contain data:
+
+```sml
+datatype rank = Jack | Queen | King | Ace | Num of int
+```
+
+We can combine these two sum types into a product type: `suit * rank`. Sum
+types are particularly useful when we want to have different data in
+response to the state of the world. For example, maybe we are operating a
+library where we want to identify a book by an ID number, but if the book
+does not have an ID, use instead the book's title:
+
+```sml
+datatype id = BookNum of int
+     | Title of string*(string option)*string
+```
+
+Enumerations, or sum types more generally, are often neglected by beginning
+programmers. Often, students will instead use a product type when a sum
+type is a much better fit. For example, say we wanted to represent a
+student in a course. Representing the cards with a product type, we might
+write:
+
+```sml
+{
+ studentID : int,
+ firstName : string,
+ middleName : string option, (* not all students have middle names *)
+ lastName : string
+}
+```
+
+The problem with the approach above is twofold: (1) It's not very concise
+nor is it immediately clear; (2) the comments are playing too important of
+a role. The second point is more problematic than the first. Comments are
+important in code, but the moment they start controlling how a program
+runs, we've entered dangerous territory. Our program can have hundreds, if
+not thousands, of comments, and we can't expect either ourselves or others
+to remember all of them. A much better approach is to use a sum type:
+
+```sml
+datatype student = studentID of int
+        | firstName of string
+        | middleName of string option
+        | lastName of string
+```
+
+The code above tells us that every value of type `student` has at least one
+of the constructors above. Now, all this said, there are situations where
+we might want to use a product type. For example, maybe the `student` type
+is one where every single `student` must have all the properties above. In
+those situations, a product type would be more appropriate. But if we don't
+need all these properties—i.e., we just need to identify a student—a sum
+type is appropriate. As an aside, if we decide to use a product type, we
+should use an `option` instead of a comment for the `studentID`:
+
+```sml
+{
+ studentID : int option
+ firstName : string,
+ middleName : string option
+ lastName : string
+}
+```
+
+## Case Expressions
+
+Now that we know about variant-accessing functions, we might notice that
+some data types do not have the variant-accessing functions we saw for
+things like lists and optionals. For example, the `string` type doesn't
+have variant-accessing functions like `isString` or `getString`. What
+happened there?
+
+Recall what we want with datatype bindings: (1) We need a way to determine
+what _variant_ the value is, and (2) a way to extract the data, if any,
+associated with that variant. Languages like ML combine these two needs as
+a single construct through __case expressions__ and __pattern matching__.
+
+```sml
+datatype fooType = TwoInts of int * int
+       | Str of string
+       | xyz
+fun f (x : fooType) =
+ case x of
+  xyz => 3
+  | Str s => 8
+  | TwoInts(i1, i2) => i1 + i2
+```
+
+In the code above, we have the same datatype we saw before—`fooType`. In
+ML, pattern matching is done in the order written.
+
+The more interesting part is that we now have a function that takes a value
+of type `fooType` (note that the parameter list is optional, but we include
+it for clarity). This function takes a `myType` and returns an `int`. The
+keywords `case ... of` denote a _case expression_, and they are what we use
+to access the values of the given datatype. Each of the lines following
+`case ... of` are _cases_, separated by a pipe (|). The case expression
+works as such: (1) If `x` is an `xyz`, evaluate to `3.` (2) If `x` is a
+`Str`, evaluate to `8`. (3) If `x` is a `TwoInts`, evaluate to `i1 + i2`.
+
+> ${p \implies \textit{exp}}$
+
+Where ${p}$ is a pattern, and ${\textit{exp}}$ is an expression. A more
+general syntax:
+
+```rust
+fun f x =
+case x of
+ p0 => exp0
+ | p1 => exp1
+ | p2 => exp2
+ | ...
+ | pn => expn
+```
+
+Patterns are the construct used to match against the result of evaluating
+the case's first expression (in the syntax above, `p0 => exp0`.) This form
+of evaluation has a specific name—__pattern matching__.
+
+Importantly, case expressions are __first-match__, meaning that the moment
+there is a _pattern match_, the entire expression evaluates to that pattern
+match's expression. ML will not continue to check the remaining branches.
+
+Having introduced case expressions, we will stray from using `hd`, `tl`,
+and `null`. These are all constructors, but it is far better to use the
+constructors `[]` and `::`. The constructor `[]` represents the empty list,
+and `::` represents the non-empty list. We will use these constructors
+alongside case expressions.
+
+### Pattern Matching in Other Languages
+
+Pattern matching is nearly synonymous with functional languages. This is
+because in many functional language implementations, designers follow the
+premise that the `=` sign denotes _equivalence_ rather than _assignment_.
+Introductory programming courses often emphasize that `=` means assignment,
+not equality. This is usually the case for object-oriented languages like
+Java, but not necessarily accurate for the functional languages. Of course,
+such courses emphasize this point heavily without mention of the functional
+language side to avoid overcomplicating an introductory course. The
+distinction between equivalence and assignment is a good point to
+distinguish the ways programs are written across various languages.
+
+In functional languages like ML (and more broadly, declarative languages),
+programs are written as a sequence of _expressions_. In other words, every
+expression in the language evaluates to some value, but the programmer
+leaves it to the computer to decide what to do, or how to handle, those
+values. In procedural languages (and more broadly, imperative languages)
+like C, programs are written as a sequence of _statements_—the programmer
+must instruct the computer how to perform a particular computation. The
+premise that `=` means assignment stems from the imperative language
+tradition.
+
+Pattern matching in object-oriented languages like Java is not as clean or
+straightforward as it is in functional languages like ML. In ML, we have
+the `case...of` construct. However, in other languages, we may have to use
+either a `switch` statement or a series of `if-elseIf-else` statements.
+Consider for example, Java:
+
+```java
+enum TrafficLight {
+ GREEN,
+ YELLOW,
+ RED
+}
+
+public class MainProgram{
+ public static void main(String []args){
+  TrafficLight streetA = TrafficLight.GREEN;
+  String result = motion(streetA);
+  System.out.println(result);
+ }
+
+ public static String motion(TrafficLight light) {
+  if (light == TrafficLight.GREEN) {
+    return "Go";
+  }
+  else if (light == TrafficLight.YELLOW) {
+    return "Slow Down";
+  }
+  else {
+    return "Stop";
+  }
+ }
+}
+```
+
+```bash
+Go
+```
+
+The code above works, but it's not as clean as how we would write it in ML:
+
+```sml
+datatype TrafficLight = Green
+       | Yellow
+       | Red
+fun motion x =
+ case x of
+  Green => "Go"
+  | Yellow => "Slow down"
+  | Red => "Stop"
+val x = Green
+val y = motion(x)
+```
+
+```bash
+datatype TrafficLight = Green | Red | Yellow
+val motion = fn : TrafficLight -> string
+val x = Green : TrafficLight
+val y = "Go" : string
+```
+
+Moreover, the Java implementation won't check to see if we missed a case.
+ML will return a compiler error if we miss a case in a case expression.
+Moreover, the Java implementation won't catch if we have duplicate cases in
+the pattern matching. ML again will return a compiler error. Both these
+safeguards ensure that our program never uses runtime unless a pattern is
+found.
+
+Why isn't pattern matching more common in object-oriented languages? It's
+largely due to history and the market for programming languages. pattern
+matching—and algebraic data types more generally—can be traced to the Hope
+language in 1980. From Hope, algebraic data types and their associated
+features like pattern matching made their way into ML, and later on to
+Miranda, Haskell, and today, languages like Scala and Erlang. Had
+functional languages taken off, we probably would see more pattern matching
+constructs today.
+
+Unfortunately for the functional languages, the object-oriented languages
+reigned supreme. In their traditions, algebraic data types are arguably
+antithetical to the object-oriented philosophy, where data is expressed
+through objects and subtyping. We will see why there may be an antithesis
+in later sections.
+
+## Recursive Types
+
+A recursive compound data type is a type that can refer to itself in its
+definition to describe a recusive structure. We've seen one such recursive
+type, lists. An `int` list describes values that contain either nothing, or
+contains an `int` and another `int` list. We can see this to be the case
+when we build a list recursively:
+
+```rust
+1 :: [ 2 :: [3 :: [4 :: [5 :: [6 :: []]]]]]
+ ⇩
+[1, 2, 3, 4, 5, 6]
+```
+
+In fact, we can implement our own definition of a list:
+
+```sml
+datatype list = Empty
+       | Cons of int * list
+val x = Cons(1, Cons(2, Cons (3, Empty)))
+```
+
+```bash
+datatype list = Cons of int * list | Empty
+val x = Cons (1,Cons (2,Cons (3,Empty))) : list
+```
+
+Those familiar with a languages of the Lisp family may recognize the
+example above. With our implementation, we can write various functions:
+
+```sml
+datatype list = Empty
+     | Cons of int * list
+val x = Cons(1, Cons(2, Cons (3, Empty)))
+
+fun append (xs, ys) =
+ case xs of
+  Empty => ys
+  | Cons(x, xs') => Cons(x, append(xs', ys))
+```
+
+### Expression Trees
+
+Recursive types can be created through a combination of product or sum
+types. One particularly powerful recursive type are _expression trees_.
+Expression trees are recursive product types. Consider, for example, the
+following:
+
+```sml
+datatype exp = Constant of int
+       | Negate of exp
+       | Add of exp * exp
+       | Multiply of exp * exp
+fun eval e =
+ case e of
+  Constant i => i
+  | Negate e2 => ~ (eval e2)
+  | Add(e1, e2) => (eval e1) + (eval e2)
+  | Multiply(e1, e2) => (eval e1) * (eval e2)
+
+val x = Add(Constant (10 + 9), Negate (Constant 4))
+val y = eval(x)
+```
+
+```bash
+datatype exp
+ = Add of exp * exp | Constant of int | Multiply of exp * exp | Negate of exp
+val eval = fn : exp -> int
+val x = Add (Constant 19,Negate (Constant 4)) : exp
+val y = 15 : int
+```
+
+Let's walk through this slowly. First, let's look at the datatype binding:
+
+```sml
+datatype exp = Constant of int
+       | Negate of exp
+       | Add of exp * exp
+       | Multiply of exp * ex
+```
+
+This datatype is called `exp`. In it, there are four constructors:
+`Constant`, `Negate`, `Add`, and `Multiply`. The `Constant` constructor is
+of type `int`. I.e., it's a function that takes an `int`. The other
+constructors, `Negate`, `Add`, and `Multiply`, are recursive. They take an
+`exp`. Now, let's focus on the value bound to `x`:
+
+```sml
+val x = Add(Constant (10 + 9), Negate (Constant 4))
+```
+
+The value we've assigned to `x` is a value of type `exp`. The value itself
+is composed of values of type `exp`: `Constant (10 + 9)` and
+`Negate (Constant 4)`. The value `Constant(10 + 9)` is composed of just one
+value, `10 + 9`, which evaluates to an `int`, `19`. The value
+`Negate(Constant 4)` consists of one value, `Constant(4)`. In turn,
+`Constant(4)` consists of one value, `4`, which is an `int`.
+
+We've effectively encapsulated the entire tree above into a single
+expression, made possible by a datatype binding. This means that every
+value of type `exp` will look like some sort of tree. We can then pass that
+tree into a function:
+
+```sml
+fun eval e =
+ case e of
+  Constant i => i
+  | Negate e2 => ~ (eval e2)
+  | Add(e1, e2) => (eval e1) + (eval e2)
+  | Multiply(e1, e2) => (eval e1) * (eval e2)
+```
+
+The function above will perform a pattern match. If the value is a
+`Constant`, return the integer. If the value is a `Negate`, return the
+negation. If it's `Add`, return the sum. And if it's a `Multiply`, return
+the product. When we pass `x` into the function, ML begins the pattern
+matching:
+
+```sml
+ Add(Constant (10 + 9), Negate (Constant 4))
+ (Constant (10 + 9)) + (Negate(Constant 4))
+ 19 + (Negate(Constant 4))
+ 19 + (-(Constant 4))
+ 19 + (-4)
+ 15
+```
+
+## Type Synonyms
+
+Another extremely useful binding is the __type synonym__. Many languages,
+for example Swift, provide this feature in other terms like <i>type
+alias</i>. A type synonym creates another name for existing type. We can
+then use that name interchangeable with the existing type.
+
+For example, if we write:
+
+```sml
+type age = int
+```
+
+We now have a type called `age`, which we can use wherever we must write
+`int`. Needless to say, type synonyms are extremely lead to much more
+readable and meaningful programs.
+
+Note that type synonyms are a kind of __name binding__, rather than a
+__datatype binding__. In a datatype binding, we are introducing a new
+type—it is not the same as any existing type. The datatype binding will
+create constructors that produce a value of the new type. A type synonym,
+however, is a name binding—it is simply a name that points to an existing
+data type.
+
+Type synonyms are particularly useful when used with composite data types
+(i.e., the types we've created ourselves). For example:
+
+```sml
+datatype suit = Club | Diamond | Heart | Spade
+datatype rank = Jack | Queen | King | Ace | Number of int
+type card = suit * rank
+```
+
+In the code above, we've created two sum types, `suit` and `rank`. Then, we
+represent a card as a tuple, `(suit, rank)`. Instead of repeatedly writing
+`suit * rank`, we simply call it `card`.
+
+The same idea extends to product types. Instead of repeatedly writing a
+record, we can encapsulate it in a type synonym:
+
+```sml
+type studentIdentification = { studentID : int option,
+                firstName : string,
+                middleName : string option,
+                lastName : string }
+```
+
+## Polymorphic Datatypes
+
+Recall that we noted how the `list` and `option` types are really datatype
+bindings. We want to refine this notion just a bit further. Lists and
+options are a special type of datatype binding—they are datatype bindings
+that take __option parameters__. Thus, `list` itself is not a type. The
+data types are actually `int list` or `string list`. The same goes for
+optionals. `option` is not a type; it's `int option`, or `string option`.
+
+So what do the identifiers `list` and `option` represent? They are <b>type
+constructors</b>—functions that take _type parameters_ to produce types.
+More specifically, `list` and `option` are _polymorphic type constructors_.
+
+The type constructors `list` and `option` are examples of a big decision
+language designers have to make. Do we want a single <b>polymorphic data
+type</b> (a data type that changes depending on what's passed into it)
+list, or do we want a single constructor called `list` that produces
+different types depending on its parameters? ML's designers went with the
+second option, and included the ability for users to define their own
+polymorphic datatypes.
+
+For example, we can create a _polymorphic binary tree_ type:
+
+```sml
+datatype ('a, 'b) tree = Node of 'a * ('a, 'b) tree * ('a, 'b) tree
+            | Leaf of 'b
+```
+
+In the data type above, the type is not `tree`. Instead, the types are
+`int * string tree` or `int * int tree`. It all depends on what's passed as
+arguments for alpha `a` and alpha `b` (the parameters `'a` and `'b`).
+
+## Pattern Matching & Functions
+
+It turns out that in ML, we've been using pattern matching all along. To
+see how, we explore pattern matching further.
+
+In the previous sections, we used pattern matching with respect to sum
+types. We did so because that's really the only way we access the values
+stored in a sum type. But what about product types? We can actually use
+pattern matching for records and tuples. Let's consider the tuple. Suppose
+we had a function that takes a triple, and returns the sum of its
+individual parts:
+
+```sml
+fun sum_triple triple =
+ case triple of
+  (x, y, z) => x + y + z
+
+val x = (1, 2, 3)
+val y = sum_triple(x)
+```
+
+```bash
+val sum_triple = fn : int * int * int -> int
+val x = (1,2,3) : int * int * int
+val y = 6 : int
+```
+
+Above, we used a case expression. In this case, the function takes the
+tuple, and performs a computation, addition, where each of `x`, `y`, and
+`z` match.
+
+The example above, however, is poor style. We've written what's called a
+
+_one-armed case expression_—a case expression that only has one case. A
+much better way:
+
+```sml
+fun sum_triple triple =
+ let val (x, y, z) = triple
+ in
+  x + y + z
+ end
+val x = (1, 2, 3)
+val y = sum_triple(x)
+```
+
+```bash
+val sum_triple = fn : int * int * int -> int
+val x = (1,2,3) : int * int * int
+val y = 6 : int
+```
+
+Notice how we bound `(x, y, z)` to `triple`, the argument passed. This is
+just a pattern match. Another example:
+
+```sml
+fun full_name person =
+ let val { firstName = x, lastName = z } = person
+ in
+  x ^ " " ^ z
+ end
+val jane = { firstName = "Jane", lastName = "Eyre" }
+val janeEyre = full_name(jane)
+```
+
+```bash
+val full_name = fn : {firstName:string, lastName:string} -> string
+val jane = {firstName="Jane",lastName="Eyre"} :
+ {firstName:string, lastName:string}
+val janeEyre = "Jane Eyre" : string
+```
+
+We can write the code above even more concisely:
+
+```sml
+fun sum_triple (x, y, z) =
+ x + y + z
+fun full_name { firstName = x, lastName = z } =
+ x ^ " " ^ z
+
+val x = (1, 2, 3)
+val y = sum_triple(x)
+val jane = { firstName = "Jane", lastName = "Eyre" }
+val janeEyre = full_name(jane)
+```
+
+```bash
+val sum_triple = fn : int * int * int -> int
+val full_name = fn : {firstName:string, lastName:string} -> string
+val x = (1,2,3) : int * int * int
+val y = 6 : int
+val jane = {firstName="Jane",lastName="Eyre"} :
+ {firstName:string, lastName:string}
+val janeEyre = "Jane Eyre" : string
+```
+
+Take a close look at how we wrote the functions. The variable we pass into
+the function—the argument—is actually a pattern match! This in turn means
+that we do not have to use the `#` symbol to extract data from a tuple. We
+can simply pattern match. This also means that we do not always have to
+specify types for arguments.
+
+Having seen enough ML, we might notice something jump out at us. That
+function `sum_triple` looks an awful lot like a function that takes three
+arguments. We've seen functions that take just one argument:
+
+```sml
+fun double(x) =
+ x * 2
+val x = 3
+val y = double(3)
+```
+
+```bash
+val double = fn : int -> int
+val x = 3 : int
+val y = 6 : int
+```
+
+How does ML know when we're doing a pattern match and when we're passing
+arguments to a function? With a simple rule: Every function in ML only
+takes one argument, and uses pattern matching to take the parts out. In the
+case of our regular function definitions, the argument passed is a tuple.
+The tuple is the one argument.
+
+This feature in ML leads to the peculiar observation that ML is a language
+where there is no such thing as a multi-argument function. In other words,
+functions in ML can only take one parameter. Of course, this borders on
+pedantry and isn't a great marketing opener.
+
+Whether the tuple has one, two, three, or a hundred parts, ML uses pattern
+matching to extract them. But what about functions that take no arguments?
+
+```sml
+fun greet() = print "Hello!\n"
+```
+
+The rule still applies. Every function takes only one argument. Here, there
+are no arguments, so a pattern match is done. In this case, the pattern to
+match is `()`, and it matches to a value of type `unit`.
+
+Using pattern matching for functions allows us to write functions that
+would otherwise be extremely unwieldy to write in languages like Java.
+
+```sml
+fun turn_left (x, y, z) = (y, z, x)
+fun turn_right coordinate =
+ turn_left(turn_left coordinate)
+fun complete_rotation coordinate =
+ turn_right(turn_right(turn_right coordinate))
+
+val original = (1, 2, 3)
+val turnLeft = turn_left(original)
+val turnRight = turn_right(original)
+val turnRight_turnRight_turnRight = complete_rotation(original)
+```
+
+```bash
+val turn_left = fn : 'a * 'b * 'c -> 'b * 'c * 'a
+val turn_right = fn : 'a * 'b * 'c -> 'c * 'a * 'b
+val complete_rotation = fn : 'a * 'b * 'c -> 'a * 'b * 'c
+val original = (1,2,3) : int * int * int
+val turnLeft = (2,3,1) : int * int * int
+val turnRight = (3,1,2) : int * int * int
+val turnRight_turnRight_turnRight = (1,2,3) : int * int * int
+```
+
+Using pattern matching allows us to write functions whose arguments
+immediately pass into another function without the need to explicitly write
+out parameters. This is something not very many languages can do. In ML,
+the three functions above are written succinctly because of pattern
+matching. In other languages like Java, it's fairly awkward to implement.
+Not only does pattern matching allow ML to handle functions like those
+above easily, it reduces the _size_ of a language's implementation. Here,
+ML's size is reduced by the fact that there is no separate implementation
+for multi-argument functions.
+
+### Excursion: Pattern Matching in Swift
+
+Some languages, like Swift, have been directly inspired by pattern matching
+in functional languages. And rightly so; it is a truly killer feature. For
+example, in Swift, we can iterate through a list of tuples in several ways.
+Suppose we have an array of 2-tuples, and we want to print just the second
+part of the tuple:
+
+```swift
+import Foundation
+
+let arrTuple = [(0, 1), (2, 3), (4, 5)]
+for i in 0..<arrTuple.count {
+  print(arrTuple[i].1)
+}
+```
+
+```bash
+1
+3
+5
+```
+
+The code above works fine, but it can be made more concise with pattern
+matching:
+
+```swift
+import Foundation
+
+let arr = [(0, 1), (2, 3), (4, 5)]
+for (_, i) in arr {
+  print(i)
+}
+```
+
+```bash
+1
+3
+5
+```
+
+In this case, we've used `_` (the underscore) to indicate a pattern match,
+since we don't care for the first part of the tuple.
+
+## Type Inference & Pattern Matching
+
+Having discussed pattern matching, we should address its relationship to
+type inference. The topic of type inference will be discussed in later
+sections. Recall that we can use `#` to access the values in a record or
+tuple. With pattern matching, we no longer need to use `#`, nor do we need
+to explicitly state the types for our function arguments. Why are we
+allowed to do this? Because ML uses pattern-matching to infer types.
+However, for type inference to work, we have to give ML enough information
+to work with.
+
+Notice ML's type inference for these functions:
+
+```sml
+fun sum_triple (x, y, z) =
+ x + y + z
+fun full_name {firstName = x, lastName = y} =
+ x ^ " " ^ y
+```
+
+```bash
+val sum_triple = fn : int * int * int -> int
+val full_name = fn : {firstName:string, lastName:string} -> string
+```
+
+ML can infer the types for these functions because of the computations we
+intend to perform in the functions' bodies. For `sum_triple`, we are asking
+for addition, so ML infers `int`. In `full_name`, we are asking for
+concatenation, so ML infers `string`. The patterns told ML most of what is
+needed for type inference; the rest of the necessary information is
+provided by the operations. If we used the `#` syntax, type inference will
+still work:
+
+```sml
+fun sum_triple (triple : int*int*int) =
+ #1 triple + #2 triple + #3 triple
+fun full_name (n: {firstName:string, lastName:string}) =
+ #firstName n ^ " " ^ #lastName n
+```
+
+```bash
+val sum_triple = fn : int * int * int -> int
+val full_name = fn : {firstName:string, lastName:string} -> string
+```
+
+Now, notice what happens when remove our explicit type indicator for the
+first function:
+
+```sml
+fun sum_triple (triple) =
+ #1 triple + #2 triple + #3 triple
+fun full_name (n: {firstName:string, lastName:string}) =
+ #firstName n ^ " " ^ #lastName n
+```
+
+```bash
+records.sml:1.3-2.36 Error: unresolved flex record (need to know the names of ALL the fields
+in this context)
+ type: {1:'Y[OL(+,+)], 2:'Y[OL(+,+)], 3:'Y[OL(+,+)]; 'Z}
+```
+
+ML cannot infer the type and returns a compilation error. This is because
+ML knows that there must be a tuple, but it has no idea whether the tuple
+has four, five, or even a hundred parts. Thus, we have to provide the
+indicator explicitly.
+
+### Polymorphic Functions
+
+What happens when a function doesn't use all of its arguments? How does
+type inference work there? Well, let's see an example:
+
+```sml
+fun partial_sum (x, y, z) =
+ x + z
+
+fun full_name {firstName = x, middleName = y, lastName = z} =
+ x ^ " " ^ z
+```
+
+```bash
+val partial_sum = fn : int * 'a * int -> int
+val full_name = fn :
+ {firstName:string, lastName:string, middleName:'a} -> string
+```
+
+Notice the `'a`. The `'a` indicates that the particular part not used can
+be of any type. The function will still work; the function is just more
+general—i.e., a __polymorphic function__.
+
+## Polymorphic & Equality Types
+
+We can gain some insight into how ML infers types for polymorphic functions
+by looking at a simple example:
+
+```sml
+fun append(xs, ys) =
+ case xs of
+  [] => ys
+  | x::<span data-text="Note that this is just a variable binding. We could have used anything here." class="tooltip">xs'</span> => x :: append(xs', ys)
+val list1 = append(["a", "b"], ["c", "d"])
+val list2 = append([1, 2], [3, 4])
+```
+
+```bash
+val append = fn : 'a list * 'a list -> 'a list
+val list1 = ["a","b","c","d"] : string list
+val list2 = [1,2,3,4] : int list
+```
+
+Notice that ML can infer the list's type even if we didn't explicitly state
+it. Our function `append()` is polymorphic. It has a type of
+`'a list * 'a list -> 'a list`, which is more general than some like
+`string list * string list -> string list`. The `xs` and `ys` can be of any
+type. What we cannot do is use `append()` with lists of different types:
+
+```sml
+fun append(xs, ys) =
+ case xs of
+  [] => ys
+  | x::xs' => x :: append(xs', ys)
+val list3 = append([1, 2], ["a", "b"])
+```
+
+```bash
+records.sml:7.5-7.39 Error: operator and operand do not agree [overload - bad instantiation]
+operator domain: 'Z[INT] list * 'Z[INT] list
+operand:         'Z[INT] list * string list
+in expression:
+ append (1 :: 2 :: nil,"a" :: "b" :: nil)
+```
+
+We cannot do so because all the `'a` must be replaced with a single type.
+However, we can append two lists of different types, as long as we use a
+second type parameter, `'b`.
+
+In some situations, we might notice a `''a`—two quotations instead of one.
+For example, a function type that looks like:
+
+```rust
+''a list * ''a -> int
+```
+
+The two prime ticks indicate an __equality type__. An equality type is a
+type whose value can be used with the `=` operator. This means that a
+function with the type above is polymorphic, but we the set of possible
+types that `''a` can take is limited—only those that can be used with the
+`=` operator. The set includes types like `string`, `int`, as well as
+tuples and lists (as long as they are composed of equality type values),
+but does not include types like `real` (floating point values) and function
+types.
+
+## Nested Patterns
+
+Return to pattern matching, we can nest case expressions as much as we'd
+like. However, a better approach is nesting the patterns rather than the
+case expressions themselves; nested patterns are usually much easier to
+read than nested case expressions.
+
+Pattern matching is recursive. The process: ML takes a pattern (which
+itself can contain patterns) and a value (which can contain other values)
+and asks, does this value have the same "shape" described by the pattern?
+If the answer is yes, then ML binds the relevant variables to the
+corresponding parts. This is very abstract, so several examples are needed.
+
+Suppose we have the following tuple of lists:
+
+```rust
+([1, 2, 3], [4, 5, 6], [7, 8, 9])
+```
+
+We want to write a function that returns the following:
+
+```rust
+[(1, 4, 7), (2, 5, 6), (3, 6, 9)]
+```
+
+Notice the pattern? The function takes a tuple of three lists, then returns
+a list of three tuples, where each the first tuple consists of all the
+first elements of the three lists, the second tuple consists of all the
+second elements of the three lists, and the third tuple consists of all the
+third elements of the three lists.
+
+Without pattern matching, the function would look like:
+
+```sml
+exception ListLengthMisMatch
+
+fun zip1(l1, l2, l3) =
+ if null l1 andalso null l2 andalso null l3
+ then []
+ else if null l1 orelse null l2 orelse null l3
+ then raise ListLengthMismatch
+ else (h2 l1, hd l2, hd l3) :: zip(tl l1, tl l2, tl l3)
+```
+
+The function above is pretty messy to look at. Worse, we are taking the
+risk of missing a case, and we aren't relying on any help from the type
+checker. What if we used pattern matching?
+
+```sml
+fun zip2 (l1, l2, l3) =
+ case l1 of
+  [] =>
+  (case l2 of
+   [] => (case l3 of
+     [] => []
+     | _ => raise ListLengthMismatch)
+    | _ => raise ListLengthMismatch)
+   | hd1 :: tl1 =>
+    (case l2 of
+     [] => raise ListLengthMismatch
+     | hd2::tl2 => (case l3 of
+       [] => raise ListLengthMismatch
+       | hd3::tl3 =>
+        (hd1, hd2, hd3)::zip3(tl1, tl2, tl3)))
+```
+
+This looks even worse than the previous implementation. Rather than using
+`andalso` and `orelse`, we're manually checking for all the possible
+patterns. Luckily there's a better way. Instead of checking for every
+pattern, we want to use the fact that patterns can exist inside patterns.
+
+Here is another implementation:
+
+```sml
+fun zip list_triple =
+ case list_triple of
+  ([], [], []) => []
+  | (hd1::tl1, hd2::tl2, hd3::tl3) => (hd1, hd2, hd3)::zip3(tl1, tl2, tl3)
+  | _ => raise ListLengthMismatch
+```
+
+In the example above, we're only considering three patterns. First:
+
+```rust
+([], [], [])
+```
+
+The pattern above is a tuple with three lists. When ML sees this pattern,
+it will match any value it finds that has the pattern of three empty lists
+within a tuple. If ML finds a match, it returns the empty list `[]`.
+
+Then there's a second pattern:
+
+```rust
+(hd1::tl1, hd2::tl2, hd3::tl3)
+```
+
+This pattern consists of a few parts: First, it is a tuple. Second, it is a
+3-tuple with three non-empty lists. I.e., it has a head and a tail. This
+means that `list_triple` will only match if it is a tuple with three
+non-empty lists. If matches, then we bind each head of the three lists in
+the tuple to `hd1`, `hd2`, and `hd3`. The same goes for `tl1`, `tl2`, and
+`tl3`. Then, `cons` the result of `(hd1, hd2, hd3)` to
+`zip3(tl1, tl2, tl3)`. Notice how this is recursive.
+
+## Exceptions
+
+Having discussed patterns, we can now more thoroughly investigate
+__exceptions__: idioms for indicating a particular condition as a runtime
+error. Exceptions are not unique to ML; they are found in numerous
+languages, both old and new. They are even found in reality—they are quite
+literally exceptions to a general rule or condition. For example, a
+professor might have a general rule of not accepting late assignments.
+However, there may be exceptions to that general rule: A personal
+emergency, being ill, or obtaining special permission for a late
+submission. Examining this from a programming perspective, we might model
+the professor's grading scheme as including a function called
+`is_generally_compliant()`, which checks whether a given submission is
+late. If the submission is late, it returns false. But, if some condition
+is true (i.e., excused earlier), we _throw_, or _raise_ an exception. When
+that exception is raised, we need some way to _handle_, or _catch_, that
+exception: Return some message, execute that function, or store this data,
+etc.
+
+The syntax for defining exceptions in ML:
+
+```
+exception 𝑒
+```
+
+where `𝑒` is some identifier. The expression ${e}$ is actually a
+constructor, with the identifier ${e.}$ Because constructors are functions,
+exceptions in ML are first class, so they are themselves values. And
+because they are values, they have type, namely `exn`. Thus, if we wrote:
+
+```sml
+exception Error
+```
+
+we introduce into the environment the value `Error : exn`. The keyword
+`exn` is a clipping of "exception name." To repeat, in the example above,
+the value `Error` is not itself the exception; it's the constructor for an
+exception. Thus, to derive any use of exceptions, they must be __raised__.
+In other languages, raising an exception is called __throwing__ an
+exception. Here is an example:
+
+```sml
+ (* This function computes the factorial of a number. *)
+ fun factorial n =
+  let exception Negative
+  in
+   if n = 0
+    then 1
+   else
+    if n < 0 then raise Negative
+    else n * factorial(n - 1)
+  end
+
+ val x = factorial 4
+ val y = factorial ~2
+```
+
+```bash
+ uncaught exception Negative
+  raised at: exceptions.sml:8.24-8.32
+```
+
+In the example above, we created a new value, `Negative : exn`, and we
+raise it whenever a negative number is passed as a value to the function
+`factorial()`. Fixing the error:
+
+```sml
+(* This function computes the factorial of a number. *)
+fun factorial n =
+ let exception Negative
+ in
+  if n = 0
+   then 1
+  else
+   if n < 0 then raise Negative
+   else n * factorial(n - 1)
+ end
+
+val x = factorial 4
+val y = factorial 2
+```
+
+```bash
+val factorial = fn : int -> int
+val x = 24 : int
+val y = 2 : int
+```
+
+In many situations, we want to __handle__ the exception. In other
+languages, this is also called __catching__ the exception. For example,
+perhaps we might want, for whatever reason, to immediately return `0`
+whenever we pass a negative number to the `factorial()` function. To do so,
+we can use a __handle expression__:
+
+```sml
+(* This function computes the factorial of a number. *)
+fun factorial n =
+ let
+  exception Negative
+ in
+  if n = 0
+   then 1
+  else
+   if n < 0 then raise Negative
+   else n * factorial(n - 1)
+ end
+
+val a = 5
+val b = ~5
+val x = factorial a
+val y = factorial b handle Negative => 0
+```
+
+```bash
+val factorial = fn : int -> int
+val a = 5 : int
+val b = ~5 : int
+val x = 120 : int
+val y = 0 : int
+```
+
+In the last line of the source code above, when the `factorial()` function
+raises the exception `Negative`, the value of `y` is immediately bound to
+`0`.
+
+## Tail Recursion
+
+Most of the functions we've seen are recursive. This raises a fair
+question: How efficient is recursion? To answer this question, we
+investigate the idea of __tail recursion__. To understand tail recursion,
+let's talk about the __call stack__.
+
+The call stack is an abstract idea; think of it as this stack of papers,
+each with a single task. Those tasks are functions, and each piece of paper
+is called a __stack frame__. The piece of paper, or call stack, contains
+the value of local variables, and all the operations the function must
+perform. Whenever we call a function ${f,}$ we push a stack frame of ${f,}$
+a new piece of paper, onto the stack. Once that call to ${f}$ finishes
+(i.e., the task is complete), ${f}$ is removed from the stack (in
+programming parlance, the stack frame is _popped off_ the stack).
+
+Now, with recursion, we are calling functions that call themselves. Thus,
+there is a situation where we have multiple stack-frames resulting from
+calls to the same function. For example, with the `factorial()` function we
+wrote previously, calling `factorial(3)` results in four separate stack
+frames: `factorial(3)`, `factorial(2)`, `factorial(1)`, and `factorial(0)`.
+
+Here is a more efficient version of `factorial()` (for simplicity, we've
+removed the exception from the earlier section):
+
+```sml
+(* This function computes the factorial of a number. *)
+fun factorial n =
+let fun factorial_helper(n, accumulator) =
+ if n = 0
+  then accumulator
+  else factorial_helper(n - 1, accumulator * n)
+in
+ factorial_helper(n, 1)
+end
+
+val a = factorial(3)
+```
+
+```bash
+val factorial = fn : int -> int
+val a = 6 : int
+```
+
+This looks more complicated, so let's walk through it. Inside
+`factorial()`, we have a locally-defined helper function,
+`factorial_helper()`. That function takes two arguments: `n`, the argument
+passed to `factorial()`, and `accumulator`. `factorial_helper()` works as
+such: If `n=0`, then return the `accumulator`; otherwise, return
+`factorial_helper(n-1, accumulator * n)`.
+
+Thus, when we call `factorial(3)`, we end up creating the following stacks:
+`factorial_helper(3, 1)`, `factorial_helper(2, 3)`,
+`factorial_helper(1, 6)`, and `factorial(0, 6)`. This may not seem like an
+improvement; we have a bigger stack than the previous implementation!
+
+This is where tail recursion comes into play. In languages that implement
+tail recursion—such as ML—calls like `factorial_helper()` are identified by
+the language as tail calls. And when a call is identified as a tail call,
+the language follows a specific rule: Do not keep a function's stack frame
+if all the function performs is getting back a callee's result and return
+it without any further evaluation. Following this rule, languages like ML
+perform the following whenever it encounters a tail call like
+`factorial_helper()`:
+
+1. Remove the caller _before_ the call.
+2. Let the callee use the resulting empty stack.
+
+Thus, when we call `factorial(3)`, a tail call, we create a stack frame for
+`factorial(3)`. However, because it's a tail call, the stack frame is
+"cleared" of `factorial(3)`'s machine code, and replaced with
+`factorial_helper(3, 1)`. This in turn calls
+`factorial_helper(n-1, accumulator * n)`, and as such,
+`factorial_helper(3, 1)` is itself a tail call. Thus,
+`factorial_helper(3, 1)` has its stack frame cleared, and replaced with
+`factorial_helper(2, 3)`. This goes on until we reach
+`factorial_helper(0, 6)`. The end result: We only used 1 stack frame.
+
+To refactor recursive functions as tail-recursive, we can use the following
+approach:
+
+1. Create a helper function with an accumulator parameter.
+2. Think of the accumulator as a variable that "holds" the answer so far.
+3. Think of the old base case as the initial accumulator.
+4. Think of the new base case as the final accumulator.
+
+For example, consider a function that sums all the elements in a list:
+
+```sml
+(* linear recursion *)
+fun summate1 xs =
+case xs of
+ [] => 0
+ | x::xs' => x + summate1 xs'
+
+(* tail recursion *)
+fun summate xs =
+let
+ fun helper(xs, accumulator) =
+  case xs of
+   [] => accumulator
+   | x::xs' => helper(xs', x + accumulator)
+in
+ helper(xs, 0)
+end
+```

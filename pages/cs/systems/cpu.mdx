@@ -1,0 +1,188 @@
+import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
+
+<Metadata
+	title={"The CPU"}
+	description={"Notes on CPUs"}
+	keywords={"CPU, computer architecture, hardware"}
+/>
+
+# The CPU
+
+The notes in these materials cover the **Central Processing Unit**, or CPU.
+Recall the overall computer architecture:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655229335/cs/computer_arch_nrbutb.svg"
+	}
+	caption={"CPU's Outline"}
+	width={"100"}
+	imwidth={"847"}
+	imheight={"571"}
+/>
+
+The _seat of control_, or the _brain_, of the computer is the center piece
+above — the CPU, ALU, and control-unit. In the diagram above, there are
+control bits sent to each of the chips. These bits function like togglers —
+yes or no, on or off. Let's examine how all the parts work together.
+
+## Instruction Handling
+
+Examining the diagram, we see a connection leading to 16-bit multiplexor
+and an A-register. An A-instruction leading to the Mux16 might look like:
+
+<Sequence data={[
+	{val: 0},
+	{val: 0, class: "blue"},
+	{val: 0, class: "blue"},
+	{val: 0, class: "blue"},
+
+    {val: 1, class: "blue"},
+    {val: 0, class: "blue"},
+    {val: 1, class: "blue"},
+    {val: 1, class: "blue"},
+
+    {val: 1, class: "blue"},
+    {val: 0, class: "blue"},
+    {val: 1, class: "blue"},
+    {val: 1, class: "blue"},
+
+    {val: 1, class: "blue"},
+    {val: 0, class: "blue"},
+    {val: 0, class: "blue"},
+    {val: 1, class: "blue"},
+
+]} scale={70} />
+
+In the bitstream above, the first bit is called the **op-code**. The rest
+of the bits is a 15-bit instruction, some numeric value. This value then
+makes its way to the A-register.
+
+How about C-instructions? Well, these take the form:
+
+<Sequence data={[
+	{val: 1},
+	{val: 0, class: "grey"},
+	{val: 0, class: "grey"},
+	{val: 0, class: "blue"},
+	{val: 1, class: "blue"},
+	{val: 0, class: "blue"},
+	{val: 1, class: "blue"},
+	{val: 1, class: "blue"},
+
+    {val: 1, class: "blue"},
+    {val: 0, class: "blue"},
+    {val: 1, class: "green"},
+    {val: 1, class: "green"},
+
+    {val: 1, class: "green"},
+    {val: 0, class: "red"},
+    {val: 0, class: "red"},
+    {val: 1, class: "red"},
+
+]} scale={70} />
+
+Like the A-instruction, the first bit tells the CPU that the instruction is
+a C-instruction. The blue bits are the ALU control bits. The green bits are
+the **destination load bits**. And the red bits are the **jump bits**.
+
+Now that we've the instructions, let's take a closer look at what happens
+in the ALU.
+
+## ALU Operations
+
+Recall that the ALU is _always_ some combinational chip. In other words, it
+will always compute some value. If we take a closer look at the ALU, we see
+that there are two different sources — one from the D-register, and another
+from the Mux-16.
+
+As the ALU receives inputs from either source, a set of control bits are
+fed into the ALU. These bits are the ALU control bits we saw earlier.
+Putting it all together, the ALU has three sets of inputs:
+
+1. inputs from the D-register,
+2. inputs from a Mux16 just before it, and
+3. the ALU control bits from the instruction.
+
+We can imagine that if these sets were large enough, the ALU can understand
+a fairly large set of instructions. Indeed, it's from these three sets that
+the ALU produces its _data output_. This data output can go in several
+directions:
+
+1. outside the CPU,
+2. back to the D-register, or
+3. back to the Mux16 just before the A-register.
+
+Now, the fact that these data outputs can go to three different places
+doesn't mean they'll end up in all three. It entirely depends on the
+instruction provided. How does the ALU know which of these three possible
+locations the data should go? With the _destination bits_ mentioned
+earlier.
+
+### Destination Bits
+
+The destination bits are the bits that tell the ALU whether to (a) send the
+data to the D-register, (b) send the data back to the A-register, or (c)
+send the data towards data memory.
+
+## CPU Control
+
+Revisiting the diagram, we see that there are control bits coming out of
+the ALU. These are **ALU control outputs**. These control outputs are used
+for the ALU's control logic.
+
+Generally, the control outputs map to either a negative value or a zero
+value. To understand why these bits are needed, let's segue briefly to the
+program counter.
+
+Examining the program counter, we see a bit called the **reset bit** headed
+towards the chip. This bit begins travelling towards the chip when we hit
+the reset or power button on a computer. On all modern computers, there are
+several preloaded programs. When we push the power or reset button on the
+computer, these programs start running. Most of these programs implement
+very low-level procedures.
+
+Once the program counter receives this reset bit, it commences its
+principal task: counting. Simple as it may seem, the program counter
+performs several critical operations:
+
+1. It emits the next instruction's address.
+2. If the computer is reset, the count is reset — the program counter's
+   value goes back to 0.
+3. The program counter increments by 1 each time, unless it encounters a
+   jump instructions.
+4. If all of the jump bits are 1 (a goto instruction), then the program
+   counter is immediately set to the A-register's value.
+5. If only some of the jump bits are 1 (a conditional goto instruction),
+   then the program counter sets its value to the A-register's value, but
+   only if the ALU tells the PC that the instruction's condition is true.
+   Otherwise, the program counter increments.
+
+## Overall Architecture
+
+After going through the details, it's worth looking at the overall
+architecture again:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655233439/cs/computer_blueprint_dc4ltc.svg"
+	}
+	caption={"Broad overview of a computer's architecture"}
+	width={"70"}
+	imwidth={"622"}
+	imheight={"481"}
+/>
+
+Now let's zoom in slightly on the CPU:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655234080/cs/cpu_blueprint_d7iedx.svg"
+	}
+	caption={"Rough outline of a CPU"}
+	width={"50"}
+	imwidth={"551"}
+	imheight={"201"}
+/>
+
+Notice how the CPU's inputs are fed to specific pins. 

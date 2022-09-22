@@ -1,0 +1,753 @@
+import { BoxMatrix } from "../../../components/hago";
+
+# Linear Algebra
+
+The following notes cover linear algebra.
+
+>__definition: linear equation.__ An equation of the form:
+>
+>$$
+> a_1 x_1 + a_2 x_2 + \ldots + a_n x_n = b
+>$$
+>
+>is a _linear equation_ in the variables ${x_1,}$ ${x_2,}$
+>${\ldots,}$ ${x_n}$ whre ${a_1,}$ ${a_2,}$ ${\ldots,}$
+>${a_n,}$ ${b}$ are constants.
+
+A solution to a linear equation ${a_1 x_1 + a_2 x_2 + \ldots + a_n x_n = b}$ is
+the set of values:
+
+$$
+ \set{x_1=c_1, x_2=c_2, \ldots, x_n = c_n}
+$$
+
+that, all together, satisfy the linear equation. For example, say we wanted to
+solve the equation:
+
+$$
+	x_1 + 2x_2 - 3x_3 = = 8
+$$
+
+one possible set of solutions is:
+
+$$
+	\set{x_1 = -1,~x_2 = 3,~x_3 = -1}
+$$
+
+since:
+
+$$
+	3 + 2(3) - 3(-1) = 8
+$$
+
+Another set of solutions is:
+
+$$
+	\set{x_1 = 3,~x_2 = 4,~x_3 = 1}
+$$
+
+given that:
+
+$$
+	3 + 2(4) - 3(1) = 8
+$$
+
+## Augmented Matrices
+
+Given a system of equations:
+
+$$
+	\begin{cases}
+			\begin{aligned}
+				 & a_{11} x_1 +  a_{12} x_2 + \ldots + a_{1n} x_n = b1 \\
+				 & a_{21} x_1 +  a_{22} x_2 + \ldots + a_{2n} x_n = b2 \\
+				 & \vdots \\
+				 & a_{m1} x_1 +  a_{m2} x_2 + \ldots + a_{mn} x_n = b_m
+			\end{aligned}
+	\end{cases}
+$$
+
+we can express this system with an __augmented matrix__:
+
+<BoxMatrix data={[
+	["a_{11}", `a_{12}`, `\\ldots`, `a_{1n}`, `|`, `b_1`],
+	["a_{21}", `a_{22}`, `\\ldots`, `a_{2n}`, `|`, `b_2`],
+	["\\vdots", `\\vdots`, `\\vdots`, `\\vdots`, `|`, `\\vdots`],
+	["a_{m1}", `a_{m2}`, `\\ldots`, `a_{mn}`, `|`, `b_m`],
+]}/>
+
+## Reduced Row Echelon Form
+
+Consider these matrices:
+
+<Grid cols={3}>
+
+<BoxMatrix data={[
+	[1,0,0,3],
+	[0,1,0,-4],
+	[0,0,1,5],
+]}/>
+
+<BoxMatrix data={[
+	[1,0,3,0,4],
+	[0,0,0,1,5],
+	[0,0,0,0,0],
+]}/>
+
+<BoxMatrix data={[
+	[1,3,0,0,2,-1],
+	[0,0,1,0,1,4],
+	[0,0,0,1,-1,3],
+	[0,0,0,0,0,0],
+]}/>
+
+</Grid>
+
+We say that these matrices are in _reduced row echelon form_.
+
+> __definition: reduced row echelon form.__ An augmented matrix is in _reduced
+> row echelong form_ if it satisfies the
+> following properties:
+> 
+> 1. Any row containing all zeroes is placed at the bottom.
+> 2. For every other row, the first or leading non-zero element is 1.
+> 3. If a row contains non-zero elements, then the elements are ordered
+> according to the positions of leading 1s.
+> 4. Every column containing a leading 1 has zero elsewhere.
+
+## Matrix Algebra
+
+Augmented matrices are an instance of a more general mathematical object called
+a __matrix__. A matrix is simply a rectangular array of numbers arranged in rows
+and columns. The numbers comprised by the matrix are called the matrix's
+__elements.__
+
+It's worth familiarizing ourselves with basic matrix terminology.
+
+### Definition: Matrix
+
+A matrix a rectangular array of numbers, consisting of rows and columns:
+
+<BoxMatrix data={[
+	["a_{11}", `a_{12}`, `\\ldots`, `a_{1n}`, `|`, `b_1`],
+	["a_{21}", `a_{22}`, `\\ldots`, `a_{2n}`, `|`, `b_2`],
+	["\\vdots", `\\vdots`, `\\vdots`, `\\vdots`, `|`, `\\vdots`],
+	["a_{m1}", `a_{m2}`, `\\ldots`, `a_{mn}`, `|`, `b_m`],
+]}/>
+
+where:
+
+$$
+		\begin{aligned}
+			i &= 1,2,3, \ldots, m   \\
+			j &= 1,2,3, \ldots, n  
+		\end{aligned}
+$$
+
+and ${a_{ij}}$ is the element in the ${i}$th row, ${j}$th column.
+
+
+### Definition: Matrix order
+
+An ${m \times n}$ matrix consists of ${m}$ rows and ${n}$ columns. The notation
+${m \times n}$ is called the matrix's order.
+
+
+
+
+### Definition: Vector
+
+A ${m \times 1}$ matrix is called a _column vector_. A
+${1 \times n}$ matrix is called a _row vector_. Both are, in general, referred
+to as _vectors_.
+
+
+
+### Definition: Square Matrix
+
+A matrix of order ${n \times n}$ (i.e., a matrix with the same number of rows as
+columns) is called a _square matrix_.
+
+_Example._
+
+<BoxMatrix data={[
+	[1,2,3],
+	[2,0,0],
+	[3,0,0],
+]}/>
+
+
+
+### Definition: Zero Matrix
+
+A zero matrix, denoted ${\O,}$ is a matrix where all elements of the matrix are
+zero.
+
+_Example._
+
+<BoxMatrix data={[
+	[0,0,0,0],
+	[0,0,0,0],
+	[0,0,0,0],
+	[0,0,0,0],
+]}/>
+
+
+### Definition: Main Diagonal
+
+Given a square matrix:
+
+<BoxMatrix data={[
+	["\\color{red}a_{11}", `a_{12}`, `a_{13}`, `\\ldots`, `a_{1n}`],
+	["a_{21}", `\\color{red}a_{22}`, `a_{23}`, `\\ldots`, `a_{2n}`],
+	["a_{31}", `a_{32}`, `\\color{red}a_{33}`, `\\ldots`, `a_{3n}`],
+	["\\vdots", `\\vdots`, `\\vdots`, `\\color{red}\\ddots`, `\\vdots`],
+	["a_{n1}", `a_{n2}`, `a_{n3}`, `\\ldots`, `\\color{red}a_{nn}`],
+]}/>
+
+the elements ${a_{11}, a_{22}, a_{33}, \ldots, a_{nn}}$ form the matrix's _main
+diagonal_.
+
+
+
+### Definition: Identity Matrix
+
+The identity matrix, denoted ${\I,}$ is a square matrix with the following
+properties:
+
+1. If a matrix element lies on the matrix's main diagonal, the element is 1.
+2. Else, the element is 0.
+
+_Example._
+
+<BoxMatrix data={[
+	["\\color{red}1",0,0,0,0],
+	[0,"\\color{red}1",0,0,0],
+	[0,0,"\\color{red}1",0,0],
+	[0,0,0,"\\color{red}1",0],
+	[0,0,0,0,"\\color{red}1"],
+]}/>
+
+
+
+
+### Definition: Upper Triangular Matrix
+
+An upper triangular matrix ${M}$ is a matrix with the following properties:
+
+1. ${M}$ is a square matrix.
+2. If ${i \gtn j,}$ then ${a_{ij} = 0.}$
+
+_Example._
+
+<BoxMatrix data={[
+	[1,1,1],
+	[`\\color{red}0`,1,1],
+	[`\\color{red}0`,`\\color{red}0`,1],
+]}/>
+
+
+
+
+
+### Definition: Lower Triangular Matrix
+
+A lower triangular matrix ${M}$ is a matrix with the following properties:
+
+1. ${M}$ is a square matrix.
+2. If ${i \ltn j,}$ then ${a_{ij} = 0 }$
+
+_Example._
+
+<BoxMatrix data={[
+	[1,`\\color{red}0`,`\\color{red}0`],
+	[1,1,`\\color{red}0`],
+	[1,1,1],
+]}/>
+
+
+
+### Equality of Matrices
+
+Two matrices are equal if they have th same order _and_ the elements in
+corresponding positions are equal.
+
+_Example_
+
+<BoxMatrix data={[
+	[`a`, `b`],
+	[`c`, `d`],
+]}/>
+
+is equal to 
+
+<BoxMatrix data={[
+	[`w`, `x`],
+	[`y`, `z`],
+]}/>
+
+if, and only if:
+
+$$
+	\begin{aligned}
+		 a &= w \\
+		 b &= x \\
+		 c &= y \\
+		 d &= z
+	\end{aligned}
+$$
+
+### Addition of Matrices
+
+Two matrices can be added if, and only if, they are of the same order:
+
+$$
+\begin{bmatrix}
+	a & b \\
+	c & d
+\end{bmatrix}
++ 
+\begin{bmatrix}
+	w & x \\
+	y & z
+\end{bmatrix}
+= 
+\begin{bmatrix}
+	w+a & b+x \\
+	c+y & d+z
+\end{bmatrix}
+$$
+
+or, in index form:
+
+$$
+	\bf{A} + \bf{B} = (a_{ij}) + (b_{ij}) = (a_{ij} + b_{ij})
+$$
+
+### Multiples of Matrices
+
+If a matrix ${\bf{A} = (a_{ij})}$ has order ${m \times n,}$ and ${k}$ is a
+scalar, then ${k \bf{A} = ka_{ij}.}$ In other words, ${k \bf{A}}$ is what we get
+when we multiply each element of ${\bf{A}}$ by the scalar ${k.}$
+
+For example:
+
+$$
+	\dfrac{1}{2} 
+	\begin{bmatrix}
+		 3 \\
+		 2 \\
+		 1
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		 \dfrac{1}{2} \cdot 3 \\[1em]
+		 \dfrac{1}{2} \cdot 2 \\[1em]
+		 \dfrac{1}{2} \cdot 1
+	\end{bmatrix}
+	= 
+	\begin{bmatrix}
+		 \dfrac{3}{2} \\[1em]
+		 1 \\
+		 3
+	\end{bmatrix}
+$$
+
+### Negative Matrices
+
+Given a matrix ${\bf{A},}$ its negative ${-\bf{A}}$ is simply:
+
+$$
+	-1 \cdot \bf{A}
+$$
+
+For example, if:
+
+$$
+	\bf{A} =
+	\begin{bmatrix}
+		3 & -1 \\
+		2 & 4
+	\end{bmatrix}
+$$
+
+then ${- \bf{A}}$ is:
+
+$$
+	-\bf{A} =
+	\begin{bmatrix}
+		-3 & 1 \\ 
+		-2 & 4
+	\end{bmatrix}
+$$
+
+### Matrix Subtraction
+
+To subtract matrices, they must be of the same order, and elements are
+subtracted in correspondence.
+
+$$
+	\bf{A} - \bf{B} = (a_{ij} - b_{ij})
+$$
+
+## Matrix Multiplication 
+
+The previous definitions indicated the similarities between matrix algebra and
+elementary algebra. Where the two depart is multiplication of the same type.
+With real numbers, multiplication is repeated addition: 
+
+$$
+	3 \times 3 = 3 + 3 + 3 = 9 
+$$
+
+This isn't exactly the case with matrix multiplication. To illustrate, we
+consider a real world problem.
+
+Blackacre, a technology company, needs a law firm for an upcoming acquisition.
+Specifically, the company needs a team of attorneys in the following practice
+areas: trademark law, tax law, and patent law. Of these three areas, the firm
+needs 2 trademark lawyers, 8 tax layers, and 2 patent lawyers.  Two law firms
+have submitted bids with the following hourly rates for each lawyer:
+
+|                   | Law Firm A       | Law Firm B       |
+| ----------------- | ---------------- | ---------------- |
+| trademark lawyers | ${\cash 592.33}$ | ${\cash 585.50}$ |
+| tax lawyers       | ${\cash 601.85}$ | ${\cash 601.25}$ |
+| patent lawyers    | ${\cash 630.21}$ | ${\cash 632.24}$ |
+
+Which law firm should Blackacre go with? Well, a good start is to compare the
+total hourly rate. To do that, we must multiply the number of attorneys with
+their respective hourly rates.
+
+For law firm A, we have:
+
+$$
+	(2 \times 592.33) + (8 \times 601.85) + (2 \times 630.21) \\
+	1184.66 + 4870.80 + 1260.42 = 7315.88
+$$
+
+And for law firm B, we have:
+
+$$
+	(2 \times 585.50) + (8 \times 601.25) + (2 \times 632.24) \\
+	1171.10 + 4890.00 + 1264.48 = 7325.58
+$$
+
+Thus, it appears that law firm B is more expensive, by total hourly rate. The
+same calculations above can be rewritten in matrix notation:
+
+$$
+	\begin{bmatrix}
+		 2 & 8 & 2
+	\end{bmatrix}
+	\times
+	\begin{bmatrix}
+		 592.33 & 585.50 \\
+		 601.85 & 601.25 \\
+		 630.21 & 632.24
+	\end{bmatrix}
+	= 
+	\begin{bmatrix}
+		 7315.88 & 7325.58
+	\end{bmatrix}
+$$
+
+Notice the pattern:
+
+$$
+	\begin{aligned}
+		 
+	
+	\begin{bmatrix}
+		 2 & 8 & 2
+	\end{bmatrix}
+	\times
+	\begin{bmatrix}
+		 592.33 & 585.50 \\
+		 601.85 & 601.25 \\
+		 630.21 & 632.24
+	\end{bmatrix}
+	&= 
+	\begin{bmatrix}
+		 2(592.33) & 2(585.50) \\
+		 8(601.85) & 8(601.25) \\
+		 2(630.21) & 2(632.24)
+	\end{bmatrix}
+	\\[2em]
+	&=
+	\begin{bmatrix}
+		 \bnote{7315.88}{row $\times$ column 1} & \bnote{7325.58}{row $\times$
+		 column 2}
+	\end{bmatrix}
+
+	\end{aligned}
+$$
+
+Considering these costs, Blackacre asks their general counsel about whether some
+of the matters could be handled by trademark lawyers rather than a tax lawyer.
+After reviewing the issues, general counsel informs them that they can get by
+with: That is: 3 trademark lawyers, 4 tax lawyers, and 1 patent lawyer.
+Consequently, for law firm A, we have a total hourly cost of:
+
+$$
+	1776.99 + 2407.40 + 630.21 = 4816.63
+$$
+
+and for law firm B, we have:
+
+$$
+	1756.50 + 2405.00 + 632.24 = 4794.74
+$$
+
+Both of these computations can be expressed as:
+
+$$
+	\begin{bmatrix}
+		 2 & 8 & 2 \\
+		 3 & 4 & 1
+	\end{bmatrix}
+	\times
+	\begin{bmatrix}
+		 592.33 & 585.50 \\
+		 601.85 & 601.25 \\
+		 630.21 & 632.24
+	\end{bmatrix}
+	= 
+	\begin{bmatrix}
+		 7315.88 & 7325.58 \\
+		 4816.63 & 4795.74
+	\end{bmatrix}
+$$
+
+Notice the how matrix multiplication makes the computation highly-readable and
+compact. With the arrangement of 2 trademark lawyers, 8 tax layers, and 2 patent
+lawyers, law firm A has a cheaper total hourly rate. But with an arrangement of
+3 trademark lawyers, 4 tax lawyers, and 1 patent lawyer, law firm B has a far
+cheaper total hourly rate.[^note_salary]
+
+[^note_salary]: As an aside, the hourly rates used in the example are not at all
+unusual in the legal industry. Big law firm professionals are among the
+highest-paid professionals. Though, the author admits that he may be slighly
+biased towards tax and patent attorneys in setting the numbers up, as these were
+his focus areas in law school.
+
+Once again, notice the pattern:
+
+$$
+	\begin{bmatrix}
+		 2 & 8 & 2 \\
+		 3 & 4 & 1
+	\end{bmatrix}
+	\times
+	\begin{bmatrix}
+		 592.33 & 585.50 \\
+		 601.85 & 601.25 \\
+		 630.21 & 632.24
+	\end{bmatrix}
+	= 
+	\begin{bmatrix}
+		 \tnote{7315.88}{row 1 $\times$ col 1} & \tnote{7325.58}{row 1 $\times$ col 2} \\
+		 \bnote{4816.63}{row 2 $\times$ col 1} & \bnote{4795.74}{row 2 $\times$ col 2}
+	\end{bmatrix}
+$$
+
+### Definition: Matrix Product
+
+Let ${\bf{A}}$ be an ${n \times m}$ matrix and ${\bf{B}}$ an ${m \times p}$
+matrix. Then the matrix ${\bf{AB}}$ is an ${m \times p}$ matrix where the
+element in the ${r}$th row and the ${c}$th column is the sum of the products of
+the elements in the ${r}$th row of ${\bf{A}}$ with the corresponding elements in
+the ${c}$th row of ${\bf{B}.}$
+
+That is:
+
+$$
+	\bf{AB} = c_{ij} \dsum{r=1}{n} a_{ir} b_{ir} = a_{i1} b_{1j} + a_{i2} b_{2j} +
+	a_{i3} b_{3j} + \ldots + a_{in} b_{nj}
+$$
+
+where ${i = 1,2,3,\ldots,m}$ and ${j = 1,2,3,\ldots,p.}$
+
+Here's another example:
+
+$$
+	\begin{bmatrix}
+		1 & 2 & 3 \\
+		4 & 5 & 6
+	\end{bmatrix}
+	\times
+	\begin{bmatrix}
+		7 & 8 \\
+		9 & 10 \\
+		11 & 12
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		58 & 64 \\
+		139 & 154
+	\end{bmatrix}
+$$
+
+Visually:
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1662322706/math/matrix_multiply_gx2gkx.svg"}
+	imwidth={"401"}
+	imheight={"761"}
+	caption={"matrix multiply"}
+	width={"40"}
+/>
+
+Notationally:
+
+If:
+
+$$
+	\bf{A} = \begin{bmatrix}
+		 a & b \\
+		 c & d
+	\end{bmatrix}~~~
+	\bf{B} = \begin{bmatrix}
+		 p & q \\
+		 r & s
+	\end{bmatrix}
+$$
+
+then:
+
+$$
+	\bf{AB} = \begin{bmatrix}
+		 ap + br & aq + bs \\
+		 cp + dr & cq + ds
+	\end{bmatrix}
+$$
+
+A few things to note about the matrix product.  First, the result of a matrix
+product is a square matrix. That is, given a matrix ${\bf{A}}$ of order ${n
+\times m}$ and a matrix ${\bf{B}}$ of order ${m \times n,}$ the matrix product
+${\bf{AB}}$ is of order ${n \times n.}$
+
+Second, the matrix product ${\bf{AB}}$ exists _only if_ the number of columns of
+${\bf{A}}$ equals the number of columns of ${\bf{B}.}$ Without this equality,
+the product ${\bf{AB}}$ _cannot be found_. In fact, this condition is so
+critical that we introduce an particular notion for it.
+
+### Matrix Productability
+
+Let ${\bf{A}}$ and ${\bf{B}}$ be matrices. We say that ${\bf{A}}$ and ${\bf{B}}$
+are _productable_ if, and only if, the number of rows in ${\bf{A}}$ is equal
+to the number of columns in ${\bf{B}.}$ If ${\bf{A}}$ and ${\bf{B}}$ are
+productable, we write:
+
+$$
+	(\mtx{A}, \mtx{B}) \in M_{\times}
+$$
+
+where ${M_p}$ is the set of all tuples ${(a,b),}$ such that ${a}$ and ${b}$ are
+productable matrices.
+
+## Elementary Algebra v. Matrix Algebra 
+
+At this point, it's helpful to compare and contrast the laws of
+element algebra against those of matrix algebra:
+
+<table>
+	<thead>
+		<tr>
+			<th>Elementary Algebra</th>
+			<th>Matrix Algebra</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>If ${a,b \in \RR,}$ then ${a + b \in \RR.}$</td>
+			<td>If ${\bf{A}}$ and ${\bf{B}}$ are matrices, then ${\bf{A} + \bf{B}}$ are of the same order.</td>
+		</tr>
+		<tr>
+			<td>${a + b = b + a}$</td>
+			<td>${\bf{A} + \bf{B} = \bf{B} + \bf{A}}$</td>
+		</tr>
+		<tr>
+			<td>${(a + b) + c = a + (b + c)}$</td>
+			<td>${( \bf{A} + \bf{B} ) + \bf{C} = \bf{A} + ( \bf{B} + \bf{C})}$</td>
+		</tr>
+		<tr>
+			<td>${a + 0 = 0 + a = a}$</td>
+			<td>${\bf{A} + \bf{O} = \bf{O} + \bf{A} = \bf{A}}$</td>
+		</tr>
+		<tr>
+			<td>${ k(a + b) = ka + kb }$</td>
+			<td>${k( {\bf{A}} + {\bf{B}} ) = k {\bf{A}} + k \bf{B}}$</td>
+		</tr>
+		<tr>
+			<td>If ${a,b \in \RR,}$ then ${ab \in \RR.}$</td>
+			<td>If ${\mtx{A}, \mtx{B} \in M_{\times},}$ then ${\mtx{AB} \in M.}$</td>
+		</tr>
+		<tr>
+			<td>${ab = ba}$</td>
+			<td>In general, ${\mtx{AB} \neq \mtx{BA}}$</td>
+		</tr>
+		<tr>
+			<td>${a0 = 0a = 0}$</td>
+			<td>${\mtx{AO} = \mtx{OA} = \mtx{O}}$</td>
+		</tr>
+		<tr>
+			<td>${ab = 0 \iff (a = 0 \lor b = 0)}$</td>
+			<td>
+				<table>
+					<tbody>
+						<tr>
+							<td>${(\mtx{A}=\mtx{O} \lor \mtx{B}=\mtx{O}) \implies \mtx{AB} = \mtx{O}}$</td>
+						</tr>
+						<tr>
+							<td>Note the arrows: ${\mtx{AB}=\mtx{O}}$ does not require that ${\mtx{A}=\mtx{O}}$ or that ${\mtx{B}=\mtx{O}.}$</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>${a(b+c) = ab + ac}$</td>
+			<td>${\bf{A}(\bf{B} + \bf{C}) = \bf{AB} + \bf{AC}}$</td>
+		</tr>
+		<tr>
+			<td>${a \times 1 = 1 \times a = a}$</td>
+			<td>If ${\mtx{I}_n}$ is the ${n \times n}$ identity matrix, then ${\mtx{A}\mtx{I}_n = \mtx{I}_n \mtx{A} = \mtx{A}.}$</td>
+		</tr>
+		<tr>
+			<td>${a^n}$ exists for all ${a \gte 0}$ and ${n \in \RR.}$</td>
+			<td>${\mtx{A}^n}$ exists, provided that ${\mtx{A}}$ is a square matrix and ${n \in \ZZ^+.}$</td>
+		</tr>
+		<tr>
+			<td>${a(bc) = (ab)c}$ for all ${a,b,c \in \RR.}$</td>
+			<td>${(\mtx{A}\mtx{B})\mtx{C} = \mtx{A}(\mtx{B}\mtx{C})}$ provided that ${\mtx{A}, \mtx{B}, \mtx{C} \in M_{\times}.}$</td>
+		</tr>
+	</tbody>
+</table> 
+
+## Matrix Transpose
+
+Let ${\mtx{A}}$ be a matrix. Then ${\mtx{A}^{\T}}$ is called the _transpose_ of
+${\mtx{A},}$ obtained by writing the rows of ${\mtx{A}}$ as the columns of
+${\mtx{A}^{\T}.}$ If ${\mtx{A} = (a_{ij})}$ is an ${m \times n}$ matrix, then
+${\mtx{A}^{\T} = (a_{ji})}$ is an ${n \times m}$ matrix.
+
+For example, if:
+
+$$
+	\mtx{A} = \begin{bmatrix}
+		 2 & 1 & 4 \\
+		 0 & 3 & 1
+	\end{bmatrix}
+$$
+
+then:
+
+$$
+	\mtx{A}^{\T} = \begin{bmatrix}
+		 2 & 0 \\
+		 1 & 3 \\
+		 4 & 1
+	\end{bmatrix}
+$$
+

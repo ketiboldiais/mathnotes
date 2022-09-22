@@ -1,0 +1,438 @@
+<Metadata
+	title={'Mathematical Logic'}
+	description={'Preface to Mathematical Logic'}
+	keywords={'logic'}
+/>
+
+# Mathematical Logic
+
+This volume provides notes on mathematical logic.
+
+_From the author:_
+
+Mathematical logic was my area of focus as an undergraduate, and what I later
+taught as an adjunct instructor. I'll be blunt: A lot of people, even
+professional mathematicians, find this material extremely dry and boring. In
+fact, I recall wanting to write a paper in some course — abstract algebra if I'm
+remembering correctly — on proof-theoretic reduction and some structures I found
+interesting. The professor met me with some concern: "Are you sure
+you're okay with such a dry subject?"
+
+Why these reactions occur is anyone's guess, but my theory is that mathematical
+logic is about as "meta" as you can get without stepping through the looking
+glass of metaphysics. To compare it to programming, mathematical logic is
+akin to programming not in C or Assembly, but _machine code_.
+
+Because of how low level mathematical logic is, a significant amount of time is
+spent just ensuring we're on the same page. Moreover, unlike other areas of
+mathematics, the results from mathematical logic are rarely the concrete and
+beautiful propositions we'd see in areas like real and complex analysis.
+Instead, they're almost always even more questions. Sure, we get some theorems
+along the way, but what's far more interesting — at least from the logician's
+perspective — are the questions generated from answering a question. Those
+questions, however, have a different "feel" compared to questions in other
+mathematical fields. It's a difficult sensation to describe, but it's almost as
+if we're at the very limits of human thought. Like standing a little too close
+to the edge of a cliff, it's both exhilarating and terrifying. Kant put
+it best:[^kant]
+
+> "Whereas the beautiful is limited, the sublime is limitless, so that the mind in the presence of the sublime, attempting to imagine what it cannot, has pain in the failure but pleasure in contemplating the immensity of the attempt.”
+
+[^kant]: ~Immanuel Kant~, ~Critique of Pure Reason~ 75-76 (Oxford World Classics 2007) (1781). 
+
+This site's name, _Sublimis_, is inspired from the quote above.
+
+## A Brief History
+
+While the ancient Greeks are often credited with the inception of logic,
+historical evidence points to an earlier birthplace, India. In the ancient work
+_Samita_, the Indian scholar Caraka described various techniques of debate:
+using evidence to support claims, defending claims by counter-claims, logical
+entailment, equivocation, and the use of definitions to establish
+distinction.[^india] While ancient India had an early start, history's path led
+to Western scholars — descending from the Greek tradition — taking the lion's
+share of credit.
+
+[^india]: ~Subhash Kak~, ~Logic in Religious Discourse: Logic in Indian Thought~ 7 (2010).
+
+That tradition begins at around 500 BCE, when Greek politicians began using an
+argument technique we now know as _reductio ad absurdum_. Roughly, the idea is
+to pose questions to the opponent, then, using their previous answers,
+demonstrate to the crowd that the opponent's answer is contradictory. In short:
+"This man can't even get his own story straight." While reductio ad absurdum
+isn't commonly encountered in academic logic today, it's a staple for trial
+lawyers conducting cross examination.
+
+Sometime during 490 to 430 BCE, the Greek scholars Zeno and Parmenides began
+investigating this technique a little more closely. Their investigations led to
+what we now know as the _paradox_. Zeno's and Parmenides's work presented
+several questions. If we can establish that something is false, how might we
+establish that something is true? The Greek scholar most credited with answering
+this question is Socrates, and his work culminated in the _dialectic_ — the
+process of establishing truth through reasoned argument.
+
+Socrates's results earned him a famous student, Plato. While Socrates's
+dialectic is undoubtedly within the field of logic, it was equally a work in the
+field of rhetoric. It's not until Plato that we begin seeing the sprouts of
+_formal logic_. Unlike his teacher, Plato wasn't as interested in searching for
+ways to cleverly argue. Instead, Plato's interests rested at a far deeper level
+— What is the nature of "true" and "false?" What is the connection between
+premise and conclusion? What is the nature of a "definition?"
+
+Like his teacher, Plato's work earned him an equally famous student, Aristotle.
+who himself came to teach Alexander the Great. As a world conqueror's
+teacher, Aristotle lived a comfortable life (at least until Alexander died),
+with plenty of time to further his research. From Aristotle we get _The
+Organon_, a set of six books dedicated to the field of logic. While the
+_Organon_ is arguably his most famous work, from a history of logic perspective,
+Aristotle's _Metaphysics_ is far more interesting. One of its most striking
+passages is the following:[^aristotle] 
+
+> '_[B]eing' and 'is' mean that a statement is true, 'not being' that it is not true but falses-and this alike in the case of affirmation and of negation; e.g. 'Socrates is musical' means that this is true, or 'Socrates is not-pale' means that this is true; but 'the diagonal of the square is not commensurate with the side' means that it is false to say it is._ 
+
+[^aristotle]: ~Aristotle~, ~Metaphysics Book V~, Part VII (W.D. Ross 1994) (350 B.C.E.).
+
+What's remarkable here is that Aristotle used, as support, a mathematical
+result from the Pythagoreans — a religious cult of mathematicians that
+attributed notions of divinity to geometric symmetry, three centuries earlier.
+Even in its earliest stages of development, it was clear that there was some
+connection between logic and mathematics.
+
+A significant amount of Aristotle's work in logic resulted from his exploration
+of a separate field of philosophy, _metaphysics_. In short, metaphysics is the
+philosophical study of questions associated with the word "is." For example,
+"What _is_ existence?" or "What _is_ thought?" The field itself is among the
+oldest areas of philosophy, and humans have supplied answers as far back as
+Stone Age. In the Western tradition, before Thales of Miletus's time (around 6
+BCE), the predominant answers to such questions were elaborate theories
+associated with myth and the occult. A common theme is the notion of some
+spiritual concept or being associated with chaos and another with order, with
+reality and existence resulting from a balance of power or quantity between the
+two entities (examples include the Egyptian myths of Maat and Isfet, and the
+Chinese concepts of Yin and Yang). Thales (according to Aristotle) was the first
+to provide an unconventional explanation — everything is composed of water, so
+everything _is_ water. Given how vital water is for known life forms, Thales was
+arguably not too far off.
+
+Reading Thales's work, Aristotle asked a question: If an object changes, is it
+still the same object? This classic question in metaphysics has manifested
+itself in various thought experiments. Almost three centuries after Aristotle's
+time, the Greek historian Plutarch — writing on the works of Demetrius of
+Phalerum (a student of Aristotle) — presented a thought experiment 
+ubiquitous with philosophy 101:[^plutarch]
+
+> _The ship wherein Theseus and the youth of Athens returned from Crete had thirty oars, and was preserved by the Athenians down even to the time of Demetrius Phalereus, for they took away the old planks as they decayed, putting in new and stronger timber in their places, insomuch that this ship became a standing example among the philosophers, for the logical question of things that grow; one side holding that the ship remained the same, and the other contending that it was not the same._
+
+[^plutarch]: ~Plutarch~, ~The Life of Theseus~ 23.1 (Dryden 2008) (75 A.C.E.).
+
+In sum: If we steadily replace a ship's parts, such that, eventually, none of
+the ship's parts remain, do we still have the same ship? This thought experiment
+is called _The Ship of Theseus_, and numerous variations of the question
+appear throughout history, across different cultures.[^hobbes]
+
+[^hobbes]: One particularly interesting variant is Thomas Hobbes's: If we took Theseus's ship, dismantled it, and used the parts to construct a new ship, is it still Theseus's ship?  
+
+Aristotle recognized that to answer this question, he needed to establish some
+relationship between the whole (e.g., Theseus's ship) and its parts (e.g., the
+ship's timber). Aristotle began with the following:
+
+> Every ${B}$ is an ${A,}$ and every ${C}$ is a ${B,}$ so every ${C}$ is an ${A.}$
+
+If we substitute some values for the variables, we can see the statement form
+Aristotle was attempting to generalize:
+
+$$
+
+\eqs{
+&\tt{Every } \tnote{\tt{mammal}}{$B$} \tt{ is an } \tnote{\tt{animal,}}{$A$} 
+\\
+\\
+\\
+&\tt{and every } \tnote{\tt{dog}}{$C$} \tt{ is a } \tnote{\tt{mammal,}}{$B$}
+\\
+\\
+\\
+&\tt{so every } \tnote{\tt{dog}}{$C$} \tt{ is an } \tnote{\tt{animal.}}{$A$}
+}
+	
+$$
+
+Aristotle went on to create a few more of these generalizations (called today as
+the _Aristotelian forms_). The notations below were invented during Medieval
+Europe to study Aristotle's work.
+
+| Generalization             | Notation  |
+| -------------------------- | --------- |
+| Every ${B}$ is an ${A}$    | ${A~a~B}$ |
+| No ${B}$ is an ${A}$       | ${A~e~B}$ |
+| Some ${B}$ is an ${A}$     | ${A~i~B}$ |
+| Some ${B}$ is not an ${A}$ | ${A~o~B}$ |
+
+Aristotle then stated a few rules — called _syllogisms_ — for arranging these
+logical forms (the notation ${\vdash}$ means "entails"):
+
+| Rule                              | Latin Name | Modern Read                                                                  |
+| --------------------------------- | ---------- | ---------------------------------------------------------------------------- |
+| ${A~a~B,~~B~a~C,~~\vdash~~A~a~C}$ | Barbara    | Every ${B}$ is an ${A,}$ every ${B}$ is a ${C,}$ so every ${C}$ is an ${A.}$ |
+| ${A~e~B,~~B~a~C,~~\vdash~~A~e~C}$ | Celarent   | No ${B}$ is an ${A,}$ every ${C}$ is a ${B,}$ so no ${C}$ is an ${A.}$       |
+| ${A~a~B,~~B~i~C,~~\vdash~~A~i~C}$ | Darii      | Every ${B}$ is an ${A,}$ some ${C}$ is a ${B,}$ so some ${C}$ is an ${A.}$   |
+| ${A~e~B,~~B~i~C,~~\vdash~~A~o~C}$ | Ferio      | No ${B}$ is an ${A,}$ some ${C}$ is a ${B,}$ so some ${C}$ is not an ${A.}$  |
+
+The Latin names were mnemonics used by Medieval scholars ("Barbara" corresponds to the three "a" operators, "Celarent" for the "e a e", etc.) As Aristotle's work progressed, he introduced four more syllogisms: 
+
+| Rule                              | Latin Name | Modern Read                                                                        |
+| --------------------------------- | ---------- | ---------------------------------------------------------------------------------- |
+| ${A~e~B,~~A~a~C,~~\vdash~~B~e~C}$ | Cesare     | No ${B}$ is an ${A,}$ every ${C}$ is an ${A,}$ so no ${C}$ is a ${B.}$             |
+| ${A~a~B,~~A~e~C,~~\vdash~~B~e~C}$ | Camestres  | Every ${B}$ is an ${A,}$ no ${C}$ is an ${A,}$ so no ${C}$ is a ${B.}$             |
+| ${A~e~B,~~A~i~C,~~\vdash~~B~o~C}$ | Festino    | No ${B}$ is an ${A,}$ some ${C}$ is an ${A,}$ so some ${C}$ is not a ${B.}$        |
+| ${A~a~B,~~A~o~C,~~\vdash~~B~o~C}$ | Baroco     | Every ${B}$ is an ${A,}$ some ${C}$ is not an ${A,}$ so some ${C}$ is not a ${B.}$ |
+
+Scholars studied Aristotle's forms up until roughly 470 AD (i.e., the Fall of
+Rome). By that time, the Goths and the Huns had largely destroyed the Roman
+empire, with many ancient Greek works lost in the process. Fearing the
+destruction of such important ideas, Boethius, a Roman senator born during these
+tumultuous times, began translating Aristotle's work. Unfortunately, because of
+a variety of factors — the difficulties of mass producting books by hand, lack
+of access to the original Greek texts, and the minute population of those
+literate in Ancient Greek — only a few of Boethius's translations managed to
+reach European scholars.
+
+Aristotle's works, however, did reach Muslim scholars of Baghdad's surrounding
+caliphates. These scholars found the Greek works extremely valuable
+— arguably even more so than the Romans — and engaged in much more thorough and
+complete translations than their European counterparts. Part of this stems from
+the fact that ancient Rome's interest in the Greek works was driven largely by
+Roman lawyers and politicians looking for rhetorical techniques — the works were
+purely a means to end.
+
+Within the Islamic caliphates and Persian territories, however, there were
+multiple incentives at work. Muslim aristocrats — saw the act
+of paying for translations as a display of wealth. The caliphs saw it as a
+display of superiority; that the Muslims were "better at being Greek" than the
+Byzantines towards the West. The Islamic scholars found them valuable in
+structuring debate and affirming notions in Islam. But, perhaps most
+importantly, the Muslims of the Islamic Golden Age had an unusually strong
+interest in accumulating information.
+
+The Eastern scholars, however, were philosophers in their own right, creating
+both novel systems alongside further developing Aristotelian logic. One
+particularly important scholar was Ibn Sina (also known by the Latin corruption
+Avicenna). 
+
+To Sina, the Aristotelian forms were unwieldy when it came to describing
+reality. They were effective at communicating categorical statements:
+
+> _Dogs are friendly animals._ 
+> 
+> ${\to}$ _Every dog is a friendly animal._
+
+but awkward for others:
+
+> _Dogs are friendly animals sometimes._
+> 
+> ${\to}$ _Every dog is a friendly animal sometimes._
+
+Sina also found the forms inadequate for many everyday statements:
+
+> (1) _The land is yours, as long as you pay rent._
+>
+> (2) _When the sun is high, the day is hot._
+> 
+> (3) _We can stay at my friend's house._
+
+To address these shortcomings, Sina distinguished between three kinds of
+propostions: _categorical_, _modal_, and _hypothetical_. The Aristotelian forms
+were categorical propositions — they contained a subject (some entity) and a
+predicate (whether the entity _is in_ or _is out_ of a category). Sina, however,
+also introduced temporal distinctions between categorical propositions. That is,
+the predicates weren't simply _is in_ and _is out_:
+
+> (1) is _always_ ...
+>
+> (2) is ... _most of the time_
+> 
+> (3) is ... _sometimes_
+> 
+> (4) is _never_ ...
+
+To Sina, the Aristotelian forms covered the first and second cases, but not the
+third and fourth. Next, the modal propositions were those concerning
+_necessarily_ and _possibly_. This distinction allowed Sina to express
+statements of the form:
+
+> (1) ... _must_ ...
+>
+> (2) ... _can_ ... 
+
+Finally, the hypothetical propositions were those concerning hypothetical
+scenarios — what _might_ be true.
+
+> (1) _if_ ... _then_ ...
+> 
+> (2) _either_ ... _or_ ...
+
+While Sina carefully crafted his contributions to logic, the scholars of
+Medieval Europe grappled with another issue. The Aristotelian forms, as is,
+didn't account for some subtleties in the statement:
+
+> _All kings are good._
+
+What does "all" cover? Does it include enemy kings? Fictional kings? Living
+kings? Dead kings? Future kings? The Medieval scholars' solution was the
+_supposition_ — establishing "boundaries" to propositions by stating a larger
+category called the _domain of discourse_.
+
+Outside of suppositions, intellectual development in the early Middle Ages
+stagnated in contrast to developments in the Islamic East. Towards the 12th
+Century, however, the caliphates radiating from Baghdad saw a steady decline.
+Modern scholars disagree on what caused the decline — rulers mismanaging the
+treasury, internal strife, lessened interest in scientific inquiry — but the
+most obvious blow was the Siege of Baghdad in 1258 by Mongke Khan (Genghis
+Khan's grandson, and the predecessor of his younger brother, Kublai Khan).
+Moreover, by this time, Muslim control of southern Spain had diminished to a
+single enclave, Granada. In the process of obtaining territory, the
+_reconquistadores_ of Aragon came across Islamic scholarship. Working with
+Jewish rabbis, Christian monks began translating the Arabic texts into Spanish,
+then into Latin, and transmitting them further north into central Europe.
+
+The impact of Islamic texts on European scholarship cannot be understated.
+Numerous ideas from Islamic scholars spread throughout Europe. To name a few:
+the use of zero, horizontal fraction bar, and various algorithms from _Ilm
+al-jabr wa l-muqābala_ (a ninth century book on algebraic manipulation by the
+Persian mathematician al-Khwarizmi). 
+
+As an aside, Leonardo of Pisa (Fibonacci)'s book _Liber abaci_ — providing an
+account of the Hindu-Arabic numerals — is often erroneously credited as the work
+that introduced Europe to the digits we know today. In actuality, Europeans had
+come into contact with numerals at various points during the Dark Ages, and the
+Roman numerals were still used well into the 16th century. The transition to the
+Hindu-Arabic numerals was a painfully slow process. Even today, the Roman
+numerals are found in various places: legal encoding, regnal numbering,
+generational suffixes, book volume and chapter numbers, outline numbering,
+occurrences of grand events, music theory, rocket model numbering, planet
+numbering, periodic groups, year-groups in schools, the list goes on.
+
+Islamic scholarship caused two great changes in European mathematics, and
+ultimately, logic: (1) a divide among medieval numericists — the _abacists_ and
+_algorists_; and (2) a union of the geometers and numericists. The abacists were
+those who, unsurprisingly, performed computations with the abacus. Contrary to
+popular belief, the abacus of Medieval Europe was inherited directly from the
+Romans (who inherited it from the Greeks), not the Chinese.[^abacus] With the
+introduction of algebra, the abacists now competed with the algorists, a new
+breed of numericists who performed the same computations through symbolic
+manipulation.
+
+$$
+	\eqs{
+		x + 2 &= 5 \\
+		x + 2 - 2 &= 5 - 2 \\
+		x + 0 &= 3 \\
+		x &= 3 
+	}
+$$
+
+[^abacus]: The Sumerians, Babylonians, Ancient Egyptians, Persians, Greeks,
+and Romans all had their own versions of the abacus, and it's unclear where and
+when the abacus first emerged.
+
+The algorists themselves competed with one another. By the 1500s, solving
+algebraic equations evolved into a spectator sport with rigid procedures. Challengers would exchange a list of equations, to be solved in a specified
+amount of time (called the _challenge gauntlet_). Importantly, the challenger
+could only provide questions they themselves could solve. Disagreements about
+correctness were resolved before a panel of judges, notaries, government
+officials, and a sizeable crowd of spectators. Undoubtedly, the stakes were
+high. Winners earned widespread publicity and opportunities for lofty places:
+large monetary prizes, university chairs, salary jumps, or, perhaps the greatest
+prize of all — a noble or royal patronage to study mathematics in luxury. Losers
+were subject to ridicule and notoriety.
+
+Alongside these competitions, the algorists and geometers found themselves
+frequently working together. Traditionally, geometry belonged primarily to land
+surveyors, philosophers, and the syllabi of high-born men. This was largely due
+to the Islamic scholar's Omar Khayyam's work, which illustrated how geometric
+constructions could be used to solve cubic equations. 
+
+By the 1570s, the algorists prevailed over the abicists. Europe transitioned
+from sophisticated sticks and stones, to elegant quill and ink.  This is also
+when the Early Modern period begins. European conquest and trade fattened
+wealth, increasing the need for more complicated arithmetic computations and
+geometric measurements. The merchants and nobles, however, faced a problem:
+There weren't enough people to fulfill these needs. Exiting the late Medieval
+Period, most of Europe was illiterate and numerically challenged. Accordingly,
+those in power began investing in endeavors of simplifying algebra and geometry.
+These early investments led to many of the notations we're familiar with today:
+
+$$
+\eqs{
+	&{\dfrac{1}{x}} ~~~ {\log x} \\[1em]
+	&{\sqrt{x}} ~~~ {x^n} \\[1em]
+}
+$$
+
+Then, sometime in 1637, a lawyer named Rene Descartes made the following
+statement:
+
+> _Any problem in geometry can easily be reduced to such terms that a knowledge of the lengths of certain lines is sufficient for its construction._
+
+It's a common misconception — reinforced by textbooks today — that Descartes
+sought to reduce geometry to algebra. A closer look at Descarte's _La
+géométrie_ indicates that it was the other way around: Descartes endeavored to
+cast algebra in the terms of geometry, not geometry in the terms of algebra.
+Numerous titles and passages support this interpretation. The first section
+title, translated in English, is "How the Calculations of Arithmetic are Related
+to the Operations of Geometry." The second section title is "How Multiplication,
+Division, and the Extraction of Square Roots Are Performed Geometrically." Only
+after this initial endeavor did Descartes see that he could also reduce geometry
+to algebra.
+
+If there's one example of the largest misconception in history, it's the idea
+that Descartes invented the Cartesian coordinate system. Once again, a closer
+look at Descartes's work indicates otherwise. Nowhere in his writings does
+Descartes use the concept of a coordinate frame to locate points, let alone
+using number pairs to demarcate locations. Not once. Descartes did use
+perpendicular lines as guides to draw figures, and letters to denote dimensions,
+but that's about as close as we get to the coordinate system we see today. The
+modern coordinate system results from a gradual mutation over centuries,
+starting with using letters to denote lengths — a practice that dates as far
+back as the Babylonians.
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1663524547/math/cartesian_plane_l19cuu.svg"}
+	imwidth={"3204"}
+	imheight={"817"}
+	caption={"Coordinates"}
+	width={"100"}
+/>
+
+We correct these misconceptions not to discredit Descartes's work, but to
+emphasize the fact that the vast majority of ideas in mathematics and logic
+didn't happen overnight. They result from many years of research, relying on the
+research of others.
+
+
+In the 1680s, another key figure emerged: Gottfried Leibniz. Like Descartes,
+Leibniz was a lawyer with wide-ranging interests. In particular, logic. With the
+prevalence of algebra, Leibniz observed: If we can use symbols to perform
+arithmetic computations, why not do the same for logic computations? In asking
+this question, Leibniz had opened the door to _formal symbolic logic_.
+Unfortunately, the door led to a project far too ambitious and difficult. While
+Leibniz managed to produce a few bits and pieces of some sort of formal
+notation, a full system never came to fruition. The project's difficulty stemmed
+from the fact that logic, for well over a thousand years, had developed
+independently from mathematics. There were occassional intersections, but
+nothing significant enough for Leibniz to work with. The task, then, was
+gargantuan — Leibniz, and those who came thereafter, had to build a symbolic
+system that could express a millenia of results, _starting from the ground up_.
+
+Over the next century, various mathematicians took a bite at the
+apple. The legendary Euler introduced some visual representations, as did
+Ploucquet and Lambert. It wasn't until the 1800s that we see a complete change
+in direction.
+
+Augustus de Morgan, an English mathematician born in the British Raj, began
+experimenting with expressing logic in terms of algebra, rather than attempting
+to build an entirely new system. This illustrates an interesting historical
+view. While mathematics is grounded in logic, the actual formalization of logic
+resulted from representing logical notions in terms of mathematics. It's a
+peculiar process: ${L}$ builds ${M,}$ and ${M}$ is used to reconstruct ${L,}$
+where ${L}$ is logic and ${M}$ is mathematics.

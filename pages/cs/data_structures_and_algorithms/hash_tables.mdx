@@ -1,0 +1,362 @@
+<Metadata
+	title={"Hash Tables"}
+	description={"Notes on hash tables"}
+	keywords={"hash tables, data structures, algorithms"}
+/>
+
+# Hash Tables
+
+A **hash table** is a data structure where keys are organized into smaller
+groups that can be quickly searched. Hash tables are a remarkably useful
+data structure. They implement the abstract data type _dictionary_, a
+variation of the _symbol table_ ADT.
+
+A closely related ADT is the _map_. Many authors use the terms _map_ and
+_dictionary_ synonymously, but these notes distinguish the two. When a
+symbol table is implemented with a search tree, we call the resulting ADT a
+**map**. When implemented with a hash table, the resulting ADT is a
+**dictionary**. We maintain these distinctions to keep communication clear.
+That said, it's critical to keep in mind that there is no established
+terminology on the matter. Languages themselves give different names to
+ADTs implemented with hash tables:
+
+1. Python calls them _dictionaries_.
+2. JavaScript calls them _object literals_.
+3. C++, Java, Go, and Scala call them _maps_.
+4. Ruby, ever the odd, calls them _hashes_.
+
+To summarize, here are the relevant definitions:
+
+> **definition: symbol table.** An abstract data type consisting of
+> unordered key-value pairs, where the key is some instance of a primitive
+> data type, and the value is some instance of data.
+
+> **definition: dictionary.** A symbol table implemented with a hash table.
+
+> **definition: map.** A symbol table implemented with a search tree.
+
+For this section, we'll examine the hash table implementation.
+
+## Demand for Hash Tables
+
+Hash tables exist because of the conflicting tradeoffs in searching on
+arrays. With arrays, we get constant time access and all the benefits of
+caching, but at the cost of ${O(1)}$ linear search. If we sort the
+elements, we can better our situation up to ${O(\lg n)}$ with binary
+search, but then we introduce the bottleneck and complexity of sorting.
+Hash tables are an attempt at hitting the middle ground — fast searching
+and fast access. The cost: We don't get anywhere near the benefits of
+caching from using arrays and we require far more memory.
+
+## Basic Idea
+
+To understand hashing, we'll toy with some ludicrous ideas. Say we had the
+following array:
+
+```
+A [8] [3] [6] [10] [15] [18] [4]
+   0   1   2   3    4    5    6
+```
+
+Suppose we're asked to build a data structure that allows the user to
+determine if an element ${n}$ exists in the array, in ${O(1)}$ time. That
+takes binary search and linear search off the table. So what can we do?
+Well, we could store the elements in an array where the indices correspond
+to the actual elements. We'll call this new data structure `H`:
+
+```
+        [3][4]   [6]   [8]   [10]                [15]        [18]
+0  1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18
+```
+
+This does, in fact, give us ${O(1)}$ search. If the user wants to know
+whether `𝑁` is comprised, they just have to write `H[𝑁]`. If a number is
+returned, `𝑁` is comprised. Otherwise, they'll get some specified value,
+perhaps `null`.
+
+Of course, this isn't very feasible. Suppose the array was simply:
+
+```
+[100000000000]
+```
+
+Sparing the trouble, that's one hundred billion. We'd need a `H` of size
+one hundred billion just to store that one element. This isn't some
+outlandish concern. String encodings today go up to the million! Clearly,
+our initial data structure `H` is only ideal for the smallest cases. But,
+the idea is there and it isn't bad, so let's build on it.
+
+## Hash Functions
+
+Thinking carefully about the problem with `H`, we realize that the problem
+stems from the way we _map_ the elements to the indices. With our initial
+approach, it was a 1-to-1 mapping:
+
+$$
+	k \rarr \mm{array[k]}
+$$
+
+More specifically, we passed ${k}$ to some function, and that function
+returned a value that we used to index into the array:
+
+$$
+\begin{aligned}
+	&k \rarr \mm{array[$h(k)$]} \\[1em]
+	&\tt{where} h(x) = x
+\end{aligned}
+$$
+
+The function ${h(x)}$ is a type of **hash function**, and when it takes the
+form ${h(x) = x,}$ we call it **ideal hashing**.
+
+Let's try a different function:
+
+$$
+	h(x) = x \rod 10
+$$
+
+This is the remainder (or modulo) operation from number theory (divide
+${x}$ by ${10,}$ give me the remainder). Say we had the following array:
+
+```
+A [8] [3] [6] [10] [15] [4]
+   0   1   2   3    4    6
+```
+
+we get the following (where ${k}$ is an element in the array):
+
+| ${k}$ | ${h(k) = k \rod 10}$ |
+| ----- | -------------------- |
+| 8     | 8                    |
+| 3     | 3                    |
+| 6     | 6                    |
+| 10    | 0                    |
+| 15    | 5                    |
+| 4     | 4                    |
+
+The resulting array uses substantially less space;
+
+```
+ideal hashing:
+
+         [3][4]   [6]   [8]   [10]                [15]
+ 0  1  2  3  4  5  6  7  8  9  10  11  12  13  14  15
+
+
+
+new hash function:
+
+[10]     [3][4][15][6]  [8]
+ 0  1  2  3  4  5  6  7  8
+```
+
+It seems we've solved the problem. At least until the the value ${18}$ is
+added to the array:
+
+| ${k}$ | ${h(k) = k \rod 10}$ |
+| ----- | -------------------- |
+| 8     | ${{8}}$              |
+| 3     | 3                    |
+| 6     | 6                    |
+| 10    | 0                    |
+| 15    | 5                    |
+| 4     | 4                    |
+| 18    | ${{8}}$              |
+
+An array slot can only hold one element at a time, and we've gotten
+ourselves in tangle — the values ${8}$ and ${18}$ map to the same index.
+This is called a **collision**. Now we have to solve this problem. We have
+some options:
+
+1. **closed hashing** — We keep the size of our table fixed. To prevent
+   collisions, we'll either (1) modify our hash function, (2) use some
+   contigency procedure in the event of a collision, or (3) some
+   combination of both.
+2. **open hashing** — Forget all of the complexity with writing hash
+   functions and dealing with minutiae — just use more memory.
+
+## Open Hashing
+
+Also called **chaining**, open hashing is a straightforward approach to
+handling collisions. Instead of having the hash table's underlying array
+store the values directly, we have it store an array of pointers to linked
+lists.
+
+For example, say we had the array:
+
+```
+[16 12 25 39 6 122 5 68 75]
+```
+
+To store these values, we use our usual hash function:
+
+| ${k}$ | ${h(k) = k \rod 10}$ |
+| ----- | -------------------- |
+| 16    | 6                    |
+| 12    | 2                    |
+| 25    | 5                    |
+| 39    | 9                    |
+| 6     | 6                    |
+| 122   | 2                    |
+| 5     | 5                    |
+| 68    | 8                    |
+| 75    | 5                    |
+
+This results in the hash table:
+
+```rust
+0 [ • ]
+1 [ • ]
+2 [ •-]-->{12}-->{122}
+3 [ • ]
+4 [ • ]
+5 [ •-]-->{25}-->{5}-->{75}
+6 [ •-]-->{16}-->{6}
+7 [ • ]
+8 [ •-]-->{68}
+9 [ •-]-->{39}
+```
+
+This successfully (and easily) solves the collision problem. But there's a
+catch. Say we had ${n = 100}$ keys. The size of our hash table is
+${S = 10.}$ Using these assumed values, the hash table world provides a
+special value:
+
+$$
+	\lambda = \dfrac{n}{S} = \dfrac{100}{10} = 10
+$$
+
+This is called the **load factor** — the number of keys divided by the size
+of the table. To see why this value is important, let's say the ${100}$
+keys are uniformly distributed. I.e., each of our hash table's spaces gets
+${10}$ keys.
+
+Because our hash function is a simple modulo operation, it takes ${O(1)}$
+time to obtain the hash table's index. And because the keys are uniformly
+distributed, the average time it takes to reach a successful search for a
+key is:
+
+$$
+	T = 1 + \dfrac{\lambda}{2}
+$$
+
+One for obtaining the hash table index, and ${\lambda / 2}$ for the
+average. That's the average time for a successful search. For the average
+of an unsuccessful search, we get:
+
+$$
+	T = 1 + \lambda
+$$
+
+That is, we get all the way to the end of the hash table. Now we see why
+that load factor is critical. If we had ${10~000}$ keys and only ${10}$
+spaces, we'd have:
+
+$$
+	\lambda = \dfrac{10~000}{10} = 1000
+$$
+
+That's far too large of a load factor. For chaining, an ideal load factor
+is less than ${2.}$ Thus, we might consider making our hash table bigger:
+
+$$
+	\lambda = \dfrac{10~000}{5~000} = 2
+$$
+
+Of course, this means we must consume more memory. But, we did say forget
+about all of those shenanigans with hash functions.
+
+Unfortunately, even if we were content with consuming more memory, we still
+likely spoke too soon — there's another problem with chaining that lies in
+ambush. Suppose we start with an empty hash table, and we did allocate a
+size of ${5000}$. Then we get a key space that looks like:
+
+$$
+	\set{35, 95, 145, 155, 205, 305, \ldots, 5n}
+$$
+
+The resulting hash table:
+
+<div className={`hashtbl`}>
+
+| 0   | 1   | 2   | 3   | 4   | 5          | 6   | 7   | 8   | 9   | ${\ldots}$ | ${5n}$ |
+| --- | --- | --- | --- | --- | ---------- | --- | --- | --- | --- | ---------- | ------ |
+|     |     |     |     |     | 35         |     |     |     |     |            |        |
+|     |     |     |     |     | 95         |     |     |     |     |            |        |
+|     |     |     |     |     | 145        |     |     |     |     |            |        |
+|     |     |     |     |     | 155        |     |     |     |     |            |        |
+|     |     |     |     |     | 205        |     |     |     |     |            |        |
+|     |     |     |     |     | 305        |     |     |     |     |            |        |
+|     |     |     |     |     | ${\vdots}$ |     |     |     |     |            |        |
+|     |     |     |     |     | ${5n}$     |     |     |     |     |            |        |
+
+</div>
+ 
+
+With our current hash function, as long as the user enters some multiple of
+${5,}$ the entries will be appended to the list mapped to index ${5.}$ This
+is called **clustering**, and is arguably an even worse problem than what
+we grappled with earlier. Why? Because now the hash table is no longer
+_uniformly distributed_. Which means that none of our load factor analysis
+was correct to begin with.
+
+## Linear Probing
+
+An alternative technique to resolving collisions is _linear probing_. To
+illustrate, we'll use the same simple hash function:
+
+$$
+	h(x) = x \bmod 10	
+$$
+
+Let's suppose our keyspace is:
+
+$$
+	\set{26, 30, 45, 23, 25, 43, 74}
+$$
+
+Just as we did in the previous sections, let's map the keys using the hash
+function (we'll stop when we encounter a collission):
+
+<div className={`hashtbl`}>
+
+| 0   | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 30  |     |     | 23  |     | 45  | 26  |     |     |     |
+
+</div>
+
+Once we hit 25, we encounter a collision. We need it at 5, but 5 is already
+occupied by 45. What we can do is check if the next space is available:
+
+<div className={`hashtbl`}>
+
+| 0   | 1   | 2   | 3   | 4   | 5          | 6          | 7   | 8   | 9   |
+| --- | --- | --- | --- | --- | ---------- | ---------- | --- | --- | --- |
+| 30  |     |     | 23  |     | 45         | 26         |     |     |     |
+|     |     |     |     |     | ${\times}$ | ${\times}$ |     |     |     |
+
+</div>
+
+The next index is occupied, so move try the next:
+
+<div className={`hashtbl`}>
+
+| 0   | 1   | 2   | 3   | 4   | 5          | 6          | 7              | 8   | 9   |
+| --- | --- | --- | --- | --- | ---------- | ---------- | -------------- | --- | --- |
+| 30  |     |     | 23  |     | 45         | 26         |                |     |     |
+|     |     |     |     |     | ${\times}$ | ${\times}$ | ${\checkmark}$ |     |     |
+
+</div>
+
+We have a space, so we place 25 at this index:
+
+<div className={`hashtbl`}>
+
+| 0   | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 30  |     |     | 23  |     | 45  | 26  | 25  |     |     |
+|     |     |     |     |     |     |     |     |     |     |
+
+</div>
+

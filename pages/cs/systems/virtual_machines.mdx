@@ -1,0 +1,1745 @@
+import {Stack} from "../../../components/illus/components/Stack/Stack";
+import {FTree} from "../../../components/illus/components/FTree/FTree";
+
+<Metadata
+	title={"Virtual Machines"}
+	description={"Notes on virtual machines"}
+	keywords={"virtual machines, computer architecture"}
+/>
+
+# Virtual Machines
+
+<q>
+
+_"Any sufficiently advanced technology is indistinguishable from magic."_
+
+Arthur C. Clarke, ~Hazard of Prophecy: The Failure of Imagination~ 14
+(1962).
+
+</q>
+
+<div className="outline">
+
+1. [Cross-compatibility](#cross-compatibility)
+2. [The Stack](#the-stack)
+	1. [Stack Arithmetic](#stack-arithmetic)
+		1. [Stack Addition](#stack-addition)
+		2. [Stack Negation](#stack-negation)
+		3. [General Form of Stack Arithmetic](#general-form-of-stack-arithmetic)
+	2. [Boolean Operations](#boolean-operations)
+	3. [Branching Operations](#branching-operations)
+	4. [Function Operations](#function-operations)
+		1. [How Are Functions Executed?](#how-are-functions-executed)
+		2. [Example: Recursive Functions](#example-recursive-functions)
+		3. [Implementing Call & Return Statements](#implementing-call--return-statements)
+			1. [Call Handling](#call-handling)
+			2. [Handling Function Declarations](#handling-function-declarations)
+			3. [Handling Return Statements](#handling-return-statements)
+			4. [Memory Recycling](#memory-recycling)
+	5. [Compilers & The Stack](#compilers--the-stack)
+	6. [Memory Segment Operations](#memory-segment-operations)
+3. [Pointers & Virtual Machines](#pointers--virtual-machines)
+	1. [Manipulating Pointers](#manipulating-pointers)
+4. [Implementing Memory Segments](#implementing-memory-segments)
+	1. [The Constant Segment](#the-constant-segment)
+	2. [The Static Segment](#the-static-segment)
+5. [The Virtual Machine Translator](#the-virtual-machine-translator)
+	1. [Possible Architectures](#possible-architectures)
+		1. [Simple Approach](#simple-approach)
+			1. [The Parser](#the-parser)
+			2. [The Codewriter](#the-codewriter)
+
+</div>
+
+Consider the age-old program we're all familiar with, written in some
+Java-like pseudocode, alongside its pseudo VM code:
+
+```nasm
+class Main {
+	function void main() {
+		System.print("Hello, world!");
+	}
+}
+```
+
+How do these characters above end up being understood and executed by a
+computer? For modern computers, the best place to start in answering this
+question is the **virtual machine**. The general process works as follows:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655322816/cs/computer_work_flow_pph5en.svg"
+	}
+	caption={"Computer workflow"}
+	width={"45"}
+	imwidth={"411"}
+	imheight={"601"}
+/>
+
+## Cross-compatibility
+
+To understand why virtual machines are needed, we must understand the
+problem they were first intended to solve. As we saw in the previous
+sections on machine languages, there are numerous different instruction
+sets. That is, numerous different languages. One computer speaks x86,
+another speaks MIPS, and yet another speaks SPARC.
+
+Confronted with linguistic variety, the programmer must make a decision:
+
+1. Do I want my program to run on many different computers?
+2. Do I want my program to just run on one computer?
+
+For most programmers, the most desirable option is (1). Without more, the
+programmer can achieve the desired result by writing different programs for
+each target computer:
+
+<Bipartite
+	data={[
+		{ link: ["P_1", "C_1"] },
+		{ link: ["P_2", "C_2"] },
+		{ link: ["P_3", "C_3"] },
+		{ link: ["P_4", "C_4"] },
+		{ link: ["P_5", "C_5"] },
+	]}
+	id={"multi_compiler"}
+	scale={40}
+/>
+
+Needless to say, this is a cumbersome process. Assuming each of those
+programs is a high-level language — the most likely case — the programmer
+must write a separate compiler for all the computers. Is there a better
+approach? Sure. The programmer could just write a **virtual machine** — a
+program allowing them to "write once, run anywhere:"
+
+<Bipartite
+	data={[
+    	{ link: ["P", "V"] },
+    	{ link: ["V", "C_1"] },
+    	{ link: ["V", "C_2"] },
+    	{ link: ["V", "C_3"] },
+    	{ link: ["V", "C_4"] },
+    	{ link: ["V", "C_5"] },
+    ]}
+    id={"vm_approach"}
+    scale={40}
+
+/>
+
+This approach is called **two-tier compiling** — compilation consisting of
+two stages. In the first stage, the source code is sent to a compiler, much
+like traditional compiling. The compiler, however, compiles the source code
+into **bytecode** — virtual machine code. A virtual machine is simply an
+abstraction of a computer. Essentially, an imaginary computer.
+
+That virtual machine code is understood by a program on the target computer
+called a **virtual machine (VM) implementation**. In short, each computer
+has a VM implementation installed, This program takes the bytecode as input
+and translates it to the machine language understood by the computer.
+Effectively, a **translator**.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655277395/cs/program_to_bytecode_a6j5t2.svg"
+	}
+	caption={"From program to bytecode"}
+	width={"80"}
+	imwidth={"522"}
+	imheight={"332"}
+/>
+
+Note what this means: Humans still have to write a translator for every
+platform. We can't get rid of the fact that computers have different
+machine languages, but we can mitigate the problem it poses.
+
+To repeat, the virtual machine is an abstraction of a computer. It isn't an
+actual, physical computer. It's a mental construction that analogizes a
+real-world computer. This idea — analogizing or modelling real world
+entities — is called **virtualization**.
+
+Virtualization is a hallmark of not just computer science, but human
+achievement as well. In the very first volume of these notes, we presented
+a question: What does it mean to be human? In response to this question, we
+proposed that computers can help shed light on this. Virtualization gives
+us a hint: As far as we know, humans are the only entities that can _think
+about thinking_. Virtualization is an exercise of this ability. We take a
+real world computer, think about how _it_ thinks, then construct a model of
+the computer's thinking process. Even more interestingly, some of us take
+the abstraction even further: Epistemologists, and more recently, AI
+researchers, think about how we think about thinking.
+
+## The Stack
+
+In developing a two-tier compilation system, there are two conflicting
+goals. First, we want the virtual machine language to be high-level enough
+so the distance between the high-level language and the virtual machine
+language is fairly small. The greater this distance is, the greater the
+amount of translation work.
+
+Second, we want the virtual machine language to be low-level enough so the
+distance between virtual machine language and the actual machine language
+is fairly small. Once again, the greater the distance is, the greater the
+amount of translation work.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655281373/cs/vm_language_approaches_rsxbgm.svg"
+	}
+	caption={"Comparing virtual machine language approaches"}
+	width={"90"}
+	imwidth={"1018"}
+	imheight={"398"}
+/>{" "}
+
+The prevailing approach that achieves this balance is the **stack machine
+architecture**, or simply _the stack_. To understand how this architecture
+works, let's quickly review the stack data structure.
+
+As we know, stacks have two primary operations: `push`, which adds a stack
+element to the top of the stack, and `pop`, which removes the current top
+element. These operations work because there's always a `top` pointer
+pointing at the top most frame.
+
+The stack architecture works similarly. To illustrate, in the diagram
+below, we have some program that's initialized the variables `x = 7` and
+`y = 12`. These values are stored in computer memory, as expected. The
+virtual machine models this situation with a stack. When we assign a value,
+the value is _pushed_ onto the stack. When we get rid of a value, the value
+is _popped_ off the stack. Importantly, when we pop a value off of the
+stack, the value doesn't disappear entirely — it's stored in the location
+where the previously pushed value was assigned.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655282890/cs/stack_memory_push_pop_duofjm.svg"
+	}
+	caption={"Push and pop"}
+	width={"90"}
+	imwidth={"643"}
+	imheight={"455"}
+/>
+
+The stack is what we'll be working with exclusively for now.
+
+### Stack Arithmetic
+
+Because all we have is a stack, we should understand how arithmetic
+operations are performed.
+
+#### Stack Addition
+
+As we know, addition is a binary operation of the form ${a + b.}$ Thus, to
+perform addition with a stack, we perform the following:
+
+1. Pop the first operand.
+2. Pop the second operand.
+3. Add the two popped values.
+4. Store the result in the top most frame (where the second operand once
+   was).
+
+Visually, this process looks like:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655284341/cs/stack_addition_qglilj.svg"
+	}
+	caption={"Stack addition"}
+	width={"60"}
+	imwidth={"471"}
+	imheight={"81"}
+/>
+
+#### Stack Negation
+
+Negation is a unary operation of the form ${-a.}$ Thus, to negate a value,
+we pop the topmost frame, negate the popped value, then push the result
+back to the stack:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655284853/cs/stack_negation_sxsd25.svg"
+	}
+	caption={"Stack negation"}
+	width={"60"}
+	imwidth={"472"}
+	imheight={"82"}
+/>
+
+#### General Form of Stack Arithmetic
+
+Examining these two procedures, we see that stack arithmetic follows a
+general procedure:
+
+- To apply a function ${f}$ on the stack:
+  1.  Pop ${f}$'s arguments from the stack.
+  2.  Perform ${f}$ on the popped arguments.
+  3.  Push the result of ${f}$ onto the stack.
+
+### Boolean Operations
+
+Alongside arithmetic, we also need Boolean operations. Let's consider a few
+examples. The general form of stack arithmetic applies to Boolean
+operations as well. We pop off the values, perform the Boolean operation,
+and push the result back onto the stack.
+
+### Branching Operations
+
+If we only had the operations we've covered so far, programs in our virtual
+machine language would be strictly linear — just a straight sequence of
+instructions to be executed one at a time. Of course, programs aren't
+linear. We have if-statements, else-if statements, else-statements,
+while-statements, for-statements, and so on.
+
+As such, in any usable VM language, we'll find some variant of the
+following commands:
+
+1. A **goto command** to execute an instruction other than the next
+   instruction,
+2. An **ifgoto command** to execute an instruction other than the next, but
+   only if a certain condition is mset,
+3. a **label command** to "bookmark" particular instructions.
+
+In low level programs like the vitual machine's, branching commands fall
+under two broad categories: (1) **unconditional branching** and (2)
+**conditional branching**.
+
+Let's illustrate the distinctions between these categories via example.
+Below is some high-level program that performs multiplication, alongside
+its pseudo VM code.
+
+<Grid cols={2}>
+
+```nasm
+int multiply(int x, int y) {
+	int sum = 0;
+	int n = 1;
+	while !(n > y) {
+		sum += x;
+		n++;
+	}
+	return sum;
+}
+```
+
+```nasm
+function multiply(x,y)
+	push 0
+	pop sum
+	push 1
+	pop n
+label LOOP
+	push n
+	push y
+	gt
+	ifgoto ENDLOOP
+	push sum
+	push x
+	add
+	pop sum
+	push n
+	push 1
+	add
+	pop n
+	goto LOOP
+label ENDLOOP
+	push sum
+	return
+```
+
+</Grid>
+
+Above, we see both instances of conditional and unconditional branching.
+The command `goto LOOP` is an instance of unconditional branching — we go
+to the label `LOOP` no matter what. The command `ifgoto ENDLOOP`, in
+contrast, is an instance of conditional branching — we go to the label
+`ENDLOOP` _only if_ a particular condition is true. In this case, that
+condition is `n > y`. Notice how this works with a stack. We have to first
+push the operands onto the stack, then compare them, and only after these
+two operations are done can we run the command `ifgoto ENDLOOP`.
+
+### Function Operations
+
+High-level languages use a variety of terms for "functions": subroutines,
+functions, procedures, methods, operations, etc. At the virtual machine,
+assembler, and machine language levels, all of these terms mean the same
+thing — some sequence of operations on a set of arguments. Because
+functions are indispensible in modern programming, a VM language will have
+some variant of these commands:
+
+1. A **call command** for calling functions.
+2. A **function command** for indicating functions.
+3. A **return command** to route the function's output elsewhere.
+
+Let's consider an example. Suppose the programmer writes something that
+looks like:
+
+```nasm
+sqrt(x - 17 + x * 5)
+```
+
+This is a call to a function, with an expression argument. When this source
+code is sent to the compiler, the compiler will first translate the
+expression argument. Thus, in pseudo VM code, the translation might look
+like:
+
+```nasm
+push x
+push 17
+sub
+push x
+push 5
+call os.math.multiply
+add
+call os.math.sqrt
+```
+
+Notice the lines prefixed with `os`. These are calls to the operating
+system's built-in math operations. Because operating systems have built-in
+mathematical operations, virtual machines can use those operations rather
+than implementing their own. This makes the virtual machine's codebase
+smaller, and in some situations, faster.
+
+Now comes a crucial point to understand with function calls: Once the code
+above is sent to the VM translator, the following procedure occurs:
+
+1. The function's arguments are pushed onto the stack.
+2. The function's operations are performed on the arguments.
+3. The function's result _replaces_ the arguments pushed onto the stack.
+
+Note what this means. The function's arguments disappear once the function
+call has finished. Let's take a closer look at the implementation.
+
+#### How Are Functions Executed?
+
+Before we examine the implementation, there are a few key points we should
+understand about how how computers, in general, execute functions. First,
+functions can be thought of as "mini programs." Viewed in this manner, it
+follows that functions need memory to perform their operations.
+Accordingly, whenever we call a function, we need stack and the associated
+memory segments.
+
+Second, computer programs will usually consist of many functions. Given a
+sufficiently complex program, it may look like thousands of functions are
+executing. This is not the case. At any given point in time in a program,
+only one function in the program is running.
+
+For example, suppose we had a program with the following structure:
+
+```nasm
+int h(a) {
+	// code
+}
+int g(m) {
+	// code
+	h(m)
+}
+int f(n) {
+	// code
+	g(n)
+}
+
+int x = f(2)
+```
+
+This structure has a specific **call chain** or **call sequence**:
+
+$$
+	\mm{f} \to \mm{g} \to \mm{h}
+$$
+
+Every single one of the functions above has some **state** — private worlds
+of their own — and these states must exist as long as the function is on
+the call chain. Otherwise, we either wouldn't have a chain at all, or we'd
+have functions colliding with one another.
+
+So how do we ensure the functions get worlds of their own? By creating a
+_new stack_ for each function call. Thus, whenever we make a function call,
+the following facts apply at _run time_:
+
+1. Once the function starts running, two events occur:
+   1. A new working stack is created for the function.
+   2. Memory segments are allocated for the function.
+2. The working stack and memory segments are maintained as long as the
+   function is executing.
+3. When the function finishes executing, the memory is released for others
+   to use (i.e., "recycled" or "freed").
+
+The third point is particularly important to take note of. If we never
+release the memory, we'd consume far too much memory. Knowing these facts,
+let's consider an example. Suppose we had the following program in some
+language:
+
+```nasm
+int multiply(int x, int y) {
+	int sum = 0;
+	int n = 1;
+	while !(n > y) {
+		sum += y;
+		n++;
+	}
+	return sum;
+}
+int main() {
+	int x = 3 + multiply(5,8)
+	return x;
+}
+```
+
+This program consists of two functions, `main` and `multiply`. When we send
+this court code to the the compiler, it generates VM code that might look
+like the following (source code to the left and pseudo VM code to the
+right):
+
+<Grid cols={2}>
+
+```nasm
+int multiply(int x, int y) {
+	int sum = 0;
+	int n = 1;
+	while !(n > y) {
+		sum += y;
+		n++;
+	}
+	return sum;
+}
+```
+
+```nasm
+function multipy 2
+	push constant 0
+	pop local 0
+	push constant 1
+	pop local 1
+label LOOP
+	push local 1
+	push argument 1
+	gt
+	ifgoto END
+	push local 0
+	push argument 0
+	add
+	pop local 0
+	push local 1
+	push constant 1
+	add
+	pop local 1
+	goto LOOP
+label END
+	push local 0
+	return
+```
+
+</Grid>
+
+<Grid cols={2}>
+
+```nasm
+int main() {
+	int x = 3 + multiply(5,8)
+	return x;
+}
+```
+
+```nasm
+function main 0
+	push constant 3
+	push constant 8
+	push constant 5
+	call multiply 2
+	add
+	return
+```
+
+</Grid>
+
+Making these calls results in two separate states: A state for `main` (the
+**caller**), and a state for `multiply` (the **callee**).
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655395897/cs/call_chain.drawio_vtt2f0.svg"
+	}
+	caption={"Call chain"}
+	width={"75"}
+	imwidth={"606"}
+	imheight={"132"}
+/>
+
+How do we ensure that these states are saved? Well, let's go back to our
+earlier proposition: At any given point in time in a program, only one
+function is executing. This means that the only function that can _return_
+(i.e., terminate) is the function that's currently running. This means that
+in our call chain, all of the functions to be called after the current
+function must wait for the current function to return. This means that the
+call chain lengthens and shortens with each function call.
+
+$$
+\begin{aligned}
+	&\mm{f} \\
+	&\mm{f} \to \mm{g} \\
+	&\mm{f} \to \mm{g} \to \mm{h} \\
+	&\mm{f} \to \mm{g} \\
+	&\mm{f} \\
+\end{aligned}
+$$
+
+Looking at how this grows and shrinks, we can see that this can actually be
+viewed as a _stack_. Using this perspective, we see that the call pattern
+follows LIFO (last-in-first-out):
+
+<Grid cols={5}>
+
+<Stack data={["f"]} width={150} />
+
+<Stack data={["f", "g"]} width={150} />
+
+<Stack data={["f", "g", "h"]} width={150} />
+
+<Stack data={["f", "g"]} width={150} />
+
+<Stack data={["f"]} width={150} />
+
+</Grid>
+
+Building on this observation, let's see how we might save function states
+using a stack. Say we're inside a function `main()`, and make the call
+`multiply(17,21)`. Big-picture-wise, the call looks like:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655399706/cs/call_chain_big_picture_xigri9.svg"
+	}
+	caption={"Function call"}
+	width={"70"}
+	imwidth={"462"}
+	imheight={"132"}
+/>
+
+Clearly, there are a series of steps that lead to this result. Let's
+examine each step. First, when we call `main()`, we get a stack and memory
+segments. Nothing new:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655399973/cs/function_call_1_mb1rx2.svg"
+	}
+	caption={"No call yet"}
+	width={"20"}
+	imwidth={"142"}
+	imheight={"132"}
+/>
+
+Eventually, as `main()`'s commands are executed it encounters a
+`call f nArgs` command, where `nArgs` is the number of arguments for the
+function call. This results in the following:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655400132/cs/function_call_2_qdb6i5.svg"
+	}
+	caption={"Call is made"}
+	width={"80"}
+	imwidth={"591"}
+	imheight={"311"}
+/>
+
+Pause. Let's look at what's going on here. First, recall that a function
+call has the form ${f(arg_0, arg_1, \ldots, arg_n).}$ Each of those
+arguments have a value. And since those arguments have values, they're each
+pushed onto the stack. Once those values are pushed, the `ARG` pointer is
+set to point at the first argument from the call.
+
+Second, recall that we have to save the state of the caller (in this case
+`main()`). That state consists of:
+
+1. The caller's current working stack, and
+2. The caller's currently used segments
+
+Beause we're using a stack data structure, the first part of the state is
+taken care of. It's already saved. The second part is where we need
+additional memory. So, we push a few more values onto the stack. These
+values are the function's _return address_ and the pointers to the
+function's currently used segments (e.g., the pointers to the local
+segment, argument segment, this segment, etc). This area of the stack is
+called the caller's **function frame**.
+
+With all of this data saved, we can now jump to the instruction
+`function f nVars`, where `nVars` is the number of local variables for `f`.
+This results in the following:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655401147/cs/function_call_3_pns1ub.svg"
+	}
+	caption={"Setting up f"}
+	width={"90"}
+	imwidth={"791"}
+	imheight={"371"}
+/>
+
+Above, a local segment is set up for `f()`. Once the local segment is set
+up, the `f()` can begin executing. Its working stack grows and shrinks,
+just as it would if it were the function `main()`:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655401326/cs/function_call_4_ujx7pn.svg"
+	}
+	caption={"Executing f"}
+	width={"100"}
+	imwidth={"822"}
+	imheight={"432"}
+/>
+
+Once all of `f()`'s commands have finished executing, the function pushes
+its return value to stack. Once that value's pushed, the `return`
+instruction is executed. This results in the following:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655401490/cs/function_call_5_nwlv0i.svg"
+	}
+	caption={"Preparing to return"}
+	width={"100"}
+	imwidth={"840"}
+	imheight={"436"}
+/>
+
+Several things occur when the `return` instruction is executed:
+
+1. First, the return value that was just pushed by `f()` onto the stack is
+   copied onto `argument 0` (the place where the first argument in the call
+   to `f` was pushed).
+2. Second, the caller's (`main`) segment pointers are restored. This is
+   done by using the function frame set up earlier (in the diagram, the
+   grey blocks).[^saved_frame_note]
+3. Third, we clear `f`'s entire working stack (freeing the memory).
+4. Fourth, we set back up the caller's (`main`) stack pointer, having it
+   point just after the return value.
+5. Finally, we jump back to the `return` address of the caller's code, and
+   continue executing the caller's instructions.
+
+[^saved_frame_note]:
+    Not all memory segments used by a virtual machine's stack are saved in
+    a function's saved frame. Some of the memory segments used by the stack
+    — e.g., constant, static, temp, or pointer — are either (a) used by all
+    functions, or (b) used only by the compiler. As such, these memory
+    segments will likely be stored somewhere other than the function's
+    saved frame.
+
+The end result:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655402118/cs/function_call_6_vrkpwl.svg"
+	}
+	caption={"Returning to main"}
+	width={"100"}
+	imwidth={"871"}
+	imheight={"432"}
+/>
+
+A few things to note about this implementation. First, as we can likely
+tell, this isn't a trivial implementation. And this shouldn't be
+surprising. The ability to execute function instructions is akin to a
+primitive brain. We're implementing a machine that can, in the middle of
+performing some task ${A,}$ go out and perform another task ${B,}$ then
+come back and pick up where it left off in ${A.}$ That's a non-trivial
+action, and humans themselves occassionally fail it ("Where was I?").
+
+Second, the introduction of function calls now creates the notion of a
+**global stack**. Examining the preceding example, we can imagine a
+situation where `f()` calls `g()`, `g()` calls `h()`, `h()` calls `i()`,
+and so on. The sum of all these functions constitutes the global stack.
+
+Third, because of how large the global stack can be, when we program in a
+higher-level language and have to deal with memory issues, it's often
+easier to think of function calls rather than the individual elements of
+the global stack. This is done by dividing the global stack into **function
+blocks** or **call frames**:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655406766/cs/global_stack_fyyce9.svg"
+	}
+	caption={"The global stack divided into call frames"}
+	width={"50"}
+	imwidth={"491"}
+	imheight={"991"}
+/>
+
+By making these divisions, we can analyze programs with a higher-level
+abstraction called the **call stack**:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655405379/cs/call_stack_enw4on.svg"
+	}
+	caption={"The call stack"}
+	width={"80"}
+	imwidth={"811"}
+	imheight={"417"}
+/>
+
+#### Example: Recursive Functions
+
+To tie it all together, let's consider an example with a recursive
+implementation of the factorial function. The code to the right is the
+function written in some higher-level language, and to the left is the
+function in pseudo VM code:
+
+<Grid cols={2}>
+
+```nasm
+int factorial(int n) {
+	if (n == 1) {
+		return 1;
+	} else {
+		return n * factorial(n - 1);
+	}
+}
+
+int main() {
+	return factorial(3);
+}
+```
+
+```nasm
+function main      // main()
+	push 3
+	call factorial
+	return
+function factorial // factorial()
+	push n           // test condition
+	push 1
+	eq
+	if-goto BASECASE // conditional branching
+	push n           // else block
+	push n
+	push 1
+	sub
+	call factorial
+	call mult
+	return
+label BASECASE     // base case label
+	push 1
+	return
+```
+
+</Grid>
+
+Let's walk through this code. First, the function `main()` is called. The
+function's instructions are executed as usual. Then, it encounters
+`call factorial`. So, we jump to the `function factorial(n)` instruction.
+
+Once we're at that instruction, we `push n` and `push 1`. Then we check the
+if-block's test condition: Run the command `eq` on `n` and `1`. If the
+result is true, we jump to the `BASECASE` label. This label is
+automatically generated by the compiler (more on this later). This takes
+care of the if-block.
+
+Now we turn to the else-block. We get to this block if the test condition
+earlier failed. If it did, we want to execute the command
+`n * factorial(n-1)`. This command needs three arguments: One `n`, another
+`n`, and a `1`. So, we make the pushes: `push n`, `push n`, and `push 1`.
+Once those values are pushed onto the stack, we subtract that last two
+things we pushed: `n` and `1`.
+
+Now we have to call `factorial`. This first call cannot return until this
+new `factorial` call returns. Thus, we go through the process again, this
+time with the new arguments supplied. Only after the new call returns do we
+execute the remaining instructions: `call mult` and finally, `return`.
+
+A few things to notice about this example. First, given what we know, this
+implementation of factorial is virtually guaranteed to hit a stackoverflow
+for large values of `n`. Second, if we look at the virtual machine code,
+this is really not all that different from iteration. The only real
+difference is, we're _reusing_ the function's commands within the function
+itself. This should dispell some of the magic behind recursion. At the
+computer's depths, it's really just another way to implement loop.
+
+As an aside, more accurate pseudo VM code might look like:
+
+```nasm
+function main 0
+	push constant 3
+	call factorial 1
+	return
+function factorial 0
+	push argument 0
+	push constant 1
+	eq
+	if-goto BASECASE
+	push argument 0
+	push argument 0
+	push constant 1
+	sub
+	call factorial 1
+	call mult 2
+	return
+labl BASECASE
+	push constant 1
+	return
+function mult 2
+```
+
+#### Implementing Call & Return Statements
+
+Let's consider a few possible implementations. First, let's say we had the
+following source code in some language:
+
+```nasm
+class Math {
+	int mult(int x, y) {
+		return x * y;
+	};
+}
+
+int main() {
+	int a = 3;
+	int b = -Math.mult(19, a);
+}
+```
+
+We'll use the source code above to guide us through a possible
+implementation of the `call` and `return` operations. In pseudo VM code,
+the source code might be compiled to:
+
+```nasm
+function main
+	push local 3
+	push constant 19
+	call Math.mult 2
+	neg
+	return
+function Math.mult 2
+	// multiplcation code
+	push local 1
+	return
+```
+
+Notice what the pseudo VM code looks like. They're just functions. The
+notion of a _class_ is just a high-level abstraction. At the virtual
+machine level and below, they reduce to functions.
+
+The `call` and `return` statements in a language are implemented through a
+set of **protocols**, or **contracts** — a set of rules and conditions that
+the entities performing the operation must always abide by. For functions,
+these entities are the **caller** and the **callee**. For the caller, these
+rules apply:
+
+1. If the caller is a callee, it follows the callee protocol, alongside the
+   rules below.
+2. Before the caller makes a call to another function, it must push as many
+   arguments as the callee expects to receive.
+3. After pushing the arguments, the caller will invoke the function by
+   using a command called `call <function-name> <nArgs>`.
+4. After the caller returns, the arguments the caller pushed before the
+   call disappear from the stack.
+5. After those arguments disappear from the stack, the callee's returned
+   value will occupy the space of the first argument pushed.
+6. Finally, all of the caller's memory segments are exactly as they were
+   before the call, other than specified segments like `temp` or `static`.
+
+For the callee, these rules apply:
+
+1. When a callee receives a call and before it starts executing:
+   1. Its `argument` segment has been initialized with the argument values
+      passed by the caller.
+   2. Its `local` variables have been allocated and initialized to zero.
+   3. The `static` segment has been set to the `static` segment of the file
+      the callee is defined in.
+   4. Certain specified segments like `this`, `that`, and `pointer` are
+      undefined upon entry.
+   5. The `callee`'s working stack is empty.
+   6. The `callee` will always push some value onto the stack.[^void_note]
+2. If a call is made to another function, the callee follows the caller
+   protocol, alongside the rules above.
+
+[^void_note]:
+    This point indicates that functions will always return some value.
+    There's no such thing as a "void" function at the machine level. What a
+    void function returns depends on the virtual machine or Assembly
+    language, but it's always some substantive value. Rather than returning
+    nothing, this value is returned to the caller, and the caller
+    _discards_ or _ignores_ the value upon receipt.
+
+##### Call Handling
+
+Now that we have the basic protocols, let's look at how calls are handled.
+The VM command for a call might take the form:
+
+$$
+	\mm{call}~\seq{\ii{function-name}}~\seq{\ii{n-args}}
+$$
+
+This command is an encapsulation of the following instructions:
+
+1. Push the label `RETURN_ADDRESS` onto the stack.
+
+   ```nasm
+   push RETURN_ADDRESS
+   ```
+
+   We can think of this label like a bookmark. It's what the caller uses to
+   get back to its original place so it can continue executing its
+   instructions in sequence. Remember that when we call a function, we're
+   essentially going elsewhere. Once we get back to the caller, it must
+   have information telling it where it was last.
+
+2. Push the `LCL` pointer onto the stack.
+
+   ```nasm
+   push RETURN_ADDRESS
+   push LCL
+   ```
+
+   This saves the caller's local segment.
+
+3. Push the `ARG` pointer onto the stack.
+
+   ```nasm
+   push RETURN_ADDRESS
+   push LCL
+   push ARG
+   ```
+
+   This saves the caller's argument segment.
+
+4. Push any other pointers as specified in the language.
+
+   ```nasm
+   push RETURN_ADDRESS
+   push LCL
+   push ARG
+   push <segmentPointers>
+   ```
+
+   This saves any other segments all callers in the language must save
+   (e.g., a `this` segment, a `that` segment, etc.).
+
+5. Reposition the `ARG` pointer:
+
+   ```nasm
+   push RETURN_ADDRESS
+   push LCL
+   push ARG
+   push <segmentPointers>
+   ARG = SP - <L> - <nARGS>
+   ```
+
+   This is a critical step for the callee to perform its work. Because
+   `ARG` is a pointer, we reposition it with some basic pointer arithmetic.
+   In this case, we take the value of the stack pointer `SP`, subtract
+   `<L>` (the number of segments saved in the caller's frame from step 4),
+   and subtract `<nARGS>`, the number of arguments pushed onto the stack
+   for the callee.
+
+6. Set `LCL = SP`.
+
+   ```nasm
+   push RETURN_ADDRESS
+   push LCL
+   push ARG
+   push <segmentPointers>
+   ARG = SP - <L> - <nARGS>
+    LCL = SP
+   ```
+
+   This step sets up the starting location for pushing the callee's local
+   variables.
+
+7. `goto <functionName>`
+
+   ```nasm
+   push RETURN_ADDRESS
+   push LCL
+   push ARG
+   push <segmentPointers>
+   ARG = SP - <L> - <nARGS>
+   goto <functionName>
+   ```
+
+   This effectively transfers control to the callee, which can now begin
+   executing its commands.
+
+8. Insert the `RETURN_ADDRESS` label in the generated code stream.
+
+   ```nasm
+   push RETURN_ADDRESS
+   push LCL
+   push ARG
+   push <segmentPointers>
+   ARG = SP - <L> - <nARGS>
+   goto <functionName>
+    (RETURN_ADDRESS)
+   ```
+
+   Once control is transferred, the label we pushed earlier in the first
+   step is inserted at the end of the generated code. This ensures that
+   control is given back to the caller once the callee finishes.
+
+##### Handling Function Declarations
+
+The other command we want to consider is the function command. We've seen
+this command take the form:
+
+$$
+	\mm{function}~\seq{\ii{functionName}}~\seq{\ii{n-vars}}
+$$
+
+This command is an encapsulation of the following:
+
+1.  Declare a label for the the function entry.
+
+    ```nasm
+    <functionName>
+    ```
+
+2.  Push the 𝑛 variables onto the stack, initialized to 0.
+
+    ```nasm
+    <functionName>
+    push 0
+    push 0
+    ...
+    ```
+
+    This essentially builds the local segment of the called function.
+
+3.  The function can now execute its instructions.
+
+##### Handling Return Statements
+
+The return statement is a fairly tricky command. Overall, we want Assembly
+code that: Tells the called function to move the return value to the
+caller, reinstate the caller's state, and then return.
+
+Let's say the called function finishes its work. It now encounters the
+command:
+
+$$
+	\mm{return}
+$$
+
+To understand how this command works, recall the protocols we mentioned
+earlier. Functions _always_ return some value, and that value is placed at
+the top of the stack. Keeping this protocol in mind, the `return` command
+encapsulates the following:
+
+1. Create a temporary variable called `endFrame`, assigning to it the value
+   `LCL`.
+
+   ```nasm
+   endFrame = LCL
+   ```
+
+2. Get the address where the return address is stored.
+
+   ```nasm
+   endFrame = LCL
+   retAddr = *(endFrame - <L>);
+   ```
+
+   Here, we're storing the address where the `RETURN_ADDRESS` label is
+   stored with a temporary variable called `retAddr`. Why is the return
+   address `*(endFrame - <L>)`? Because `LCL` was set immediately after the
+   caller's saved frame. If we subtract `<L>`, the number of memory segment
+   pointers saved, we get to the address where the `RETURN ADDRESS` label
+   was pushed. We need this address because we want access to
+   `RETURN ADDRESS`.
+
+3. Reposition the caller's return value.
+
+   ```nasm
+   endFrame = LCL
+   retAddr = *(endFrame - <L>);
+    *ARG = pop()
+   ```
+
+   Since we already have a pointer on `ARG0` (set up earlier when we
+   handled the call), we can pop the stack (which returns the value the
+   called funcion pushed onto the stack when it encountered `return`), and
+   we store this in the address identified as `ARG0`.
+
+4. Reposition the stack pointer of the caller.
+
+   ```nasm
+   endFrame = LCL
+   retAddr = *(endFrame - <L>);
+   *ARG = pop()
+    SP = ARG + 1
+   ```
+
+   Here, we know that the stack pointer should be just after the `ARG`
+   pointer, since that's where the caller should continue after.
+
+5. Restore all remaining memory segment pointers of the caller.
+
+   ```nasm
+   endFrame = LCL
+   retAddr = *(endFrame - <L>);
+   *ARG = pop()
+   SP = ARG + 1
+   THIS = *(endFrame - 1)
+   THAT = *(endFrame - 2)
+   ...
+   <segmentPointer> = *(endFrame - <L> - 1)
+   ...
+   ARG = *(endFrame - 3)
+   LCL = *(endFrame - 4)
+   ```
+
+6. Jump to the return address.
+
+   ```nasm
+   endFrame = LCL
+   retAddr = *(endFrame - <L>);
+   *ARG = pop()
+   SP = ARG + 1
+   THIS = *(endFrame - 1)
+   THAT = *(endFrame - 2)
+   ...
+   <segmentPointer> = *(endFrame - <L> - 1)
+   ...
+   ARG = *(endFrame - 3)
+   LCL = *(endFrame - 4)
+   goto retAddr
+   ```
+
+   Now we can finally use the `retAddr` we set aside earlier. Executing the
+   command above, we've now given control back to the caller.
+
+##### Memory Recycling
+
+Examining the procedures above, we can see that "freeing" or "recycling"
+memory is just a side-effect of this entire process. Once we've set the
+stack pointer back to the return address, everything after the return
+address still exists, but will be overwritten. All of that data is one for
+all we care — with our implementation above, there's no other way to get
+that data without actually changing the output Assembly code.
+
+### Compilers & The Stack
+
+One question we might have is, where exactly do `push` and `pop` come from?
+Who's sending these instructions? The answer is _the compiler_. As
+mentioned earlier, the compiler takes high-level source code and outputs
+some other form of code. For example, some piece of high-level source code
+might look like:
+
+```nasm
+int x = 17 + 19
+```
+
+This source code is fed into a compiler, which might output:
+
+```nasm
+PUSH 17
+PUSH 19
+ADD
+POP x
+```
+
+Let's see a few more elaborate examples. Consider the following code in
+some language:
+
+```nasm
+int d = (2-x) + (y+9);
+```
+
+When the compiler receives this source code, it might output:
+
+```nasm
+PUSH 2
+PUSH x
+SUB
+PUSH y
+PUSH 9
+ADD
+ADD
+POP d
+```
+
+visually:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655287089/cs/stack_addition_1_z35czj.svg"
+	}
+	caption={"Various stack arithmetic operations"}
+	width={"100"}
+	imwidth={"1009"}
+	imheight={"702"}
+/>
+
+The same outline applies to Boolean computations. In sum, the arithmetic
+and logical commands we have at our disposal:
+
+| Command | Return Value  | Return Type |
+| ------- | ------------- | ----------- |
+| `ADD`   | ${a + b}$     | `integer`   |
+| `SUB`   | ${a - b}$     | `integer`   |
+| `NEG`   | ${-b}$        | `integer`   |
+| `EQ`    | ${a = b?}$    | `boolean`   |
+| `GT`    | ${a > b?}$    | `boolean`   |
+| `LT`    | ${a < b?}$    | `boolean`   |
+| `AND`   | ${a \land b}$ | `boolean`   |
+| `OR`    | ${a \lor b}$  | `boolean`   |
+| `NOT`   | ${\neg b}$    | `boolean`   |
+
+This seems like an awfully short list of commands. It turns out, however,
+that _any_ arithmetic or logical expression can be expressed and evaluated
+as some sequence of stack operations with just these commands.
+
+### Memory Segment Operations
+
+Consider the following code in some Java-like language, focusing on the
+variables:
+
+```nasm
+class Point {
+	static int s1, s2;
+	function int f(int x, int y) {
+		var int a, b, c;
+		...
+		let c = s1 + y;
+		...
+	}
+}
+```
+
+In any given language, there are different kinds of variables. From a low
+level perspective, there are just three kinds of variables:
+
+- _argument variables_ (in the above example, the variables `x` and `y`),
+- _local variables_ (the variables `a`, `b`, and `c`), and
+- _static variables_ (the variables `s1` and `s2`).
+
+Because these kinds have significance, we want to preserve their meanings
+when using the stack. This is done by introducing the notion of **virtual
+memory segments**. In other words, instead of having just one memory
+segment (as we saw in the earlier diagrams), we have three different
+segments, corresponding to each of the variable kinds:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655291350/cs/virtual_memory_segments_lpinhe.svg"
+	}
+	caption={"Memory Segments"}
+	width={"80"}
+	imwidth={"861"}
+	imheight={"161"}
+/>
+
+When the compiler receives the source code, it maps each variable to the
+relevant memory segment. Thus, the compiled virtual machine code might have
+parts that look like:
+
+```nasm
+PUSH STATIC 0
+PUSH ARGUMENT 1
+PUSH ARGUMENT 2
+...
+POP LOCAL 3
+...
+```
+
+Notice that by using memory segments, we no longer have variable names.
+This is, in fact, what we see in virtual machine code. The virtual machine
+does not understand or recognize identifiers. Instead, all it uses are
+_memory segment references_. Notice that there's a fourth segment above
+called `constant`. This memory segment is used by the virtual machine to
+refer to constant values. Thus, the general syntax used by the the virtual
+machine to push and pop frames is:
+
+$$
+	\texttt{push/pop}~~\text{segment}~~i
+$$
+
+where ${i}$ is the index of the specific cell in the memory segment. Note
+that these are the _memory segments_, not the stack. Values are pushed onto
+and popped out of the stack from the various memory segments.
+
+In object-oriented languages like Java, there are potentially numerous
+segments: `local`, `argument`, `this`, `that`, `constant`, `static`,
+`pointer`, `ref`, `temp`, and so on. Fortunately, despite how many segments
+there, the syntax above still applies.
+
+## Pointers & Virtual Machines
+
+As we said earlier, the virtual machine is purely imaginary. It doesn't
+actually exist. Nevertheless, we've been visualizing the virtual machine
+with actual diagrams. The question then, is, if it's entirely imaginary,
+how does the virtual machine actually affect changes on a computer? To
+answer this question, let's do a quick review of pointer arithmetic.
+
+### Manipulating Pointers
+
+Suppose we had the following state in RAM (i.e., _actual physical memory_):
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655293249/cs/pointer_manipulation1_e9wvoo.svg"
+	}
+	caption={"RAM State"}
+	width={"15"}
+	imwidth={"121"}
+	imheight={"261"}
+/>
+
+Above, `p` and `q` are variables just like any other. They identify the
+segments `RAM[0]` and `RAM[1]`. The contents of these addresses are the
+values `257` and `1024` respectively. From the diagram above, we see that
+there are two possible interpretations of these numbers:
+
+1. A **substantive interpretation** — the actual, numeric values `257` and
+   `1024`, and
+2. a **procedural interpretation** — the memory addresses `257` and `1024`.
+
+How does the computer know which interpretation to use? Through _pointer
+syntax_. When we write:
+
+```nasm
+p
+```
+
+we tell the computer that we're referring to the value `257`. Put another
+way, simply writing `p` tells the computer that referring to the address
+identified as `p` (here, `RAM[0]`). However, when we write:
+
+```nasm
+*p
+```
+
+we tell the computer that we're referring to the address `257` (i.e.,
+`RAM[257]`). Or, put differently, we're telling the computer to treat the
+value stored inside the memory address `p` as a memory address. As such,
+when we write:
+
+```nasm
+D = *p
+```
+
+we're really saying:
+
+```nasm
+D = RAM[257]
+```
+
+which translates to:
+
+```nasm
+D = 23
+```
+
+In some language's Assembly code, the command `D = *p` looks like:
+
+```nasm
+@p    // get the address stored in p ( RAM[257] )
+A=M   // store the address RAM[257] in the A-register
+D=M   // store the contents of RAM[257] in the D-register
+```
+
+Now, because `257` and `1024` are numbers regardless of interpretation, we
+can perform arithmetic operations on them. Thus, when we write:
+
+```nasm
+D = *p
+p--
+D = *p
+```
+
+we're really writing:
+
+```nasm
+D = RAM[257]
+p-- // now p's stored data is 256
+D = RAM[256]
+```
+
+which results in `D = 19`. Likewise, when we write:
+
+```nasm
+D = *q
+q++
+D = *q
+```
+
+we end up with `D = 12`. Knowing these basics, we can now examine how the
+virtual machine's stack work. First, we make the following assumptions:
+
+1. The stack pointer `SP` will always be stored in `RAM[0]`.
+2. The stack's base address (where the stack starts) is `RAM[256]`.
+
+Thus, virtual machine's stack, in actual memory, looks as follows:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655296418/cs/ram_to_stack_pidqk4.svg"
+	}
+	caption={"Notice the stack pointer"}
+	width={"50"}
+	imwidth={"394"}
+	imheight={"432"}
+/>
+
+Knowing this, we can likely guess what `push constant 17` looks in logical
+terms:
+
+```nasm
+*SP = 17	 // the address stored in SP now stores 17
+SP++       // increment the addrress stored in SP
+```
+
+And in Assembly, this code might look like:
+
+```nasm
+@17    // Store 17 in the A-register
+D=A    // D = 17 (17 is now inside the D-register)
+@SP    // Get the address stored in SP
+A=M    // Store that address in the A-register
+M=D    // Store the contents of that address in the D-register
+@SP    // Get the address stored in SP
+M=M+1  // Increment the address
+```
+
+The example above illustrates the relationship between virtual machine code
+and Assembly:
+
+$$
+	\texttt{push constant}~i \equiv \texttt{*SP=}~i~, \texttt{SP++}
+$$
+
+where ${i}$ is some natural number. The virtual machine code is transformed
+into the Assembly code by a program called the **virtual machine
+translator**. That program takes a stream of virtual machine code, and,
+using Assembly commands, executes the machine code's equivalent Assembly
+command.
+
+## Implementing Memory Segments
+
+So, we know that we need different kinds of memory segments. How do we
+implement these memory segments if RAM is really just one very long array?
+The same way we implemented the stack — make two key assumptions by
+answering the following:
+
+1. What address stores the segment's pointer?
+2. What is the segment's base address?
+
+For example, the Local memory segment might look like the following:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655298984/cs/local_segment_ram_kfyouz.svg"
+	}
+	caption={"Implementing Local"}
+	width={"80"}
+	imwidth={"789"}
+	imheight={"411"}
+/>
+
+Above, we see that the Local memory segment has a base address of `1015`.
+This is purely arbitrary. We could have picked `2184` or `3214` (we'll see
+later, however, that we can't exactly pick these addresses at random).
+Examining the diagram, we see the translation from virtual machine code to
+Assembly. For the pop command:
+
+$$
+	\texttt{pop local}~i \equiv \texttt{*addr=LCL+}~i~, \texttt{SP--}, \texttt{*addr = *SP}
+$$
+
+And for the push command:
+
+$$
+	\texttt{push local}~i \equiv \texttt{*addr=LCL+}~i~, \texttt{*SP = *addr}, \texttt{SP++}
+$$
+
+What about the other segments? They're implemented in exactly the same way:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655299845/cs/segment_ram_lswfis.svg"
+	}
+	caption={"RAM segments"}
+	width={"20"}
+	imwidth={"141"}
+	imheight={"282"}
+/>
+
+### The Constant Segment
+
+The one segment that doesn't map to real memory is the Constant segment.
+Because this segment "stores" constants, there's no need to actually store
+values, since the values never change. Moreover, since constants do not
+change, we never pop constants.
+
+So how do we get constant values? By defining commands of the form
+`push constant i` directly as Assembly commands. Symbolically:
+
+$$
+	\texttt{push constant}~i \equiv \texttt{*SP =}~i, \texttt{SP++}
+$$
+
+### The Static Segment
+
+In languages like C++ and Java, static variables are variables that are
+visible to all members of the class. I.e., a limited kind of global
+variable. Because these variables have to be visible to all class members
+(perhaps the entire program), implementing the static segment poses a
+peculiar problem. Up until now, all of the segments have been independent.
+This means that virtual machine code instructions are unique to the memory
+segments they use. Static variables, however, have be visible to _all_
+operations.
+
+There are numerous ways to implement the static segment. One approach is to
+store all of these static variables in a **global space** — a designated
+area in memory that will _always_ store some static variable:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655301679/cs/static_vz0asl.svg"
+	}
+	caption={"The static segment"}
+	width={"25"}
+	imwidth={"262"}
+	imheight={"382"}
+/>
+
+This segment is designated outside of the stack's area. And because the
+static segment will always run within a certain range (above, from 16 to
+255), the virtual machine translator can map each address to a particular
+reference of its own. When it translates the virtual machine code to
+Assembly, the translator outputs the corresponding Assembly address. Again,
+this is only possible because the static segment has a fixed size.
+
+This is just one approach. There are numerous other ways to solving the
+problem of static variables.
+
+## The Virtual Machine Translator
+
+Recall that the virtual machine translator takes virtual machine code and
+outputs Assembly code. To implement the translator, the designer must make
+several decisions upfront:
+
+1. What commands do we want to support in the virtual machine language?
+2. What are the corresponding assembly commands for the virtual machine
+   language's commands?
+3. How do the virtual machine's data structures map to the target platform?
+
+For a simple virtual machine language, the commands might consist of the
+following:
+
+<FTree
+	data={[
+		{child: "VM Language", parent: ""},
+
+    	{child: "Arithmetic", parent: "VM Language"},
+    	{child: "add", parent: "Arithmetic"},
+    	{child: "sub", parent: "Arithmetic"},
+    	{child: "neg", parent: "Arithmetic"},
+
+    	{child: "Logic", parent: "VM Language"},
+    	{child: "and", parent: "Logic"},
+    	{child: "or", parent: "Logic"},
+    	{child: "not", parent: "Logic"},
+
+    	{child: "Relational", parent: "VM Language"},
+    	{child: "eq", parent: "Relational"},
+    	{child: "gt", parent: "Relational"},
+    	{child: "lt", parent: "Relational"},
+
+    	{child: "Memory Access", parent: "VM Language"},
+    	{child: "pop", parent: "Memory Access"},
+    	{child: "push", parent: "Memory Access"},
+
+    	{child: "Branching", parent: "VM Language"},
+    	{child: "label", parent: "Branching"},
+    	{child: "goto", parent: "Branching"},
+    	{child: "if-goto", parent: "Branching"},
+
+
+    	{child: "Function", parent: "VM Language"},
+    	{child: "function", parent: "Function"},
+    	{child: "call", parent: "Function"},
+    	{child: "return", parent: "Function"},
+    ]}
+    scale={70}
+    height={340}
+
+/>
+
+Each of the commands above must be mapped to a specific Assembly command.
+
+### Possible Architectures
+
+There are many ways to implement a VM translator. We'll start by examining
+the simple approach.
+
+#### Simple Approach
+
+The simple approach is to design the translator as a program of three
+parts:
+
+- A **parser** (named `Parser`) that parses each VM command into lexical
+  elements. This is the program that breaks the stream of virtual machine
+  code into smaller, meaningful parts.
+- An **encoder** (named `CodeWriter`) that will take and implement the
+  parser's output.
+- A **driver** (a program called `Main`) that will conduct and direct the
+  entire process (the VM translator's "brain").
+
+For the main driver, the process works as follows:
+
+1. First, the driver takes as input some file containing virtual machine
+   chode. In languages like Java, these are files with extensions like
+   `Main.class`.
+2. The moment it receives this file, the driver constructs a new parser to
+   parse the input file, and a codewriter to handle the output file.
+3. After constructing the other two components, the driver goes through the
+   file, line by line. At each line, the parser parses the code and feeds
+   it to the codewriter.
+4. The codewriter then takes the parsed elements, outputting it to an
+   Assembly language file.
+5. The end result is some file with an Assembly language extension (e.g.,
+   `.asm`).
+
+Now let's consider the other two components, starting with the parser.
+
+##### The Parser
+
+As the parser _eats_ each line, it ignores all white space and comments.
+The parser has several key operations.
+
+First, a _constructor function_ that opens an input file or stream.Second,
+a Boolean function called _hasMoreCommands_, which outputs true if there
+are any remaining commands and false otherwise. Third, an _advance_
+operation that reads the input's next command and designates it as the
+current command. The _advance_ command will only execute if
+_hasMoreCommands_ returns true.
+
+Additionally, the parser must determine the command's type, say through
+some function _commandType_. As indicated in the diagram above, what types
+exist in the language is up to the translator's designer. In the diagram
+above, we divided the commands into 6 types: branching, relational,
+function, arithmetic, memory access, and logic. We could also assign more
+specific types for particular instructions — push, pop, label, goto, and so
+on. The more elaborate our type system, the easier it is to design APIs
+later.
+
+##### The Codewriter
+
+The codewriter is tasked with generating assembly code from the parsed VM
+command. Like the parser, the codewriter has a _constructor_ function, only
+this function will open an output file or stream for writing.
+
+Next, the codewriter also has a _write_ function. This function will
+perform the actual writing of the Assembly code to the output file. This
+arguably the most laborious function to implement, since the designer must
+physically type the VM-Assembly mappings.
+
+Because of how large that _write_ function can get, the codewriter might
+also have a `WritePushPop` operation specifically for handling push and pop
+commands. This is a sensible division, given how complex the push and pop
+commands can get.
+
+Finally, the codewriter has a _close_ method for closing the output file.
+Once the codewriter is done, we're left with an Assembly language file.

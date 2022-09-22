@@ -1,0 +1,111 @@
+<Metadata
+	title={'Conditional Probability'}
+	description={'Notes on conditional probability'}
+	keywords={'probability'}
+/>
+
+# Conditional Probability
+
+This chapter covers notes on conditional probability. We start with a basic
+definition:
+
+<dfn id={`#define-conditional-probability`}>
+
+__conditional probability.__ _Conditional probability_ is the probability of an
+event given the occurrence — whether by assumption, assertion, or evidence — of
+another event.
+
+</dfn>
+
+~example.~ Suppose we had the following events:
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1663074742/math/cond_prob_naxwv8.svg"}
+imwidth={"232"} imheight={"192"} caption={"conditional probability"}
+width={"40"} />
+
+From the diagram above, we can answer the following questions:
+
+1. What's the probability of ${A}$ occurring? ${\P(A) = 3/6}$
+2. What's the probability of ${B}$ occurring? ${\P(B) = 1/6}$
+3. What's the probability of ${A}$ and ${B}$ occuring? ${\P(A \cap B) = 2/6}$
+
+Now consider this situation:
+
+> The event ${B}$ occurred. What is the probability of ${A}$ occurring?
+
+This is our first glimpse of conditional probability. First, we denote the
+probability with the notation:
+
+$$
+	\P(A \mid B)
+$$
+
+The notation above is read: "The probability of ${A,}$ given that ${B}$
+occurred." With the basic notation established, let's now do the analysis.
+First, the fact that ${B}$ occurred means that everything outside of ${B}$ is
+irrelevant. That is, our universe — or sample space — is now ${B,}$ and ${B}$
+alone:
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1663042570/math/cond_prob2_m02kgl.svg"}
+imwidth={"232"} imheight={"192"} caption={"B"} width={"40"} />
+
+Because ${B}$ is our sample space now, we can infer that:
+
+$$
+	\P(B \mid B) = 1
+$$
+
+Let's get back to the conditional probability of ${A.}$ First, we can see that
+some outcomes of ${A}$ are also outcomes of ${B.}$ This is the event ${A \cap
+B.}$ We know that this event has the probability ${2/6.}$ We also know that the
+event comprising only outcomes of ${B}$ is ${1/6.}$ Because our universe
+consists of just ${B,}$ we want to keep the relative proportions in place:
+
+> ${A}$ is twice as likely as ${B}$ (compare 2/16 to 1/16).
+
+Next, we know that these probabilities should add up to 1. Why? Because ${\P(B
+\mid B)}$ is 1. Thus, we must express the probabilities as follows:
+
+$$
+	\eqs{
+		&\P(A) &+& &\P(B) &= 1 \\
+		&2/3 &+& &1/3 &= 1
+	}
+$$
+
+Thus, we ave ${P(A \mid B) = 2/3.}$ Here's a working definition:
+
+<dfn>
+
+__definition.__ Suppose ${A}$ and ${B}$ are events, and ${\P(B) \neq 0.}$ Then:
+
+$$
+	\P(A \mid B) = \dfrac{\P(A \cap B)}{\P(B)}
+$$
+
+If ${\P(B) = 0,}$ then ${\P(A \mid B)}$ is undefined.
+
+</dfn>
+
+Note that we can also rewrite the equation above as:
+
+$$
+	\eqs{
+		\P(A \cap B) &= \P(B) \cdot \P(A \mid B) \\
+		&= \P(A) \cdot \P(B \mid A)
+	}
+$$
+
+This alternative form embodies another way to interpret probabilities:
+Probabilities are frequencies. If we perform an experiment over and over again
+over a time ${t,}$ what is the portion of ${t}$ that both ${a}$ and ${b}$ occur?
+Well, there's a portion of the time where ${\P(B)}$ occurs, and a portion of the
+time where ${\P(A)}$ occurs given that ${\P(B)}$ occurred.
+
+Note that conditional probability is just another probability. The term
+"conditional" is prepended to highlight the fact that (1) we started with some
+sample space at first, but then (2) the sample space narrowed to a particular
+event. In other words, it's just a probability where we've changed the original
+model.

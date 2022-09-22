@@ -1,0 +1,108 @@
+/* core */
+	.navContainer {
+		background-color: var(--background-color);
+	}
+	.navControls {
+		display: flex;
+		justify-content: space-between;
+		margin: 2px;
+		margin-right: 8px;
+	}
+/* Nav Content */
+	.navContent {
+		font-size: 0.85rem;
+		position: fixed;
+		background-color: var(--background-color);
+		box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, 0.425);
+		border-radius: 0 0 6px 0;
+		overscroll-behavior: contain;
+		width: 0;
+		height: 0;
+		top: 4%;
+		left: 0;
+		overflow-y: scroll;
+		z-index: 10;
+		opacity: 0;
+		visibility: hidden;
+		padding: 1em;
+		padding-bottom: 10rem;
+	}
+	.navContent ul {
+		margin: 0;
+		padding: 0;
+		font-size: 0.9rem;
+	}
+	.navContent li {
+		margin:0;
+		line-height: 1.3;
+		list-style-type: none;
+		font-weight: normal;
+		color: var(--text-color);
+	}
+	.navContent li ul {list-style-type: decimal;}
+	.navContent li::marker {font-size: 0.95em;}
+	.navContent li a { text-decoration: none !important; }
+	/* .navContent li a:visited { color: var(--text-color); } */
+/* list indents */
+	.navContent>ul {margin: 1rem 0 2rem 2.1rem}
+	.navContent ul li {list-style-type: decimal;}
+
+	.navContent>ul>li>ul {margin-left: 0.9rem;}
+	.navContent ul li ul li {list-style-type: upper-alpha;}
+
+	.navContent ul li ul li ul {margin-left: 0.5rem;}
+	.navContent ul li ul li ul li {list-style-type: decimal; font-weight:normal}
+
+	.navContent ul li ul li ul li ul {margin-left: 0.6rem;}
+	.navContent ul li ul li ul li ul li {list-style-type: lower-alpha;}
+
+	.navContent ul li ul li ul li ul li ul {margin-left: 0.7rem;}
+	.navContent ul li ul li ul li ul li ul li {list-style-type: decimal;}
+/* show nav */
+	.showNav {
+		visibility: visible;
+		opacity: 1;
+		width: 100%;
+		height:90%;
+	}
+/* Nav Button */
+	.button {
+		border: var(--box-shadow-border);
+		color: var(--text-color);
+		font-family: var(--serif);
+		background-color: var(--background-color);
+		box-shadow: var(--box-shadow);
+		border-radius: 0.2em;
+		transition: all 1ms linear;
+		cursor: pointer;
+	}
+	.button:hover {
+		box-shadow: var(--box-shadow-hover);
+		transition: all 1ms linear;
+	}
+	.pressed {
+		box-shadow: var(--box-shadow-pressed);
+	}
+	.button:active {
+		box-shadow: var(--box-shadow-active);
+	}
+/* Media queries */
+	@media (min-width: 900px) {
+		.button {
+			visibility: hidden;
+		}
+		.navContent, .showNav {
+			top: 0;
+			visibility: visible;
+			width: 25%;
+			height: 100%;
+			opacity: 1;
+			border-radius: 0;
+			padding: 0.2rem 0;
+		}
+	}
+	@media (min-width: 700px) and (max-width: 899px){
+		.navContent {
+			width: 70%;
+		}
+	}

@@ -1,0 +1,103 @@
+import { Matrix } from "../../../components/hago";
+
+<Metadata
+	title={"Matrices"}
+	description={"Notes on matrices"}
+	keywords={"matrices, data structures, algorithms"}
+/>
+
+# Matrices
+
+This section covers notes on matrices. The **matrix** ADT is a
+multidimensional array. Importantly, matrices are contrasted from jagged
+arrays.
+
+Here's a simple matrix:
+
+<Matrix
+	data={[
+		[1, 2, 3],
+		[4, 5, 6],
+		[7, 8, 9],
+	]}
+	scale={40}
+/>
+
+This is a ${3 \times 3}$ matrix. We can perform several operations on
+matrices.
+
+## Matrix Addition
+
+Matrix addition can be implemented as follows:
+
+```rust
+matrix_add(matrix_a: number[][], matrix_b: number[][]) {
+	const output: number[][] = [];
+	for (let i = 0; i < matrix_a.length; i++) {
+		const row: number[] = [];
+		for (let j = 0; j < matrix_a[i].length; j++) {
+			const result = matrix_a[i][j] + matrix_b[i][j];
+			row.push(result);
+		}
+		output.push(row);
+	}
+	return output;
+}
+```
+
+## Matrix Subtraction
+
+Matrix subtraction takes a similar form:
+
+```rust
+matrix_sub(matrix_a: number[][], matrix_b: number[][]) {
+	const output: number[][] = [];
+	for (let i = 0; i < matrix_a.length; i++) {
+		const row: number[] = [];
+		for (let j = 0; j < matrix_a[i].length; j++) {
+			const result = matrix_a[i][j] - matrix_b[i][j];
+			row.push(result);
+		}
+		output.push(row);
+	}
+	return output;
+}
+```
+
+## Matrix Multiplication
+
+And here is multiplication:
+
+```rust
+matrix_mul(matrix_a: number[][], matrix_b: number[][]) {
+	const output: number[][] = [];
+	for (let i = 0; i < matrix_a.length; i++) {
+		const row: number[] = [];
+		for (let j = 0; j < matrix_a[i].length; j++) {
+			const result = matrix_a[i][j] * matrix_b[i][j];
+			row.push(result);
+		}
+		output.push(row);
+	}
+	return output;
+}
+```
+
+## Matrix Division
+
+Division:
+
+```rust
+matrix_div(matrix_a: number[][], matrix_b: number[][]) {
+	const output: number[][] = [];
+	for (let i = 0; i < matrix_a.length; i++) {
+		const row: number[] = [];
+		for (let j = 0; j < matrix_a[i].length; j++) {
+			const result = matrix_a[i][j] / matrix_b[i][j];
+			row.push(result);
+		}
+		output.push(row);
+	}
+	return output;
+}
+```

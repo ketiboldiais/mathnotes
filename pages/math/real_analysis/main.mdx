@@ -1,0 +1,493 @@
+import {Sequence} from "../../../components/hago/";
+import { Plot } from "../../../components/illus/components/Plot/Plot";
+
+<Metadata
+	title={'Limits'}
+	description={'Notes on limits'}
+	keywords={'limits, real analysis'}
+/>
+
+# Real Analysis
+
+These notes provide an overview of real analysis.
+
+<div className="outline">
+
+1. [Sequences](#sequences)
+2. [Bounded Sequences](#bounded-sequences)
+3. [The Limit of a Sequence](#the-limit-of-a-sequence)
+4. [Limit Theorems](#limit-theorems)
+	1. [Sum of Limits](#sum-of-limits)
+	2. [Product of Limits](#product-of-limits)
+	3. [Quotient of Limits](#quotient-of-limits)
+
+- [Definition: Convergence](#definition-of-convergence) 
+- [Definition: Divergence](#definition-of-divergence)
+
+</div>
+
+## Sequences
+
+A real sequence is a function that maps natural numbers to real numbers. If
+${0 \in \NN,}$ we write:
+
+$$
+   a: \NN \to \RR
+$$
+
+If ${0 \notin \NN,}$ we write:
+
+$$
+   a : \NN_0 \to \RR
+$$
+
+We may also denote a real sequence by writing any of the following:
+
+$$
+   (a_1, a_2, a_3, \ldots, a_n) \\[1em]
+   (a_n)_{n \in \NN} \\[1em]
+   (a_n)_{n=1}^{\infty} \\[1em]
+   (a_n)
+$$
+
+We can define sequences by writing a rule of assignment:
+
+$$
+ (a_n)_{n \in \NN} = ((-1)^n)_{n \in \NN} = (-1, 1, -1, 1, -1, \ldots)
+$$
+
+We can also plot this sequence:
+
+<Sequence data={[{ f: (n) => (-1) ** n }]} scale={40} />
+
+Here's another sequence, perhaps more interesting:
+
+$$
+ (a_n)_{n \in \NN} = \paren{\dfrac{1}{n}}_{n \in \NN} = \paren{1, \dfrac{1}{2}, \dfrac{1}{3}, \dfrac{1}{4}, \dfrac{1}{5}, \ldots}
+$$
+
+Here we have a sequence that gets smaller and smaller. In fact, this
+sequence get's very, very close to zero. We'll later denote this as:
+
+$$
+   \ll{n}{\infty} a_n = 0
+$$
+
+Of course, not all sequences have this special property:
+
+$$
+   (a_n)_{n \in \NN} = \paren{2^n}_{n \in \NN} = \paren{2,4,8,16,32,64,\ldots}
+$$
+
+Clearly, this sequence just gets bigger and bigger. It's not a _convergent
+sequence_.
+
+> __informal definition.__ A sequence ${(a_n)_{n \in \NN}}$ is called
+> convergent to an ${a \in \RR}$ if the members of ${a_n}$ lie arbitrarily
+> close to ${a}$ eventually.
+
+A good way to get some idea of what this definition means is to think about
+a number line:
+
+<Plot
+ geo={[
+  { type: "line", start: [-5, 0], end: [5, 0] },
+
+     { type: "point", xy: [0, 0] },
+     { type: "point", xy: [-4, 0] },
+     { type: "point", xy: [4, 0] },
+     { type: "label", xy: [-0.15, -0.5], id: "a" },
+     { type: "label", xy: [-4.75, -0.5], id: "a - \\varepsilon" },
+     { type: "label", xy: [3.4, -0.5], id: "a + \\varepsilon" },
+    ]}
+    noAxes={true}
+    height={90}
+
+/>
+
+Everything from (not including) ${a - \varepsilon}$ to (not including)
+${a + \varepsilon}$ is called the __epsilon neighborhood__ of ${a,}$ where
+${\varepsilon > 0.}$ When we say that a sequence converges, we're really
+saying that all of the sequence's terms must eventually gather in ${a}$'s
+epsilon neighborhood:
+
+<Fig
+ link={
+  "https://res.cloudinary.com/sublimis/image/upload/v1662086446/math/epsilon_neighborhood_zhi7rq.svg"
+ }
+ imwidth={"376"}
+ imheight={"61"}
+ caption={"epsilon neighborhood"}
+ width={"80"}
+/>
+
+With this intuition, we can now give a more formal definition.
+
+
+<dfn id={`definition-of-convergence`}>
+
+__convergence.__ A sequence ${a_n}$ is _convergent_ to ${a \in \RR}$ iff for
+${\varepsilon \gtn 0,}$ there exists an ${N \in \NN}$ such that, for all ${n
+\gte N,}$
+
+$$
+	| a_n - a | \ltn \varepsilon
+$$
+
+</dfn>
+
+
+<dfn id={`definition-of-divergence`}>
+
+__divergence.__ A sequence ${a_n}$ is said to be _divergent_ iff it
+is not convergent.
+
+</dfn>
+
+Some nuances: With convergence, the sequence's terms never "become ${a.}$" They
+merely get closer and closer to ${a.}$ Newcomers to real analysis often forget
+this point, and part of it may be because of not knowing what the word
+"converge" actually means. When hearing the word "converge," many of us
+immediately think "join together" or "meet." We must cleanse ourselves of such
+thoughts. The word converge means "approaches" or "attracts." In the world of
+real analysis, it never — never — means "meet" or "become." Think of it like
+bugs to a lightbulb: Some bugs have positive photoaxis (e.g., moths), and
+_converge_ towards the light. Others have negative photoaxis (e.g., cockroaches)
+and _diverge_ from the light.
+
+Based on the definition above, we can provide a proof that the sequence ${a_n =
+1/n}$ converges to 0. Because this is our first encounter with a proof in real
+analysis, we'll build it slowly.
+
+To prove that ${a_n = 1/n}$ converges, we first examine our definition of
+convergence. The definition requires ${\varepsilon}$ to be greater than 0. We'll
+state this as an assumption, our first sentence:
+
+<dfn>
+
+__proof__. Let ${\varepsilon \gtn 0.}$
+
+</dfn>
+
+The definition also gives us the last sentnece of our proof: That ${\abs{a_n -
+a} \ltn \varepsilon.}$ We also know that ${a = 0,}$ since that's the number
+we're claiming that ${1/n}$ converges to.
+
+<dfn>
+
+__proof__. Let ${\varepsilon \gtn 0.}$ For ${n \gte N,}$ we have ${\abs{a_n - 0 \ltn \varepsilon}.}$
+
+</dfn>
+
+We also have ${a_n = 1/n,}$ so let's fill that in:
+
+<dfn>
+
+__proof__. Let ${\varepsilon \gtn 0.}$ For ${n \gte N,}$ we have ${\abs{1/n - 0 \ltn \varepsilon}.}$
+
+</dfn>
+
+Since ${n \in \N}$ and we're just subtracting zero, we don't actually need that
+zero in there, and we can get rid of the absolute value bars:
+
+<dfn>
+
+__proof__. Let ${\varepsilon \gtn 0.}$ For ${n \gte N,}$ we have ${1/n \ltn \varepsilon.}$
+
+</dfn>
+
+The next step is recognizing that since ${n \gte N,}$ we have:
+
+$$
+ 1/n \lte 1/N \ltn \varepsilon
+$$
+
+Revising our proof:
+
+<dfn>
+
+__proof__. Let ${\varepsilon \gtn 0.}$ For ${n \gte N,}$ we have ${1/n \lte
+1/N \ltn \varepsilon.}$
+
+</dfn>
+
+The only left is to prove that ${1/N \ltn \varepsilon.}$ Let's make this a
+little easier to think about by rewriting the inequality:
+
+$$
+ 1 \ltn N \cdot \varepsilon
+$$
+
+Nothing fancy here, we just multiplied ${N}$ to both sides. This is where we
+pull an axiom: _The Archimedean Property of Real Numbers._
+
+<dfn>
+
+__archimedean property of real numbers.__ Given any ${x \in \RR^+}$ and ${y \in
+\RR,}$ there exists an ${n \in \Z^+}$ such that:
+
+$$
+ y \ltn nx
+$$
+
+</dfn>
+
+The Archimedean property of real numbers tells us that no matter how small an
+positive real number is, we can always make it bigger than any other real number
+we choose by adding the number ${n}$ times. Because of this property, our
+proof's final piece is merely requiring that the reader choose some number:
+
+<dfn>
+
+__proof__. Let ${\varepsilon \gtn 0.}$ Choose an ${N \in \NN}$ such
+that ${N \cdot \varepsilon \gtn 1.}$ It follows that: For ${n \gte N,}$ we have
+
+$$
+ \begin{aligned}
+  \abs{a_n - 0} &= \abs{a_n} \\[1em]
+  &= \dfrac{1}{n} \lte \dfrac{1}{N} \ltn \varepsilon
+ \end{aligned}
+$$
+
+</dfn>
+
+Let's consider another example. How might we prove that the sequence:
+
+$$
+ a_n = (-1)^n
+$$
+
+is divergent? In this case, we know that a sequence that is _not_ convergent is
+divergent. Because of this negation, an intuitive approach is proof by
+contradiction — we want to _disprove_ that ${a_n = (-1)^n}$ is convergent.
+
+We know that for a sequence to converge, it must be true that the sequence's
+terms eventually gather at the neighborhood of some real number ${a.}$ As we
+saw, that's not the case for the sequence ${a_n = (-1)^n.}$ The terms always
+bounce between ${-1}$ and ${1.}$ This means that it doesn't matter what ${a}$ we
+choose. There will always be infinitely many points far from ${a.}$
+
+Recall our convergence definition's requirements:
+
+1. ${\forall \varepsilon \gtn 0}$
+2. ${\exists N \in \NN}$
+3. ${\forall n \gte \N : \abs{a_n - a \ltn \varepsilon}}$
+
+Given these requirements, we want to choose an ${\varepsilon}$ that's small
+enough to ensure that the epsilon neighborhood of ${a}$ excludes ${1}$ and
+${-1.}$.  Symbolically, we want an ${\varepsilon}$ smaller or equal to 1:
+
+$$
+	\varepsilon = 1
+$$
+
+Choosing ${\varepsilon=1,}$ our ${a}$ lies somewhere:
+
+$$
+	(a - \varepsilon) \ltn a \ltn (a + \varepsilon) = (a - 1) \ltn a \ltn (a + 1)
+$$
+
+which effectively excludes ${-1}$ and ${1.}$ This implies that:
+
+1. ${\abs{a_N - a} \ltn \varepsilon}$ and
+2. ${\abs{a_{N+1} - a \ltn \varepsilon}}$
+
+Because ${\N \in \NN,}$ we know that one of the indices is even, and the other
+is odd. This ensures that we always get the outcomes ${-1}$ and ${1:}$
+
+$$
+	\abs{1-a} \ltn \varepsilon  \\
+	\tt{ and } \\
+	\abs{(-1)-a} \ltn \varepsilon
+$$
+
+At this point, we've unearthed the contradiction, since ${\varepsilon = 1:}$
+
+$$
+	\abs{1-a} \ltn 1 \\
+	\tt{ and } \\
+	\abs{(-1)-a} \ltn 1
+$$
+
+This is a blatant violation of the _triangle inequality._ If we add both of
+these distances:
+
+$$
+	\abs{1-a} + \abs{(-1) - a} \ltn 2
+$$
+
+Next, we have the following equality:
+
+$$
+	2 = \abs{1 - (-1)} = \abs{ 1 - a + a - (-a) }
+$$
+
+Applying the triangle inequality:
+
+$$
+	2 = \abs{1 - (-1)} = \abs{ 1 - a + a - (-a) } \lte \abs{1 - a} + \abs{a -
+	(-1)}
+$$
+
+That right-hand side is exactly:
+
+$$
+		2 = \abs{1 - (-1)} = \abs{ 1 - a + a - (-a) } \lte \abs{1-a} + \abs{(-1) - a} \ltn 2
+$$
+
+${2 \ltn 2?}$ Yes, but only if it turns out that ${a_n = (-1)^n}$ converges. So,
+it cannot be true that ${a_n = (-1)^n}$ converges. Therefore, ${a_n = (-1)^n}$
+is divergent.
+
+## Bounded Sequences
+
+We saw that ${a_n = (-1)^n}$ is a divergent sequence. It's also a good example
+of a _bounded sequence_.
+
+<dfn>
+
+__definition.__ A sequence ${a_n}$ is a _bounded sequence_ if
+there exists a real number ${c}$ such that for all the terms of ${a_n,}$ the
+distance of ${a_n}$ to zero is less than or equal to ${c.}$ Otherwise, thei
+sequence is an _unbounded sequence._
+
+</dfn>
+
+Let's break this definition down to a procedure:
+
+
+<Algo>
+
+1. Input:
+	1. ${a_n}$ - A sequence
+	2. ${c \in \RR}$
+2. For ${i = 0}$ to ${i = n}$
+	1. If ${\abs{a_i} \gtn c,}$ return "${a_n}$ is unbounded"
+3. Return "${a_n}$ is bounded"
+
+</Algo>
+
+We can visualize this definition as follows:
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1662414061/math/bounded_sequence_npjwfr.svg"}
+	imwidth={"343"}
+	imheight={"72"}
+	caption={"bounded sequence"}
+	width={"60"}
+/>
+
+In the case of ${a_n = (-1)^n,}$ its two terms were always ${-1}$ and ${1.}$
+Importantly, the fact that a sequence converges implies that it is bounded _but
+not the other way around._ 
+
+$$
+	\tt{convergence} \implies \tt{boundedness}
+$$
+
+This leads to a further inference:
+
+$$
+	\small \neg \tt{boundedness} \implies \tt{unboundedness} \implies \neg \tt{convergence} \implies \tt{divergence}
+$$
+
+## The Limit of a Sequence
+
+The number ${a \in \RR}$ in the definition of convergence is called the _limit_
+of ${a_n.}$ An important point about _the_ limit is that there is one, and only
+one, ${a \in \RR}$ that ${a_n}$ converges to.
+
+Why? Well let's say there were two distinct limits: ${a}$ and ${a'.}$ This
+implies that ${a \neq a',}$  which in turn implies that ${\abs{a - a'} \gtn 0.}$
+This also means that the sequence's members gather in _two_ epsilon
+neighborhoods. One around ${a,}$ and the other around ${a'.}$ Clearly, this
+contradicts convergence. 
+
+But, let's be more formal to extinguish all doubt. Suppose ${\varepsilon =
+1/4.}$ This yields:
+
+$$
+	\varepsilon = (1/4) \abs{a - a'} \gtn 0
+$$
+
+By the definition of convergence, it follows that:
+
+1. There exists an ${N \in \NN}$ such that ${\forall n \gte N,}$ ${\abs{a_n - a
+   \ltn \varepsilon,}}$ and
+2. There exists an ${N' \in \NN}$ such that ${\forall n \gte \N',}$ ${\abs{a_n -
+  a' \gtn \varepsilon.}}$
+
+Therefore, ${n \gte \max(N,N').}$ By the triangle inequality, we have:
+
+$$
+	\abs{a - a'} = \abs{a - a_n + a_n - a'} \lte \abs{a - a_n} + \abs{a_n - a'}
+$$
+
+But, we know that ${\abs{a - a_n} \ltn \varepsilon,}$ and ${\abs{a_n - a'} \ltn
+\varepsilon.}$ So:
+
+$$
+	\abs{a - a'} \ltn (1/2) \abs{a - a'}
+$$
+
+This can't be right. Since ${\varepsilon}$ is positive. Hence, it must be the
+case that there is one, and only one, limit of a sequence ${a_n.}$ Given this
+fact, we can now proceed to writing:
+
+$$
+	\lim_{n \to \infty} a_n = a
+$$
+
+whenever we want to express the limit of some sequence ${a_n.}$ The notion of a
+limit notation is simply another way to express convergence. Thus, when we
+write:
+
+$$
+	\lim_{n \to \infty} a_n = a
+$$
+
+we are saying:
+
+> The members of the sequence ${a_n}$ converge to ${a \in \R}$ eventually.
+
+## Limit Theorems
+
+Now that we have an idea of what a limit is, let's derive some limit theorems.
+Having these theorems will turn out to be very useful in our future discussions.
+
+### Sum of Limits
+
+Say we have two convergent sequences, ${a_n}$ and ${b_n.}$ That is:
+
+$$
+	\lim_{n \to \infty} a_n = a \\
+	\lim_{n \to \infty} b_n = b
+$$
+
+It would be pretty interesting if:
+
+$$
+	\lim_{n \to \infty} (a_n + b_n) = s
+$$
+
+That is, the sum of the convergent sequences ${a_n}$ and ${b_n}$ has a unique
+limit ${c.}$ Moreover, it would be even more interesting if:
+
+$$
+	\lim_{n \to \infty} (a_n + b_n) = \lim_{n \to \infty} a_n + \lim_{n \to
+	\infty} b_n
+$$
+
+### Product of Limits
+
+$$
+	\lim_{n \to \infty} (a_n \cdot b_n) = \lim_{n \to \infty} a_n \cdot \lim_{n
+	\to \infty} b_n
+$$
+
+### Quotient of Limits
+
+$$
+	\lim_{n \to \infty} \dfrac{a_n}{b_n} = \dfrac{\lim_{n \to \infty} a_n}{\lim_{n
+	\to \infty} b_n} ~~~(b_n \neq 0)
+$$

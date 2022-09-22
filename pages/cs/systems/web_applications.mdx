@@ -1,0 +1,68 @@
+# Web Applications
+
+This chapter is a continuation of the application layer, focusing on web
+applications from a computer networks perspective.
+
+As we saw in the last chapter, browsers are complicated programs. Major browsers
+like Chrome, Firefox, and Safari take thousands of person-years to create, and
+it's impossible for a single person to understand every nook and cranny of the
+underlying source code in great detail. As such, many network application
+developers treat the browser as a black box, much like how other developers
+treat the operating system as a black box. We will largely do the same in this
+chapter, but raise browser-related issues as needed. This chapter's overarching
+focus is on web applications as they relate to networking: What approaches do we
+have available in designing web applications? What are the tradeoffs we face?
+What solutions do we have at our disposal? What are the edge cases? These are
+the kinds of questions we consider.
+
+
+
+## Types of Web Applications
+
+Web applications can be categorized into four types:
+
+1. _single-tier applications_,
+2. _two-tier applications_,
+3. _three-tier applications_, and
+4. _n-tier applications_.
+
+Merriam-Webster defines the word "tier" as "a row, rank, or layer of articles."
+We've been talking about layers at length — the application layer, the data link
+layer, the physical layer, etc. Well, as it turns out, applications in the
+application layer also consist of layers. Thus, the types above denote the
+number of layers an application uses to provide its services.
+
+### Single-tier Applications
+
+A _single-tier application_ is an application with just a single layer — the
+user's machine. The user interface, logic, and database all exist in one place.
+Most desktop applications are single-tier applications: Gimp, Inkscape,
+Photoshop, Terminal, Notepad, etc.
+
+<Grid cols={2}>
+
+<div>__~benefits~__</div>
+
+<div>__~costs~__</div>
+
+<ul>
+	<li>Zero network latency.</li>
+	<li>Often faster and better performance than other architectures.</li>
+	<li>Smaller dependency graph.</li>
+	<li>Easiest architecture to maintain/debug.</li>
+	<li>Maximum security.</li>
+</ul>
+
+<ul>
+	<li>Performance is limited to machine performance.</li>
+	<li>Manufacturer loses all control of the application once it's shipped.</li>
+	<li>Application updates require user consent.</li>
+	<li>Requires large budget allocations for testing.</li>
+	<li>Harder to achieve uniformity: Machine-dependent.</li>
+</ul>
+
+
+</Grid>
+
+
+

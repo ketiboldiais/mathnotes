@@ -1,0 +1,1074 @@
+import { Plot as Plot2 } from "../../../components/illus/components/Plot/Plot";
+
+<Metadata
+	title={'First-order Logic'}
+	description={'Notes on first-order logic'}
+	keywords={'logic, FOL, first-order logic'}
+/>
+
+# First-order Logic
+
+This chapter provides notes on first-order logic.
+
+<div className="outline">
+
+1. [Primitives](#primitives)
+2. [Propositional Alphabet](#propositional-alphabet)
+3. [Definition of a Proposition](#definition-of-a-proposition)
+4. [Compound Propositions](#compound-propositions)
+5. [Propositional Formulas](#propositional-formulas)
+	1. [Negation](#negation)
+	2. [Double Negatives](#double-negatives)
+	3. [Conjunction](#conjunction)
+		1. [Expression: But](#expression-but)
+	4. [Negated Conjunction](#negated-conjunction)
+	5. [Inclusive Disjunction](#inclusive-disjunction)
+	6. [Negated Inclusive Disjunction](#negated-inclusive-disjunction)
+	7. [Exclusive Disjunctions](#exclusive-disjunctions)
+	8. [Evaluation Order](#evaluation-order)
+6. [Logical Equivalence](#logical-equivalence)
+7. [De Morgan's Laws](#de-morgans-laws)
+8. [Tautology](#tautology)
+9. [Contradictions](#contradictions)
+10. [Conditional Propositions](#conditional-propositions)
+	1. [When Is a Conditional False?](#when-is-a-conditional-false)
+11. [Implications as Logical Disjunctions](#implications-as-logical-disjunctions)
+12. [Negative Implications](#negative-implications)
+13. [The Contrapositive](#the-contrapositive)
+	1. [The Converse](#the-converse)
+	2. [The Inverse](#the-inverse)
+	3. [Equivalence of Converse and Inverse](#equivalence-of-converse-and-inverse)
+14. [Idiom: Only If](#idiom-only-if)
+15. [The Biconditional](#the-biconditional)
+16. [Common Equivalences](#common-equivalences)
+
+</div>
+
+_First-order logic (FOL)_ is the field of logic most people are familiar with.
+It's the kind of logic we'd encounter in a "Logic 101" course, and it's the
+logic most heavily used in mathematics. We begin first with _propositional
+logic_.
+
+## Primitives
+
+Before we study logic formally, let's set some ground rules. Because of how
+low-level logic is, there's a tendency to plunge down an all too familiar
+sequence:
+
+> What is ${x}$? ${x}$ is ${y.}$
+>
+> What is ${y?}$ ${y}$ is ${z.}$
+>
+> What is ${z?}$ ${z}$ is ${z'.}$
+>
+> ${\vdots}$
+
+While such questions are important and interesting, we need this sequence to
+converge as a sanity check. In logic and mathematics, we avoid infinite
+regression by using _primitive notions_ — a concept that is not defined in terms
+of previously-defined concepts. We have to start somewhere, and if we aren't
+starting at the same place, well, we'll just have to go our separate ways.
+
+Our first primitive notion is a _symbol_:
+
+<dfn>
+
+__~symbol.~__ A _symbol_ is a drawing or mark perceptible by sight.
+
+</dfn>
+
+For example, all of the following are symbols:
+
+$$
+  \iff~~9~~\land~~~\lor~~\in \\
+  P~~~Q~~~\implies~~~\infty~~\Sigma~~ \\
+  \neg~~\{~~+~~-~~!~~?~~0~~ \\
+  x~~~(~~<~~\pi~~\sqrt{}~~\int\\
+  {\bf A}~~f~~\lxor~~\div~y~~~] \\
+$$
+
+From the primitive notion of a symbol, we can construct our first definition.
+
+<dfn>
+
+__~alphabet~.__ A finite set of symbols is called an _alphabet_, denoted
+${\Sigma}$. 
+
+</dfn>
+
+For example, the set:
+
+$$
+  \set{0,1}
+$$
+
+is an alphabet of two symbols, ${0}$ and ${1.}$ The alphabet:
+
+$$
+  \set{0,1,2,3,4,5,6,7,8,9}
+$$
+
+is an alphabet of 10 symbols. This particular alphabet is called the
+_Hindu-Arabic numerals_, and each element of the set is called a _digit_. Having
+defined what an alphabet is, here is our next definition:
+
+<dfn>
+
+__string.__ A _string_ ${\sigma}$ of length ${n}$ is an ${n}$-tuple:
+
+$$
+	\sigma = (a_0, a_1, a_2, \ldots, a_{n-1})
+$$
+
+where each ${a_i}$ is a member of some alphabet ${\Sigma.}$ That is, ${a_i \in
+\Sigma.}$ There exists a unique string where ${n=0,}$ which we call the _empty
+string_, denoted ${\lambda.}$ We say that the first symbol ${a_0}$ in ${\sigma}$
+is the _first letter_ and the last symbol ${a_n}$ is the _last letter_. The set
+of all strings on the alphabet ${\Sigma}$ is the disjoint union:
+
+$$
+	\Sigma^* = \bigsqcup\limits_{n} A^n.
+$$
+
+</dfn>
+
+When we want to explicitly refer to a string divorced of all connotations, we
+will use question marks. For example, to denote the string "cookie", we write:
+
+$$
+	\string{\tt{cookie}}
+$$
+
+to denote the string 2518 we write:
+
+$$
+	\string{2518}
+$$
+
+Next, we define a method for combining strings.
+
+<dfn>
+
+__concatenation.__ Given the strings ${a = (a_1,\ldots,a_n)}$ and
+${b=(b_1,\ldots,b_m)}$ on an alphabet ${\Sigma,}$ the concatenation ${ab \in
+\Sigma^*}$ is defined as:
+
+$$
+	ab = a_1, \ldots, a_mb_1, \ldots, b_n
+$$
+
+Thus, we say that ${ab}$ is a string on ${\Sigma}$ of length ${m + n.}$ We define concatenation to be associative: ${(ab)c = a(bc)}$ for all ${a,b,c \in \Sigma^*.}$ We define the empty string ${\lambda}$ to be the identity element: ${\lambda a = a = a \lambda.}$ And we define concatenation to have two-sided cancellation: If ${ab=ac,}$ then ${b=c,}$ and if ${ac = bc,}$ then ${a=b.}$
+
+</dfn>
+
+## Propositional Alphabet
+
+We begin by stating the first few symbols of our alphabet:
+
+$$
+	\set{\top~~~\bot~~~\neg~~~\lor~~~\land}
+$$
+
+These symbols are given the following meanings:
+
+<div className="numbered">
+
+| Symbol    | Meaning |
+| --------- | ------- |
+| ${\top}$  | true    |
+| ${\bot}$  | false   |
+| ${\neg}$  | not     |
+| ${\lor}$  | or      |
+| ${\land}$ | and     |
+
+</div>
+
+These first few symbols are called _propositional connectives_. Next, we denote
+a set ${ּ\tav}$ where each symbol in ${\tav}$ is a _propositional atom_. For
+now, ${\tav}$ comprises the Hindu-Arabic numerals, and the Latin and Greek
+letters, lower and uppercase. The symbol ${\tav}$ is the Hebrew letter _tav_.
+
+## Definition of a Proposition
+
+With the basic constructions, we define a proposition as follows.
+
+<dfn>
+
+__proposition.__ Let ${\Sigma}$ be the alphabet ${\tav \sqcup \set{\top,~\bot,~\neg,~\lor,~\land}.}$ A proposition is a string ${w}$ on ${\Sigma,}$ for which there exists a sequence ${\seq{s_1,\ldots,s_n},}$ where ${n \geq 1,}$ such that ${w = s_n.}$ For each ${k \in \set{1,\ldots,n},}$ either ${w_k \in \Sigma}$ or there are ${i,j \in \set{i,\ldots,k-1}}$ such that ${w_k}$ is a member of the set of concatenations ${\set{\neg w_i, \lor w_i w_j, \land w_i, w_j}.}$ We denote the set of propositions on ${\Sigma}$ as ${\tt{Prop}(\Sigma).}$
+
+</dfn>
+
+This definition seems awfully rigid, but it can't be helped (we're defining
+something that underlies all of mathematics). Fortunately, outside of the
+definition box, we can take a breather and look at things informally. In short,
+the definition says, a proposition is a string consisting only of symbols from
+our alphabet ${\Sigma,}$ which we defined as:
+
+$$
+	\tav \sqcup \set{\top,~\bot,~\neg,~\lor,~\land}.
+$$
+
+That is, the disjoint union of the set of propositional atoms and the set of
+propositional connectives. That string, however, isn't just any string. It's a
+string ${\P}$ with at least one of the following properties:
+
+1. ${\P}$ is an atom.
+2. ${\P}$ is ${\top.}$
+3. ${\P}$ is ${\bot.}$
+4. Where ${p,q \in \tt{Prop}(\Sigma),}$ ${\P}$ is one of the propositions ${\neg p,}$ ${\lor pq,}$ or ${\land pq.}$ 
+
+Note that we've defined our propositions in prefix notation — ${\land pq}$ and
+${\lor pq.}$ The benefit to prefix notation is that it follows naturally from
+our definitions. The cost, however, is readability. As such, we adopt the
+following convention without apology or compromise: Given a string ${\land ab,}$
+we may also write ${a \land b,}$ and given a string ${\lor ab,}$ we may also
+write ${a \lor b.}$
+
+## Compound Propositions
+
+Propositions can be connected with _logical connectives_ to create
+_compound propositions_. For example, the propositions "$x$ is less than
+_or_ equal to 4" and "$s$ is a member of $A$ but not a member of $B$" are
+examples of compound propositions.
+
+Importantly, to form compound propositions, the connected propositions must have
+set truth values. In other words, we cannot connect propositions that do not
+already have the assigned values of _true_ or _false_. 
+
+## Propositional Formulas
+
+Just as the proposition "${x}$ plus ${y}$ equals one" can be translated to ${x +
+y =1,}$ the proposition "If ${p}$ then ${q}$" can be expressed symbolically as: 
+
+$$
+	p \implies q
+$$
+
+The expression above is called a _propositional formula_. It consists of the
+_propositional variables_ ${p}$ and ${q,}$ and the logical operator
+${\implies.}$ Let's see what logical operators we have available.
+
+### Negation
+
+The operator ${\neg}$ is called _logical negation_. It takes a single
+proposition as an operand, and returns the opposite of the operand's truth
+value. Here's its truth table:
+
+| $p$ | ${\neg p}$ |
+| --- | ---------- |
+| T   | F          |
+| F   | T          |
+
+Computer science often refers to the logical negation as the _not-expression_. A
+helpful way to think about the negation (and all the other logical operators) is
+in terms of sets.
+
+<Plot2
+	geo={[
+		{type:"rectangle",xy:[0,0],w:20,h:12,class:"yellowRectangle"},
+		{type:"circle",xy:[0, 0],r:5,class:"redCircle"}, 
+		{type:"label",id:"\\neg p",xy:[-9.25, 5.5],fontSize:2.5},
+		{type:"label",id:"p",xy:[-0.5,1],fontSize:2.5},
+	]}
+	marginTop={0}
+	marginBottom={0}
+	noAxes={true}
+	scale={40}
+	id={"logical_not"}
+/>
+
+When we denote a proposition as ${p,}$ we effectively create a set called ${p.}$
+If the proposition is true, it exists inside this set ${p.}$ If a proposition is
+false, it exists outside the set ${p.}$
+
+
+### Double Negatives
+
+The __double negative property__ provides that, given a proposition $p$,
+the negation of the negation of $p$ is simply $p$. We can see this to be
+the case from the truth table for ${\neg (\neg p)}$:
+
+| $p$ | ${\neg p}$ | ${\neg (\neg p)}$ |
+| --- | ---------- | ----------------- |
+| T   | F          | T                 |
+| F   | T          | F                 |
+
+### Conjunction
+
+The logical connective ${\land}$ is called the _conjunction_. If ${p}$ and ${q}$
+are propositions, then the conjunction of ${p}$ and ${q}$ is "${p}$ _and_
+${q}$," denoted ${p \land q.}$ As a truth table:
+
+| ${p}$ | ${q}$ | ${p \land q}$ |
+| ----- | ----- | ------------- |
+| T     | T     | T             |
+| T     | F     | F             |
+| F     | T     | F             |
+| F     | F     | F             |
+
+From a set theory perspective, the conjunction is a way of expressing the idea
+that some object is in both ${A}$ and ${B.}$
+
+<Plot2
+	geo={[
+		{type: "rectangle",
+			xy: [0, 0],
+			w: 20,
+			h: 12,
+			class: "yellowRectangle"},
+		{ type: "circle", xy: [-2, 0], r: 5, class: "blueCircle" },
+		{ type: "circle", xy: [2, 0], r: 5, class: "redCircle" },
+		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
+		{ type: "label", id: "A \\cap B", xy: [-1.5, 1], fontSize: 1.5 },
+		{ type: "label", id: "A", xy: [-6, 2], fontSize: 1.5 },
+		{ type: "label", id: "B", xy: [5, 2], fontSize: 1.5 },
+	]}
+ marginTop={0}
+ marginBottom={0}
+ noAxes={true}
+ scale={40}
+ id={"logical_and"}
+/>
+
+In computer science, the conjunction is often referred to as the
+_and-expression_. 
+
+#### Expression: But
+
+The word _but_ is just another word for _and_ in logic. For example, consider
+the proposition
+
+
+> $\string{\tt{It is not hot but it is sunny.}}$
+
+From the perspective of propositional logic, this proposition is no different from saying
+
+> $\string{\tt{It is not hot and it is sunny.}}$
+
+Encapsulating the component propositions to variables:
+
+> ${h = \string{\tt{It is hot.}}}$
+>
+> ${s = \string{\tt{It is sunny.}}}$ 
+ 
+In propositional logic, we express this proposition as
+
+$$
+	\neg h \land s.
+$$
+
+### Negated Conjunction
+
+One of the most important propositional formulas in real-world logic
+applications is the _negated conjunction_. In natural language, the negated
+conjunction often takes the form:
+
+$$
+	\string{\tt{not $p$ and $q$}}
+$$
+
+This is a bit ambiguous in propositional logic — are we saying ((not $p$) _and_
+($q$)), or are we saying (not $p$ _and_ not $q$)? In most everyday usage, it's
+the latter:
+
+$$
+	\string{\tt{not $p$ and not $q$}}
+$$
+
+Thus, as a propositional formula, we have:
+
+$$
+	\neg(p \land q)
+$$
+
+In computer science, this is propositional formula is often called a
+_nand-expression_. As we'll see later, it turns out that if a system has the
+nand-expression as a primitive, the system can derive all of the other logical
+connectives.
+
+### Inclusive Disjunction
+
+The logical connective OR is the _logical disjunction_. Let $p$ and $q$ be
+propositions. The disjunction of $p$ and $q$ is "$p$ OR $q$," denoted
+${p \lor q.}$ If, and only if, $p$ is true, $q$ is true, or both $p$ and
+$q$ are true, then ${p \lor q}$ is true. Otherwise, if both $p$ and $q$ are
+false, then ${p \lor q}$ is false.
+
+As a truth table:
+
+| $p$ | $q$ | ${p \lor q}$ |
+| --- | --- | ------------ |
+| T   | T   | T            |
+| T   | F   | T            |
+| F   | T   | T            |
+| F   | F   | F            |
+
+Note that this definition of OR differs from our more common usage of _or_,
+which generally denotes "one or the other, but not both." This common usage
+of _or_ is called the __exclusive or__. In mathematics and computer
+science, we use the __inclusive or__ by default &mdash; "one or the other,
+or both." When the _exclusive or_ is used, mathematicians and computer
+scientists will make it explicit with sentence structures such as "$A$ or
+$B$ but not both," or, occassionally, "Either $A$ or $B$." The _exclusive
+or_ (XOR) is covered in later sections.
+
+### Negated Inclusive Disjunction
+
+The negation of a disjunction is called the _negated disjunction_. In everyday language, it often takes the form _neither ${x}$ nor ${y.}$_
+
+<dfn>
+
+__negated disjunction.__ Let ${p}$ and ${q}$ be propositions. Then:
+
+$$
+	\neg p \land \neg q	
+$$
+
+is the _negated disjunction_ of ${p}$ and ${q,}$ read "Neither ${p}$ nor ${q.}$"
+We may also express the negated disjunction as:
+
+$$
+	\neg p \lnor q.
+$$
+
+</dfn>
+
+In computer science, the negated disjunction is often called a _nor-expression_.
+
+### Exclusive Disjunctions
+
+The logical connective XOR, is the _exclusive disjunction_ (the _exlusive
+or_). Given propositions $p$ and $q$, the exlusive disjunction of $p$ and
+$q$ is "Either $p$ or $q$," or "$p$ or $q$ but not both." It is denoted
+${p \oplus q}$.
+
+The proposition ${p \oplus q}$ is true if, and only if, $p$ is true or $q$
+is true, but not both. If (a) both $p$ and $q$ are true, or (b) both $p$
+and $q$ are false, then ${p \oplus q}$ is false.
+
+| $p$ | $q$ | ${p \oplus q}$ |
+| --- | --- | -------------- |
+| T   | T   | F              |
+| T   | F   | T              |
+| F   | T   | T              |
+| F   | F   | F              |
+
+Note that ${p \oplus q}$ is the same proposition as
+${(p \lor q) \land \neg (p \land q).}$ We can verify this with a truth
+table:
+
+| $p$ | $q$ | ${p \lor q}$ | ${p \land q}$ | ${\neg (p \land q)}$ | ${(p \lor q) \land \neg (p \land q)}$ | ${p \oplus q}$ |
+| --- | --- | ------------ | ------------- | -------------------- | ------------------------------------- | -------------- |
+| T   | T   | T            | T             | F                    | F                                     | F              |
+| T   | F   | T            | F             | T                    | T                                     | T              |
+| F   | T   | T            | F             | T                    | T                                     | T              |
+| F   | F   | F            | F             | T                    | F                                     | F              |
+
+
+### Evaluation Order
+
+Compound propositions themselves can be connect to form more complicated
+expressions:
+
+$$
+	\neg p \lor q \\
+	(\neg p \lor q) \land \neg (p \lor q) \\
+	\neg ((p \land q) \lor (p \land (p \lor \neg q)))
+$$
+
+When evaluating these more complicated expressions, we follow a convention
+called the _Boolean order of operations_:
+
+1. Parenthesized expressions are evaluated first, following these rules.
+2. Negations are evaluated second.
+3. Conjunctions are performed third.
+4. Inclusive/exclusive disjunctions are performed last.
+
+An interesting thing to note is that this is purely a convention. We could have
+used an entirely different order, but this is the order most people have agreed
+on.
+
+## Logical Equivalence
+
+The propositions "2 is greater than 1" and "1 is less than 2" are two
+different ways of saying the same thing. This is because of the definitions
+of the words &#8220;greater than&#8221; and &#8220;less than.&#8221; Both
+propositions, together, can only be: (1) both true, or (2) both false. In
+other words, if the propositions were connected with a logical connective and
+evaluated in a truth table, their truth values would be identical.
+
+For example, suppose $p$ and $q$ are propositions. The compound
+propositions ${p \land q}$ and ${q \land p}$ have the same truth values:
+
+| ${p}$ | ${q}$ | ${p \land q}$ | ${q \land p}$ |
+| ----- | ----- | ------------- | ------------- |
+| T     | T     | T             | T             |
+| T     | F     | F             | F             |
+| F     | T     | F             | F             |
+| F     | F     | F             | F             |
+
+When two _proposition forms_ have the same truth values, we say that they
+are _logically equivalent_. More formally, two proposition forms are
+logically equivalent if, and only if, they have identical truth values
+for each possible substitution of propositions for their proposition variables.
+The logical equivalence of proposition forms $p$ and $q$ is denoted by
+writing ${p \equiv q.}$
+
+Because of logical equivalence, there are logical properties we can use in all
+situations. We will explore some tactics for evaluating logical equivalences
+once we've covered conditonals.
+
+## De Morgan's Laws
+
+Consider the following proposition:
+
+> Apples are red and sweet.
+
+As we know, this is a compound proposition:
+
+> (1) Apples are red.
+> 
+> (2) Apples are sweet.
+
+For the proposition to be false, one or both of (1) and (2) must be false. That is,
+
+> Apples are _not_ red _and_ sweet.
+> 
+> Apples are red _and not_ sweet
+>
+> Apples are _not_ red _and_ are _not_ sweet.
+ 
+These propositions can be reduced to a single proposition:
+
+> Apples are _not_ red _or_ are _not_ sweet."
+
+Similarly, consider the proposition:
+
+> Apples are red _or_ green.
+ 
+Like the previous proposition, this is a compound proposition consisting of two
+propositions:
+
+> (1) Apples are red
+>
+> (2) Apples are green.
+
+Thus, for the compound proposition to be false, both (1) and (2) must be false,
+since a disjunction is false if, and only if, both of its component
+propositions are false. The negation then is:
+
+> Apples are _not_ red _and_ are _not_ green.
+
+De Morgan's laws formalize this reduction. The negation of a conjunction is
+logically equivalent to a disjunction, where each component proposition is
+_negated_. The negation of a disjunction is logically equivalent to a
+conjunction where each component proposition is _negated_.
+
+<dfn>
+
+__de morgan's laws.__ Let ${p}$ and ${q}$ be propositions. Then:
+
+$$
+
+	\eqs{
+		& \neg (p \land q) \equiv \neg p \lor \neg q \\[1em]
+		& \neg (p \lor q) \equiv \neg p \land \neg q
+	}
+	
+$$
+
+</dfn>
+
+A truth table demonstrates the logical equivalences:
+
+| $p$ | $q$ | ${\neg p}$ | ${\neg q}$ | ${p \land q}$ | ${\neg (p \land q)}$ | ${\neg p \lor \neg q}$ |
+| --- | --- | ---------- | ---------- | ------------- | -------------------- | ---------------------- |
+| T   | T   | F          | F          | T             | F                    | F                      |
+| T   | F   | F          | T          | F             | T                    | T                      |
+| F   | T   | T          | F          | F             | T                    | T                      |
+| F   | F   | T          | T          | F             | T                    | T                      |
+
+The negation of a disjunction is often written in the form of _neither nor_.
+Consider the proposition
+
+> Cats are sympathetic or lively.
+
+The negated proposition is:
+
+> Cats are _not_ sympathetic and are _not_ lively.
+
+Style, not logic, leads to the more common form:
+
+> Cats are _neither_ sympathetic _nor_ lively.
+
+## Tautology
+
+A _tautology_ is a propositional formula that always reduces to true, regardless
+of its component propositions's truth values. A proposition whose form is a
+tautology is called a _tautological proposition_.  For example, consider the
+proposition:
+
+> Beijing is the capital of China _or_ Beijing is _not_ the capital of China.
+
+Let's suppose: 
+
+$$
+	p = \text{Beijing is the capital of China.}
+$$
+
+As a propositional formula:
+
+
+$$
+	p \lor \neg p
+$$
+
+As a truth table:
+
+| $p$ | $\neg p$ | ${p \lor \neg p}$ |
+| --- | -------- | ----------------- |
+| T   | F        | T                 |
+| F   | T        | T                 |
+
+We see that ${p \lor \neg p}$ will always be true, regardless of what truth
+values are assigned to $p$. Thus, we say that ${p \lor \neg p}$ is a tautology:
+
+$$
+	\top (p \lor \neg p)
+$$
+
+The symbol $\top$ is called the _verum_ symbol, and means "always true".
+
+## Contradictions
+
+In contrast to the tautology, a _contradiction_ is a propositional formula that
+always reduces to _false_, regardless of the truth values of the individual
+propositions substituted for the propositional form's variables. For
+example, consider the proposition:
+
+> Dogs are cute and dogs are not cute.
+
+Suppose:
+
+$$
+	d = \text{Dogs are cute.}
+$$
+	
+	
+As a propositional formula:
+
+$$
+	d \land \neg d.
+$$
+
+
+As a truth table:
+
+| $d$ | $\neg d$ | ${d \land \neg d}$ |
+| --- | -------- | ------------------ |
+| T   | F        | F                  |
+| F   | T        | F                  |.
+
+We see that ${d \land \neg d}$ is always false, regardless of the truth value of
+${d}$. Thus, we say that ${d \land \neg d}$ is a contradiction. We
+denote this fact with the logical notation:
+
+$$
+	\bot (d \land \neg d)
+$$
+
+The symbol ${\bot}$ is the _falsum_ symbol, and means "always false."
+
+## Conditional Propositions
+
+When we reason _from_ a hypothesis to a _conclusion_, we make a
+_deduction_. This act is embodied in the proposition:
+
+$$
+	\tt{If ${p}$ then ${q.}$}
+$$
+
+We call this proposition a _conditional_ and we denote it as:
+
+$$
+	\large p \implies q
+$$
+
+The symbol ${\implies}$ is a logical connective just like ${\land}$, ${\lor}$, ${\neg}$, etc. The proposition ${p}$ is called the _sufficient condition_, and the proposition ${q}$ is called the _necessary condition_.[^implies_note].
+
+[^implies_note]:
+    In the order of operations, the logical connective ${\implies}$ is
+    performed last.
+
+### When Is a Conditional False?
+
+Consider the following proposition:
+
+> If Paris picks Hera, then there will be no war.
+
+When is this proposition false? It is false if, and only if, Paris picks Hera and there is a war (i.e., the sufficient condition is true and the necessary condition is false). Otherwise, the conditional ${p \implies q}$ is true.
+
+| ${p}$ | ${q}$ | ${p \implies q}$ |
+| ----- | ----- | ---------------- |
+| T     | T     | T                |
+| T     | F     | F                |
+| F     | T     | T                |
+| F     | F     | T                |
+
+If a conditional proposition's necessary condition is true
+because its sufficient condition is false, we say that the proposition is
+_vacuously true_. For example, consider the proposition:
+
+> If one is less than zero, then one plus one is two.
+
+Clearly, the sufficient condition is false, and the necessary condition is true.
+The proposition, however, is vacuously true. To see why we vacuous truth sense,
+let's consider a logical equivalence of an implication. 
+
+## Implications as Logical Disjunctions
+
+The conditionals is logically equivalent to disjunctions. In fact, this is
+apparent from every day speech. Consider the proposition:
+
+> Either you study or you receive poor grades.
+
+Let's rewrite this symbolically using the following variables:
+
+| Variable   | Signified                          |
+| ---------- | ---------------------------------- |
+| ${\neg p}$ | ${{\tt{you study}}}$               |
+| ${p}$      | ${{\tt{you do not study}}}$        |
+| ${q}$      | ${{\tt{you receive poor grades}}}$ |
+
+Using the variables above, we have the propositional formula:
+
+$$
+	(\neg p) \lor q
+$$
+
+Now consider the proposition is:
+
+> If you do not study, then you receive poor grades.
+
+Symbolically:
+
+$$
+	s \implies r.
+$$
+
+Let's look at their truth tables.
+
+| $p$ | $q$ | ${\neg p}$ | ${p \implies q}$ | ${(\neg p) \lor q}$ |
+| --- | --- | ---------- | ---------------- | ------------------- |
+| T   | T   | F          | T                | T                   |
+| T   | F   | F          | F                | F                   |
+| F   | T   | T          | T                | T                   |
+| F   | F   | T          | T                | T                   |
+
+Both ${p \implies q}$ and ${\neg p \lor q}$ have the same truth values;
+they are logically equivalent.Similarly, if ${q \implies p,}$ then
+${(q \implies p) \equiv ((\neg q) \lor p).}$
+
+| $q$ | $p$ | ${\neg q}$ | ${q \implies p}$ | ${(\neg q) \lor p}$ |
+| --- | --- | ---------- | ---------------- | ------------------- |
+| T   | T   | F          | T                | T                   |
+| T   | F   | F          | F                | F                   |
+| F   | T   | T          | T                | T                   |
+| F   | F   | T          | T                | T                   |
+
+Accordingly, we have the following logical equivalence:
+
+<dfn>
+
+__lemma__. Given propositions ${p}$ and ${q,}$
+
+$$
+	p \implies q \equiv q \lor (\neg p)
+$$
+
+or
+
+$$
+	p \implies q \equiv (\neg p) \lor q
+$$
+
+</dfn>
+
+## Negative Implications
+
+Let's take a closer look at that equivalence ${(p \implies q) \equiv (\neg p \lor q).}$ If we negate both sides, we get:
+
+$$
+	\neg (p \implies q) \equiv \neg ((\neg p) \lor q).
+$$
+
+Applying De Morgan's laws,
+
+$$
+	\neg (p \implies q) \equiv \neg ((\neg p) \lor q).
+$$
+
+By the double negative law, we have
+
+$$
+	\neg (p \implies q) \equiv p \land (\neg q).
+$$
+
+Therefore, it follows that
+
+$$
+	\neg (p \implies q) \equiv (p \land \neg q).
+$$
+
+In other words, the negation of _if ${p}$ then ${q}$_ is
+_${p}$ and not ${q}$_. Let's see an example.
+
+> If I timely submit my assignment, I will not lose points.
+>
+> I timely submit my assignment, but I lose points.
+
+For those fond of Victorian horror:
+
+> If Dracula is a man, then Dracula is human.
+>
+> Dracula is a man but not human.
+
+Accordingly, we have the following theorem:
+
+<dfn>
+
+__lemma__. Given propositions ${p}$ and ${q,}$
+
+$$
+  \neg (p \implies q) ~~ \equiv ~~ \neg q \lor (\neg p) ~~ \equiv ~~ (\neg q) \land p.
+$$
+
+</dfn>
+
+## The Contrapositive
+
+A particularly useful equivalence is that between a conditonal and its
+_contrapositive_. Consider the proposition: 
+
+> If I go to class, then I will attend lecture.
+ 
+The contrapositive of this proposition is:
+
+> If I do not attend lecture, then I do not go to class.
+
+<dfn>
+
+__contrapositive.__ Let ${p}$ and ${q}$ be propositions. Then
+
+$$
+	p \implies q ~~\equiv~~ \not q \implies \not p
+$$
+
+We call the proposition ${\not q \implies \not p}$ the _contrapositive_ of ${p
+\implies q.}$
+
+</dfn>
+
+We can verify the logical equivalence claimed with a proof table. Suppose ${a}$
+and ${b}$ are propositions:
+
+| $a$ | $b$ | ${\neg b}$ | ${\neg a}$ | ${a \implies b}$ | ${\neg b \implies \neg a}$ |
+| --- | --- | ---------- | ---------- | ---------------- | -------------------------- |
+| T   | T   | F          | F          | T                | T                          |
+| T   | F   | T          | F          | F                | F                          |
+| F   | T   | F          | T          | T                | T                          |
+| F   | F   | T          | T          | T                | T                          |.
+
+The fact that a conditional's contrapositive is logically equivalent to the
+conditional is a valuable asset. Often, proving a conditional proposition's
+contrapositive is much easier than proving the conditional proposition
+itself.
+
+### The Converse
+
+The _converse_ of a proposition is formed when the proposition's
+necessary and sufficient conditions are switched:
+
+| Proposition                            | Converse                               |
+| -------------------------------------- | -------------------------------------- |
+| If Bo is a horse, then Bo is a mammal. | If Bo is a mammal, then Bo is a horse. |
+
+<dfn>
+
+__converse.__ Let ${p}$ and ${q}$ be propositions. Then the converse of ${p \implies q}$ is the proposition
+
+$$
+	q \implies p.
+$$
+
+We may also denote the converse as
+
+$$
+	p \impliedby q
+$$
+
+which is read as "${q}$ is implied by ${p}$."
+
+</dfn>
+
+It's very important to understand that the converse of a conditional is not
+logically equivalent to the conditional. We can see that this is true with a
+truth table. Let ${p}$ and ${q}$ be propositions:
+
+| $p$ | $q$ | ${p \implies q}$ | ${q \implies p}$ |
+| --- | --- | ---------------- | ---------------- |
+| T   | T   | T                | T                |
+| T   | F   | F                | T                |
+| F   | T   | T                | F                |
+| F   | F   | T                | T                |
+
+We will revisit the converse when we examine another propositional formula
+called the biconditional.
+
+### The Inverse
+
+When we negate the sufficient and necessary conditions of conditional
+proposition while keeping their order in place, we get the conditional's
+_inverse_.
+
+<dfn>
+
+__inverse.__ Let ${p}$ and ${q}$ be propositions. Then the _inverse_ of ${p \implies q}$ is
+
+$$
+	\neg q \implies \neg p
+$$
+
+</dfn>
+
+For example:
+
+| Proposition                                              | Inverse                                                            |
+| -------------------------------------------------------- | ------------------------------------------------------------------ |
+| If Sam entered the home, then she is guilty of burglary. | If Sam did not enter the home, then she is not guilty of burglary. |
+
+Like the converse, the inverse of a conditional is not logically equivalent
+to the conditional:
+
+| $p$ | $q$ | ${\neg p}$ | ${\neg q}$ | ${p \implies q}$ | ${(\neg p) \implies (\neg q)}$ |
+| --- | --- | ---------- | ---------- | ---------------- | ------------------------------ |
+| T   | T   | F          | F          | T                | T                              |
+| T   | F   | F          | T          | F                | T                              |
+| F   | T   | T          | F          | T                | F                              |
+| F   | F   | T          | T          | T                | T                              |
+
+### Equivalence of Converse and Inverse
+
+Although both the converse and inverse of a conditional are not logically
+equivalent to the conditional, the converse of a conditional is logically
+equivalent to the inverse of a conditional, and vice versa.
+
+| $p$ | $q$ | ${\neg p}$ | ${\neg q}$ | ${p \implies q}$ | ${q \implies p}$ | ${(\neg p) \implies (\neg q)}$ |
+| --- | --- | ---------- | ---------- | ---------------- | ---------------- | ------------------------------ |
+| T   | T   | F          | F          | T                | T                | T                              |
+| T   | F   | F          | T          | F                | T                | T                              |
+| F   | T   | T          | F          | F                | F                | F                              |
+| F   | F   | T          | T          | F                | T                | T                              |
+
+## Idiom: Only If
+
+The idiom _only if_ introduces a necessary condition. In other words,
+when we say "A only if B", we are saying "If A occurs, B MUST occur;" that
+is, "If b does not occur, a does not occur."
+
+Formally, given propositions $a$ and $b$, the proposition "$a$ only if $b$"
+is denoted as:
+
+$$
+	a \implies b
+$$
+
+or, equivalently,
+
+$$
+	(\neg b) \implies (\neg a)
+$$
+
+## The Biconditional
+
+A _biconditional proposition_ (a "biconditional") is a conditional
+proposition where both component propositions are the necessary and
+sufficient conditions. The biconditional most often takes the form "$p$ if,
+and only if, $q$". The words _if and only if_ are sometimes abbreviated:
+
+$$
+	\string{\tt{iff}}
+$$
+
+We will follow this convention. The biconditional ${p \iff q}$ is true if both
+$p$ and $q$ have the same true values and is false if $p$ and $q$ have opposite
+truth values. The biconditional has the truth table:
+
+| $p$ | $q$ | ${p \iff q}$ |
+| --- | --- | ------------ |
+| T   | T   | T            |
+| T   | F   | F            |
+| F   | T   | F            |
+| F   | F   | T            |
+
+Consider the following truth table:
+
+| $p$ | $q$ | ${p \implies q}$ | ${q \implies p}$ | ${p \iff q}$ | ${(p \implies q) \land (q \implies p)}$ |
+| --- | --- | ---------------- | ---------------- | ------------ | --------------------------------------- |
+| T   | T   | T                | T                | T            | T                                       |
+| T   | F   | F                | T                | F            | F                                       |
+| F   | T   | T                | F                | F            | F                                       |
+| F   | F   | T                | T                | T            | T                                       |
+
+Observe that the biconditional "$p$ iff $q$" is logically equivalent to
+"$p$ if $q$ and $q$ if $p$." In other words, the biconditional is logically
+equivalent to the conjunction of the conditional and its converse.
+Symbolically:
+
+$$
+	(p \iff q) \equiv ((p \implies q) \land (q \implies p))
+$$
+
+This is helpful result. Biconditionals are much easier to prove or work
+with when they are reduced to the conditional and its converse.
+
+## Common Equivalences
+
+The table below provides some helpful logical equivalences.
+
+<div className={`numbered`}>
+
+|                           |                                         |             |                                            |
+| ------------------------- | --------------------------------------- | ----------- | ------------------------------------------ |
+| ~and-identity~            | ${p \land \top}$                        | ${\equiv}$  | ${p}$                                      |
+| ~or-identity~             | ${p \lor \bot}$                         | ${\equiv}$  | ${p}$                                      |
+| ~tautological domination~ | ${p \lor \top}$                         | ${\equiv}$  | ${\top}$                                   |
+| ~falsehood~               | ${p \land \bot}$                        | ${\equiv}$  | ${\bot}$                                   |
+| ~or-indempotency~         | ${p \lor p}$                            | ${\equiv}$  | ${p}$                                      |
+| ~and-indempotency~        | ${p \land p}$                           | ${\equiv}$  | ${p}$                                      |
+| ~double negation~         | ${\neg (\neg p)}$                       | ${\equiv}$  | ${p}$                                      |
+| ~or-commutativity~        | ${p \lor q}$                            | ${\equiv}$  | ${q \lor p}$                               |
+| ~and-commutativity~       | ${p \land q}$                           | ${\equiv}$  | ${q \land p}$                              |
+| ~or-association~          | ${(p \lor q) \lor r}$                   | ${\equiv}$  | ${ p \lor (q \lor r)}$                     |
+| ~and-association~         | ${(p \land q) \land r}$                 | ${\equiv}$  | ${p \land (q \land r)}$                    |
+| ~or-distribution~         | ${p \lor (q \land r)}$                  | ${\equiv}$  | ${(p \lor q) \land (p \lor r)}$            |
+| ~and-distribution~        | ${p \land (q \land r)}$                 | ${\equiv}$  | ${(p \land q) \lor (p \land r)}$           |
+| ~or-absorption~           | ${p \lor (p \land q)}$                  | ${\equiv}$  | ${p}$                                      |
+| ~and-absorption~          | ${p \land (p \lor q)}$                  | ${\equiv}$  | ${p}$                                      |
+| ~natural tautology~       | ${p \lor (\neg p)}$                     | ${\equiv}$  | ${\top}$                                   |
+| ~natural contradiction~   | ${p \land (\neg p)}$                    | ${\equiv}$  | ${\bot}$                                   |
+| ~conditional-reduction~   | ${p \implies q}$                        | ${\equiv}$  | ${\neg p \lor q}$                          |
+| ~contrapositive~          | ${p \implies q}$                        | ${\equiv}$  | ${\neg q \implies \neg p}$                 |
+| ~or-reduction~            | ${p \lor q}$                            | ${\equiv}$  | ${\neg p \implies q}$                      |
+| ~and-reduction~           | ${p \land q}$                           | ${\equiv}$  | ${\neg(p \implies \neg q)}$                |
+| ~negated conditional~     | ${\neg(p \implies q)}$                  | ${\equiv}$  | ${p \land \neg q}$                         |
+| ~conditional conjunction~ | ${(p \implies q) \land (p \implies r)}$ | ${\equiv}$  | ${p \implies (q \land r)}$                 |
+|                           | ${(p \implies r) \land (q \implies r)}$ | ${\equiv}$  | ${(p \lor q) \implies r}$                  |
+| ~conditional disjunction~ | ${(p \implies q) \lor (p \implies r)}$  | ${\equiv}$  | ${p \implies (q \lor r)}$                  |
+|                           | ${(p \implies r) \lor (q \implies r)}$  | ${\equiv}$  | ${(p \land q) \implies r}$                 |
+| ~biconditional reduction~ | ${p \iff q}$                            | ${\equiv}$  | ${(p \implies q) \land (q \implies p)}$    |
+|                           | ${p \iff q}$                            | ${\equiv}$  | ${\neg p \iff \neg q}$                     |
+|                           | ${p \iff q}$                            | ${\equiv}$  | ${(p \land q) \lor (\neg p \land \neg q)}$ |
+| ~biconditional negation~  | ${\neg(p \iff q)}$                      | ${ \equiv}$ | ${p \iff \neg q}$                          |
+
+</div>
