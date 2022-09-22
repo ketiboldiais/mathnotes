@@ -11,13 +11,10 @@ const num = "/number_theory/";
 const sets = "/set_theory/";
 const log = "/logic/";
 const cs = "/cs";
-const fs = "/foundations";
-const fp = "/functional_programming";
-const lp = "/logic_programming/";
-const sml = "/sml/";
-const dsa = "/data_structures_and_algorithms";
-const asy = "/asynchronous_programming";
-const ja = "/java/";
+const fs = "/foundations/";
+const fp = "/functional_programming/";
+const dsa = "/data_structures_and_algorithms/";
+const asy = "/asynchronous_programming/";
 const swf = "swift/";
 const sys = "/systems/";
 const tls = "/tools/";
@@ -25,40 +22,25 @@ const shells = "shells/";
 const git = "git/";
 const lang = "/languages/";
 const mob = "/mobile_systems/";
-const da = "/dynamic_arrays/";
-const str = "/strings/";
-const ll = "/linked_lists/";
-const cl = "/circular_lists/";
-const dbl = "/doubly_linked_lists/";
-const stack = "/stacks/";
-const heap = "/heaps/";
-const queue = "/queues/";
-const ht = "/hashTables/";
 const clang = "c/";
 
 const Routes = [
 	{ name: "Front Matter", path: "/" },
-	{ name: "Notation Reference", path: "/notation" },
-	{ name: "Algorithm Zoo", path: "/zoo/algorithms/main" },
-	{ name: "Notes on Writing", path: "/writing" },
 	{ name: "Review of Computer Science",
 		path: `${cs}/preface`,
 		children: [
-			{ name: "Foundations with Java", path: `${cs}${fs}/preface`, children: [
-				{ name: "Variables & Types", path: `${cs}${fs}${ja}variables_and_types` },
-				{ name: "Conditionals", path: `${cs}${fs}${ja}conditionals` },
-				{ name: "Variable Scope", path: `${cs}${fs}${ja}variable_scope` },
-				{ name: "Arrays", path: `${cs}${fs}${ja}arrays` },
-				{ name: "Loops", path: `${cs}${fs}${ja}loops` },
+			{ name: "Foundations with Java", path: `${cs}${fs}preface`, children: [
+				{ name: "Variables & Types", path: `${cs}${fs}variables_and_types` },
+				{ name: "Conditionals", path: `${cs}${fs}conditionals` },
+				{ name: "Variable Scope", path: `${cs}${fs}variable_scope` },
+				{ name: "Arrays", path: `${cs}${fs}arrays` },
+				{ name: "Loops", path: `${cs}${fs}loops` },
 			]},
-			{ name: "Functional Programming", path: `${cs}${fp}${sml}intro`, children: [
-				{ name: "Simple Data Types", path: `${cs}${fp}${sml}simple_data_types` },
-				{ name: "Compound Data Types", path: `${cs}${fp}${sml}compound_data_types` },
+			{ name: "Functional Programming", path: `${cs}${fp}intro`, children: [
+				{ name: "Simple Data Types", path: `${cs}${fp}simple_data_types` },
+				{ name: "Compound Data Types", path: `${cs}${fp}compound_data_types` },
 			]},
-			{ name: "Logic Programming", path: `${cs}${lp}intro`, children: [
-				{ name: "Horns", path: `${cs}${lp}basics` },
-			]},
-			{ name: "Asynchronous Programming with JavaScript", path: `${cs}${asy}/preface`, children: [
+			{ name: "Asynchronous Programming with JavaScript", path: `${cs}${asy}preface`, children: [
 				{ name: "Fundamentals", path: `${cs}${asy}fundamentals` },
 				{ name: "Control Flow", path: `${cs}${asy}control_flow` },
 				{ name: "Arrays", path: `${cs}${asy}arrays` },
@@ -67,11 +49,11 @@ const Routes = [
 				{ name: "Functional Programming Techniques", path: `${cs}${asy}functional_programming` },
 				{ name: "TypeScript", path: `${cs}${asy}typescript` },
 			]},
-			{ name: "Data Structures & Algorithms with C++", path: `${cs}${dsa}/intro`, children: [
+			{ name: "Data Structures & Algorithms with C++", path: `${cs}${dsa}intro`, children: [
 				
-					{ name: "Prelude: Data Structures & Algorithms", path: `${cs}${dsa}/dsa_overview`, },
-					{ name: "Complexity Analysis", path: `${cs}${dsa}/dsa_complexity_analysis`, },
-					{ name: "Numeric Algorithms", path: `${cs}${dsa}/dsa_numeric_algorithms`, },
+					{ name: "Prelude: Data Structures & Algorithms", path: `${cs}${dsa}dsa_overview`, },
+					{ name: "Complexity Analysis", path: `${cs}${dsa}dsa_complexity_analysis`, },
+					{ name: "Numeric Algorithms", path: `${cs}${dsa}dsa_numeric_algorithms`, },
 					{ name: "Static Arrays", path: `${cs}${dsa}arrays`,
 						children: [
 							{ name: "Linear Search", path: `${cs}${dsa}arrays#linear-search`, },
@@ -88,18 +70,18 @@ const Routes = [
 							{ name: "Cost-benefit Analysis: Arrays", path: `${cs}${dsa}arrays#cost-benefit-analysis-arrays`, },
 						],
 					},
-					{ name: "Dynamic Arrays", path: `${cs}${dsa}${da}dynamic_arrays` },
-					{ name: "Strings", path: `${cs}${dsa}${str}strings` },
+					{ name: "Dynamic Arrays", path: `${cs}${dsa}dynamic_arrays` },
+					{ name: "Strings", path: `${cs}${dsa}strings` },
 					{ name: "Time Algorithms", path: `${cs}${dsa}time`, },
 					{ name: "Matrices", path: `${cs}${dsa}matrices` },
-					{ name: "Linked Lists", path: `${cs}${dsa}${ll}linked_lists` },
+					{ name: "Linked Lists", path: `${cs}${dsa}linked_lists` },
 					{ name: "Disjoint Sets", path: `${cs}${dsa}disjoint_sets` },
-					{ name: "Circular Linked Lists", path: `${cs}${dsa}${cl}circular_linked_lists`, },
-					{ name: "Doubly Linked Lists", path: `${cs}${dsa}${dbl}doubly_linked_lists`, },
-					{ name: "Stacks", path: `${cs}${dsa}${stack}stacks` },
-					{ name: "Queues", path: `${cs}${dsa}${queue}queues` },
-					{ name: "Hash Tables", path: `${cs}${dsa}${ht}hash_tables` },
-					{ name: "Trees", path: `${cs}${dsa}intro`, children: [
+					{ name: "Circular Linked Lists", path: `${cs}${dsa}circular_linked_lists`, },
+					{ name: "Doubly Linked Lists", path: `${cs}${dsa}doubly_linked_lists`, },
+					{ name: "Stacks", path: `${cs}${dsa}stacks` },
+					{ name: "Queues", path: `${cs}${dsa}queues` },
+					{ name: "Hash Tables", path: `${cs}${dsa}hash_tables` },
+					{ name: "Trees", path: `${cs}${dsa}introduction-to-trees`, children: [
 							{ name: "Binary Trees", path: `${cs}${dsa}binary_trees`, },
 							{ name: "Tree Traversal", path: `${cs}${dsa}tree_traversal`,
 								children: [
@@ -139,12 +121,12 @@ const Routes = [
 							{ name: "Fenwick Trees", path: `${cs}${dsa}fenwick_trees` },
 						],
 					},
-					{ name: "Heaps", path: `${cs}${dsa}${heap}heaps` },
-					{ name: "Sorting Algorithms", path: `${cs}${dsa}/sorting` },
-					{ name: "Recursion", path: `${cs}${dsa}/recursion` },
-					{ name: "Backtracking", path: `${cs}${dsa}/backtracking` },
-					{ name: "Common Problems", path: `${cs}${dsa}/commons` },
-					{ name: "Summary", path: `${cs}${dsa}/dsa_summary` },
+					{ name: "Heaps", path: `${cs}${dsa}heaps` },
+					{ name: "Sorting Algorithms", path: `${cs}${dsa}sorting` },
+					{ name: "Recursion", path: `${cs}${dsa}recursion` },
+					{ name: "Backtracking", path: `${cs}${dsa}backtracking` },
+					{ name: "Common Problems", path: `${cs}${dsa}commons` },
+					{ name: "Summary", path: `${cs}${dsa}dsa_summary` },
 				],
 			},
 			{ name: "Computer Systems", path: `${cs}${sys}intro`, children: [
@@ -180,7 +162,6 @@ const Routes = [
 							{ name: "Web Applications", path: `${cs}${sys}web_applications` },
 						]},
 						{ name: "Data Layer", path: `${cs}${sys}data_layer` },
-						// { name: "The Internet & ISPs", path: `${cs}${sys}isp` },
 					]},
 				],
 			},
@@ -197,7 +178,7 @@ const Routes = [
 				{ name: "C++", path: `${cs}${tls}cpp_overview` },
 				{ name: "Build Systems", path: `${cs}${tls}build_systems` },
 				{ name: "Time Complexities", path: `${cs}${tls}time_complexities` },
-				{ name: "Language: C++", path: `${cs}${dsa}/language_overview_cpp`, children: [
+				{ name: "Language: C++", path: `${cs}${dsa}language_overview_cpp`, children: [
 					{ name: "Errors", path: `${cs}${dsa}errors` },
 					{ name: "Operators", path: `${cs}${dsa}operators` },
 					{ name: "Variables & Types", path: `${cs}${dsa}variables_and_types`, },

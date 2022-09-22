@@ -977,25 +977,25 @@ ${64}$-bit registers, with ${8}$ byte pointers. This means that computers
 today can address more memory, but it also means that pointers use more
 space.
 
-| Type                            | Bytes                                                                                                                                                  |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `boolean`                       | ${1}$                                                                                                                                                  |
-| `byte`                          | ${1}$                                                                                                                                                  |
-| `char`                          | ${2}$                                                                                                                                                  |
-| `int`                           | ${4}$                                                                                                                                                  |
-| `float`                         | ${4}$                                                                                                                                                  |
-| `long`                          | ${8}$                                                                                                                                                  |
-| `double`                        | ${8}$                                                                                                                                                  |
-| `char[]`                        | ${2n + 24}$                                                                                                                                            |
-| `int[]`                         | ${4n + 24}$                                                                                                                                            |
-| `double[]`                      | ${8n + 24}$                                                                                                                                            |
-| `char[][]`                      | ${\approx 2mn}$                                                                                                                                        |
-| `int[][]`                       | ${\approx 4mn}$                                                                                                                                        |
-| `double[][]`                    | ${\approx 8mn}$                                                                                                                                        |
-| Object overhead                 | ${16}$                                                                                                                                                 |
-| Reference                       | ${8}$                                                                                                                                                  |
-| Padding                         | Because each object uses a multiple of ${8}$ bytes, some padding of ${n.}$                                                                             |
-| `string`                        | ${\approx 2n + r + p}$ where ${n}$ is the string's length, ${r}$ is the amount of space consumed by the reference, and ${p}$ is the amount of padding. |
+| Type            | Bytes                                                                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `boolean`       | ${1}$                                                                                                                                                  |
+| `byte`          | ${1}$                                                                                                                                                  |
+| `char`          | ${2}$                                                                                                                                                  |
+| `int`           | ${4}$                                                                                                                                                  |
+| `float`         | ${4}$                                                                                                                                                  |
+| `long`          | ${8}$                                                                                                                                                  |
+| `double`        | ${8}$                                                                                                                                                  |
+| `char[]`        | ${2n + 24}$                                                                                                                                            |
+| `int[]`         | ${4n + 24}$                                                                                                                                            |
+| `double[]`      | ${8n + 24}$                                                                                                                                            |
+| `char[][]`      | ${\approx 2mn}$                                                                                                                                        |
+| `int[][]`       | ${\approx 4mn}$                                                                                                                                        |
+| `double[][]`    | ${\approx 8mn}$                                                                                                                                        |
+| Object overhead | ${16}$                                                                                                                                                 |
+| Reference       | ${8}$                                                                                                                                                  |
+| Padding         | Because each object uses a multiple of ${8}$ bytes, some padding of ${n.}$                                                                             |
+| `string`        | ${\approx 2n + r + p}$ where ${n}$ is the string's length, ${r}$ is the amount of space consumed by the reference, and ${p}$ is the amount of padding. |
 
 ## Common Running Times
 
@@ -1007,21 +1007,21 @@ times for basic operations in popular languages.
 
 | Operation              | Time                | Example                 | Comment              |
 | ---------------------- | ------------------- | ----------------------- | -------------------- |
-| binary search on array | ${O(\log_{2}n)}$    | See implementation.     |
-| peak-finder on array   | ${O(n)}$            | See implementation.     |
-| merge sort             | ${O(n \log_{2} n)}$ | See implementation.     |
-| 2-sum                  | ${O(n^2)}$          | See implementation.     |
-| 3-sum                  | ${O(n^3)}$          | See implementation.     |
-| check all subsets      | ${O(2^n)}$          | See implementation.     |
-| variable declaration   | ${O(1)}$            | `int x;`                |
-| assignment Statement   | ${O(1)}$            | `x = 1;`                |
-| numeric comparison     | ${O(1)}$            | `x &lt; 1;`             |
-| array element access   | ${O(1)}$            | `arr[1]`                |
-| array length           | ${O(1)}$            | `arr.length`            |
-| 1D array allocation    | ${O(n)}$            | `new int[n]`            |
-| 2D array allocation    | ${O(n^2)}$          | `new int[n][n]`         |
-| string length          | ${O(1)}$            | `str.length()`          |
-| string extraction      | ${O(1)}$            | `str.substring(n/2, n)` |
+| binary search on array | ${O(\log_{2}n)}$    | See implementation.     |                      |
+| peak-finder on array   | ${O(n)}$            | See implementation.     |                      |
+| merge sort             | ${O(n \log_{2} n)}$ | See implementation.     |                      |
+| 2-sum                  | ${O(n^2)}$          | See implementation.     |                      |
+| 3-sum                  | ${O(n^3)}$          | See implementation.     |                      |
+| check all subsets      | ${O(2^n)}$          | See implementation.     |                      |
+| variable declaration   | ${O(1)}$            | `int x;`                |                      |
+| assignment Statement   | ${O(1)}$            | `x = 1;`                |                      |
+| numeric comparison     | ${O(1)}$            | `x &lt; 1;`             |                      |
+| array element access   | ${O(1)}$            | `arr[1]`                |                      |
+| array length           | ${O(1)}$            | `arr.length`            |                      |
+| 1D array allocation    | ${O(n)}$            | `new int[n]`            |                      |
+| 2D array allocation    | ${O(n^2)}$          | `new int[n][n]`         |                      |
+| string length          | ${O(1)}$            | `str.length()`          |                      |
+| string extraction      | ${O(1)}$            | `str.substring(n/2, n)` |                      |
 | string concatenation   | ${O(n)}$            | `str1 + str2`           | very commonly abused |
 
 ## Containers
