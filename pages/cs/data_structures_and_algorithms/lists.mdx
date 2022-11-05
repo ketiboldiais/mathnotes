@@ -1,0 +1,830 @@
+import { Arr, List } from "../../../components/hago";
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+
+<Head>
+	<title>Lists</title>
+	<meta name={`description`} content={`Notes on lists.`}/>
+</Head>
+
+# Lists
+
+_These notes cover lists_.
+
+1. [Singly-Linked Lists](#singly-linked-lists)
+2. [Problems](#problems)
+	1. [List to Array](#list-to-array)
+	2. [Sum List](#sum-list)
+	3. [Sequential Search](#sequential-search)
+	4. [ith Element](#ith-element)
+	5. [Reverse List](#reverse-list)
+	6. [Zipper List](#zipper-list)
+	7. [List Merge](#list-merge)
+	8. [Univalue List](#univalue-list)
+	9. [Remove Node](#remove-node)
+	10. [Insert Node](#insert-node)
+	11. [Array to List](#array-to-list)
+	12. [List Sum](#list-sum)
+
+## Singly-Linked Lists 
+
+Here is a basic linked list, storing integers:
+
+<List data={[2,8,1,9,5]}/>
+
+Each box is a node with a pointer to the next node (called the node's _pointee_), and the last node (above, the box containing 1) has a null pointee. We call the first node the _head_ and the last node the _tail_. Linked lists have some notion of "ordering" in the sense that each node points to the next. They do not, however, have any inherent indices, as arrays do. Accordingly (and this is true for other connected data structures), the data stored within a linked list are spread across memory. As such, they do not perform nearly as well as arrays when it comes to both caching and read time. In particular, lists do not have constant time access — we must traverse the list to read.
+
+
+With lists, however, we can insert in ${\bigO{1}}$ (assuming a correct implementation). We set create a new node ${p}$ containing the data 6,
+then traverse the list until we reach the node just before the point of insertion:
+
+<List data={[4,5,7,8]} pointers={{1:`p`}}/>
+
+Then we have ${p}$ point to node-5's pointee (${\set{5}\to p}$), followed by node-5 changing its pointee to ${p}$ (${p \to \set{7}}$).
+
+<List data={[4,5,6,7,8]}/>
+
+For the puzzles that follow, solutions use the following structure
+for a node:
+
+<Obj>
+
+> __~node definition.~__ Where ${\df{comparable}}$ is a data type such that ${=},$ ${\lt,}$ and ${\gt}$ return either true or false, and ${\df{node}^*}$ is a node pointer type, a ${\df{node}}$ is a product type ${\df{comparable} \times \df{node}^*,}$ where ${\df{comparable} \bij \tx{value}}$ and ${\df{node}^* \bij \tx{next}.}$
+
+> - ${{\textbf{structure}}\df{ node } \textbf{contains}}$
+> 	1. ${\df{comparable}~~\tx{value}}$ 
+> 	2. ${\df{node}^*~~\tx{next}}$
+> - ${\textbf{end}}$
+
+</Obj>
+
+
+## Problems
+### List to Array
+
+_Given the head of a linked list ${L,}$ write an algorithm that returns the values stored in ${L}$ as an array._
+
+<Minutiae>
+
+This problem asks for a simple traversal. As we're asked to traverse
+the entire list, the approach below has a time complexity of ${\bigTheta{n},}$ and a space complexity of ${\bigTheta{n}.}$
+
+<Algo>
+
+__~list-to-array~__
+- __Argument__: the head ${h}$ of a linked list ${L.}$
+- __Image__: an array ${A,}$ containing the values stored in ${L.}$
+
+1. __init__
+	1. ${\let{p}{h}}$
+	2. ${\let{A}{\df{new empty array}}}$
+2. __while__ ${p \neq \nil}$ `start loop body`
+	1. ${A \push p \ix{\tx{value}}}$
+	2. ${\let{p}{p \ix{\tx{next}}}}$
+	3. ${\goto{3}}$ `end loop body`
+3. __return__ ${A}$
+
+</Algo>
+
+We can also implement this recursively:
+
+<Algo>
+
+__~recursive-list-to-array~__
+
+- __Argument__: the head of a linked list ${L,}$ ${h.}$
+- __Image__: an array ${A,}$ containing the values stored in ${L.}$
+
+1. __init__
+	1. ${\let{p}{h}}$
+	2. ${\let{A}{\df{new empty array}}}$
+2. __function__ ${\df{traverse}(p): \df{node}^* \mapsto \nil}$
+	1. __if__ ${p = \nil}$ __then return ${\nil}$__
+	2. __else__
+		1. ${A \push p \ix{\tx{value}}}$
+		2. ${\df{traverse}(p\ix{\tx{next}})}$
+3. ${\df{traverse}(p)}$
+4. __return__ ${A}$
+
+</Algo>
+
+With the recursive approach, it's important to avoid situations of
+pass-by-value. For some languages (e.g., JavaScript), passing 
+the entire array ${A}$ (rather than a reference or pointer to ${A}$) in a recursive call requires copying each value in ${A}$ to a new array ${A'.}$ This results in a time complexity of ${\bigO{n^2}.}$
+
+</Minutiae>
+
+### Sum List
+
+_Given the head ${h}$ of a linked list containing integers, write an algorithm that returns the total sum of all values in the linked list._
+
+<Minutiae>
+
+Like [list to array](#list-to-array), computing the sum can be done iteratively:
+
+<Algo>
+
+__~listsum~__
+- __Argument__: ${h,}$ the head of a linked list ${L}$ containing integers.
+- __Image__: ${S,}$ the sum total of each integer in ${L.}$
+
+1. __init__
+	1. ${\let{p}{h}}$
+	2. ${\let{S}{0}}$
+2. __while__ ${p \neq \nil}$ `begin loop body`
+	1. ${\let{sum}{p \ix{\tx{value}}}}$
+	2. ${\let{p}{p \ix{\tx{next}}}}$
+	3. ${\goto{3}}$ `end loop body`
+3. __return__ ${S}$
+
+</Algo>
+
+This algorithm has a time complexity of ${\bigO{n},}$ and a space complexity of ${\bigO{1}.}$ A recursive implementation would also run on ${\bigO{n}}$ time, but with the added cost of ${\bigO{n}}$ space complexity, due to the call stack. 
+
+<Algo>
+
+__~listsum~__
+- __Argument__: ${h,}$ the head of a linked list ${L}$ containing integers.
+- __Image__: ${S,}$ the sum total of each integer in ${L.}$
+
+1. __if__ ${h = \nil}$ __then return__ ${0}$
+2. __else__ ${\rw{h}{\tx{value}} + \df{listsum}(\rw{h}{\tx{next}})}$
+
+</Algo>
+</Minutiae>
+
+### Sequential Search
+_Given the head of a linked list and a target ${t,}$ write an algorithm that returns true (or 1) if ${t}$ is in the linked list, and false (or 0) otherwise.  The target ${t}$ is of a type where ${=}$ is meaningful._
+
+<Minutiae>
+
+This is another problem handled easily by traversal. The algorithm below has a time complexity of order ${\bigO{n}}$ — since we must traverse the list — and
+the space complexity of order ${\bigO{1}.}$
+
+<Algo>
+
+__~seqfind~__
+- __Argument__: ${h,}$ the head of a linked list ${L,}$ and ${t,}$ a target.
+- __Image__: ~true~ if ${t \in L,}$ ~false~ otherwise.
+
+1. __init__ ${\let{p}{h}}$
+2. __while__ ${p \neq \nil}$ `begin loop body`
+	1. __if__ ${\rw{p}{\tx{value}}=t}$ __then__ __return__ ${\df{true}}$
+	2. ${\let{p}{p \ix{\tx{next}}}}$
+	3. ${\goto{1}}$ `end loop body`
+3. __return__ ${\df{false}}$
+
+</Algo>
+
+As usual, we can also implement this recursively:
+
+<Algo>
+
+__~seqfind~__
+- __Argument__: ${h,}$ the head of a linked list ${L,}$ and ${t,}$ a target.
+- __Image__: ~true~ if ${t \in L,}$ ~false~ otherwise.
+
+1. __if__ ${h = \nil}$ __return__ ${\df{false}}$
+2. __else if__ ${\rw{h}{\tx{value}} = t}$ __then__ __return__ ${\df{true}}$
+3. __else__ ${\df{seqfind}(\rw{h}{\tx{next}})}$
+
+</Algo></Minutiae>
+
+### ith Element
+_Given the head of a linked list ${h}$ and index ${I \in \nat,}$ write an algorithm that returns the list element at the specified index. If there is no such element, return null._
+
+<Minutiae>
+
+There are many ways to go about this problem, some of which are tempting but _wrong_.  A common mistake is an algorithm like the following:
+
+<Algo>
+
+__~getith~__
+- __Argument__: the head of a linked list ${h}$ and an index ${I}$
+- __Image__: the element at index ${I}$
+
+1. __init__
+	1. ${\let{p}{h}}$
+	2. ${\let{i}{0}}$
+2. __while__ ${i \lt I}$ `begin loop body`
+	1. ${\let{p}{p\ix{\tx{value}}}}$
+	2. ${+(i,1)}$
+	3. ${\goto{3}}$ `end loop body`
+3. __return__ ${p\ix{\tx{value}}}$
+
+</Algo>
+
+The problem with this approach is that there's no guard against ${p = \nil.}$ In the event that occurs — which is well within reason to expect — the very last line will return an error (hopefully; not all compilers or transpilers are so forgiving about dereferencing ${\nil}$). A correct approach would look like the following:
+
+<Algo>
+
+__~getith~__
+- __Argument__: the head of a linked list ${h}$ and an index ${I}$
+- __Image__: the element at index ${I}$
+
+1. __init__
+	1. ${\let{p}{h}}$
+	2. ${\let{i}{0}}$
+2. __while__ ${p \neq \nil}$ `begin loop body`
+	1. __if__ ${i = I}$ __return__ ${p\ix{\tx{value}}}$
+	2. ${\let{p}{\rw{p}{\tx{next}}}}$
+	3. ${+(i,1)}$
+	4. ${\goto{3}}$ `end loop body`
+3. __return__ ${\nil}$
+
+</Algo>
+
+This algorithm has a space complexity of order ${\bigO{1}}$ and a time
+complexity of order ${\bigO{n}.}$
+
+<Algo>
+
+__~getith~__
+- __Argument__: the head of a linked list ${h}$ and an index ${I}$
+- __Image__: the element at index ${I}$
+
+1. __if__ ${h = \nil}$ __return__ ${\nil}$
+2. __else if__ ${I = 0}$ __return__ ${h\ix{\tx{value}}}$
+3. __else__ __return__ ${\df{getith}(h\ix{\tx{next}},-(I,1))}$
+
+</Algo>
+
+The recursive solution has a time complexity of ${\bigO{n},}$ but
+unlike the iterative solution, has a space complexity of ${\bigO{n}.}$
+
+</Minutiae>
+
+### Reverse List
+_Given the head ${h}$ of a linked list ${L,}$ write an algorithm that returns ${L}$ with its nodes reversed._
+
+<Minutiae>
+
+Before we reverse ${L,}$ we return ${\nil}$ immediately if ${h = \nil.}$ 
+Otherwise, we continue. Suppose the list were:
+
+<List data={[1,2,3,4,5,6]}/>
+
+We begin with three pointers, ${p}$ (for _previous_), ${c}$ (for _current_), and 
+${n}$ (for _next_). Initially, ${p}$ points to nothing, ${c}$ points to ${h,}$ and ${n}$ points to ${h\ix{\tx{next}}.}$ Then, so long as ${n \neq \nil:}$ (1) Assign ${p}$ to ${c}$'s next (_make current point to previous_). (2) Assign ${c}$ to ${p}$ (_move previous to current_). (3) Assign ${c}$ to ${n}$ (_move current to next_). And (4) Assign ${n}$'s next to ${n}$ (_move ${n}$ forward_).
+
+$$
+	\begin{array}{:c:c:}
+
+	{\let{\rw{c}{\tx{next}}}{p}}&
+	{\begin{matrix}
+	&{c}&~&{n}&~&{~}&~&{~}&~&{~}&~&{~}& \\
+	p\gets&\boxed{1}&~&\boxed{2}&\to&\boxed{3}&\to&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{p}{c}}&
+	{\begin{matrix}
+	&{pc}&~&{n}&~&{~}&~&{~}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&~&\boxed{2}&\to&\boxed{3}&\to&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{c}{n}}&
+	{\begin{matrix}
+	&{p}&~&{cn}&~&{~}&~&{~}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&~&\boxed{2}&\to&\boxed{3}&\to&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{n}{\rw{n}{\tx{next}}}}&
+	{\begin{matrix}
+	&{p}&~&{c}&~&{n}&~&{~}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&~&\boxed{2}&\to&\boxed{3}&\to&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{\rw{c}{\tx{next}}}{p}}&
+	{\begin{matrix}
+	&{p}&~&{c}&~&{n}&~&{~}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&~&\boxed{3}&\to&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{p}{c}}&
+	{\begin{matrix}
+	&{~}&~&{pc}&~&{n}&~&{~}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&~&\boxed{3}&\to&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{c}{n}}&
+	{\begin{matrix}
+	&{~}&~&{p}&~&{cn}&~&{~}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&~&\boxed{3}&\to&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{n}{\rw{n}{\tx{next}}}}&
+	{\begin{matrix}
+	&{~}&~&{p}&~&{c}&~&{n}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&~&\boxed{3}&\to&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{\rw{c}{\tx{next}}}{p}}&
+	{\begin{matrix}
+	&{~}&~&{p}&~&{c}&~&{n}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&~&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+
+	{\let{p}{c}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{pc}&~&{n}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&~&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{c}{n}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{p}&~&{cn}&~&{~}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&~&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{n}{\rw{n}{\tx{next}}}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{p}&~&{c}&~&{n}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&~&\boxed{4}&\to&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{\rw{c}{\tx{next}}}{p}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{p}&~&{c}&~&{n}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&\gets&\boxed{4}&~&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{p}{c}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{~}&~&{pc}&~&{n}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&\gets&\boxed{4}&~&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{c}{n}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{~}&~&{p}&~&{cn}&~&{~}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&\gets&\boxed{4}&~&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{n}{\rw{n}{\tx{next}}}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{~}&~&{p}&~&{c}&~&{n}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&\gets&\boxed{4}&~&\boxed{5}&\to&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{\rw{c}{\tx{next}}}{p}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{~}&~&{p}&~&{c}&~&{n}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&\gets&\boxed{4}&\gets&\boxed{5}&~&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{p}{c}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{~}&~&{~}&~&{pc}&~&{n}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&\gets&\boxed{4}&\gets&\boxed{5}&~&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{c}{n}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{~}&~&{~}&~&{p}&~&{cn}& \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&\gets&\boxed{4}&\gets&\boxed{5}&~&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	{\let{n}{\rw{n}{\tx{next}}}}&
+	{\begin{matrix}
+	&{~}&~&{~}&~&{~}&~&{~}&~&{p}&~&{c}&n \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&\gets&\boxed{4}&\gets&\boxed{5}&~&\boxed{6}& \\ 
+	\end{matrix}} \\
+
+	\end{array}
+$$
+
+Once we've gone through the entire loop, all that's left is ${\let{c\ix{\tx{next}}}{p}:}$
+
+$$
+	{\begin{matrix}
+	&{~}&~&{~}&~&{~}&~&{~}&~&{p}&~&{c}&n \\
+	\nil\gets&\boxed{1}&\gets&\boxed{2}&\gets&\boxed{3}&\gets&\boxed{4}&\gets&\boxed{5}&\gets&\boxed{6}& \\ 
+	\end{matrix}} \\
+$$
+
+The iterative solution has a time complexity of order ${\bigO{n}}$ and a space
+complexity of ${\bigO{1}.}$
+
+<Algo>
+
+__~reverse~__
+
+- __Argument__: ${h,}$ the head of a linked list ${L}$
+- __Image__ ${h,}$ the head of a reversed ${L}$
+
+1. __if__ ${h = \nil}$ __return__ ${h}$
+2. __else__
+	1. ${\let{p}{\nil}}$
+	2. ${\let{c}{h}}$
+	3. ${\let{n}{\rw{n}{\tx{next}}}}$
+	4. __while__ ${n \neq \nil}$
+		1. ${\let{c\ix{\tx{next}}}{p}}$
+		2. ${\let{p}{c}}$
+		3. ${\let{c}{n}}$
+		4. ${\let{n}{n\ix{\tx{next}}}}$
+		5. ${\goto{5}}$
+	5. ${\let{c\ix{\tx{next}}}{p}}$
+	6. ${\let{h}{c}}$
+	7. __return__ ${h}$
+
+</Algo>
+
+A recursive approach is much more concise:
+
+<Algo>
+
+__~reverse~__
+
+- __Argument__: ${h,}$ the head of a linked list ${L}$
+- __Image__ ${h,}$ the head of a reversed ${L}$
+
+1. __function__ ${f(h,\let{c}{\df{default}~\nil})}$
+	1. __if__ ${h = \nil}$ __return__ ${c}$
+	2. ${\let{n}{h\ix{\tx{next}}}}$
+	3. ${\let{h\ix{\tx{next}}}{c}}$
+	4. ${f(n,h)}$
+
+</Algo>
+
+The recursive approach has a time complexity of order ${\bigO{n},}$
+but while it is noticeably simpler, it does have a space
+complexity of order ${\bigO{n}.}$
+
+</Minutiae>
+
+### Zipper List
+_Given two list heads ${a}$ and ${b,}$ write an algorithm that zips their respective lists: The two lists merged into single linked list, where their nodes alternate. Should one be longer than the other, the final list must terminate with the longer's remaining nodes. Return the head of the zipped list._
+
+<Minutiae><Algo>
+
+__~ziplist~__
+- __Argument__: two list heads ${H_1}$ and ${H_2.}$
+- __Image__: a zipped list ${h.}$
+
+1. __init__
+	1. ${\let{head}{H_1}}$
+	2. ${\let{tail}{head}}$
+	3. ${\let{p_1}{\rw{H_1}{\tx{next}}}}$
+	4. ${\let{p_2}{H_2}}$
+	5. ${\let{step}{0}}$
+2. __while__ ${(p_1 \neq \nil \land p_2 \neq \nil)}$ `begin loop body`
+	1. __if__ ${(step \rem 2) = 0}$
+		1. ${\let{\rw{tail}{\tx{next}}}{p_2}}$
+		2. ${\let{p_2}{\rw{p_2}{\tx{next}}}}$
+	2. __else__
+		1. ${\let{\rw{t}{\tx{next}}}{p_1}}$
+		2. ${\let{p_1}{\rw{p_1}{\tx{next}}}}$
+	3. ${\let{tail}{\rw{tail}{\tx{next}}}}$ 
+	4. ${+(step,1)}$
+	5. ${\goto{6}}$ `end loop body`
+3. __if__ ${p_1 \neq \nil}$ __then__ ${\let{\rw{tail}{\tx{next}}}{p_1}}$
+4. __if__ ${p_2 \neq \nil}$ __then__ ${\let{\rw{tail}{\tx{next}}}{p_2}}$
+5. __return__ ${head}$
+
+</Algo>
+
+Suppose ${a}$ and ${b}$ correspond to the following lists.
+
+<List data={[3,7,9,11,13]}/>
+<br/>
+<List data={[2,4,6]}/>
+
+We're asked to construct the list:
+
+<List data={[3,2,7,4,6,9,11,13]}/>
+
+It's easier to view this problem in terms of sets. We're given two posets:
+
+$$
+	a=\set{3,7,9,11,13} ~~~ b=\set{2,4,6}.
+$$
+
+We then have two functions ${f}$ and ${g.}$ The former returns a current element in ${a,}$ the latter, ${b.}$ Because the final list is an alternates, we call ${f}$ and ${g}$ in alternum:
+
+$$
+	\ax{
+		3 & 2 & 7 & 4 & 6 & 9 \\
+		f(a) & g(b) & f(a) & g(b) & f(a) & g(b) \\
+	}.
+$$
+
+Once this is done, we append the elements of whatever remains, yielding the list:
+
+<List data={[3,2,7,4,6,9,11,13]}/>
+
+This algorithm's time complexity is of order ${\bigO{\min\set{n,m}},}$ where ${n}$ and ${m}$ are the lengths of the two lists respectively. The use of ${\min}$ stems from iterating only in so far as the shortest list. 
+
+~A recursive approach~ has a time complexity of order ${\bigO{n},}$ and a space complexity of order ${\bigO{n}.}$
+
+<Algo>
+
+__~ziplist~__
+- __Argument__: two list heads ${H_1}$ and ${H_2.}$
+- __Image__: a zipped list ${h.}$
+
+1. __if__ ${(H_1 = \nil) \land (H_2 = \nil)}$ __return__ ${\nil}$
+2. __if__ ${(H_1 = \nil)}$ __return__ ${H_2}$
+3. __if__ ${(H_2 = \nil)}$ __return__ ${H_1}$
+4. ${\let{next1}=\rw{H_1}{\tx{next}}}$
+5. ${\let{next2}=\rw{H_2}{\tx{next}}}$
+6. ${\let{\rw{H_1}{\tx{next}}}{H_2}}$
+7. ${\let{\rw{H_2}{\tx{next}}}{\df{ziplist}(next1,~next2)}}$
+8. __return__ ${H_1}$
+
+</Algo></Minutiae>
+
+### List Merge
+_Let ${H_1}$ and ${H_2}$ be the heads of two nonempty lists ${L_1=(a_0,a_1,a_2,\ldots,a_{m-1})}$ and ${L_2=(b_0,b_1,b_2,\ldots,b_{m-1})}$ respectively, where ${L_1}$ has a length ${m}$ and ${L_2}$ has a length ${n,}$ not necessarily equal. The elements of ${L_1}$ and ${L_2}$ are integers, sorted in increasing order. Write an algorithm that merges ${L_1}$ and ${L_2,}$ the two lists together into single sorted linked list ${L_3,}$ whose elements are the elements of ${L_1}$ and ${L_2}$ sorted in increasing order. The algorithm must merge-in-place and the head of ${L_3.}$_
+
+<Minutiae>
+
+This algorithm has a time complexity of order ${\bigO{\min\set{n,m}}}$ and a space complexity of order ${\bigO{1}.}$
+
+<Algo>
+
+__~sortedmerge~__
+- __Argument__: a list head ${H_1}$ and a list head ${H_2,}$ wherein elements are sorted in increasing order.
+- __Image__: the head of a list comprising nodes of ${H_1}$ and ${H_2,}$ wherein elements are sorted in increasing order.
+
+1. __init__
+	1. ${\let{D}{\df{new node}}}$
+	2. ${\let{t}{D}}$
+	2. __if__ ${\rw{H_1}{\tx{next}} \gt \rw{H_2}{\tx{next}}}$
+		1. __then__ ${\let{\rw{t}{\tx{next}}}{\rw{H_1}{\tx{next}}}}$
+	3. __else__
+		1. ${\let{\rw{t}{\tx{next}}}{\rw{H_2}{\tx{next}}}}$
+	4. ${\let{a}{H_1}}$
+	5. ${\let{b}{H_2}}$
+2. __while__ ${(t\ix{\tx{next}}\neq\nil)}$
+	1. __if__ ${(a\ix{\tx{value}} \lt b\ix{\tx{value}})}$ __then__
+		1. ${\let{t\ix{\tx{next}}}{a}}$
+		2. ${\let{a}{a\ix{\tx{next}}}}$
+	2. __else__
+		1. ${\let{t\ix{\tx{next}}}{b}}$
+		2. ${\let{b}{b\ix{\tx{next}}}}$
+	3. ${\goto{9}}$
+3. __if__ ${a \neq \nil}$ __then__ ${\let{\rw{t}{\tx{next}}}{a}}$
+4. __if__ ${b \neq \nil}$ __then__ ${\let{\rw{t}{\tx{next}}}{b}}$
+5. __return__ ${\rw{D}{\tx{next}}}$
+
+</Algo>
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1665698204/algodiagrams/sorted_list_merge_b6mjcs.svg"}
+	imwidth={"690"}
+	imheight={"670"}
+	caption={"merge list"}
+	width={"100"}
+/></Minutiae>
+
+### Univalue List
+_Given an integer list head ${h,}$ write an algorithm that returns true if the list contains exactly one unique value (i.e., all the list's nodes store the same integer), and false otherwise. The list is guaranteed to be non-empty._
+
+<Minutiae>
+
+The approach here is fairly straightforward. We set initialize a pointer ${p}$ with the head ${h,}$ then iterate through the list. If the data stored in ${p}$'s pointee is not equal to the data stored in ${h}$'s pointee (the first integer in the list), then we immediately return false, as there are multiple unique values. 
+This algorithm has a time complexity of order ${\bigO{n},}$ and space complexity of order ${\bigO{1}.}$
+
+<Algo>
+
+__~univalue~__
+- __Argument__: the head of a list ${h.}$
+- __Image__: a Boolean ${result.}$
+
+1. __init__
+	1. ${\let{p}{h}}$
+2. __while__ ${p \neq \nil}$ `begin loop body`
+	1. __if__ ${\rw{p}{\tx{value}}\neq\rw{h}{\tx{value}}}$ __then__
+		1. __return__ ${\df{false}}$
+	2. ${\let{p}{\rw{p}{\tx{next}}}}$
+	3. ${\goto{2}}$ `end loop body`
+3. __return__ ${\df{true}}$
+
+</Algo></Minutiae>
+
+### Remove Node
+_Let ${h}$ be a head of a linked list ${L,}$ and ${t}$ an integer. Write an algorithm that deletes the ${L}$ node containing ${t}$ in place, and returns ${h.}$ If there are multiple instances of ${t,}$ remove only the first instance._
+
+<Minutiae>
+
+This problem is conducive to a three-pointer approach. We use three pointers, ${t}$ (a _tailer_), ${p}$ (a _passenger_), and ${d}$ (a _driver_), where ${d}$ is always ahead of ${p,}$ and ${p}$ is always ahead of ${t.}$ Initially, ${t}$ points to ${\nil,}$ ${p}$ points to the head ${h,}$ and ${d}$ points to ${h\ix{\tx{next}}}$ (the head's next pointer). Once established, we traverse, so long as ${p\ix{\tx{value}}}$ isn't equal to the target value ${t.}$ There are two possible cases with this approach. First, the target value could be stored in ${h,}$ in which case we never transition from our initial state:
+
+<div className={`list`}>
+
+| ${t}$ | ${p}$         | ${d}$         |               |                   |
+| ----- | ------------- | ------------- | ------------- | ----------------- |
+|       | ${1 \mapsto}$ | ${2 \mapsto}$ | ${3 \mapsto}$ | ${4 \mapsto\nil}$ |
+
+</div>
+
+The second case is everything else — where we _do_ transition states:
+
+<div className={`list`}>
+
+|     |               | ${t}$         | ${p}$         | ${d}$             |
+| --- | ------------- | ------------- | ------------- | ----------------- |
+|     | ${1 \mapsto}$ | ${2 \mapsto}$ | ${3 \mapsto}$ | ${4 \mapsto\nil}$ |
+
+</div>
+
+In the first case, ${t}$ is nothing more than a null pointer, so it isn't of any use. 
+This causes us to branch at the end of the loop. The algorithm below has a time complexity of order ${\bigO{n},}$ and a space complexity of ${\bigO{1}.}$
+
+<Algo>
+
+__~remove-node~__
+- __Argument__: a list head ${\h.}$
+- __Image__: the list head ${\h.}$
+
+1. __init__
+	1. ${\let{t}{\nil}}$
+	2. ${\let{p}{\h}}$
+	3. ${\let{d}{\h{\ix{\tx{next}}}}}$
+2. __while__ ${\rw{p}{\tx{value}}\neq \nil}$
+	1. ${\let{t}{p}}$
+	2. ${\let{p}{d}}$
+	3. ${\let{d}{d\ix{\tx{next}}}}$
+	4. ${\goto{4}}$
+3. __if__ ${t = \nil}$ __then__
+	1. ${\let{\h}{d}}$
+4. __else__
+	1. ${\let{\rw{t}{\tx{next}}}{d}}$
+	2. ${\let{p}{\nil}}$
+5. __return__ ${\h}$
+
+</Algo></Minutiae>
+
+### Insert Node
+_Given the head ${h}$ of a linked list ${L,}$ a value ${V,}$ and an index ${I,}$ write an algorithm that inserts a new node with the value ${v}$ into ${L}$ at the specified index ${I.}$ Let ${h}$ correspond to the index 0. The algorithm must return ${L}$ mutated. The list ${L}$ is guaranteed to be non-empty._
+
+<Minutiae>
+
+Suppose we're given the list:
+
+<List data={[9,4,8,5,7]}/>
+
+We have three cases to consider: Insertion at the head (where ${I=0}$), insertion at the tail, and insertion anywhere other than the head or the tail. Let's consider the last case first. Suppose we're asked to insert the value ${\set{1}}$ at ${I=3.}$ This is the index currently occupied by 5.
+
+<table className={`trace`}>
+	<tbody>
+		<tr>
+			<td width={`50%`}>A pointer ${p}$ starts at the head, and a pointer ${t}$ is set to null. We continue moving ${p}$ and ${t}$ forward as long as ${p \neq \nil,}$ and as long as ${I \gt 0.}$ At each iterate, we decrement ${I}$ and set ${\let{p}{p\ix{\tx{next}}}.}$</td>
+			<td>
+				<Graph data={[
+					{link:[9,4]},
+					{link:[{id:`p`,class:`ptr`},9]},
+					{link:[4,8]},
+					{link:[8,5]},
+					{link:[5,7]},
+					{link:[`t`]},
+				]} id={`insert1`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200} isDirected={true}/>
+			</td>
+		</tr>
+		<tr>
+			<td>${I=3 \gt 0,}$ so decrement ${I}$ and move ${p}$ and ${t}$ forward.</td>
+			<td>
+				<Graph data={[
+					{link:[9,4]},
+					{link:[{id:`t`,class:`ptr`},9]},
+					{link:[{id:`p`,class:`ptr`},4]},
+					{link:[4,8]},
+					{link:[8,5]},
+					{link:[5,7]},
+				]} id={`insert2`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200} isDirected={true}/>
+			</td>
+		</tr>
+		<tr>
+			<td>${I=2 \gt 0,}$ so decrement ${I}$ and move ${p}$ and ${t}$ forward.</td>
+			<td>
+				<Graph data={[
+					{link:[9,4]},
+					{link:[4,8]},
+					{link:[{id:`t`,class:`ptr`},4]},
+					{link:[{id:`p`,class:`ptr`},8]},
+					{link:[8,5]},
+					{link:[5,7]},
+				]} id={`insert3`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200} isDirected={true}/>
+			</td>
+		</tr>
+		<tr>
+			<td>${I=1 \gt 0,}$ so again decrement ${I}$ and move both pointers forward.</td>
+			<td>
+				<Graph data={[
+					{link:[9,4]},
+					{link:[4,8]},
+					{link:[8,5]},
+					{link:[{id:`t`,class:`ptr`},8]},
+					{link:[{id:`p`,class:`ptr`},5]},
+					{link:[5,7]},
+				]} id={`insert4`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200} isDirected={true}/>
+			</td>
+		</tr>
+		<tr>
+			<td>${I=0 \not\gt 0,}$ so we exit the loop. With the pointers ${p}$ and ${t}$ positioned, we instantiate a new node ${n}$ containing the value we want to insert. We set ${t}$ to point to the new node ${n,}$ and set ${n}$ to point to the node ${p.}$</td>
+			<td>
+				<Graph data={[
+					{link:[9,4]},
+					{link:[4,8]},
+					{link:[{id:`t`,class:`ptr`},8]},
+					{link:[{id:`n`,class:`ptr`},1]},
+					{link:[8,`n`]},
+					{link:[{id:`p`,class:`ptr`},5]},
+					{link:[1,`p`]},
+					{link:[5,7]},
+				]} id={`insert5`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200} isDirected={true}/>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+A trace for insertion at the end yields a similar pattern, and is left as an exercise for the reader. The case where ${I=0}$ (insertion at the head) is handled explicitly. In the event ${I=0,}$ we set ${n\ix{\tx{next}}}$ to point to the head ${h,}$ set ${h}$ to ${n,}$ and return ${h.}$ This approach has a runtime complexity of order ${\bigO{n},}$ and a space complexity of order ${\bigO{1}.}$ 
+
+<Algo>
+
+__~insert~__
+- __Argument__: A list head ${H,}$ an index ${I,}$ and a value ${V.}$
+- __Image__: ${H}$ with the value ${V}$ inserted at the position ${I.}$
+
+1. ${\textbf{init}~ \let{n}{\df{new node}}(V)}$
+2. __if__ ${I = 0}$ __then__
+	1. ${\let{n\ix{\tx{next}}}{H}}$
+	2. ${\let{H}{n}}$
+	3. __return__ ${H}$
+3. __else__
+	1. ${\textbf{init}~\let{t}{\nil}}$
+	2. ${\textbf{init}~\let{p}{H}}$
+	3. __while__ ${(p \neq \nil)\land(I \gt 0)}$
+		1. ${\let{t}{p}}$
+		2. ${\let{p}{p\ix{\tx{next}}}}$
+		3. ${-(I,1)}$
+		4. ${\goto{8}}$
+	4. ${\let{t\ix{\tx{next}}}{n}}$
+	5. ${\let{n\ix{\tx{next}}}{p}}$
+	6. __return__ ${H}$
+
+</Algo></Minutiae>
+
+### Array to List
+_Given an array ${A}$ of values, write an algorithm that creates a linked list containing each element of ${A}$ as data contained within the nodes and returns the head of the resulting linked list._
+
+<Minutiae>
+
+We use a two pointer approach: a pointer ${h}$ to serve as a dummy head, and a pointer ${t}$ to perform the actual linking. Initially ${h}$ stores the value ${\nil,}$ and ${t}$ points to ${h.}$ Because we're taking values from an array and storing them into a list, we also use an index variable ${i}$ to run through the array. As long as ${i \lt L,}$ where ${L}$ is the array's length, we continue iterating. At each iterate, we instantiate a new node containing the current array value ${A\ix{i},}$ pointed at by ${t}$'s next pointer. After exiting the loop we return ${h\ix{\tx{next}}.}$ The algorithm below has a time complexity of order ${\bigO{n},}$ and a space complexity of order ${\bigO{n},}$ wher ${n}$ is the length of the array, ${L.}$
+
+<Algo>
+
+__~array-to-list~__
+- __Argument__: an array ${A}$ of values.
+- __Image__: a list ${L}$ containing ${A}$'s elements, as originally ordered.
+
+1. __init__
+	1. ${\let{L}{\len{A}}}$
+	2. ${\let{h}{\df{new node}(\nil)}}$
+	3. ${\let{t}{h}}$
+	4. ${\let{i}{0}}$
+2. __while__ ${i \lt L}$
+	1. ${\let{t\ix{\tx{next}}}{\df{new node}(A\ix{i})}}$
+	2. ${\let{t}{t\ix{\tx{next}}}}$
+	3. ${+(i,1)}$
+	4. ${\goto{5}}$
+3. __return__ ${h\ix{\tx{next}}}$
+
+</Algo></Minutiae>
+
+### List Sum
+_Let ${H_1}$ and ${H_2}$ be the heads of two lists, each representing a number, wherein each node contains a digit as value. The nodes are reversed — ergo, the number's least significant digit lies in-head. Write an algorithm that returns the head of a new linked listed representing the sum of the input lists. Like its inputs, the returned list should have its digits in reverse as well._
+
+<Minutiae>
+
+The algorithm below has a time complexity of order ${\bigO{\max\set{n,m}}}$ and a space complexity of order ${\bigO{\max\set{n,m}}.}$
+
+<Algo>
+
+__~listsum~__
+- __Argument__: ${H_1}$ and ${H_2,}$ the heads of two lists comprising the digits of an integer respectively.
+- __Image__: A list ${sumlist,}$ corresponding to the sum of the nodes of ${H_1}$ and ${H_2}$ as integers.
+
+1. __init__
+	1. ${\let{a}{H_1},~\let{b}{H_2}}$
+	2. ${\let{sumlist}{\df{new node}(\nil)}}$
+	3. ${\let{t}{sumlist}}$
+	4. ${\let{sum}{0},~\let{x}{0},~\let{y}{0},~\let{carry}{0}}$
+2. __do__
+	1. ${\let{x}{\if ~ a = \nil ~\then 0 ~\else a\ix{\tx{value}}}}$
+	2. ${\let{y}{\if ~ b = \nil ~\then 0 ~\else b\ix{\tx{value}}}}$
+	3. ${\let{sum}{x + y + carry}}$
+	4. __if__ ${sum \ge 10}$ __then__
+		1. ${\let{sum}{sum' \rem 10}}$
+		2. ${\let{carry}{1}}$
+	5. __else__
+		1. ${\let{carry}{0}}$
+	6. ${\let{t\ix{\tx{next}}}{{\df{new node}(sum)}}}$
+	7. ${\let{t}{t\ix{\tx{next}}}}$
+	8. __if__ ${a \neq \nil}$ __then__ ${\let{a}{a\ix{\tx{next}}}}$
+	9. __if__ ${b \neq \nil}$ __then__ ${\let{b}{b\ix{\tx{next}}}}$
+3. __while__ ${(a \neq \nil) \lor (b \neq \nil)}$ ${\goto{5}}$
+4. __if__ ${carry=1}$ __then__
+	1. ${\let{t\ix{\tx{next}}}{\df{new node}(carry)}}$
+5. __return__ ${sumlist\ix{\tx{next}}}$
+
+
+</Algo></Minutiae>

@@ -1,0 +1,581 @@
+<Head>
+   <title>Functions</title>
+   <meta name={`description`} content={`Notes on functions.`}/>
+</Head>
+
+# Functions
+
+This chapter covers notes on functions.
+
+<div className={"outline"}>
+
+1. [Images](#images)
+2. [Preimage](#preimage)
+3. [Restrictions and Extensions](#restrictions-and-extensions)
+4. [Compositions](#compositions)
+5. [Partial Orders of Functions](#partial-orders-of-functions)
+6. [Surjections](#surjections)
+7. [Injections](#injections)
+8. [Bijections](#bijections)
+9. [Valued Functions](#valued-functions)
+   1. [Addition of Valued Functions](#addition-of-valued-functions)
+10. [Families](#families)
+
+</div>
+
+In these materials, functions are a particular type of map.  A function ${f: X
+\to Y}$ is a relation from ${X}$ to ${Y,}$ where _every_ element of ${X}$ is
+paired with _exactly one_ element of ${Y.}$ We say that ${X}$ is the _domain_ of
+${f,}$ and ${Y}$ is the _range_ of ${f.}$ Here's the working definition we'll
+use:
+
+<dfn>
+
+__function.__ Let ${X}$ and ${Y}$ be sets, and ${f \subseteq X \times Y}$ a relation. We call ${f}$ a _function_ if, and only if, for each ${x \in X,}$ there is one element ${y \in Y}$ with ${(x,y) \in f.}$ We call ${X}$ the _domain_ of ${f,}$ denoted ${\dom{f} = X.}$ We call ${Y}$ the _range_ of ${f,}$ denoted ${\ran{f} = Y.}$
+
+</dfn>
+
+A few more bits of terminology: We can expression a function ${f}$ in general with the expression ${f: X \to Y,}$ which we read as "${f}$ is a function from ${X}$ to ${Y.}$" Given ${(x,y) \in f}$ the element ${y}$ is called the _result_ of ${f}$ at the _argument_ ${x.}$ Given an argument ${x,}$ we say that ${f}$ _sends_ or _maps_ or _transforms_ ${x}$ onto ${y.}$ Specifically for binary functions, given ${(x,y) \in f,}$ we call ${x}$ the _abscissa_ of the tuple ${(x,y),}$ and ${y}$ the _ordinate_ of ${(x,y).}$
+
+It's important to remember that all functions are relations. However, the
+converse — all relations are functions — is false. This means that, given a
+function ${f: X \to Y}$ with ${x \in X}$ and ${y \in Y,}$ all these expressions mean the same thing:
+
+<Grid cols={2}>
+
+$$
+   \eqs{
+      (1) ~~~ & f(x) = y \\[1em]
+      (2) ~~~ & x ~f~ y \\[1em]
+      (3) ~~~ & x ~f~ f(x)
+   }
+$$
+$$
+   \eqs{
+      (4) ~~~ & (x,y) \in f \\[1em]
+      (5) ~~~ & (x,~f(x)) \in f 
+   }
+$$
+
+</Grid>
+
+Clearly, some notations are superior to others in terms of readability. Option (3) is clearly needlessly unclear, and options (4) and (5) are just short of being too long. We also see that ${f(x) \neq f.}$ In fact, ${f(x)}$ is quite removed from ${f}$ — it's the _ordinate_ of a _tuple_ in the _relation_ ${f.}$ 
+
+A bit more terminology: Functions can be classified according to relations between their domain and range. Note that the definition below does not establish that ${f}$ is a function from ${A}$ to ${B}$ — it's just some function.
+
+<dfn>
+
+__classification of functions.__ Let ${A}$ and ${B}$ be sets, and ${f}$ some function.
+
+1. If ${\dom{f} = A,}$ then ${f}$ is a function _on_ ${A.}$
+2. If ${f \subset B,}$ then ${f}$ is a function _into_ ${B.}$
+3. If ${f = B,}$ then ${f}$ is a function _onto_ ${B.}$
+
+</dfn>
+
+## Images
+While some authors treat _image_ and _range_ synonymously, we distinguish the
+two terms. From the definition of a function, it's clear that we can have
+function ${f : X \to Y}$ where ${X = Y.}$ In this case, we say that ${f}$ maps
+${X}$ _onto_ ${Y,}$ and we call ${X}$ the domain and ${Y}$ the range, using the
+usual syntax:
+
+$$
+	\dom{f} = X \\
+	\ran{f} = Y
+$$
+
+If, however, it turns out that ${Y \subset X,}$ we say that ${Y}$ is the _image_
+of ${f,}$ and use the following syntax:
+
+$$
+	\dom{f} = X \\
+	\image{(f)} = Y
+$$
+
+We use this different notation and wording to make it clear that the codomain
+${Y}$ is a subset of the domain ${X}$ (in later sections, we'll see that for
+some situations, a function's range is often more important than the function
+itself). If it turns out that ${X \subset Y,}$ we say that ${f}$ is an
+_embedding_ of ${X}$ into ${Y.}$ For this case, we simply use the notation
+${\dom{f} = X}$ and ${\ran{f} = Y.}$
+
+## Preimage
+Let's suppose we're playing some game consisting of two sets, ${B}$ and ${C.}$
+The set ${B}$ consists of a variety of buttons, and the set ${C}$ consists of
+various checks — a check for ten, a check for a hundred, a checking for a
+thousand ... incrementing by powers of ten all the way up to a billion. Now
+suppose that every button in ${B,}$ if pushed, returns some check in ${C.}$
+
+Anyone playing this game is likely interested in the set of buttons ${b \in B}$
+where each button returns a check of a particular subset of ${Y}$ — perhaps the
+subset of checks ${c \subset C}$ such that ${c}$ is at least a million. In this
+case, we're only interested in a function ${f: B' \to C}$ such that ${c \in C}$
+is at least a million. But, even more importantly, we're interested in the set
+${B'.}$ We call ${B'}$ a _preimage_ of ${f.}$
+
+<dfn>
+
+__preimage.__ Let ${f}$ be a function from ${X}$ to ${Y.}$ Then the preimage of a set ${S \subseteq Y}$ under ${f}$ is defined as:
+
+$$
+   f^{-1}[S] = \set{x \in X : f(x) \in S}.
+$$
+
+</dfn>
+
+
+## Restrictions and Extensions
+In the case where ${f: X \to X,}$ we call ${f}$ the _identity map_. The identity
+map introduces us to a special kind of relation called the _restriction_.
+
+<dfn>
+
+__restriction.__ Let ${f: X \to Y}$ be a function from ${X}$ to ${Y,}$ and the
+set ${A}$ be a subset of ${X}$ (i.e., ${A \subset X}$). Where ${x \in X}$ and ${y \in Y,}$ the function:
+
+$$
+	f(x) = y ~~~(\text{for}~~ x \in A)
+$$
+
+is called the _restriction of ${f}$ to ${A}$_. We may denote such a function
+with:
+
+$$
+	\eval{f}{A}: A \to X
+$$
+
+</dfn>
+
+Informally, restrictions are simply a more convenient way of defining functions
+for a common scenario. Suppose we have the function:
+
+$$
+	f: B \to C
+$$
+
+We want to define a function ${g: A \to C,}$ but ${A \subset C.}$ That is, we
+want to communicat that there's a relationship between the members of ${A}$ and
+the members of ${C,}$ that doesn't include the members of ${B.}$ The identity map allows us to say that:
+
+$$
+	g(x) = f(x)
+$$
+
+where ${x \in A.}$ The function ${g(x)}$ is called the _restriction_ of ${f}$ to
+${X,}$ and the function ${f(x)}$ is called the _extension_ of ${g}$ to ${B.}$
+
+## Compositions
+Suppose we had a function ${f : X \to Y,}$ and a funtion ${g : Y \to Z.}$ In many applications, we want to have some function ${h}$ that takes the _result_ ${y}$ in ${(x,y) \in f,}$ as the _argument_ ${y}$ in ${(y,z) \in g.}$ That is, a function ${h}$ whose result is some value:
+
+$$
+   g(f(x)).
+$$
+
+We call the function ${h}$ the _composition_ of ${g}$ with ${f,}$ and the result ${g(f(x))}$ a _composite_ of ${g}$ with ${f.}$ Simply a put, a composition is a function whose domain consists of the results of another function.
+
+<dfn>
+
+__composition.__ Let ${A,}$ ${B,}$ and ${C}$ be sets with ${f: A \to B}$ and ${g : B \to C.}$ Then the _composition_ of ${g}$ with ${f,}$ denoted ${g \circ f,}$ is defined as a function from ${A \to C}$ where
+
+$$
+   (g \circ f)(x) = g(f(x))
+$$
+
+for all ${x \in A.}$
+
+</dfn>
+
+Compositions are relations that appear in everyday life. For example, a recipe
+is a composition. Each step in a recipe is a function. E.g., cracking an egg
+takes an argument — an egg — accompanied with a result — an albumen (egg white)
+usually encasing a vitellus (yolk). Using the result of the previous step to
+perform another a step is a composition. E.g., whisking the cracked eggs (the
+result of the previous step) to produce a mixture.  
+
+
+## Partial Orders of Functions 
+Now that we've defined the concepts of restriction and extension, one
+interesting consequence is examining them as they relate to partial orders.
+Suppose ${X,}$ ${Y,}$ and ${F}$ are sets, where ${F}$ is the set of all
+functions whose domain is included in ${F}$ and whose range is included in
+${Y.}$ Now suppose we have the relation:
+
+$$
+	f \rel g \iff \dom{f} \subset \dom{g} \land \forall x \in \dom{f}\ix{f(x) = g(x)}
+$$
+
+That is, ${f}$ is a restriction of ${g}$ (or, equivalently, ${g}$ is an extension
+of ${f}$). Given that all the functions in ${F}$ are just subsets of the
+Cartesian product ${X \times Y,}$ it follows that the relation:
+
+$$
+	f \rel g \equiv f \subset g
+$$
+
+## Surjections
+A function ${f: X \to Y}$ is called _surjective_ if every element of ${Y}$
+is mapped to _at least once_.
+
+<dfn>
+
+__surjection.__ Let ${f}$ be a map from the set ${X}$ to the set ${Y.}$ If, for
+each ${y}$ in ${Y,}$ there exists an ${x \in X,}$ such that:
+
+$$
+	f(x) = y
+$$
+
+
+then ${f}$ is a _surjection_, and we write:
+
+$$
+	f: X \surj Y.
+$$
+
+</dfn>
+
+In other words, every element of ${Y}$ gets at least one of ${X.}$ They
+can get many of ${x,}$ but they must at least have one. For example, this
+the functions below are surjective functions.
+
+<Grid cols={2}>
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={200}
+  marginTop={0}
+  marginBottom={0}
+  id={"s1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+   { link: ["d", "3"] },
+  ]}
+  scale={100}
+  height={200}
+  marginTop={0}
+  marginBottom={0}
+  id={"s2"}
+ />
+</Grid>
+
+But the functions below are not.
+
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["2"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"ns1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["1"] },
+   { link: ["2"] },
+   { link: ["a", "3"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"ns2"}
+ />
+</div>
+
+If ${X}$ are ${Y}$ sets, and ${f}$ is a surjective function mapping elements
+from ${X}$ to ${Y,}$ then:
+
+$$
+ \card(X) \gte \card(Y).
+$$
+
+It follows that either
+
+1. ${X}$ has more members than ${Y,}$ or
+2. ${X}$ and ${Y}$ have the same number of members.
+
+## Injections
+A function ${f: X \to Y}$ is called _injective_ if every element of ${Y}$
+is mapped to _at most once_.
+<dfn>
+
+__injection.__ Let ${f}$ be a map from the set ${X}$ to the set ${Y,}$ and ${x
+\in X.}$ If, for each ${x \neq x',}$ 
+
+$$
+	f(x) \neq (x'),
+$$
+
+
+then ${f}$ is an _injection_, and we write:
+
+$$
+	f: X \inj Y.
+$$
+
+</dfn>
+
+That is, every element of ${Y}$ gets _at most_ one of ${X.}$ They
+can get none of ${X,}$ but if they do get something from ${X,}$ they can
+only get one. For example, these are injective functions:
+
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"b1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+   { link: ["4"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"b2"}
+ />
+</div>
+
+But these are not:
+
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+   { link: ["d", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nb1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["1"] },
+   { link: ["2"] },
+   { link: ["a", "3"] },
+   { link: ["b", "3"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nb2"}
+ />
+</div>
+
+Another way of thinking about injections: They're functions that map distinct
+elements of the domain to distinct elements of the codomain.
+
+If ${X}$ and ${Y}$ are sets, and ${f}$ is an injective function mapping elements
+from ${X}$ to ${Y,}$ then:
+
+$$
+ \card(X) \lte \card(Y)
+$$
+
+Thus, it follows that:
+
+1. ${X}$ has less members than ${Y,}$ or
+2. ${X}$ and ${Y}$ have the same number of members.
+
+## Bijections
+A function ${f: X \to Y}$ is called _bijective_ iff it is both _surjective_
+and _injective_.
+
+<dfn>
+
+__bijection.__ Let ${f}$ be a map from the set ${X}$ to the set ${Y.}$ If, for
+each ${y \in Y,}$ there exists a unique ${x \in X,}$ such that:
+
+$$
+	f(x) = y,
+$$
+
+
+then ${f}$ is an _bijection_, and we write:
+
+$$
+	f: X \bij Y.
+$$
+
+</dfn>
+
+
+For example, these functions only take one appearance:
+
+<Bipartite
+ data={[
+  { link: ["a", "1"] },
+  { link: ["b", "2"] },
+  { link: ["c", "3"] },
+  { link: ["d", "4"] },
+ ]}
+ scale={50}
+ height={170}
+ marginTop={0}
+ marginBottom={0}
+ id={"bij1"}
+/>
+
+That is, every element of ${X}$ maps to one, and only one, element of
+${Y,}$ and every element of ${Y}$ is mapped to once, and only once. None of
+these functions are bijective:
+
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nbij1"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+   { link: ["4"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nbij2"}
+ />
+</div>
+<div className="grid2">
+ <Bipartite
+  data={[
+   { link: ["a", { id: "5", hide: true }] },
+   { link: ["b", "2"] },
+   { link: ["c", "3"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nbij3"}
+ />
+ <Bipartite
+  data={[
+   { link: ["a", "1"] },
+   { link: ["b", "2"] },
+   { link: ["b", "3"] },
+   { link: ["c", "4"] },
+  ]}
+  scale={100}
+  height={170}
+  marginTop={0}
+  marginBottom={0}
+  id={"nbij3"}
+ />
+</div>
+
+From top-left to bottom-right: The first is surjective but not injective,
+the second is injective but not surjective, and the last two are not
+functions.
+
+If ${X}$ and ${Y}$ are sets and ${f}$ is a bijective function mapping elements
+from ${X}$ to ${Y,}$ then:
+
+$$
+ \card(X) = \card(Y)
+$$
+
+That is, ${X}$ and ${Y}$ have the same number of members.
+
+## Valued Functions
+A function whose codomain is some number set is called a _valued function_.
+Such functions are of particular interest in many other areas of mathematics.
+For example, a function whose codomain is ${\reals}$ is called a _real-valued
+function_, a functions whose codomain is ${\uint}$ is called an _integer-valued
+function_, and so on. Both real-valued functions and integer-valued functions
+have some special properties. In the examples that follow, let's suppose the
+domain and codomain is ${\reals.}$
+
+### Addition of Valued Functions
+Say we had the functions ${f(x) = x^2}$ and ${g(x) = x - x^2.}$ We can add these
+two functions:
+
+$$
+	f + g~~~\ni~~~(f + g)(x) = \tnote{x^2}{$f$} + \tnote{(x - x^2)}{$g$}.
+$$
+
+Here is a more explicit definition:
+
+<dfn>
+
+__addition of functions.__ Let ${f: A \to \reals}$ and ${g: A \to
+\reals}$ with ${x \in \reals.}$ Then ${f + g : A \to \reals}$ is defined for all ${x \in
+\reals}$ where
+
+$$
+	f + g~~~\ni~~~f(x) + g(x) = (f + g)(x).
+$$
+
+</dfn>
+
+Note that we use the notation ${\ni}$ to denote that ${(f+g)(x)}$ is a member of
+the function ${f+g.}$ We do so to emphasize the fact that ${f+g}$ is a set, and
+${(f+g)(x)}$ is an element of the set. Some authors write ${f+g = (f+g)(x),}$
+but this isn't quite correct. Nevertheless, no one ever really writes the
+notation above. We use it here to make the underlying ideas clearer.
+
+## Families 
+Now that we've seen functions, we introduce another special relation called the
+_family_.
+
+<dfn>
+
+__family.__ Let ${I}$ and ${X}$ be sets, and ${f}$ a function defined as
+follows:
+
+1. ${f: I \to X.}$
+2. Where ${i \in I}$ and ${x \in X,}$ ${f(x) = (i,x) = x_i.}$
+
+We call ${I}$ the _index set_, ${i \in I}$ an _index_, ${X}$ the _indexed set_,
+${x \in X}$ a _term_, and the function ${f}$  a _family_.
+
+</dfn>
+
+A particularly special type of family is the _sequence_. But before we examine
+sequences, we need a special set called the _natural numbers_.
+

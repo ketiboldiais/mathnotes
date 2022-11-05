@@ -1,8 +1,3 @@
-<head>
-	<title>Floating Point Numbers</title>
-	<description>Notes on floating point numbers.</description>
-</head>
-
 # Floating Point Numbers
 
 This section covers notes on floating point numbers. Earlier, we saw that
@@ -17,7 +12,7 @@ Question: How do we represent these numbers in binary?
 
 ## Fixed Point Binary
 
-One method is **fixed point representation**. The idea behind fixed point
+One method is __fixed point representation__. The idea behind fixed point
 is simple. Given some register that stores a number, some of the register's
 bits are used to represent the whole number portion and some are used for
 the fractional. For example, given a register of size 14:
@@ -153,24 +148,24 @@ Just as a refresher, we can expand scientific numbers by shifting
 $$
 \begin{aligned}
 	2.99 \times 10^{8} \\
-	&29.9~~~\tt{1 place} \\
-	&299.0~~~\tt{2 places} \\
-	&2~990.0~~~\tt{3 places} \\
-	&29~900.0~~~\tt{4 places} \\
-	&299~000.0~~~\tt{5 places} \\
-	&2~990~000.0~~~\tt{6 places} \\
-	&29~900~000.0~~~\tt{7 places} \\
-	&299~000~000.0~~~\tt{8 places} \\
+	&29.9~~~\text{1 place} \\
+	&299.0~~~\text{2 places} \\
+	&2~990.0~~~\text{3 places} \\
+	&29~900.0~~~\text{4 places} \\
+	&299~000.0~~~\text{5 places} \\
+	&2~990~000.0~~~\text{6 places} \\
+	&29~900~000.0~~~\text{7 places} \\
+	&299~000~000.0~~~\text{8 places} \\
 \end{aligned}
 $$
 
 $$
 \begin{aligned}
 	1.4 \times 10^{-4} \\
-	&0.14~~~\tt{1 place} \\
-	&0.014~~~\tt{2 places} \\
-	&0.0014~~~\tt{3 places} \\
-	&0.00014~~~\tt{4 places} \\
+	&0.14~~~\text{1 place} \\
+	&0.014~~~\text{2 places} \\
+	&0.0014~~~\text{3 places} \\
+	&0.00014~~~\text{4 places} \\
 \end{aligned}
 $$
 
@@ -180,13 +175,13 @@ $$
 	m \times 10^{n}
 $$
 
-We call ${n}$ the **exponent**, and ${m}$ the **mantissa** (or
-**significand**). At this point, we can state the following proposition:
+We call ${n}$ the __exponent__, and ${m}$ the __mantissa__ (or
+__significand__). At this point, we can state the following proposition:
 
-> **proposition.** Given a representation of the form ${m \times 10^n,}$ the
+> __proposition.__ Given a representation of the form ${m \times 10^n,}$ the
 > more digits ${n}$ comprises, the more _precise_ ${m \times 10^n}$ is.
 
-> **proposition.** Given a representation of the form ${m \times 10^n,}$ the
+> __proposition.__ Given a representation of the form ${m \times 10^n,}$ the
 > more digits ${m}$ comprises, the more _accurate_ ${m \times 10^n}$ is.
 
 A quick refresher of accuracy versus precision:
@@ -279,7 +274,7 @@ This yields:
 This tells us that we have:
 
 $$
-	\mm{M} \times 2^3
+	\texttt{M} \times 2^3
 $$
 
 In turn, this tells us that the imaginary point should float to the right
@@ -694,7 +689,7 @@ Above, we see that adding `0.09 + 0.21` yields a more accurate result that
 simply adding `0.1 + 0.2`. This is because `0.09` and `0.21` are closer in
 magnitude than `0.1` and `0.2`.
 
-**Compute the Fractionals as Integers, then Convert to Floats.** This is a
+__Compute the Fractionals as Integers, then Convert to Floats.__ This is a
 fairly straightforward tip. Computer systems handle integers better than
 they do floats. Accordingly, if we know that certain computations will
 always be performed with same-magnitude floats, we can separate those
@@ -758,7 +753,7 @@ console.log(x);
 51402.857142857145
 ```
 
-**Turn off the Code Formatter and Linter.** Code formatters (e.g.,
+__Turn off the Code Formatter and Linter.__ Code formatters (e.g.,
 Prettier) and linters often take liberties in inserting or removing
 parentheses from expressions. Some of these modifications are _bad_, not so
 much because the developers don't consider floating point sensitivity, but
@@ -778,5 +773,5 @@ standard**. IEEE is an organization that creates many standards, and the
 Under IEEE-754, processor manufacturers have two options if they want to be
 IEEE-754 compliant:
 
-1. The mantissa comprises 24 bits (called **single precision**).
-2. The mantissa comprises 53 bits (called **double precision**).
+1. The mantissa comprises 24 bits (called __single precision__).
+2. The mantissa comprises 53 bits (called __double precision__).

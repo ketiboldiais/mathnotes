@@ -1,0 +1,159 @@
+<Head>
+	<title>Exponential and Logarithmic Functions</title>
+	<meta name={`description`} content={`Notes on exponential logarithmic functions.`}/>
+</Head>
+
+# Exponential and Logarithmic Functions
+
+_These notes cover the exponential and logarithmic functions. They are covered together because they're inherently linked._
+
+## Preliminaries
+We begin with a review of the elementary definitions of the exponentials and logarithms to give us some base for intuition and guidance in the sequels, where we establish these notions more rigorously.
+
+### Elementary Exponentials
+
+> __~proposition~.__ For all ${n \in \pint,}$ the expression ${e^n}$ is defined as
+> 
+> $$
+> 	e^n = \dprod{k=1}{n}~e = (e)_1 \times (e)_2 \times \ldots \times (e)_n.
+> $$
+
+> __~proposition~.__ ${e^0 = 1.}$
+
+> __~proposition~.__ ${e \gt 1.}$
+
+> __~proposition~.__ ${e^{x+y} = e^x \by e^y}$ for all ${x,y \in \pint.}$
+
+> __~proposition~.__ ${e^{-x} = \dfrac{1}{x}}$ for all ${x \in \pint.}$
+
+> __~proposition~.__  ${(e^x)^y = e^{xy}}$ for all ${x,y \in \pint.}$
+
+> __~proposition~.__ For all ${a,b \in \pint,}$ ${e^{a/b} = \sqrt[b]{e^a}.}$
+
+### Elementary Logarithms
+
+> __~proposition~.__ For all ${y \in \reals^+,}$ there exists a real number ${x}$ and a positive real number ${b \neq 1,}$ such that ${y = b^x.}$ We say that ${x}$ is the _logarithm_ of ${y}$ to the _base_ ${b,}$ and write ${x = \log_{b}y.}$ Symbolically, ${(x = \log_{b}y) \iff (y=b^x).}$
+
+We delay the above proposition's proof to the sequels.
+
+<Grid cols={2}>
+
+> __~corollary~.__ ${x = \log_b{y} ~ \nc ~ y = b^x.}$
+
+~proof~. By proposition 0.1.8. ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~corollary~.__ ${y = b^x ~ \nc ~ x = \log_{b}{y}.}$
+
+~proof~. By proposition 0.1.8. ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~corollary~.__ ${y = b^{\log_{b}{y}}}$ for all ${y \gt 0.}$
+
+~proof~. By proposition 0.1.8, ${x = \log_{b}{y}.}$ By substitution, ${y = b^{x} = b^{\log_{b}{y}}.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~corollary~.__ For all ${y \in \reals,}$ ${y = \log_{b}{b^y}.}$
+
+~proof~. By proposition 0.1.8, ${y = b^y = \log_{b}{y} = \log_{b}{b^y}.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~exponential log~.__ ${a^x = b^{x \log_{b}{a}}.}$ 
+
+~proof~. By corollary 0.1.11, ${a = b^{\log_{b}{a}}.}$ Therefore, ${a^{x} = (b^{\log_{b}{a}})^x = b^{x \log_{b}{a}}.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~log of one~.__ ${\log_{b}1=0.}$
+
+~proof~. For all ${b \in \reals,}$ ${b^0 = 1.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~log of base~.__ ${\log_{b}b=1.}$
+
+~proof~. For all ${b \in \reals,}$ ${b^1 = b.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~log product~.__ For all ${x,y \in \reals,}$ ${\log_{b}(xy) = \log_{b}(x) + \log_{b}(y).}$
+
+~proof~. Let ${r = \log_{b}(xy),}$ ${s = \log_{b}x}$ and ${t = \log_{b}{y}.}$ By corollary 0.1.9, ${xy = b^r,}$ ${x = b^s,}$ and ${y = b^t.}$ Since ${b^r = xy,}$ we have ${b^r = xy = (b^s)(b^t) = b^{s+t}.}$  From the sum of exponents law, we have ${r = s + t.}$ By substitution, ${\log_{b}(xy) = \log_{b}{x} + \log_{b}{y}.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~log quotient~.__ For all ${x,y \in \reals,}$ ${\log_{b}{\frac{x}{y}}=\log_{b}{x} - \log_{b}y.}$
+
+~proof~. Let ${p = \log_{b}(x/y),}$ ${q = \log_{b}x,}$ and ${r = \log_{b}y.}$ By corollary 0.1.9, we have ${b^{p} = x/y,}$ ${b^q = x,}$ and ${b^r = y.}$ It follows that ${x/y = b^{p} = (b^q)/(b^r).}$ By the quotient of exponents law, we know that ${p = q - r.}$ Substituting, we have ${\log_{b}(x/y)=\log_{b}x - \log_{b}y.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~log power~.__ For all ${x,n \in \reals,}$ ${\log_{b}x^n = n \log_{b}{x}.}$
+
+~proof~. Let ${p = \log_{b}{x^n}}$ and let ${q = \log_{b}x.}$ Then by corollary 0.1.9, we have ${b^p = x^n}$ and ${b^q = x.}$ Given ${x = b^q,}$ we have ${b^p = (b^q)^n.}$ By the power rule of exponents, we have ${p = qn.}$ Substituting, we get ${\log_{b}x^n = n\log_{b}x.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~base conversion~.__ For any bases ${a,b \in \reals^+}$ (${a \neq 1}$ and ${b \neq 1}$), ${\log_{a}x = \dfrac{\log_{b}{x}}{\log_{b}{a}}.}$
+
+~proof~. Let ${c = \log_{a}x}$ so that ${a^c = x.}$ Given ${a^c = x,}$ it follows that ${\log_{b}(a^c) = \log_{b}(x).}$ By the log product, ${c \log_{b}(a) = \log_{b}(x).}$ By the division property of equality, we have ${c = \frac{\log_{b}(x)}{\log_{b}(a)}.}$ And substituting for ${c,}$ we get ${\log_{a}x = \frac{\log_b{x}}{\log_b{a}}.}$ ${\bs}$
+
+</Grid>
+
+Some logarithms are so common that they have special notations:
+
+> __~binary log~.__ ${\lg x = \log_{2} x.}$
+
+> __~natural log~.__ ${\ln x = \log_{e} x.}$
+
+From the definitions above, we have the following:
+
+<Grid cols={2}>
+
+> __~binary log conversion~.__ ${\log_b x = \dfrac{\lg x}{\lg b}.}$
+
+~proof~. By base conversion, ${\log_b x = \dfrac{\log_{2}x}{\log_{2}b} = \dfrac{\lg x}{\lg b}.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~natural log conversion~.__ ${\log_b x = \dfrac{\ln x}{\ln b}.}$
+
+~proof~. By base conversion, ${\log_b x = \dfrac{\log_{e}x}{\log_{e}b} = \dfrac{\ln x}{\ln b}.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+__~log relation~.__ For all ${x,y \in \reals,}$ if ${x \lt y,}$ then ${\log_{b}x \lt \log_{b}y.}$
+
+~proof~. Let ${x \lt y,}$ ${n = \log_{b}x}$ and ${m=\log_{b}y,}$ so that ${b^n = x}$ and ${b^m = y.}$ If ${n = m,}$ then ${x = y,}$ but that cannot be true, since ${x \lt y.}$ If ${m \lt n,}$ then ${y \lt x,}$ but that cannot be true either, since ${x \lt y.}$ Hence it must be true that ${n \lt m.}$ That is, ${ \log_{b}x \lt \log_{b}y.}$
+
+</Grid>
+
+

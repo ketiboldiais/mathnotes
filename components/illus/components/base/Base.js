@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
-import * as d3 from "d3";
 import TeX from "@matejmazur/react-katex";
+import { select } from "d3";
 
 export const Base = ({
 	id,
@@ -11,7 +11,7 @@ export const Base = ({
 	containerWidth = 100,
 	containerHeight = height / width,
 	backgroundColor = "inherit",
-	margins = [10, 10, 10, 10], // [top, right, bottom, left]
+	margins = [10,10,10,10], // [top, right, bottom, left]
 }) => {
 	const svgRef = useRef(null);
 	const className = type ? `illus ${type}` : `illus`;
@@ -38,7 +38,6 @@ export const Base = ({
 		left: 0,
 		backgroundColor: backgroundColor,
 	};
-
 	const marginTop = margins[0];
 	const marginRight = margins[1];
 	const marginBottom = margins[2];
@@ -48,11 +47,9 @@ export const Base = ({
 	const viewBoxWidth = svgWidth + marginLeft + marginRight;
 	const viewBoxHeight = svgHeight + marginTop + marginBottom;
 	const viewBoxValue = `0 0 ${viewBoxWidth} ${viewBoxHeight}`;
-
 	const appendSvg = () => {
 		// set up svg
-		const svg = d3
-			.select(svgRef.current)
+		const svg =  select(svgRef.current)
 			.attr("preserveAspectRatio", "xMinYMin meet")
 			.attr("viewBox", viewBoxValue);
 		svg.selectAll("*").remove();

@@ -1,0 +1,39 @@
+import { Plot } from "../../../components/illus/components/Plot/Plot";
+
+# Quadratic Functions
+
+Quadratic functions are polynomial functions of the form:
+
+$$
+	f(x) = ax^2 + bx + c
+$$
+
+All quadratic functions form a U-shaped graph called a __parabola__.
+Accordingly, quadratic functions may also be called **parabolic
+functions**. Arguably, the most familiar quadratic function is the squaring
+function, ${f(x) = x^2.}$ This function has the graph:
+
+<Plot functions={[{ f: (x) => x ** 2, color: "var(--red)" }]} scale={60} />
+
+The function ${f(x) = x^2}$ itself is a quadratic function in standard
+form, where ${a = 1,}$ ${b = 0,}$ and ${c = 0.}$
+
+## Quadratic Functions vs. Quadratic Equations
+
+Given that quadratic functions are functions of the form
+${f(x) = ax^2 + bx + c,}$ quadratic functions are defined in terms of
+quadratic equations. However, not all quadratic equations have parabolas
+for graphs. Recall that a quadratic equation is an equation of the form:
+
+$$
+	Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0
+$$
+
+Depending on the choice of ${A,}$ ${B,}$ ${C,}$ ${D,}$ ${E,}$ and ${F,}$
+the quadratic equation might form a parabola, a circle, an ellipse, or a
+hyperbola. How do we know which one we have? Through the __discriminant__,
+${B^2 - 4AC.}$ In general:
+
+1. If ${B^2 - 4AC < 0,}$ then the quadratic equation graphs an ellipse.
+2. If ${B^2 - 4AC = 0,}$ then the quadratic equation graphs a parabola.
+3. If ${B^2 - 4AC > 0,}$ then the quadratic equation graphs a hyperbola.

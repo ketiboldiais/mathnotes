@@ -7,8 +7,8 @@ import {
 	setClassName,
 } from "../utils";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import { formatQueueData } from "./formatQueueData/formatQueueData";
+import { arc as ARC, pie, select } from "d3";
 
 export const CircularQueue = ({
 	data = [],
@@ -30,18 +30,16 @@ export const CircularQueue = ({
 	const circularQueueFigure = useRef();
 	const _svg = svg(width, height, margins);
 	const _data = formatQueueData(data);
-	const pieData = d3.pie().value((d) => d.data)(_data);
+	const pieData = pie().value((d) => d.data)(_data);
 	const _outerRadius = setValue(outerRadius, _svg.width / 2);
 	const _innerRadius = setValue(innerRadius, _svg.width);
-	const arc = d3.arc().innerRadius(_innerRadius).outerRadius(_outerRadius);
-	const indexArc = d3
-		.arc()
+	const arc = ARC().innerRadius(_innerRadius).outerRadius(_outerRadius);
+	const indexArc = ARC()
 		.innerRadius(_innerRadius)
 		.outerRadius(_outerRadius * 3);
 
 	const renderCircularqueue = () => {
-		const canvas = d3
-			.select(circularQueueFigure.current)
+		const canvas = select(circularQueueFigure.current)
 			.select("g.svgElement");
 		const pie = canvas
 			.append("g")

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
-import { removeEndTicks, svg, translate } from "../utils";
+import { svg } from "../utils";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
+import { axisLeft, axisTop, scaleBand, select } from "d3";
 
 export const PairMatrix = ({
 	data = [
@@ -20,13 +20,11 @@ export const PairMatrix = ({
 	const _svg = svg(width, height, margins);
 	const xVals = data.map((d) => d[1]);
 	const yVals = data.map((d) => d[0]);
-	console.log(yVals);
-	console.log(xVals);
-	const xScale = d3.scaleBand().domain(xVals).range([0, _svg.width]);
-	const yScale = d3.scaleBand().domain(yVals).range([0, _svg.height]);
+	const xScale = scaleBand().domain(xVals).range([0, _svg.width]);
+	const yScale = scaleBand().domain(yVals).range([0, _svg.height]);
 
 	const renderXAxis = (selection) => {
-		const xAxis = d3.axisTop().scale(xScale).tickSizeOuter(0);
+		const xAxis = axisTop().scale(xScale).tickSizeOuter(0);
 		const xAxisGroup = selection
 			.append("g")
 			.attr("class", "dot_matrix_x_axis");
@@ -35,7 +33,7 @@ export const PairMatrix = ({
 	};
 
 	const renderYAxis = (selection) => {
-		const yAxis = d3.axisLeft().scale(yScale).tickSizeOuter(0);
+		const yAxis = axisLeft().scale(yScale).tickSizeOuter(0);
 		const yAxisGroup = selection
 			.append("g")
 			.attr("class", "dot_matrix_y_axis");
@@ -44,7 +42,7 @@ export const PairMatrix = ({
 	};
 
 	const renderDotMatrix = () => {
-		const canvas = d3.select(ref.current).select("g.svgElement");
+		const canvas = select(ref.current).select("g.svgElement");
 		const dotMatrixCanvas = canvas.append("g").attr("class", "DotMatrix");
 		renderXAxis(dotMatrixCanvas);
 		renderYAxis(dotMatrixCanvas);

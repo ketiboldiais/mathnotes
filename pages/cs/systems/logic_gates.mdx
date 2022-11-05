@@ -1,9 +1,9 @@
 # Logic Gates
 
-A **logic gate** is a device that implements some functionality that can be
+A __logic gate__ is a device that implements some functionality that can be
 modeled with Boolean functions. There are two kinds of logic gates:
-**elementary gates** (gates that implement a strictly Boolean operation)
-and **composite gates** (gates that a functionality beyond a strictly
+__elementary gates__ (gates that implement a strictly Boolean operation)
+and __composite gates__ (gates that a functionality beyond a strictly
 Boolean operation, e.g., addition, multiplication, etc.). We begin by
 covering a few elementary gates.
 
@@ -13,7 +13,7 @@ gates:
 ![Elementary logic gates](https://res.cloudinary.com/sublimis/image/upload/v1653000544/cs/elementary_logic_gates.svg)
 
 The diagrams above are _schematic specifications_ of the gates. We can also
-provide **functional specifications** and **truth table specifications**.
+provide __functional specifications__ and __truth table specifications__.
 For the `AND` gate:
 
 <figure>
@@ -81,9 +81,9 @@ a `NOT` gate:
 
 ![The NAND gate's schematic](https://res.cloudinary.com/sublimis/image/upload/v1653168591/cs/nand_gate_schematic_axgn0w.svg)
 
-The `NAND` gate representation above is the **interface**. It's what the
+The `NAND` gate representation above is the __interface__. It's what the
 user actually interacts with. The gates inside the box—the `AND` and `NOT`
-gates comprising `NAND`—are the **implementation** of `NAND`.
+gates comprising `NAND`—are the __implementation__ of `NAND`.
 
 `NAND`'s specifications are as follows:
 
@@ -105,9 +105,9 @@ gates comprising `NAND`—are the **implementation** of `NAND`.
 
 We might be wondering, how exactly do these gates work physically? This is
 a fair question, because the gate schematics are really an abstraction for
-a **circuit**. Accordingly, the implementations for elementary gates are
+a __circuit__. Accordingly, the implementations for elementary gates are
 actually circuits. For example, the `AND` gate can be represented with a
-schematic specification of its **circuit implementation**:
+schematic specification of its __circuit implementation__:
 
 ![The AND circuit](https://res.cloudinary.com/sublimis/image/upload/v1653168682/cs/and_circuit_szgr6v.svg)
 
@@ -140,7 +140,7 @@ Specifying this as a truth table:
 
 <div id="xor_truth_table"></div>
 
-This particular gate is called a **XOR gate**.
+This particular gate is called a __XOR gate__.
 
 With this information, we can specify this design through **hardware
 description language (HDL)**—a computer language for describing the
@@ -203,8 +203,8 @@ more efficient if we could send it all together rather than sending it one
 by one.
 
 To help achieve this efficiency, we treat a group of bits as a single
-entity called a **bus**. For example, suppose we want to add two ${16}$ bit
-numbers. To do so, we build a gate called a **${16}$-bit adder**. Such a
+entity called a __bus__. For example, suppose we want to add two ${16}$ bit
+numbers. To do so, we build a gate called a __${16}$-bit adder__. Such a
 gate requires two inputs that feed ${16}$ bits each, and output ${16}$
 bits. Thus, the gate has ${32}$ wires feeding into it as input, and ${16}$
 wires leaving it as output:
@@ -223,7 +223,7 @@ NAND gate.
 
 ### Multiplexor
 
-The `mux gate`, or **multiplexor**, is visualized as the following:
+The `mux gate`, or __multiplexor__, is visualized as the following:
 
 ![The MUX gate](https://res.cloudinary.com/sublimis/image/upload/v1653169040/cs/mux_gate_rfnjgs.svg)
 
@@ -260,7 +260,7 @@ CHIP AndMuxOr {
 
 ### Demultiplexor
 
-The **DMux gate**, or **demultiplexor**, is schematically represented as
+The __DMux gate__, or __demultiplexor__, is schematically represented as
 follows:
 
 ![The DMux gate](https://res.cloudinary.com/sublimis/image/upload/v1653169095/cs/dmux_gate_m0milb.svg)
@@ -293,7 +293,7 @@ of bits—far more cost-efficient than transmitting multiple streams.
 
 ### AND16
 
-The **AND16 gate** is a ${16}$-bit `AND` gate. At its core, it really is
+The __AND16 gate__ is a ${16}$-bit `AND` gate. At its core, it really is
 just an `AND` gate, but instead of just two single-bit buses as input, it
 takes two ${16}$-bit bus inputs. This results in outputs like:
 
@@ -303,7 +303,7 @@ $$
 
 ### Mux4Way16
 
-The **Mux4Way16 gate** is a 4-way 16-bit multiplexor. In other words, a
+The __Mux4Way16 gate__ is a 4-way 16-bit multiplexor. In other words, a
 multiplexor that takes four 16-bit buses as inputs, a 2-bit bus as a
 selection input, and a 16-bit bus as output. The truth table:
 

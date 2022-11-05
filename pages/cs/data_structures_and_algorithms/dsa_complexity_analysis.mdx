@@ -1,1539 +1,477 @@
-import { Plot } from "../../../components/illus/components/Plot/Plot";
-import { Plot as HPlot } from "../../../components/hago";
+import { Plot } from "../../../components/hago";
 import { Col } from "../../../components/Col";
 
-<head>
-	<title>Complexity Analysis</title>
-	<description>Notes on complexity analysis.</description>
-</head>
+<Head>
+	<title>Asymptotic Analysis</title>
+	<meta name={`description`} content={`Notes on complexity analysis.`}/>
+</Head>
 
 # Complexity Analysis
+This section provides a general overview of algorithmic analysis in programming terms. We present the motivating question, its answer, as well as illustrations of the answer applied. The materials that follow assume a basic understanding of functions, limits, sequences, and series (i.e., comfort with ideas from a basic calculus and discrete mathematics course). For a thorough mathematical justification of algorithmic analysis,
 
-<div className={"outline"}>
+1. [Foundational Mathematics](#foundational-mathematics)
+2. [Knuth's Model](#knuths-model)
+3. [Complexity Functions](#complexity-functions)
+4. [Asymptotic Notations](#asymptotic-notations)
+	1. [Limit-based Definitions](#limit-based-definitions)
+		1. [Asymptotic Similarity](#asymptotic-similarity)
+		2. [Asymptotic Equivalence](#asymptotic-equivalence)
+		3. [Vindogrov Notation](#vindogrov-notation)
+		4. [Order of Magnitude Estimate](#order-of-magnitude-estimate)
+		5. [Limitations of Limit-based Notations](#limitations-of-limit-based-notations)
+	2. [Non-limit-based Definitions](#non-limit-based-definitions)
+		1. [Function Inequality](#function-inequality)
+		2. [Big O Notation](#big-o-notation)
+		3. [Big Omega Notation](#big-omega-notation)
+		4. [Big Theta Notation](#big-theta-notation)
+		5. [Little O Notation](#little-o-notation)
+		6. [Little Omega Notation](#little-omega-notation)
+5. [Relationships Between Asymptotic Notations](#relationships-between-asymptotic-notations)
+6. [Common Time Complexities](#common-time-complexities)
+	1. [Constant Order: ${\bigO{1}}$](#constant-order-bigo1)
+	2. [Logarithmic Orders: ${\bigO{\log{n}}}$](#logarithmic-orders-bigologn)
+	3. [Linear Orders: ${\bigO{n}}$](#linear-orders-bigon)
+	4. [Multilogarithmic Orders: ${\bigO{k\log{n}}}$](#multilogarithmic-orders-bigoklogn)
+	5. [Linearithmic Orders: ${\bigO{n \log{n}}}$](#linearithmic-orders-bigon-logn)
+	6. [Quadratic Orders: ${\bigO{n^2}}$](#quadratic-orders-bigon2)
+	7. [Exponential Orders: ${\bigO{2^n}}$](#exponential-orders-bigo2n)
+	8. [Factorial Orders: ${\bigO{n!}}$](#factorial-orders-bigon)
+7. [Common Problem Patterns](#common-problem-patterns)
+8. [Limitations of Asymptotic Notations](#limitations-of-asymptotic-notations)
 
-1. [Cases](#cases)
-2. [Big-O Notation](#big-o-notation)
-3. [Big-omega Notation](#big-omega-notation)
-4. [Big Theta Notation](#big-theta-notation)
+The most pertinent concern for analyzing algorithms is _efficiency_. One measure of efficiency is the amount of _time_ an algorithm takes to execute. That is, how long it takes given algorithm to solve a particular problem. To do so, however, we need some agreed-upon method for quantifying "speed." We can't rely on timing from start to finish if we want to compare algorithms across different machines, since every machine is different. Solving some differential equation on a small mobile phone will be slower than running the same operation on a super computer. Although it may be useful to know how fast the search runs on just one device model, it's not the principal concern in the analysis of algorithms. We want generality.
 
-</div>
+We often also want to know the amount of _space_ an algorithm takes to execute. For example, one algorithm ${A}$ might be faster than algorithm ${B}$ but requires a significant amount of memory. Determining space complexity can serve as tie breakers in choosing one algorithm over another. Perhaps algorithms ${C}$ and ${D}$ take the same amount of time, but ${C}$ consumes less memory. So how do we determine the amount of time or space an algorithm takes? One way is to count the number of _basic steps_ performed as a function of ${n,}$ where ${n}$ is the input size. These basic steps are listed below:
 
-This section provides a general overview of algorithmic analysis in
-programming terms. We present the motivating question, its answer, as well
-as illustrations of the answer applied. The materials that follow assume a
-basic understanding of functions, limits, sequences, and series (i.e.,
-comfort with ideas from a basic calculus and discrete mathematics course).
-For a thorough mathematical justification of algorithmic analysis,
+|                     | ~syntax~                               |
+| ------------------- | -------------------------------------- |
+| declaration         | ${\textbf{init} ~ a}$                  |
+| assignment          | ${a \gets b}$                          |
+| comparisons         | ${a \le b, a \lt b, a \ge b, a \gt b}$ |
+| addition            | ${a + b}$                              |
+| subtraction         | ${a - b}$                              |
+| multiplication      | ${a \by b}$                            |
+| real division       | ${\dfrac{a}{b}}$                       |
+| integer division    | ${a / b}$                              |
+| remainder           | ${a \rem b}$                           |
+| bitwise-not         | ${\bnot x}$                            |
+| bitwise-and         | ${a \band b}$                          |
+| bitwise-or          | ${a \bor b}$                           |
+| bitwise-xor         | ${a \bxor b}$                          |
+| bitwise-left-shift  | ${a \bls b}$                           |
+| bitwise-right-shift | ${a \brs b}$                           |
+| goto                | ${\goto{x}}$                           |
+| return              | ${\textbf{return}~x}$                  |
 
-One concern for analyzing algorithms is _efficiency_. While this is the
-most common concern, it is second to another—_correctness_. If an algorithm
-is incorrect, its efficiency is unimportant.[^efficiency_note] In these
-materials, we suppose that we've gotten over the correctness hurdle, and
-focus on efficiency.
+~example~. Consider the summation algorithm below, which computes ${\tsum{0 \le i \lt n}{}{i}.}$
 
-[^efficiency_note]:
+<Algo>
 
-For the most part. In later sections, we will see how analyzing the
-efficiency of an incorrect algorithm can lead to insight elsewhere.
+1. ${\let{sum}{0}}$
+2. __for__ (${\let{i}{0}}$, ${i \lt n}$, ${\df{increment}~i}$)
+		1. ${\let{sum}{sum' + i}}$
+3. __return__ ${sum}$
 
-The most common procedure for analyzing algorithms is determining the
-amount of _time_ an algorithm takes to execute. In essence, how long it
-takes a given algorithm to solve a particular problem. To do so, however,
-we need some agreed-upon method for quantifying time. We can't rely on
-units like seconds, because every machine is different. Solving some
-differential equation on a small mobile phone will be slower than running
-the same search on a super computer. Although it may be useful to know how
-fast the search runs on one device over another, it's not the principal
-concern in the analysis of algorithms. The search algorithm is the same for
-both the small mobile and the super computer. What we want to know is how
-the algorithm compares to another search algorithm, _regardless of
-device_.[^complexitynote]
-
-[^complexitynote]:
-
-Time complexity is the way we measure how much time an algorithm takes to
-execute (the algorithm's _runtime_) according to its input size.
-
-Occasionally, analyzing algorithms requires determining the amount of
-_space_ an algorithm takes to execute. For example, one algorithm ${A}$
-might be faster than algorithm ${B}$ but requires a significant amount of
-memory. Determining space complexity can often be immensely. Perhaps
-algorithms ${C}$ and ${D}$ take the same amount of time, but ${C}$ consumes
-less memory.
-
-So how do we determine the amount of time or space an algorithm takes? The
-first step is to count the number of _fundamental operations_ performed as
-a function of ${n,}$ where ${n}$ is the number of input values. In the
-pseudocode below, each line in the program on the left presents a unique
-operation. On the right are the time complexities for each line, along with
-comments (click on the comment to expand, or program line to see the
-accompanying comment).
-
-We list the operations as exhaustively as we can because in these first few
-sections we will count all of the operations. However, as we progress, we
-will learn that we rarely count every operation. Some operations are
-counted, others ignored. That said, let's consider an example. Suppose we
-had the following algorithm:
-
-```c
-int sum = 0;
- for (int i = 0; i < n; i++):
- sum = sum + i;
- return sum;
-```
+</Algo>
 
 Counting the number of operations:
 
-| operation      | count                                                                                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `int sum = 0;` | ${1.}$                                                                                                                                                        |
-| `int i = 0;`   | ${1.}$                                                                                                                                                        |
-| `i < n;`       | ${n + 1.}$ The comparison is performed after each execution of the loop's body. Thus, it is true ${n}$ times and false once.                                  |
-| `sum + i;`     | ${n.}$ The addition operation is performed only if the test condition (the preceding comparison operation) returns `true`. Thus, it is performed ${n}$ times. |
-| `sum = sum;`   | ${n.}$ The assignment operation is performed only if the test condition returns `true`. Thus, it is performed ${n}$ times.                                    |
-| `i++;`         | ${n.}$ The increment is performed only if the test condition returns `true`. Thus, it is performed ${n}$ times.                                               |
-| `return sum;`  | ${1.}$ The `return` operation is performed exactly once.                                                                                                      |
+| ~operation~             | ~count~   | ~remark~                                                                        |
+| ----------------------- | --------- | ------------------------------------------------------------------------------- |
+| ${\let{sum}{0}}$        | ${1}$     | Performed exactly once.                                                         |
+| ${\let{i}{0}}$          | ${1}$     | Performed exactly once.                                                         |
+| ${i \lt n}$             | ${n + 1}$ | Comparison: performed after each iterate. It's true ${n}$ times and false once. |
+| ${{sum' + i}}$          | ${n}$     | Addition: performed only if the guard returns true.                             |
+| ${\let{sum}{sum' + i}}$ | ${n}$     | Assignment operation: performed only if the guared returns true.                |
+| ${\df{increment}~{i}}$  | ${n}$     | Increment: Performed only if the guard returns true.                            |
+| ${\text{bf}~{sum}}$     | ${1}$     | Performed exactly once.                                                         |
 
-Summing the number of executions for each operation, ${\texttt{T}(n),}$ we
-get:
-
-$$
- \begin{aligned} \texttt{T}(n) &= 1 + 1 + (n+1) + n + n + n \\ &= 1 + 1
- + n + 1 + n + n + n \\ &= 1 + 1 + 1 + n + n + n + n \\ &= 3 + 4n \end
- {aligned}
-$$
-
-The final expression gives us a function of the algorithm's total run time:
-${\texttt{T}(n) = 4n + 3.}$ When we conduct complexity analysis, we want to
-express this runtime in terms of Big-O notation. To do so, we want to:
-
-1. Remove the constants.
-2. Remove the lowest terms.
-
-In this case, the constant is ${5,}$ and the lowest term is ${4.}$ Dropping
-the constant and the lowest term, we have some function ${g(n) = n,}$ and
-we express this as ${O(n).}$ We call this __linear time__, and we say that
-"The algorithm above runs no faster than ${n,}$" or "The runtime complexity
-is ${O(n).}$" Now, compare the algorithm above with the following:
-
-```c
-return (n * (n + 1)) / 2
-```
-
-Counting the number of operations:
-
-| operation           | count |
-| ------------------- | ----- |
-| `n + 1`             | 1     |
-| `n * result(n + 1)` | 1     |
-| `result(n + 1) / 2` | 1     |
-| `return result`     | 1     |
-
-Summing the number of executions:
+Summing the number of executions for each operation, denoted ${t(n),}$ we get:
 
 $$
- \begin{aligned} \texttt{T}(n) &= 1 + 1 + 1 + 1\\[1em] &= 4 \end {aligned}
+	\eqs{
+		t(n) &= 1 + 1 + (n+1) + n + n + n + 1 \\
+		&= 2 + (n+1) + 3n + 1 \\
+		&= 3 + (n+1) + 3n \\ 
+		&= 3 + n + 1 + 3n  \\
+		&= 3 + 1 + n + 3n \\
+		&= 4 + 4n \\
+		&= 4(1+n) \\
+		&= 4(n+1) \\
+	}
 $$
 
-This algorithm has a running time function of ${\texttt{T}(n) = 4.}$
-Whenever the running time function is constant, we say that the algorithm
-runs on __constant time__, and we denote this with ${O(1).}$ This is a
-concise way of saying that algorithm's runtime does not depend on the input
-size ${n.}$ We can throw as many ${n}$ as we would like at the algorithm,
-and the runtime will never change. It's constant.
+The final expression gives us the algorithm's runtime function as a closed form expression: ${t(n) = 4(n+1).}$ This is still just an estimate. If we wanted to be even more accurate, we would count the number of ~jump~ instructions executed by loop. And if we wanted to be even more accurate, we would count the number of calls to RAM the CPU made to retrieve data not found in its registers. And if we wanted to be even more accurate, we would count the number of steps the CPU took to check its processor registers, the number of steps needed to run through the cache hierarchy, and so on. The point is, counting steps will always be an estimation at best. This doesn't mean that step counting is a useless exercise. In fact, we'll often use step counting to build a base case or to build some intuition. Our final description, however, will be a _complexity function_. Before we ever analyze an algorithm, however, there's something else we must do — prove that the algorithm exists in the first place.
 
-Compare these two algorithms. Clearly, the first algorithm is slower than
-the second. We have function ${g(n) = n,}$ and ${g(n) = 1.}$ If we plot
-these two functions:
+## Foundational Mathematics
+The materials in this volume assume elementary mathematical constructs. These constructs may be found via [this reference](./../../math/reference).
 
-![Linear versus constant plot. One is a flat, horizontal line, the other is angled.](https://res.cloudinary.com/sublimis/image/upload/v1652743076/cs/linear_versus_constant_plot.svg)
+## Knuth's Model
+Modern analysis of algorithms is based on Donald Knuth's work, found throughout his (gargantuan) series of ~the art of computer programming~. In sum, we  analyze algorithms by running through the checklist below, _in order_:
 
-we see that ${g(n)}$ will always grow faster than ${g(1).}$ This indicates
-that ${g(1)}$ will always be faster than ${g(n)}$—${g(1)}$ never grows to
-begin with.
+1. ${\ws}$ The algorithm is exists.
+2. ${\ws}$ List of variables ${u}$ representing basic operations.
+3. ${\ws}$ List of costs of each basic operation.
+4. ${\ws}$ List of best, average, and worst case inputs.
+5. ${\ws}$ Analyze execution frequency of the variables ${u.}$
+6. ${\ws}$ Calculate total running time for each of the cases:
+	$$
+		\dsum{q}{} \tx{frequency}(u) \times \tx{cost}(u).
+	$$
 
-## Cases
+## Complexity Functions
+To understand complexity analysis notations, we must understand how
+functions grow. In the preceding examples, we stated no requirements about the functions we used to model efficiency. At this point, we've seen enough to handle formality.
 
-How well an algorithm performs depends on its inputs. Consider the simple
-linear search:
+> __~complexity function~.__ Let ${f}$ be a function from ${\reals}$ to ${\reals}$ with ${x \in \reals.}$ Then ${f}$ is a _complexity function_ if, and only if, the following axioms are true: (1) There exists a number ${n \in \reals^+}$ such that, if ${x \ge n,}$ then ${f(x) \in \reals.}$ (2) There exists a number ${m \in \reals^+}$ such that, if ${x \ge m,}$ then ${f(x) \ge 0.}$
 
-```c
-bool LinearSearch(TYPE[] array, TYPE key):
- int n = array.Length();
- for (int i = 0; i < n; i++):
- if (arr[i] == key): return true;
- return false;
-```
+Complexity analysis — for our purposes — is limited to the class of functions above. We do so for several reasons. First, resources like time and memory are easiest to interpret in terms of positive numbers. Second, we could make things even easier by just limiting ourselves to the natural numbers, but then we'd exclude swathe of useful functions — ${f(n)=\lg n,}$ ${f(n)=\sqrt n,}$ and even the sinusoids ${f(n)=\cos(n), f(n)=\sin(n), etc.}$ So, we restrict complexity analysis to real-valued functions.
 
-If the key is found at `arr[0]`, the algorithm executes in just one
-iteration. If the key is found at `arr[n-1]`, the algorithm executes in `n`
-iterations (with `n` evaluations of the loop's condition). If the key isn't
-found anywhere in the array, the algorithm executes in `n` iterations, with
-`n+1` evaluations of the loop's condition. Thus, there are three unique
-scenarios:
+Requirement (1) in the definition ensures that we won't run into functions that never get defined on the reals when given positive arguments. For example, ${f(n) = \sqrt{-n}.}$ Requirement (2) is similar in spirit; we don't want to work with functions that never become positive. It's perfectly fine for the function to return negative values (e.g., ${f(n) = \lg n}$), but it's not ok for the function to _always_ return negative values (e.g., ${f(n) = -n^2}$). 
 
-1. Key is found after just one iteration.
-2. Key is found after ${n}$ iterations. - Key is not found.
-
-Because of this phenomenon, algorithmic analysis can be performed in three
-different ways:
-
-- The __best-case time__ of an algorithm is the algorithm's _smallest
-  possible run-time_, over all possible fixed-size inputs. The algorithmic
-  analysis for determining an algorithm's best-case time is called the
-  _best-case analysis_. When someone gives us an algorithm's best-case time
-  ${t,}$ they're essentially telling us that the algorithm has a speed
-  limit ${t}$—it can't get any faster than ${t.}$
-
-- The __worst-case time__ of an algorithm is the algorithm's _largest
-  possible run-time_, over all possible fixed-size inputs. The algorithmic
-  analysis for determining an algorithm's best-case time is called the
-  _worst-case analysis_. When we're given an algorithm's worst-case time
-  ${w,}$ we're being told, "This algorithm can't get any slower than
-  ${w.}$"
-
-- The __average-case time__ of an algorithm is the algorithm's _average
-  possible run-time_, over all possible fixed-size inputs. The algorithmic
-  analysis for determining an algorithm's best-case time is called the
-  _average-case analysis_. When we're given an algorithm's average-case
-  time ${a}$, we're being told, "On average, the algorithm has run time of
-  ${a.}$"
-
-## Growth of Functions
-
-To understand complexity analysis notations, we have to understand how
-functions grow. First, suppose we have two distinct functions of real
-numbers: ${f(x)}$ and ${g(x).}$ As distinct real-number functions, we can
-likely make a lot of different claims about the _relationship_ between
-these two functions. In the following sections, we focus on relationships
-based on _growth_.
-
-To put things in context, let's be explicit about the possible growth
-relationships between ${f}$ and ${g:}$
-
-### Asymptotic Smallness
-
-One claim we can make about ${f(x)}$ and ${g(x)}$ is the following:
-
-> "${f(x)}$ is asymptotically smaller than ${g(x).}$"
-
-The claim above can be notated as:
-
-$$
- f(x) \ll g(x)
-$$
-
-For ${f(x)}$ to actually be asymptotically smaller than ${g(x),}$ the
-following definition must be satisfied:
-
-> __definition__. ${f(x) \ll g(x)}$ if and only if:
+## Asymptotic Notations
+We begin with a few asymptotic notations based on limits.
+### Limit-based Definitions
+#### Asymptotic Similarity
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> 
+> $$
+>   f \approx g ~~\tx{as}~~ x \to \infty
+> $$
+> 
+> if, and only if, there exists a constant ${c \neq 0}$ such that
 >
 > $$
->  \lim\limits_{x \to \infty} \dfrac{f(x)}{g(x)} = 0
+>   \ll{x}{\infty}\dfrac{f(x)}{g(x)} = c.
 > $$
+> 
+> If ${f \llt g,}$ we say that ${f}$ is _asymptotically similar_ to ${g.}$
 
-In other words, as the 𝑥 inputs to ${f(x)}$ and ${g(x)}$ grow very large,
-${g(x)}$ will eventually "outrun" ${f(x).}$
+#### Asymptotic Equivalence
+> __~definition~.__ Let ${f}$ and ${g}$ be functions in ${\reals.}$ We write
+> $$
+>   f \sim g ~~\tx{as}~~ x \to \infty
+> $$
+>
+> if, and only if,
+> 
+> $$
+>   \ll{x}{\infty} \dfrac{f(x)}{g(x)} = 1.
+> $$
+> 
+> If ${f \sim g,}$ we say that ${f}$ and ${g}$ are _asymptotically equivalent_.
 
-## Big-O Notation
-
-Here's the definition of Big-O notation:
-
-> __definition__. ${f(n)}$ is ${O(g(n))}$ if there exists a constant C and
-> a real number ${n_0,}$ such that for all ${n > n_0,}$
+#### Vindogrov Notation
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> 
+> $$
+>   f \llt g ~~\tx{as}~~ x \to \infty
+> $$
+> 
+> if, and only if,
 >
 > $$
->  f(n) \leq C \cdot g(n)
+>   \ll{x}{\infty}\dfrac{f(x)}{g(x)} = 0.
 > $$
+> 
+> If ${f \llt g,}$ we say that ${f}$ is _asymptotically smaller_ than ${g.}$
 
-Let's consider an example. Suppose we have the function:
-
-$$
- f(n) = 4n^2 + 16n + 2
-$$
-
-Question: Is ${f(n)}$ ${O(n^4)}$? Well, let's go back to our definition.
-The condition we want to verify is:
-
-$$
- f(n) \leq C \cdot g(n)
-$$
-
-In our example, ${g(n)}$ is defined as ${n^4.}$ So, we can reframe the
-question as:
-
-> Is there a constant ${C}$ and some real number ${n_0}$ such that, for all
-> ${n > n_0,}$
+#### Order of Magnitude Estimate
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> 
+> $$
+>   f \asymp g ~~\tx{as}~~ x \to \infty
+> $$
+> 
+> if, and only if,
 >
 > $$
->  4n^2 + 16n + 2 < C \cdot n^4~~?
+>   \ll{x}{\infty}\dfrac{f(x)}{g(x)} = 0 \\[1em]
+>   \tx{and} \\[1em]
+>   \ll{x}{\infty}\dfrac{g(x)}{f(x)} = 0 \\
+> $$
+> 
+> If ${f \asymp g,}$ we say that ${f}$ is _asymptotically equal to_ ${g.}$
+
+
+#### Limitations of Limit-based Notations
+The problem with limit based notations is that they can only handle functions that actually converge. They can't address divergent functions, or functions that diverge at certain intervals. Because of this problem, we might want to tailor the function's domain to avoid these "glitches." But in doing so, we risk hiding details about asymptotic behavior that we probably _don't want_ to hide. In short, for some functions, limit-based notations put us in a bind. The only way out is to use weaker definitions.
+
+### Non-limit-based Definitions 
+#### Function Inequality
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> $$
+>   f \le g
+> $$
+> iff ${f(x) \le g(x)}$ for all ${x \in A.}$
+
+~example~. Suppose ${A = \set{0,1,2,3}}$ and ${B=\reals.}$ Let ${f(x) = x + 1,}$ and let ${g(x) = x + 5.}$ Examining the mappings:
+
+| ${x}$ | ${f(x)}$  | ${g(x)}$  | ${f(x) \le g(x)}$ |
+| ----- | --------- | --------- | ----------------- |
+| 0     | ${0+1=1}$ | ${0+5=5}$ | true              |
+| 2     | ${2+1=3}$ | ${1+5=6}$ | true              |
+| 1     | ${1+1=2}$ | ${2+5=7}$ | true              |
+| 3     | ${3+1=4}$ | ${3+5=8}$ | true              |
+
+Thus, we can say that ${f \le g,}$ since ${f(x) \le g(x)}$ for every ${x}$ in the domain ${A.}$ There are a few important points to keep in mind here. We can _never_ compare two functions with different domains per the definition.
+
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> $$
+>   f \le g ~~\tx{as}~~ x \to \infty
+> $$
+> iff there exists a constant ${a \in A}$ such that, for all ${x \gt a,}$ it follows that ${f(x) \le g(x).}$
+
+This definition is similar to the last, except we're now making the statement that ${f}$ is less than or equal to ${g}$ for sufficiently large arguments ${x.}$ And again, we can only compare two functions if they have the same domain. The domain could be a finite set, a countably infinite set like ${\nat,}$ or an uncountably infinite set like ${\reals.}$
+
+
+#### Big O Notation
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> 
+> $$
+>   f \in \bigO{g} ~~\tx{as}~~ x \to \infty
+> $$
+> 
+> if, and only if, there exists a positive constant ${c \in A}$ and a constant ${a \in A}$ such that
+> $$
+>   x \gt a \nc \abs{f(x)} \le c \by {g(x)}
 > $$
 
-The value ${n_0}$ is essentially a starting point. We want to find a
-constant ${C}$ and a starting point ${n_0}$ such for all the ${n}$s after
-${n_0,}$ the condition above is true.
+This definition is simply an extension of the last, except it's a much stronger claim. We're saying that ${f(x) \le g(x)}$ is true for sufficiently large ${x,}$ _and_ it's true if multiply ${g(x)}$ by some constant ${c.}$
 
-We can start by trying out different values for ${C}$ and ${n_0.}$
-
-| ${n}$ | ${4n^2 + 16n + 2}$ | ${n^4}$ | ${4n^2 + 16n + 2 \leq n^4}$ |
-| :---: | :----------------: | :-----: | :-------------------------: |
-|   0   |         2          |    0    |            false            |
-|   1   |         22         |    1    |            false            |
-|   2   |         50         |   16    |            false            |
-|   3   |         86         |   81    |            false            |
-|   4   |        130         |   256   |            true             |
-|   5   |        182         |   625   |            true             |
-|   6   |        242         |  1296   |            true             |
-|   7   |        310         |  2401   |            true             |
-|   8   |        386         |  4096   |            true             |
-|   9   |        470         |  6561   |            true             |
-|  10   |        562         |  10000  |            true             |
-
-Examining the table above, it looks like after ${n = 4,}$ our condition
-${f(n) \leq C \cdot g(n),}$ where ${C=1,}$ is true. If we graphed the
-functions above, we would get:
-
-<Plot
- functions={[
-  { f: (x) => 4 *x ** 2 + 16 * x + 2, color: "var(--red)" },
-{ f: (x) => x** 4, color: "var(--blue)" },
- ]}
- geo={[
-  {
-   type: "label",
-   id: "f(n) = 4n^2 + 16n + 2",
-   xy: [-17, -5],
-   fill: "var(--red)",
-   w: 100,
-  },
-  { type: "label", id: "g(n) = n^4", xy: [5, 5], fill: "var(--blue)" },
- ]}
- scale={60}
- xLabel={"n"}
- id={"complexity_plot_1"}
- domain={[-20, 20]}
-/>
-
-Notice how much faster ${f(n)}$ grows compared to ${g(n).}$ One way to
-think about big-O notation: When we make the statement:
-
-> "${f}$ is big-O of ${g}$"
-
-we're implying that there's some point along the 𝑥-axis where, after that
-point, the output of some stretched version ${g}$ will **always be
-greater** than ${f.}$ Alternatively, we can think of big-O notation as a
-nicer way of expressing the idea that some function ${f}$ is a subset of
-some function ${C \cdot g:}$
-
-<Plot
- geo={[
-  {
-   type: "rectangle",
-   xy: [0, 0],
-   w: 20,
-   h: 12,
-   class: "yellowRectangle",
-  },
-  { type: "circle", xy: [0, 0], r: 5, class: "blueCircle" },
-  { type: "circle", xy: [-2, 0], r: 2, class: "plainCircle" },
-  { type: "label", id: "f", xy: [-2.4, 0.5], fontSize: 1.3 },
-  { type: "label", id: "O(g)", xy: [1, 2], fontSize: 1.3 },
- ]}
- marginTop={0}
- marginBottom={0}
- noAxes={true}
- scale={40}
- id={"big_o_subset"}
-/>
-
-Another way of thinking about big-O notation is through some basic real
-analysis:
-
-> If
-> ${\lim\limits_{n \to \infty} \paren{\dfrac{f(n)}{g(n)}} = d < \infty,}$
-> then ${f(n)}$ is ${O(g(n)).}$
-
-For example, how do we know that ${\log_{2}(n) = O(2n)?}$ Well, we can
-start by applying the limit:
-
-$$
- \lim\limits_{n \to \infty} \paren{\dfrac{\log_{2} n}{2n}} = \dfrac{\infty}{\infty}
-$$
-
-Using L'Hoptial's rule:
-
-$$
- \lim\limits_{n \to \infty} \paren{\dfrac{\log_{2} n}{2n}} = \lim\limits_{n \to \infty} \paren{\dfrac{1}{2n}}
-$$
-
-The right-hand limit goes to ${0.}$ Thus, it follows that
-${0 = d < \infty,}$ and we can say that ${\log_{2}n = O(2n).}$
-
-## Big-omega Notation
-
-Here's the definition of big-omega:
-
-> __definition__. A function ${f(n)}$ is ${\Omega(g(n))}$ iff there exists
-> some constant ${C}$ and some number ${n_0}$ such that for all
-> ${n > n_0,}$
->
+#### Big Omega Notation
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> 
 > $$
->  f(n) \geq C \cdot g(n)
+>   f \in \bigOmega{g} ~~\tx{as}~~ x \to \infty
+> $$
+> 
+> if, and only if, there exists a positive constant ${c \in A}$ and a constant ${a \in A}$ such that
+> $$
+>   x \gt a \nc \abs{f(x)} \ge c \by {g(x)}
 > $$
 
-Big-omega's definition contains substantially the same wording as Big-O's
-definition, with the key difference being it's last condition:
+The definition here is similar to the last, except we've now switched the direction of the inequality. With big O, we're saying that ${f}$ grows no faster than ${g,}$ and with big omega, we're saying that ${f}$ grows _at least as fast_ as ${g.}$
 
-$$
- f(n) \geq C \cdot g(n)
-$$
+#### Big Theta Notation
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> 
+> $$
+>   f \in \bigTheta{g} ~~\tx{as}~~ x \to \infty
+> $$
+> 
+> if, and only if, there exists positive constants ${c_0,c_1 \in A}$ and an ${a \in A}$ such that
+> $$
+>   x \gt a \nc c_0 \by g(x) \le \abs{f(x)} \le c_1 \by g(x).
+> $$
 
-To illustrate, let's use the same example we saw earlier.
-${f(n) = 4n^2 + 16n + 2.}$ Here's our question:
+When we write ${f \in \bigTheta{g},}$ we're saying that ${f}$ grows at the same rate as ${g.}$ Notice that ${f \in \bigTheta{g}}$ implies that ${f \in \bigOmega{g}}$ and ${f \in \bigO{g}.}$
 
-> Is ${f(n)}$ ${\Omega(n^2)}$?
-
-Let's construct an output table:
-
-| ${n}$ | ${4n^2 + 16n + 2}$ | ${n^2}$ | ${4n^2 + 16n + 2 \geq n^2}$ |
-| :---: | :----------------: | :-----: | :-------------------------: |
-|   0   |         2          |    0    |            true             |
-|   1   |         22         |    1    |            true             |
-|   2   |         50         |    4    |            true             |
-|   3   |         86         |    9    |            true             |
-|   4   |        130         |   16    |            true             |
-|   5   |        182         |   25    |            true             |
-|   6   |        242         |   36    |            true             |
-|   7   |        310         |   49    |            true             |
-|   8   |        386         |   64    |            true             |
-|   9   |        470         |   81    |            true             |
-|  10   |        562         |   100   |            true             |
-
-Clearly, given ${C=1}$ and ${n}$ starting at ${0}$ (that is, ${n_0 = 0}$),
-${4n^2 + 16n + 2}$ will always be greater ${n^2.}$ Examining the graphs:
-
-<Plot
- functions={[
-  { f: (x) => 4 *x ** 2 + 16 * x + 2, color: "var(--red)" },
-{ f: (x) => x** 2, color: "var(--blue)" },
- ]}
- geo={[
-  {
-   type: "label",
-   id: "f(n) = 4n^2 + 16n + 2",
-   xy: [-17, -5],
-   fill: "var(--red)",
-   w: 100,
-  },
-  { type: "label", id: "g(n) = n^2", xy: [5, 5], fill: "var(--blue)" },
- ]}
- scale={60}
- xLabel={"n"}
- id={"complexity_plot_2"}
- domain={[-20, 20]}
-/>
-
-When we say:
-
-> "${f}$ is big-omega of ${g.}$"
-
-we're implying that there's some point along the 𝑥-axis where, after that
-point, a, the output of some stretched version of ${g}$ **can never be
-greater than** the output of ${f.}$ That is, no matter how hard ${g}$
-tries, it will never return an output greater than ${f}$'s output.
-
-<Plot
- geo={[
-  {
-   type: "rectangle",
-   xy: [0, 0],
-   w: 20,
-   h: 12,
-   class: "yellowRectangle",
-  },
-  { type: "circle", xy: [0, 0], r: 5, class: "blueCircle" },
-  { type: "circle", xy: [-2, 0], r: 2, class: "plainCircle" },
-  { type: "label", id: "\\Omega(g)", xy: [1, 2], fontSize: 1.5 },
-  { type: "label", id: "f", xy: [-2.5, 0.5], fontSize: 1.3 },
- ]}
- marginTop={0}
- marginBottom={0}
- noAxes={true}
- scale={40}
- id={"big_omega_subset"}
-/>
-
-## Big-theta Notation
-
-Here's the definition of big-theta notation:
-
-> __definition__. ${f(n)}$ is ${\Theta(g(n))}$ iff:
+#### Little O Notation
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> 
+> $$
+>   f \in o(g) ~~\tx{as}~~ x \to \infty
+> $$
+> 
+> iff _for all positive_  ${c \in A,}$ there exists an ${a \in A}$ such that
 >
-> 1. ${f(n)}$ is ${O(g(n))}$, _and_
-> 2. ${f(n)}$ is ${\Omega(g(n))}$
+> $$
+>   x \gt a \nc \abs{f(x)} \le c \by {g(x)}
+> $$
 
-Notice the two necessary conditions in this definition. For some function
-${f}$ to be ${\Theta(g),}$ it must be the case that ${f}$ is ${O(g)}$ and
-${f}$ is ${\Omega(g).}$ Expanding the definition more explicitly:
+This definition looks like big O, but it's very different. If we say that ${f \in o(g),}$ we're stating that ${f}$ _grows slower_ than ${g.}$ This also looks like Vindogrov notation, but it's weaker — we aren't requiring ${f/g}$ to converge, which is a much harder condition to satisfy.
 
-> __definition__. ${f(n)}$ is ${\Theta(g(n))}$ iff there exists some
-> constant ${C}$ and some number ${n_0}$ such that, for all ${n > n_0,}$
+#### Little Omega Notation
+> __~definition~.__ Let ${f}$ and ${g}$ be functions from ${A}$ to ${B}$ with ${x \in A.}$ We write
+> 
+> $$
+>   f \in \omega(g) ~~\tx{as}~~ x \to \infty
+> $$
+> 
+> iff for all positive ${c \in A,}$ there exists an ${a \in A}$ such that
 >
-> 1. ${f(n) \geq C \cdot g(n),}$ _and_
-> 2. ${f(n) \leq C \cdot g(n)}$
+> $$
+>   x \gt a \nc \abs{f(x)} \ge c \by {g(x)}
+> $$
 
-Let's illustrate with the same function we've used thus far:
-${f(n) = 4n^2 + 16n + 2.}$ The question:
+This definition looks like little O, but it's a stronger claim. Claiming that ${f \in \omega(g)}$ is equivalent to claiming ${f}$ _grows faster_ than ${g.}$
 
-> Is ${f(n)}$ ${\Theta(n^2)}$?
+## Relationships Between Asymptotic Notations  
+Because the non-limit-based definitions are weaker than the limit-based definitions, satisfying the limit-based definitions will satisfy the non-limit-based definitions. Similarly, because some of the non-limit based definitions are either stronger or weaker than the others, satisfying one can imply another. This leads to a variety of logical implications:
 
-Well, from our output table earlier, we know that ${f(n)}$ is
-${\Omega(n^2).}$
+<Grid cols={3}>
 
-| ${n}$ | ${4n^2 + 16n + 2}$ | ${n^2}$ | ${4n^2 + 16n + 2 \geq n^2}$ |
-| :---: | :----------------: | :-----: | :-------------------------: |
-|   0   |         2          |    0    |            true             |
-|   1   |         22         |    1    |            true             |
-|   2   |         50         |    4    |            true             |
-|   3   |         86         |    9    |            true             |
-|   4   |        130         |   16    |            true             |
-|   5   |        182         |   25    |            true             |
-|   6   |        242         |   36    |            true             |
-|   7   |        310         |   49    |            true             |
-|   8   |        386         |   64    |            true             |
-|   9   |        470         |   81    |            true             |
-|  10   |        562         |   100   |            true             |
+> ${f \in \bigO{g}}$ and ${f \in \bigOmega{g} \nc f \in \bigTheta{g}}$
 
-But is ${f(n)}$ ${O(n^2)}$ as well? Sure, we can set ${C = 6:}$
+> ${f \in \bigTheta{g} \nc f \in \bigO{g}}$ and ${f \in \bigOmega{g}}$
 
-| ${n}$ | ${4n^2 + 16n + 2}$ | ${6n^2}$ | ${4n^2 + 16n + 2 \leq 6n^2}$ |
-| :---: | :----------------: | :------: | :--------------------------: |
-|   0   |         2          |    0     |            false             |
-|   1   |         22         |    6     |            false             |
-|   2   |         50         |    24    |            false             |
-|   3   |         86         |    54    |            false             |
-|   4   |        130         |    96    |            false             |
-|   5   |        182         |   150    |            false             |
-|   6   |        242         |   216    |            false             |
-|   7   |        310         |   294    |            false             |
-|   8   |        386         |   384    |            false             |
-|   9   |        470         |   486    |             true             |
-|  10   |        562         |   600    |             true             |
-|  11   |        662         |   726    |             true             |
+> ${f \in \bigO{g} \nc g \in \bigOmega{f}}$
 
-With ${C=6,}$ we see that at the value ${n = 9,}$ we have
-${f(n) \leq C \cdot g.}$ This proves that ${f(n)}$ is ${O(n^2)}$ — there is
-in fact a ${C}$ (namely ${C=6}$) and an ${n_0}$ (${n_0 = 9}$), such that
-${f \leq C \cdot g.}$
+> ${f \in \bigOmega{g} \nc g \in \bigO{f}}$
 
-What does this mean from a set theory perspective? From the definition, we
-see that big-theta notation communicates a stronger statement — if we
-satisfy the definition of big-theta, it follows that we satisfy the
-definitions of big-omega and big-O. This implies the following:
+> ${f \in o(g) \nc g \in \omega(f)}$
 
-> _Proposition_. All functions that satisfy the definition of big-theta
-> satisfy the definition of big-O, but not all functions that satify the
-> definition of big-O satisfy the definition of big-theta.
+> ${f \in \omega(g) \nc g \in o(f)}$
 
-The same goes for big-omega:
+> ${f \in o(g) \nc f \in \bigO{g}}$
 
-> _Proposition_. All functions that satisfy the definition of big-theta
-> satisfy the definition of big-omega, but not all functions that satify
-> the definition of big-omega satisfy the definition of big-theta.
+> ${f \in \omega(g) \nc f \in \bigOmega{g}}$
 
-From the propositions above, we can draw two further equivalent
-propositions:
+> ${f \sim g \nc f \in \bigTheta{g}}$
 
-> _Proposition_. The set of functions that satisfy the definition of
-> big-theta is a subset of the set of functions that satisfy the definition
-> of big-O.
+> ${\ll{x}{\infty}\dfrac{f(x)}{g(x)}=1 \nc f \sim g}$
 
-> _Proposition_. The set of functions that satisfy the definition of
-> big-theta is a subset of the set of functions that satisfy the definition
-> of big-omega.
+> ${\ll{x}{\infty}\dfrac{f(x)}{g(x)}=0 \nc f \llt g}$
 
-> _Proposition_. The set of functions that satisfy the definition of
-> big-theta is a subset of _both_:
->
-> 1. the set of functions that satisfy the definition of big-O, and
-> 2. the set of functions that satisfy the definition of big-omega
+> ${f \llt g}$ and ${g \llt f \nc f \asymp g}$
 
-We can visualize these propositions as follows:
+> ${f \asymp g \nc f \in \bigTheta{g}}$
 
-<Plot
- geo={[
-  {
-   type: "rectangle",
-   xy: [0, 0],
-   w: 20,
-   h: 12,
-   class: "yellowRectangle",
-  },
-  { type: "circle", xy: [-2, 0], r: 5, class: "blueCircle" },
-  { type: "circle", xy: [2, 0], r: 5, class: "redCircle" },
-  { type: "label", id: "O(g)", xy: [4.3, 5.5], fontSize: 1.3 },
-  { type: "label", id: "\\Omega(g)", xy: [-6.3, 5.5], fontSize: 1.3 },
-  { type: "label", id: "\\Theta(g)", xy: [-1.2, 3], fontSize: 1.3 },
- ]}
- marginTop={0}
- marginBottom={0}
- noAxes={true}
- scale={40}
- id={"big_theta_sets"}
-/>
+> ${\ll{x}{\infty}\dfrac{f(x)}{g(x)} \neq 0 \nc f \approx g}$
 
-## Running Times
+> ${\ll{x}{\infty}\dfrac{f(x)}{g(x)}}$ diverges ${\nc f \in \omega(g)}$
 
-From a mathematical perspective, the asymptotic notations above aren't all
-that interesting. In fact, they're generally used as tools for simplifying
-algebraic manipulation. In computer science, however, they're immensely
-useful for comparing algorithms.
+> ${\ll{x}{\infty}\dfrac{f(x)}{g(x)} \neq 0 \nc f \approx g}$
 
-For example, suppose our algorithm has some form like the following:
+> ${f \approx g \nc f \in \bigOmega{g}}$
 
-```c
-function f(dataArray) {
- for (let i = 0; dataArray.length; i++) {
- // operations
- for (let j = 0; dataArray[i].length; j++) {
- // operations
- };
- };
- for (let k = 0; dataArray.length; k++) {
- // operations
- };
- // operation
- // operation
-}
-```
+> ${\ll{x}{\infty}\dfrac{f(x)}{g(x)} = 0 \nc f \in o(g)}$
 
-This function might have a running time of the form:
+> ${\ll{x}{\infty}\dfrac{f(x)}{g(x)} = c \nc f \in \bigO{g}}$
 
-$$
- T(n) = 3n^2 + 8n + 2
-$$
-
-For simplicity, let's just say it's ${T(n) = n^2.}$ If we graphed this
-function:
-
-<HPlot
- data={[{ f: (x) => x ** 2, color: "var(--red)" }]}
- scale={60}
- domain={[0, 2]}
- range={[0, 2]}
-/>
-
-This is a function that grows quickly pretty fast. Let's say we had another
-function that performs the same task as ${f,}$ but with a running time of
-
-$$
- T(n) = n
-$$
-
-If we plot both functions:
-
-<HPlot
- data={[
-  { f: (x) => x ** 2, color: "var(--red)" },
-  { f: (x) => x, color: "var(--blue)" },
- ]}
- scale={60}
- domain={[0, 2]}
- range={[0, 2]}
-/>
-
-Notice the intersection between these two plots:
-
-$$
- (1,1)
-$$
-
-This tells us that at just before the point ${n = 1,}$ the original
-polynomial algorithm grows slower than the linear algorithm. However, after
-the point ${n = n,}$ the linear algorithm grows slower than the polynomial.
-What does this mean in terms of running time? Well, it means that as the
-inputs increase, the linear time algorithm takes less time than the
-polynomial time algorithm. In other words, the linear time algorithm is
-_faster_ than the polynomial time algorithm past ${n=1.}$
-
-## Runtime Factors
-
-The following factors impact runtime:
-
-1. The algorithm
-
-- As we've seen, mathematics dictates how fast or how slow a given
-  algorithm runs.
-
-2. The implementation details
-
-- A poorly implemented algorithm can turn what we thought was a linear time
-  algorithm to a quadratic time algorithm (e.g., a loop to iterate over a
-  string, but mistakenly using within the loop some function that also
-  iterates over the string to compute its length).
-
-3. CPU processing speed
-
-- All else equal, where ${n < m}$, the ${m}$-bit processor will execute the
-  algorithm faster than the ${n}$-bit processor.
-
-4. Memory read/write speeds
-
-- A system with more caches will execute the algorithm faster than a system
-  with fewer caches.
-
-5. Compiler optimizations
-
-- Setting a compiler's options to _debug mode_ will result in less
-  optimized code to be executed at runtime.
-
-6. Other programs running parallel
-
-- The more programs we have running in the background, the less resources
-  there are available.
-
-7. Input data
-
-- Larger inputs will take a longer time to process than smaller inputs.
-
-## Input Size vs. Run Time
-
-Of the factors listed previously, input size is independent of all the
-other factors. Because of this fact, we can draw conclusions like the
-following:
-
-1. If we double the input size and the algorithm runs twice as slow (double
-   the runtime), then the algorithm runs in linear time.
-2. If we double the input size and the algorithm runs four times as slow,
-   then the algorithm runs in quadratic time.
-3. If we double the input size and the algorithm runs eight times as slow,
-   then the algorithm runs in cubic time.
-
-If want to be very accurate about assessing the input size factor, we have
-to be clear about a few matters:
-
-1. What counts as an input?
-
-- Is the input an `int`? A `struct`? An instance of a class?
-
-2. What is the word size of our system?
-
-- Are we talking about a 64-bit processor? 32? 16?
-
-If, however, we're just assessing the input size generally, we can just use
-the following notation, provided every agrees that this is the notation to
-use:
-
-- ${n}$ is the input size.
-- ${f(n)}$ is the number of steps required by the algorithm to execute,
-  given an input size ${n.}$
-- ${O(f(n))}$ is the _complexity class_ of ${f(n).}$
-
-The most common complexity classes:
-
-| Class Notation             | Class Name         |
-| -------------------------- | ------------------ |
-| ${O(1)}$                   | Constant           |
-| ${O(\log n)}$              | Logarithmic        |
-| ${O(n)}$                   | Linear             |
-| ${O(n \log n)}$            | Linearithmic       |
-| ${O(n^2)}$                 | Quadratic          |
-| ${O(n^3)}$                 | Cubic              |
-| ${O(n^x) : x \in \NN}$     | Polynomial         |
-| ${O(C^n) : C \in \RR^{+}}$ | Exponential        |
-| ${O(n!)}$                  | Factorial          |
-| ${O(2^{2^n})}$             | Doubly exponential |
-
-Graphing the most common run times:
-
-<HPlot
- data={[
-  { f: (n) => n, color: "teal" },
-  { f: (n) => Math.log(n), color: "blue" },
-  { f: (n) => n * Math.log(n), color: "purple" },
-  { f: (n) => n ** 2, color: "green" },
-  { f: (n) => 2 ** n, color: "orange" },
-  { f: (n) => 1, color: "firebrick" },
- ]}
- domain={[0, 10]}
- range={[0, 25]}
- scale={50}
-/>
-
-Complexity analysis allows us to predict which algorithms will _eventually_
-be faster. For example, algorithms that run on ${O(n^2)}$ time will take
-longer than ${O(n)}$ algorithms. Why? Well, we can just look at their
-graphs:
-
-<HPlot
- data={[
-  { f: (n) => n, color: "teal" },
-  { f: (n) => n ** 2, color: "firebrick" },
- ]}
- domain={[0, 5]}
- range={[0, 10]}
- scale={50}
-/>
-
-Above, the teal line corresponds to an algorithm that runs at ${O(n).}$ The
-red line corresponds to an algorithm that runs at ${O(n^2).}$ While the
-${O(n^2)}$ algorithm runs faster initially, as the inputs increase, it will
-take longer than the linear algorithm — the algorithm that runs at
-${O(n).}$
-
-Importantly, we drop constants when we conduct complexity analysis. Again,
-we do so because they ultimately do not matter at very large inputs. For
-example, consider the graphs of ${f(n) = 2n^2}$ (the teal line) and
-${f(n) = 3n^2}$ (the red line):
-
-<HPlot
- data={[
-  { f: (n) => 2 *n ** 2, color: "teal" },
-{ f: (n) => 3 * n** 2, color: "firebrick" },
- ]}
- domain={[0, 5]}
- range={[0, 5]}
- scale={50}
-/>
-
-Initially, it looks as if the algorithm running at ${f(n) = 3n^2}$ runs
-faster than ${f(n) = 2n^2.}$ If, however, we passed very large inputs to
-both functions, we see the following:
-
-<HPlot
- data={[
-  { f: (n) => 2 *n ** 2, color: "teal" },
-{ f: (n) => 3 * n** 2, color: "firebrick" },
- ]}
- domain={[0, 500]}
- range={[0, 500]}
- scale={50}
-/>
-
-They're esentially indistinguishable.
-
-## What Counts as a Step in an Algorithm?
-
-Complexity analysis is supposed to give us a general idea of how many steps
-an algorithm might take complete execution. Accordingly, a relevant
-question is: What counts as a step?
-
-We define a step as an operation that runs at ${f(1).}$ In any given
-algorithm, these operations are:
-
-1. Variable declaration
-2. Variable assignment
-3. Arithmetic operations
-4. Comparison operations
-5. Array indexing/pointer referencing
-6. Calling a function
-7. Returning from a function
-
-In practice, these operations do not necessarily take exactly 1 step.
-Addition, for example, is faster than multiplication, and multiplication is
-faster than division. These details, however, are far from the high-level
-source code we're working with. Accordingly, we will hand-waive and say
-that the operations above all take constant time — ${O(1).}$
-
-### Linear Step Counts
-
-The for-loop is an operation that consists of several steps. Given ${n}$
-inputs processed with basic steps:
-
-1. __Initialization__ occurs once. This is ${1}$ step.
-2. __Testing__ occurs each time the loop's body executes, as well as when
-   the loop ends: ${n + 1}$ steps.
-3. __Updating__ occurs every time the loop's body executes. Thus, this
-   takes ${n}$ steps.
-
-Hence, for the for-loop construct, given ${n}$ inputs and a loop body
-consisting of basic steps, the loop runs at:
-
-$$
-\begin{aligned}
- f(n) &= 1 + n + 1 + n \\
- &= 2n + 2
-\end{aligned}
-$$
-
-In big-O terms, ${f(n)}$ is of order ${O(n).}$
-
-### Polynomial Step Counts
-
-If we have a loop within a loop, then we _potentially_ run into polynomial
-time. For example, suppose the nesting loop comprises two loops. The first
-loop acts on ${n}$ inputs, and the second loop acts on ${n}$ inputs. In
-that case, we have:
-
-$$
-\begin{aligned}
- f(n) &= 1 + n(1 + n + 1 + n) + 1 + 1 + n + 1 + n \\
- &= 1 + n(2 + 2n) + 3 + 2n \\
- &= 1 + 2n + 4n^2 + 3 + 2n \\
- &= 1 + 4n + 4n^2 + 3 \\
- &= 4n + 4n^2 + 4 \\
- &= 4(n + n^2 + 1) \\
- &= 4(n^2 + n + 1) \\
-\end{aligned}
-$$
-
-Given that ${f(n) = 4(n^2 + n + 1),}$ we say that the construct has a
-runtime of order ${O(n^2).}$ We emphazied the qualifier _potentially_
-because a nested for-loop does not imply that a polynomial runtime. The
-inner loop might only run ${C}$ times, where ${C}$ is a constant. In which
-case:
-
-$$
-\begin{aligned}
- f(n) &= 1 + n(C) + (1 + n)(C) \\
- &= 1 + Cn + (C1 + Cn) \\
- &= 1 + C(2n + 1) \\
-\end{aligned}
-$$
-
-Dropping the constants (1, 2, and ${C}$), we get a runtime function of
-order ${O(n).}$ Such loops aren't all that rare. We see them in loops with
-headers like:
-
-```c
-for (int j = 0; j < 5; j++) {
- // basic steps
-}
-```
-
-This loop only runs 5 times, which is a constant. Similarly, a nested
-for-loop does not imply runtime function of order ${O(n^2).}$ If we had a
-for-loop like:
-
-```c
-for (int i = 0; i < getWordCount(wordArray); i++) {
- // basic steps
- for (int j = 0; j < getCharacterCount(wordArray[i]); j++) {
- // basic steps
- }
-}
-```
-
-and both the `getWordCount` and `getCharacterCount` functions compute their
-outputs by _also_ using their own for-loops, we now have an algorithm that
-possibly runs at ${f(n) = n(n(n(n))).}$ I.e., an algorithm with a run time
-function of order ${O(n^4).}$
-
-### Logarithmic Step Counts
-
-Consider the following for-loop:
-
-```c
-int f(int n) {
-  int sum = 0;
-  for (int i = n; i > 1; i /= 2) {
-    sum += i;
-  }
-  return sum;
-}
-```
-
-Here, the variable `i` starts at `n`, and is divided by two each time.
-Thus, the function `f` has a runtime function of
-${f(n) = 1 + 1 + \log_{2} n.}$ This is a runtime function of order
-${O(\log n).}$
-
-### For-loops Generally
-
-Because of how common loops are, it's generally a good idea to build some
-gut-instincts whenever we see loop headers:
-
-<div className="lay3">
-
-<article>
-
-<section>
-
-```c
-for (i = 0; i < n; i++)
-```
-
-</section>
-
-<section>
-
-As is, this loop executes ${n}$ times.
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```c
-for (i = n; i > 0; i--)
-```
-
-</section>
-
-<section>
-
-This loop is decrementing. Nevertheless, it still executes ${n}$ times.
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```c
-for (i = 0; i < n; i+=2)
-```
-
-</section>
-
-<section>
-
-This loop increments by two each time. So, it executes:
-
-$$
- \dfrac{n}{2}
-$$
-
-times.
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```c
-for (i = 0; i < n; i++)
-  for (j = 0; j < n; j++)
-```
-
-</section>
-
-<section>
-
-This loop executes ${n}$ times, then for each ${n,}$ another ${n}$ times.
-Result:
-
-$$
- n^2
-$$
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```c
-for (i = 0; i < n; i++)
-  for (j = 0; j < i; j++)
-```
-
-</section>
-
-<section>
-
-This loop executes:
-
-$$
- \dfrac{n(n+1)}{2}
-$$
-
-To see why this is the case, consider the following table:
-
-| ${i}$ | ${j}$            | loops |
-| ----- | ---------------- | ----- |
-| 0     | 0                | 0     |
-| 1     | 0 ${\checkmark}$ | 1     |
-|       | 1 ${\times}$     |       |
-| 2     | 0 ${\checkmark}$ | 2     |
-|       | 1 ${\checkmark}$ |       |
-|       | 2 ${\times}$     |       |
-| 3     | 0 ${\checkmark}$ | 3     |
-|       | 1 ${\checkmark}$ |       |
-|       | 2 ${\checkmark}$ |       |
-|       | 3 ${\times}$     |       |
-
-Accordingly, we have:
-
-$$
- 1 + 2 + 3 + \ldots + n
-$$
-
-This corresponds to the series:
-
-$$
- \dfrac{n(n+1)}{2}
-$$
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```c
-p = 0
-
-for (i = 1; p <= n; i++)
-  p = p + i
-```
-
-</section>
-
-<section>
-
-Here, the loop invariant is still ${n,}$ but the variable we're testing
-against is ${p.}$ Moreover, ${p}$'s value is depending on ${i.}$ This
-yields the following trace:
-
-| ${i}$      | ${p}$                |
-| ---------- | -------------------- |
-| 1          | ${0 + 1 = 1  }$      |
-| 2          | ${1 + 2 = 3  }$      |
-| 3          | ${3 + 3 = 6  }$      |
-| 4          | ${6 + 4 = 10 }$      |
-| 5          | ${10 + 5 = 15}$      |
-| ${\vdots}$ | ${\vdots}$           |
-| ${k}$      | ${1+2+3+4+\ldots+k}$ |
-
-What this tells us is that the loop will step when:
-
-$$
- \dfrac{k(k+1)}{2} \gtn n
-$$
-
-Asymptotically, this comes out to roughly:
-
-$$
- T(n) \approx \sqrt{n}
-$$
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```c
-for (i = 1; i < n; i = i * 2)
-```
-
-</section>
-
-<section>
-
-This loop runs from ${i = 0}$ to ${n,}$ and at the end of each iteration,
-updates ${i}$ by multiplying its previous value by ${2.}$ Tracing:
-
-| loop       | old ${i}$  | new ${i}$                 |
-| ---------- | ---------- | ------------------------- |
-| 1          | 1          | ${1 \times 2 = 2 = 2^1}$  |
-| 2          | 2          | ${2 \times 2 = 4 = 2^2}$  |
-| 3          | 4          | ${4 \times 2 = 8 = 2^3}$  |
-| 4          | 8          | ${8 \times 2 = 16 = 2^4}$ |
-| ${\vdots}$ | ${\vdots}$ | ${\vdots}$                |
-| ${\lg n}$  |            | ${2^{k}}$                 |
-
-Because we're multiplying by ${i}$ by ${2}$ at each looop, we're heading
-towards ${n}$ much faster. Specifically:
-
-$$
- \T(n) = \lg n
-$$
-
-This leads to a more general conclusion about these types of loops. Given a
-loop of the form:
-
-```rust
-for (let i = 1; i < n; i = i * 𝐶)
-```
-
-where `𝐶` is some integer greater than ${1}$, without more, the loop runs:
-
-$$
- \T(n) \approx \ceil{\log_{C} n}
-$$
-
-times. Notice that we use the ceiling function for the runtime function's
-definition. We do so because the loop runs from ${1}$ to ${n.}$ If ${n}$ is
-not a power of `𝐶`, we can end at some floating point value. For example,
-if ${n = 8,}$ we get:
-
-$$
- \lg 8 = 3
-$$
-
-However, if ${n = 10}$ (not a power of ${2}$), we get:
-
-$$
- \lg 10 \approx 3.322
-$$
-
-We must take the floor of this result. To confirm, compare the traces:
-
-| Loops | ${i \ltn 8}$ | ${i \ltn 10}$ |
-| ----- | ------------ | ------------- |
-| 1     | 1            | 1             |
-| 2     | 2            | 2             |
-| 3     | 4            | 4             |
-| 4     | 8 ${\times}$ | 8             |
-|       |              | 16 ${\times}$ |
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```rust
-for (i = n; i >= 1; i = i / 2)
-```
-
-</section>
-
-<section>
-
-This loop divides by the variant by ${2}$ each time. Once again, it's easy
-to see what's happening with this loop if we just traced:
-
-| loop       | ${i}$                       | ${i}$              |
-| ---------- | --------------------------- | ------------------ |
-| 1          | ${(n/2)}$                   | ${n/2}$            |
-| 2          | ${(n/2)/2}$                 | ${n/4}$            |
-| 3          | ${((n/2)/2)/2}$             | ${n/8}$            |
-| 4          | ${(((n/2)/2)/2)/2}$         | ${n/16}$           |
-| 5          | ${((((n/2)/2)/2)/2)/2}$     | ${n/32}$           |
-| 6          | ${(((((n/2)/2)/2)/2)/2)/2}$ | ${n/64}$           |
-| ${\vdots}$ | ${\vdots}$                  | ${\vdots}$         |
-| ${\lg n}$  | ${\vdots}$                  | ${\dfrac{n}{2^k}}$ |
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```rust
-for (i = 0; i * i < n; i++)
-```
-
-</section>
-
-<section>
-
-This loop runs on ${\T(n) \approx \sqrt{n}.}$ Easy to check:
-
-$$
- \begin{aligned}
- i^2 &\ltn n \\[1em]
- i &\ltn \sqrt{n}
- \end{aligned}
-$$
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```rust
-for (i = 0; i < n; i++)
-
-for (j = 0; j < n; j++)
-```
-
-</section>
-
-<section>
-
-These loops are not tested. So, we've got a simple sum:
-
-$$
- n + n = 2n
-$$
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```rust
-p = 0
-
-for (i = 1; i < n; i = i * 2) {
- p++
-}
-
-for (j = 1; j < p; j = j * 2)
-```
-
-</section>
-
-<section>
-
-Given that these loops aren't nested, we're looking at another sum. For the
-second loop, we have:
-
-$$
- \lg p
-$$
-
-Now, before that ${p}$ gets to the second loop, it's mutated by the first
-loop. There, its modified ${\lg n}$ times. It follows that we have:
-
-$$
- p = \lg n
-$$
-
-So, when it gets to the second loop, we have a runtime function of:
-
-$$
- \T(n) = \lg p = \lg(\lg n)
-$$
-
-</section>
-
-</article>
-
-<article>
-
-<section>
-
-```rust
-for (i = 0; i < n; i++)
-   for (j = 1; j < n; j = j * 2)
-```
-
-</section>
-
-<section>
-
-Here, the outer loop increments linearly. The inner loop, however, increments logarithmically. Thus, we have:
-
-$$
-  \T(n) = n \cdot \lg n
-$$
-
-</section>
-
-</article>
-
-</div>
-
-### Slight Implementation Changes, Drastic Complexity Changes
-
-Say we were given the following code:
-
-```c
-void f(int *out, int *in, int size) {
-   for (int i = 0; i < size; ++i) {
-   out[i] = 1;
-      for (int j = 0; j < size; ++j) {
-         if (i != j) out[i] *= in[j];
-      }
-   }
-}
-```
-
-This function modifies the `out` array by multiplying each element of `out`
-with the sequence product of `in`. I.e.,
-
-```nasm
-out[i] = in[0] * in[1] * ... * in[i-1] * in[i+1] * ... * in[size-1];
-```
-
-Here, we see a condition in the inner-loop, `i != j`. It's likely that most
-of the time, this condition is true. In which case, the upper bound of the
-runtime function is ${f(n) = n^2.}$ However, if we wanted to be more exact,
-we can draw from the fact that `i == j` at least once. In which case we
-have ${f(n) = n^2 - n.}$ Either or, the runtime function will be of order
-${O(n^2).}$
-
-Now consider a different version of the code:
-
-```c
-void f(int *out, int *in, int size) {
-   int product = 1;
-   for (int i = 0; i < size; ++i) {
-      product *= in[i];
-   }
-   for (int i = 0; i < size; ++i) {
-      out[i] = product / in[i];
-   }
-}
-```
-
-Here, we first compute the sequence product of `in`. Then, for each element
-of `out`, we assign the sequence product divided by the corresponding
-element of `in`. Examining this implementation, we see that `f` now has the
-runtime function ${f(n) = 2n.}$ This is a runtime function of order
-${O(n).}$
-
-As is, this algorithm is _input sensitive_ — it will break for certain
-inputs. Obviously it will break for very large `int`s, but will also break
-if any `in[i]` turns out to be zero. Fortunately, there's a fix:
-
-```c
-void f(int *out, int *in, int size) {
- int product = 1;
- for (int i = 0; i < size; ++i) {
- if (in[i] == 0) goto ZEROCASE;
- product *= in[i];
- }
- for (int i = 0; i < size; ++i) {
- out[i] = product / in[i];
- }
- ZEROCASE:
- for (int i = 0; i < size; ++i) {
- out[i] = 0;
- }
-}
-```
-
-## Log and Power Rules
-
-Becuase of how common logarithmic and polynomial times are, below is a
-review of log and power identities.
-
-| Identity                                                      | Example                                       |
-| ------------------------------------------------------------- | --------------------------------------------- |
-| ${\log_{a}(xy) = \log_{a}x + \log_{a}y}$                      | ${\log_{2}(12) = \log_{2}(6) + \log_{2}(2)}$  |
-| ${\log_{a}(x/y) = \log_{a}(x) - \log_{a}(y)}$                 | ${\log_{2}(4/3) = \log_{2}(4) - \log_{2}(3)}$ |
-| ${\log_{a}(x^r) = r \log_{a}x}$                               | ${\log_{2}8 = \log_{2}(2^3) = 3 \log_{2}(2)}$ |
-| ${\log_{a}x = \dfrac{\log x}{\log a} = \dfrac{\ln x}{\ln a}}$ | ${\log_{7}9 = \dfrac{\ln 7}{\ln 9}}$          |
-| ${\log_{a}(a) = 1}$                                           | ${\log_{2}(2) = 1}$                           |
-| ${\log_{a}(1) = 0}$                                           | ${\log_{2}(1) = 0}$                           |
-| ${a^n a^m = a^{n+m}}$                                         | ${2^{5} = 2^{2} 2^{3}}$                       |
-| ${\dfrac{a^n}{a^m} = a^{n-m}}$                                | ${\dfrac{2^3}{2^2} = 2^{3-2} = 2^{1}}$        |
-| ${a^{xy} = (a^{x})^{y}}$                                      | ${2^{16} = (2^{4})^{4}}$                      |
-| ${\dfrac{1}{a^n} = a^{-n}}$                                   | ${2^{-2} = \dfrac{1}{2^2}}$                   |
-| ${a^{-1} = \dfrac{1}{a}}$                                     | ${2^{-1} = \dfrac{1}{2}}$                     |
-| ${a^1 = a}$                                                   | ${2^1 = 2}$                                   |
-| ${a^0 = 1}$                                                   | ${2^0 = 1}$                                   |
-
-Remember that equality can always be read both ways!
-
-<Grid cols={2} >
-
-| Log Identities                                    |
-| ------------------------------------------------- |
-| ${\log_{a}(xy) = \log_{a}x + \log_{a}y}$          |
-| ${\log_{a}x + \log_{a}y = \log_{a}(xy)}$          |
-| ${\log_{a}(x/y) = \log_{a}(x) - \log_{a}(y)}$     |
-| ${\log_{a}(x) - \log_{a}(y) = \log_{a}(x/y)}$     |
-| ${\log_{a}(x^r) = r \log_{a}x}$                   |
-| ${r \log_{a}x = \log_{a}(x^r)}$                   |
-| ${\log_{a}x = \dfrac{\ln x}{\ln a}}$              |
-| ${\log_{a}x = \dfrac{\log x}{\log a}}$            |
-| ${\dfrac{\log x}{\log a} = \dfrac{\ln x}{\ln a}}$ |
-| ${\dfrac{\ln x}{\ln a} = \dfrac{\log x}{\log a}}$ |
-| ${\dfrac{\ln x}{\ln a} = \log_{a}x}$              |
-| ${\log_{a}(a) = 1}$                               |
-| ${1 = \log_{a}(a)}$                               |
-| ${\log_{a}(1) = 0}$                               |
-| ${0 = \log_{a}(1)}$                               |
-
-| Power Identities               |
-| ------------------------------ |
-| ${a^n a^m = a^{n+m}}$          |
-| ${a^{n+m} = a^n a^m }$         |
-| ${\dfrac{a^n}{a^m} = a^{n-m}}$ |
-| ${a^{n-m} = \dfrac{a^n}{a^m}}$ |
-| ${a^{xy} = (a^{x})^{y}}$       |
-| ${(a^{x})^{y} = a^{xy}}$       |
-| ${\dfrac{1}{a^n} = a^{-n}}$    |
-| ${a^{-n} = \dfrac{1}{a^n}}$    |
-| ${a^{-1} = \dfrac{1}{a}}$      |
-| ${\dfrac{1}{a} = a^{-1}}$      |
-| ${a^1 = a}$                    |
-| ${a = a^1}$                    |
-| ${a^0 = 1}$                    |
-| ${1 = a^0}$                    |
+> ${\ll{x}{\infty}\dfrac{f(x)}{g(x)} = c}$ and ${c \neq 0 \nc f \in \bigTheta{g}}$
 
 </Grid>
 
-Note that some texts will use special notation for certain logarithms:
+The relationships above are particularly useful when we recall L'Hospital's Rule:
 
-| Notation    | Description                                                                  |
-| ----------- | ---------------------------------------------------------------------------- |
-| ${\lg (n)}$ | Equivalent to ${\log_{2}n.}$ Commonly found in older computer science texts. |
-| ${\log(n)}$ | In mathematics, assumed to be ${\log_{10}n.}$                                |
-| ${\ln(n)}$  | The natural log, ${\log_{e}(n).}$                                            |
+> If ${\ll{x}{\infty}f(x)}$ diverges and ${\ll{x}{\infty}g(x)}$ diverges, then ${\ll{x}{\infty}\dfrac{f(x)}{g(x)} = \ll{x}{\infty}\dfrac{f'(x)}{g'(x)}.}$
 
-## Summary of Landau Notation
+As well as the various other limit theorems:
 
-Notice some of the tradeoffs with each of these notations. With Big-O, we
-can make _too many_ claims. ${f(n) = n}$ is a member of ${O(n),}$ but it's
-also a member of ${O(n^2),}$ ${O(n^3),}$ and so on. Analogizing, it's akin
-to a baseball scout asking, "What's the upper bound on his pitch velocity?"
-and us answering, "Well, it can't get any faster than 300 miles per hour."
-But, we could have also said, 400 miles per hour, 500 miles per hour, or
-even the speed of light — all of which would satisfy Big-O.
+<Grid cols={2}>
 
-We face a similar problem with Big-Omega, only the other way around. Given
-${f(n) = n^3}$ there's a lower bound of ${\Omega(n^2),}$ but there's also a
-lower bound of ${\Omega(n),}$ ${\Omega(\lg n),}$ and ${\Omega(1).}$ If our
-pitcher pitched at 100 miles per hour, we can say that he pitches no slower
-than than 90 miles per hour, but we can also say that he pitches no slower
-than 0 miles per hour.
+> ${\ll{x}{a}C = C,}$ where ${C}$ is a constant
+ 
+> ${\ll{x}{a}C \by f(x) = C \by \ll{x}{a} f(x).}$
 
-That said, Big-O is often used in practice for several reasons: (1) It's
-easy to carry out analytically. For many algorithms, the most meticulous
-Big-O analysis requires a tiny bit of calculus, if that. (2) Many of the
-most common computation problems have clear worst-case analyses. And (3)
-Big-O is so widely-understood that it's the most efficient form of
-communicating bounds.
+> ${\ll{x}{a}(f(x) + g(x)) = {\ll{x}{a}f(x)} + {\ll{x}{a}g(x)}}$
 
-That said, whenever we can prove Big-Theta, we should opt for the tight
-bound. Big-Theta has the advantage of communicating a single, clear
-boundary.
+> ${\ll{x}{a}(f(x) - g(x)) = \ll{x}{a}f(x) - \ll{x}{a}g(x)}$
 
-| Function                | Big-O                                    | Big-Theta        | Big-Omega                                     |
-| ----------------------- | ---------------------------------------- | ---------------- | --------------------------------------------- |
-| ${f(n) = 2n + 1}$       | ${O(n),}$ ${O(n^2),}$ ${O(n^3), \ldots}$ | ${\Theta(n)}$    | ${\Omega(n)}$ or ${\Omega(1)}$                |
-| ${f(n) = 2n^2 + n + 5}$ | ${O(n^2),}$ ${O(n^3), \ldots}$           | ${\Theta (n^2)}$ | ${\Omega(n^2),}$ ${\Omega(n),}$ ${\Omega(1)}$ |
+> ${\ll{x}{a}f(x)g(x) = {\ll{x}{a}f(x)} \by {\ll{x}{a}g(x)}}$
 
-## Amortized Complexity
+> ${\ll{x}{a}\dfrac{f(x)}{g(x)}=\dfrac{\ll{x}{a}f(x)}{\ll{x}{a}g(x)}}$ where ${\ll{x}{a}g(x) \neq 0}$
 
-__Amortized complexity__ is a kind of worst-case analysis. It's the
-analysis used when the algorithm's work or time profile is "spiky." That
-is, for certain inputs, the algorithm is very expensive, and for others,
-it's a tiny expense.
+> ${\ll{x}{a}f(x)^n = \ar{\ll{x}{a}f(x)}^n}$ where ${n \in \pint}$
 
-The classic example of such an algorithm is the `extend` function of the
-_vector ADT_. Whenever we push a new element into the vector, there are two
-possible outcomes: Either there's enough space, or there isn't enough
-space. If there is enough space, pushing a new element runs in constant
-time — we just index into the available space and assign the element there.
-If, however, there isn't enough space, then we must extend before
-assigning: the vector must create a new static array with additional
-spaces, then iterate through all of the existing elements, copying each
-element to the new array. This takes a linear amount of time. Thus, we have
-a situation where, sometimes the push algorithm takes a constant amount of
-time, and sometimes it takes a linear amount of time.
+> ${\ll{x}{a}\sqrt[n]{f(x)}=\sqrt[n]{\ll{x}{a}{f(x)}}}$ where ${n \in \pint}$
 
-To perform this complexity analysis, we consider the average cost of _one_
-operation over a _sequence of operations_.
+> ${\ll{x}{0} \dfrac{\sin{x}}{x} = 1.}$
+
+> ${\ll{x}{a} \dfrac{1}{x} = 0.}$
+
+> ${\ll{x}{a} P(x) = Q(x)}$ where ${P(x)}$ and ${Q(x)}$ are polynomials
+
+> ${\ll{x}{a}\dfrac{f(x)}{g(x)} = \dfrac{P(x)}{Q(x)}}$ where ${P(x)}$ and ${Q(x)}$ are polynomials
+
+> If ${\ll{x}{a}g(x)=\ll{x}{a}h(x)=L}$ and ${g \le f \le h}$ as ${x \to a,}$ then ${\ll{x}{\infty}f(x)=L}$
+
+> ${\ll{x}{c}f(x) = L \iff \ll{x}{c^+}f(x) \tx{ and } \ll{x}{c^-}f(x)}$
+
+</Grid>
+
+## Common Time Complexities
+Some common time complexities are presented below.
+
+### Constant Order: ${\bigO{1}}$
+
+<Grid cols={2}>
+
+These operations are assumed to be instantaneous. Common examples include hashtable lookups (assuming a good implementation), array read/write, pushing and popping elements from a stack, and arithmetic operations.
+
+<Plot data={[{f:(x)=>(1)}]} domain={[0,10]} range={[0,10]} ticks={0}/>
+
+</Grid>
+
+### Logarithmic Orders: ${\bigO{\log{n}}}$
+
+<Grid cols={2}>
+
+Logarithmic operations grow faster than constant functions, but still _very slowly_. Examples: Binary search, balanced binary search tree lookup, processing number digits.
+
+<Plot data={[{f:(x)=>(Math.log(x))}]} domain={[0,10]} range={[0,10]} ticks={0}/>
+
+</Grid>
+
+### Linear Orders: ${\bigO{n}}$
+
+<Grid cols={2}>
+
+Linear functions grow faster than logarithmic functions. Generally, linear functions are associated with iterating through a linear structure. Examples: Linear search, two-pointer algorithms, some types of greedy algorithms, tree and graph traversals, popping/pushing through an entire stack, enqueuing/dequeuing through an entire queue.
+
+<Plot data={[{f:(x)=>(x)}]} domain={[0,10]} range={[0,10]} ticks={0}/>
+
+</Grid>
+
+### Multilogarithmic Orders: ${\bigO{k\log{n}}}$
+
+<Grid cols={2}>
+
+Where ${k \gt 0}$ is a constant, multilogarithmic functions are constant multiples of logarithmic functions. Accordingly, they run slower than linear functions. Examples: Inserting/removing heap nodes ${k}$ times, binary search ${k}$ times, etc. Generally, multilogarithmic functions are associated with algorithms tasked with searching for the first ${k}$ matches.
+
+<Plot data={[{f:(x)=>(3*Math.log(x))}]}domain={[0,10]}range={[0,10]}ticks={0}/>
+
+</Grid>
+
+### Linearithmic Orders: ${\bigO{n \log{n}}}$
+
+<Grid cols={2}>
+
+In contrast to multilogarithmic operations, linearithmic operations are logarithmic multiples of a linear function. Classic examples include: Comparison-based sorting (e.g., standard merge sort), divide-and-conquer algorithms.
+
+<Plot data={[{f:(x)=>(x*Math.log(x))}]}domain={[0,10]}range={[0,10]}ticks={0}/>
+
+</Grid>
+
+
+### Quadratic Orders: ${\bigO{n^2}}$
+
+<Grid cols={2}>
+
+This is a common runtime order. Examples: Nested loops (e.g., visiting every matrix entry) and brute force solutions. For ${n \lt 1000,}$ this order isn't so bad on modern computers. Anything beyond ${1000}$ and we're in questionable territory.
+
+<Plot data={[{f:(x)=>(x**2)}]}domain={[0,10]}range={[0,10]}ticks={0}/>
+
+</Grid>
+
+
+### Exponential Orders: ${\bigO{2^n}}$
+
+<Grid cols={2}>
+
+Exponential orders grow very rapidly, and almost always require some form of memoization to avoid repeated computations. Algorithms with exponential order runtimes are commonly associated with combinatorial problems and backtracking. Examples include the recursive Fibonacci algorithm. 
+
+<Plot data={[{f:(x)=>(2**x)}]}domain={[0,10]}range={[0,10]}ticks={0}/>
+
+</Grid>
+
+### Factorial Orders: ${\bigO{n!}}$
+Factorial orders are extreme; so much so that we've omitted the graph here. Examples: Generating permutations and some backtracking algorithms.
+
+
+
+## Common Problem Patterns
+Certain problems are so commonly associated with certain algorithms that there are keyword terms we want to watch out for. These terms are presented below.
+
+## Limitations of Asymptotic Notations
+Big-O notation is _never_ a predictor of algorithmic performance. This is an elementary mathematical fact that's often overlooked when analyzing algorithms. All that asymptotic notations provide are _bounds_, and nowhere in the mathematical literature would we find an assertion that a bound is equivalent to a future state. In fact, if we turned to how asymptotic notations are used in mathematics, we'd find that they're used largely as methods of "short-handing" expressions. For example, the standard proof of the general power rule for derivatives involves binomial terms, leading to the general result:
+
+$$
+\begin{aligned}
+	\lim\limits_{\Delta x \to 0} \dfrac{\Delta f}{\Delta x} &= \lim\limits_{\Delta x \to 0} \left(nx^{n-1} + \dfrac{\bigO{(\Delta x)^2}}{\Delta x}\right) \\
+	&= nx^{n-1} + 0 \\
+	&= nx^{n-1}
+\end{aligned}
+$$

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
+import { scaleBand, range, select } from "d3";
 import {
 	svg,
 	className,
@@ -44,17 +44,15 @@ export const CircularList = ({
 	const _svg = svg(width, height, margins);
 	const _data = formatData(data);
 	const nodeCount = _data.length;
-	const scale = d3
-		.scaleBand()
-		.domain(d3.range(nodeCount))
+	const scale = scaleBand()
+		.domain(range(nodeCount))
 		.rangeRound([0, _svg.width])
 		.paddingInner(0.5);
 	const nodeWidth = scale.bandwidth();
 	const nodeHeight = 10;
 
 	const renderCicularList = () => {
-		const canvas = d3
-			.select(CircularListFigure.current)
+		const canvas = select(CircularListFigure.current)
 			.select("g.svgElement");
 		const circularListCanvas = canvas
 			.append("g")

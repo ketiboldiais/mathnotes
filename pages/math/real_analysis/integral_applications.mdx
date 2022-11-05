@@ -1,0 +1,189 @@
+import { Plot } from "../../../components/hago/";
+import { Plot as Plot2 } from "../../../components/illus/components/Plot/Plot";
+
+# Common Applications of Integrals
+
+These notes provide an overview of places where integrals frequently show
+up.
+
+<div className={`outline`}>
+
+1. [Weighted Average](#weighted-average)
+2. [Probability](#probability)
+3. [Numerical Integration](#numerical-integration)
+   1. [Riemann Summation](#riemann-summation)
+   2. [Trapezoidal Rule](#trapezoidal-rule)
+   3. [Simpson's Rule](#simpsons-rule)
+   4. [Caveats to Numerical Integration](#caveats-to-numerical-integration)
+
+</div>
+
+## Weighted Average
+
+The idea of a weighted average is that we take the integral of some
+function from ${a}$ to ${b,}$ and multiply it by some _weight_, and divide
+it by the total weighting:
+
+$$
+ \dfrac
+ {\displaystyle \integral{a}{b} f(x) \cdot w(x)~dx}
+ {\displaystyle \integral{a}{b} w(x) dx}
+$$
+
+This definition isn't that unusual. Think about the average we computed in
+grade school. We have some list of values:
+
+$$
+ \ix{v_1, v_2, v_3, v_4, \ldots, v_n}
+$$
+
+and we divide the sum of all these values by the number of terms:
+
+$$
+ \dfrac
+  {v_1 + v_2 + v_3 + v_4 + \ldots + v_n}
+  {n}
+$$
+
+This is the _discrete version_ of an average — what we know as the
+_arithmetic mean_. The _continuous version_ of an average is the definition
+above: a _weighted average_. Of note, many statistics textbooks often
+define the weighted average as:
+
+$$
+ \overline{x}_{wtd} = \dfrac
+  {\dsum{i=1}{n} w_i x_i}
+  {\dsum{i=1}{n} w_i}
+$$
+
+The notion of a weighted average brings us to one of the most important
+applications of integration in the modern era: probability.
+
+## Probability
+
+Suppose we had the following graph:
+
+<Plot data={[
+  {f:(x)=>1-x**2}
+]}
+domain={[-2,2]}
+range={[0,1.5]}
+scale={70}
+/>
+
+if we picked a point "at random" in the region ${0 \ltn y \ltn 1-x^2,}$ what is
+the probability that ${x \gtn \frac{1}{2}?}$ Casting this question in
+probability terms, this question asks for the probability:
+
+$$
+  \P \ar{x \gtn \frac{1}{2}}
+$$
+
+From the perspective of calculus, a probability is simply a special kind of
+ratio. Specifically, a ratio of the part of something to the whole of something:
+
+$$
+  \dfrac{\text{part}}{\text{whole}}
+$$
+
+The part that we're interested in:
+
+<Plot data={[
+  {f:(x)=>1-x**2, integrate:[0.5,1,`x`]}
+]}
+domain={[-2,2]}
+range={[0,1.5]}
+scale={70}
+/>
+
+This is a straightforward integration problem. That area is:
+
+$$
+  \dfrac{\displaystyle \int_{\frac{1}{2}}^{1} 1-x^2 ~dx}
+  {\displaystyle \int_{-1}^{1} 1-x^2 ~dx}
+$$
+
+As we saw with the weighted average, the weighting factor here is:
+
+$$
+  w(x) = 1-x^2
+$$
+
+And just to be more explicit, our starting point is ${-1,}$ and our ending point
+is ${b = 1.}$ Working out the computation, we get:
+
+$$
+  \P \ar{x \gtn \frac{1}{2}} = \dfrac{5}{32}
+$$
+
+We can generalize this computation with the following formula:
+
+$$
+  \P(x_1 \ltn x \ltn x_2) 
+  = 
+  \dfrac
+  {\text{part}}
+  {\text{whole}}
+  =
+  \dfrac
+  {\displaystyle \int_{x_1}^{x_2} w(x) ~ dx}
+  {\displaystyle \int_{a}^{b} w(x) ~ dx}
+$$
+
+Let's consider an example taken from the real world. Suppose we're on a manhunt
+for a wanted criminal. We've narrowed down their possible location to the
+following:
+
+<Plot2 
+  geo={[
+    {type:"circle", xy:[0,0], r:4, class:`redCircle`},
+    {type:"circle", xy:[0,0], r:6, class: `blueCircle`},
+    {type:"ray", start:[0,0], end:[3.5,0]},
+    {type:"ray", start:[0,0], end:[0,5.5]},
+    {type:`label`, xy:[0.5,3], id:`r_2`,fontSize:1.1},
+    {type:`label`, xy:[2,-0.05], id:`r_1`,fontSize:1.1},
+  ]}
+  noAxes={true}
+  scale={70}
+/>
+
+The question: What are the odds that the crook is somewhere in the blue region?
+To simplify our computation, we make the following assumption:
+
+<dfn>
+
+The number of hits is proportional to ${ce^{-r^2},}$ where ${c}$ is a constant,
+${e}$ is Euler's number, and ${r}$ is the radius.
+
+</dfn>
+
+This assumption effectively states that the number of hits is a normal
+distribution in terms of a given a radius. To understand what this assumption
+implies, let's take a look at the plot of the function ${f = e^{-r^2}.}$
+
+<Plot data={[
+  {f:(x) => Math.E**(-1 * (x**2))}
+]}
+domain={[-4,4]}
+range={[-0.5,1.2]}
+scale={70}
+axesLabels={[`radius`,`hits`]}
+margins={[50,50,50,50]}
+ticks={0}
+id={`ia0`}
+/>
+
+Suppose that, instead of a manhunt, we were throwing darts. When we make the
+assumption above, we're stating that, if we threw millions of darts, more of
+them would land closer to the middle (the _top of the bell curve_), and fewer of
+them would land towards the lower and upper ends.
+
+Question: Why specifically do we use the function ${f = e^{-r^2}?}$ Why not some
+other function? This is probability question rather than a calculus question, so
+we won't answer it in detail (it's akin to asking why we would use one kinematic
+equation over another given a physics problem). It's simply the most accurate
+model for our purposes. When the Germans bombed London during the Second World
+War, the British miliary found that among all the possible functions they could
+use to predict where the bombs might land, the function ${f = e^{-r^2}}$ proved
+to be the most accurate.
+

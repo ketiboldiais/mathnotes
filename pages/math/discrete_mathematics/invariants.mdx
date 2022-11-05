@@ -24,7 +24,7 @@ Here is the proposition:
 > There is no sequence of legal moves to invert ${g}$ and ${h}$ and return
 > all other letters to their original position.
 
-To prove this proposition, we must use an **invariant**. To show that a
+To prove this proposition, we must use an __invariant__. To show that a
 system can never reach a particular special state, we can do so by showing
 that there is some property called the invariant that holds at the initial
 state, is preserved at every legal move, and does not exist at the special
@@ -36,7 +36,7 @@ special state has that property, we can never reach it.
 To figure out the invariant, we have to think about what happens at each
 move in the system. Let's first consider the row-move. We can move a tile
 to the left or right, and everything else stays the same. In other words,
-the relative order, or the **natural order** of the tiles, is left
+the relative order, or the __natural order__ of the tiles, is left
 unchanged. For example, if we moved ${g}$ in the diagram above, the
 relative order remains the same: ${a-b-c,}$ ${d-e-f,}$ and ${h-g.}$ We
 should state this as a lemma:
@@ -45,7 +45,7 @@ should state this as a lemma:
 
 And we should prove this lemma:
 
-> **Proof**. In a row move, we move an item from some cell ${i}$ to an
+> __Proof__. In a row move, we move an item from some cell ${i}$ to an
 > adjacent cell ${i+1}$ or ${i-1.}$ Because nothing else moves, the order
 > of the items is preserved.
 
@@ -73,7 +73,7 @@ lemma:
 
 We should prove this:
 
-> **Proof**. In a column move, we move an item in cell ${i}$ to a blank
+> __Proof__. In a column move, we move an item in cell ${i}$ to a blank
 > spot in cell ${i - 3}$ or ${i + 3.}$ And when an item moves three
 > positions, it changes relative order with two other items, either cell
 > ${i - 1,}$ ${i - 2,}$ ${i + 1,}$ or ${i + 2.}$
@@ -91,7 +91,7 @@ always have an even number of tiles out of order. More formally:
 > _inversion_, or an _inverted pair_, if ${L_1}$ precedes ${L_2}$ in the
 > alphabet and ${L_1}$ appears after ${L_2}$ in the grid.
 
-The above definition defines an **inverted pair**. For example, consider
+The above definition defines an __inverted pair__. For example, consider
 the following configuration:
 
 <Fig
@@ -114,7 +114,7 @@ because 1 is an odd number. We can state another lemma:
 
 The proof for this lemma is a simple case-exhaustion.
 
-> **Proof (by exhaustion)**. In a row move, there are no changes in the
+> __Proof (by exhaustion)__. In a row move, there are no changes in the
 > number of inversions, following the first lemma. In a column move, two
 > pairs change order, by the second lemma. There are three cases of how the
 > pairs were arranged before the column move: (a) Both pairs were in order.
@@ -144,20 +144,20 @@ always by induction. The inductive hypothesis here is ${P(n):}$ "After any
 sequence of ${n}$ moves from the start state, the parity of the number of
 inversions is odd."
 
-> **Proof**. In the base case ${P(0),}$ there is exactly one inversion.
+> __Proof__. In the base case ${P(0),}$ there is exactly one inversion.
 > Thus, the base case is true. Now we consider the inductive case. Here, we
-> want to show that for any ${n \geq 0,}$ ${P(n) \implies P(n + 1).}$
+> want to show that for any ${n \geq 0,}$ ${P(n) \nc P(n + 1).}$
 > Consider any sequence of ${n+1}$ moves: ${m_1, m_2, \ldots, m_{n+1}.}$
 >
 > Because of ${P(n),}$ we know that after ${n}$ moves, the parity is still
 > odd. By the first corollary, during any move, the parity of the number of
 > inversions does not change during ${m_{n+1}.}$ Therefore, the parity of
 > the number of inversions after all ${n+1}$ moves is odd. Hence,
-> ${P(n+1)}$ is true. Ergo, ${P(n) \implies P(n+1)}$ is true.
+> ${P(n+1)}$ is true. Ergo, ${P(n) \nc P(n+1)}$ is true.
 
 Now we can prove the theorem:
 
-> **Proof**. The parity of the number inversions in the desired state is
+> __Proof__. The parity of the number inversions in the desired state is
 > ${0}$—even. By the fourth lemma, the desired state cannot be reached
 > using legal moves from the start state, because the start state's parity
 > is odd.

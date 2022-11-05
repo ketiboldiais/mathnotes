@@ -1,0 +1,305 @@
+<Head>
+	<title>Real Construction</title>
+	<meta name={`description`} content={`Constructing the reals.`}/>
+</Head>
+
+# Constructing the Reals
+
+_The following are notes on constructing the reals_.
+
+<div className={"outline"}>
+
+1. [Cauchy Sequences](#cauchy-sequences)
+	1. [Convergence of Cauchy Sequences](#convergence-of-cauchy-sequences)
+2. [Dedekind Cuts](#dedekind-cuts)
+
+</div>
+
+The rationals "contain" the integers and the naturals, in the sense that given a rational number, we can get back the integer or natural by "unwrapping" the relevant equivalence class. The rationals are an ordered field — the equivalence classes have an inherent order, alongside operations that, when applied to the rationals, do not disturb their inherent ordering. That is, given ${x,y,z \in \rat,}$ if ${y \lt z,}$ then ${x + y \lt x + z.}$ The same goes for multiplication, if ${y \lt z,}$ then ${xy \lt xz.}$ This all stems from the fact that the rationals are equivalence classes of pairs of integers, integers are equivalence classes of pairs of naturals, the naturals are inherently ordered because they're defined in terms of a successor set, and no successor set is a subset of its elements. (I.e., given ${a,b \in \nat,}$ there are only a three cases: ${a \subset b, a = b, b \subset a,}$ which, by convention, we denote as ${a \lt b, a = b, b \lt a}$).
+
+The set of all rationals, however, are insufficient. We've seen this theme repeatedly. The naturals were insufficient, in the sense that there is no natural that satisfies ${x + 1 = 0.}$ So, we constructed the integers. Then we found that the integers were insufficient, as there is no integer that satisfies ${2x = 1.}$ We patched that up with the rationals. Now we find that the rationals are insufficient, because they have a _hole_. Suppose the a group of analysts set out to lay all of the rationals on a number line in order, Sisyphean as it may be. One day, the geometers, working on some right triangles, come in and ask for a rational of length ${x,}$ where ${x^2 = 2.}$ The analysts look at their number line, and find that no such length exists!
+But it must exist, because we see right triangles whose legs are of length 1.
+This is why we need ${\reals,}$ the set of all real numbers.
+
+The set ${\reals,}$ however, is unlike any of the other sets we've seen. We have no way of pinpointing where the hole is. So how do we fill in this hole if we have no way of knowing where the hole is? As it turns out, there are two possible approaches: _Dedekind cuts_ (or, as this author likes to call them, _King Dedede cuts_) and _Cauchy sequences_.
+
+## Cauchy Sequences
+
+So, the notion of a square root doesn't exist, but we want to find out what ${\set{x \in \rat:x^2=2}}$ is. We know that ${1^2 = 1,}$ and ${1 \lt 2,}$ so how about we try ${1.1^2.}$ This gives us ${(11/10)^2=121/100=1.21.}$ Still pretty far from 2, so let's try ${(1.2)^2.}$ Here, we have ${(12/10)^2=1.44.}$ Still pretty far. How about we jump to ${1.4.}$ This gives us ${(14/10)^2=1.96.}$ That's close. Let's look at the squares for ${x_1=1.41, x_2=1.414, x_3=1.41414,}$ and so on:
+
+$$
+	\eqs{
+		x_1 &= (1.4)^2 = (14/10)^2 = 1.96 \\
+		x_2 &= (1.41)^2 = (141/100)^2 = 1.9881 \\
+		x_3 &= (1.414)^2 = (1414/1000)^2 = 1.999396 \\
+		x_4 &= (1.4141)^2 = (14141/10000)^2 = 1.99967881 \\
+		x_5 &= (1.41414)^2 = (141414/100000)^2 = 1.9997919396  \\
+		x_6 &= (1.414141)^2 = (1414141/1000000)^2 = 1.99979476788  \\
+	}
+$$
+
+This keeps getting closer and closer to two. Moreover, the distance between each term, ${\abs{x_n-{x_{n-1}}}}$ where ${n \in \pint,}$ keeps getting smaller and smaller. Visually, we might think of it like:
+
+$$
+	\ldots \ldots \ldots
+	\circ~~~~~~~~
+	\circ~~~~~~
+	\circ~~~~
+	\circ~~~~
+	\circ~~
+	\circ~
+	\circ
+	\circ
+	\circ{\circ}\mathllap{\circ}~{\large 2}~\ldots \ldots \ldots
+$$
+
+So, there's clearly some sort of sequence. But it's a very peculiar sequence, because the distance between the terms gets smaller and smaller. Augustin-Louis Cauchy (1789-1857) — the French mathematician credited with noticing and building upon this pattern with a definition. Before we get to that definition, we start with some definitions.
+
+> __~absolute value~.__ Let ${x \in \rat.}$ If ${x \gt 0,}$ then ${\abs{x} = x.}$ If ${x=0,}$ then ${\abs{x} = 0.}$ If ${x \lt 0,}$ then ${\abs{x} = -x.}$
+
+
+From these definitions, we now derive some lemmas.
+
+> __~lemma~.__ For all ${x \in \rat,}$ it is true that ${\abs{x} = 0}$ iff ${x = 0.}$
+
+~proof~. Let ${x \in \rat.}$ We have two cases, ${x=0 \implies \abs{x}=0}$ and ${\abs{x}=0 \implies x \neq 0.}$ The first case is true by definition, so only the second case must be addressed. Suppose ${\abs{x} = 0}$ and ${x \neq 0.}$ If ${x \neq 0,}$ then by the trichotomy law, either ${x \lt 0}$ or ${x \gt 0.}$ If ${x \lt 0,}$ then by definition, ${\abs{x} = -x.}$ But that cannot be true, since we assumed that ${\abs{x}=0.}$ If ${x \gt 0,}$ then by definition, ${\abs{x}=x.}$ But that cannot be true either, since we assumed that ${\abs{x}=0.}$ It follows that ${x \neq 0}$ and ${\abs{x}=0}$ can never be true. Therefore, ${\abs{x}=0}$ if and only if ${x = 0.}$ ${\blacksquare}$
+
+> __~lemma~.__ For all ${x,y \in \rat,}$ it is true that ${\abs{x-y} = 0}$ iff ${x = y.}$
+
+~proof~. Let ${x,y \in \rat.}$ Then by the closure of subtraction on rationals, ${x - y \in \rat.}$ By the additive inverse, ${x-y = 0}$ if and only if ${x = y.}$ It follows that ${\abs{x-y}=0}$ if and only if ${x = y.}$ ${\bs}$
+
+> __~nonnegativity of absolute value~.__ For all ${x \in \rat,}$ it is true that ${\abs{x} \ge 0.}$ 
+
+~proof~. Let ${x \in \rat.}$ There are only three cases, ${x \lt 0,}$ ${x = 0,}$ and ${x \gt 0}$ by the trichotomy law. If ${x \lt 0,}$ then ${x = -x,}$ and ${\abs{x}=-(-x)=x.}$ If ${x = 0,}$ then ${\abs{x}=0.}$ If ${x \gt 0,}$ then ${\abs{x} = x.}$ This exhausts all three possible cases of ${x.}$ Therefore, for all ${x \in \rat,}$ it is true that ${\abs{x} \ge 0.}$ ${\bs}$
+
+> __~lemma~.__ For all ${x,y \in \rat,}$ it is true that ${\abs{y-x}=\abs{x-y}.}$
+
+~proof~. Let ${x,y \in \rat.}$ If ${x - y = 0,}$ then ${x=y,}$ and ${y - x = 0.}$ Thus, ${\abs{x-y}=0=\abs{y-x}.}$ If ${x - y \gt 0,}$ then ${y - x \lt 0.}$ It follows that ${\abs{x - y} = x - y}$ and ${\abs{y-x}=-(y-x)=x - y.}$ If ${y-x \gt 0,}$ then ${x - y \lt 0,}$ so ${\abs{x-y}=-(-x-y)=y-x}$ and ${\abs{y-x}=y-x.}$ If ${x - y = 0}$ then ${y - x = 0,}$ and by lemma 0.1.4, it follows that ${\abs{x-y}=0=\abs{y-x}.}$ Therefore, for all ${x,y \in \rat,}$ we have ${\abs{y-x}=\abs{x-y}.}$ ${\bs}$
+
+> __~lemma~.__ If ${-y \le x \le y,}$ then ${\abs{x} \le y.}$
+
+~proof~. The inequality ${-y \le x \le y}$ is equivalent to ${-x \le y.}$ Since ${\abs{x}}$ equals ${x}$ or ${-x,}$ the lemma holds. ${\bs}$
+
+> __~triangle inequality~.__ For all ${x,y \in \rat,}$ it is true that ${\abs{x+y} \le \abs{x} + \abs{y}.}$
+
+~proof~. Let ${x,y \in \rat.}$ From the nonnegativity of absolute value, we know that ${-\abs{x} \le x \le \abs{x},}$ and ${-\abs{y} \le y \le \abs{y}.}$ Therefore, we have ${-\abs{x} - \abs{y} \le x + y \le \abs{x} + \abs{y}.}$ By definition, ${\abs{x+y}}$ equals ${x + y}$ or ${-(x + y).}$ It follows that ${\abs{x + y} \le \abs{x} + \abs{y}.}$ ${\bs}$
+
+
+> __~multiplicativity of absolute value~.__ For all ${x,y \in \rat,}$ it is true that ${\abs{xy} = \abs{x} \by \abs{y}.}$
+
+~proof~. We address five cases: (a) ${x = y = 0;}$ (b) ${x \gt 0}$ and ${y \gt 0;}$ (c) ${x \lt 0}$ and ${y \lt 0;}$ (d) ${x \lt 0}$ and ${y \gt 0;}$ and (e) ${x \gt 0}$ and ${y \lt 0.}$ The theorem holds for case (a): ${\abs{x}\abs{y}=0=xy=\abs{xy}.}$ For case (b), it follows that ${xy \gt 0,}$ and ${\abs{xy}=xy}$ by definition. Given ${x = \abs{x}}$ and ${y = \abs{y},}$ we have ${\abs{x} \by \abs{y}=xy=\abs{xy}.}$ For case (c): It follows that ${xy \gt 0,}$ and ${\abs{xy}=xy.}$ Given ${-x=\abs{x}}$ and ${-y=\abs{y}}$ by definition, we have ${\abs{x}\abs{y}=(-x)(-y)=xy=\abs{xy}.}$ For case (d): Let ${x \lt 0}$ and ${y \gt 0.}$ Then ${xy \lt 0}$ and ${\abs{xy}=-(xy).}$ By definition, we have ${-x = \abs{x}}$ and ${y = \abs{y}.}$ Therefore, ${\abs{x}\abs{y}=(-x)y=-(xy)=\abs{xy}.}$ By commutativity of multiplication, case (e) is equivalent to case (d). Therefore, we have ${\abs{xy}=\abs{x}\by\abs{y}}$ for all ${x,y \in \rat.}$ ${\bs}$
+
+> __~distance~.__ Given ${x,y \in \rat,}$ we define the notation ${\d(x,y):=\abs{x-y}.}$
+
+> __~closeness~.__ Given ${x,y,\varepsilon \in \rat}$ and ${\varepsilon \gt 0,}$ we say that ${x}$ and ${y}$ are _close_ if and only if ${\d(x,y) \le \varepsilon.}$ If ${x}$ and ${y}$ are close, we write ${x \ec y.}$ Otherwise, we write ${x \not\ec y.}$
+
+The notion of closeness leads to a few helpful lemmas.
+
+> __~reflexivity of closeness~.__ For all ${x,y \in \rat}$ with ${\varepsilon \gt 0,}$ if ${x = y,}$ then ${x \ec y.}$
+
+~proof~. Let ${x,y,\varepsilon \in \rat}$ with ${\varepsilon \gt 0.}$ If ${x = y,}$ then ${\abs{x-y}=0.}$ Since ${\varepsilon \gt 0,}$ it follows that ${\d(x,y) \lt \varepsilon,}$ which implies that ${x \ec y.}$
+
+> __~symmetry of closeness~.__ For all ${x,y,\varepsilon \in \rat}$ with ${\varepsilon \gt 0,}$ if ${x \ec y,}$ then ${y \ec x.}$
+
+~proof~. Let ${x,y,\varepsilon \in \rat}$ with ${\varepsilon \gt 0.}$ We have three cases, ${x \lt y,}$ ${x = y,}$ and ${x \gt y.}$ If ${x = y,}$ then ${y = x.}$ Since ${x = y \nc x \ec y}$ and ${y = x \nc y \ec x,}$ the theorem holds when ${x = y.}$ If ${x \lt y,}$ then ${\abs{x-y}=y-x.}$ If ${x \gt y,}$ then ${\abs{x-y}=x-y.}$ We know that ${\abs{x-y}=\abs{y-x}.}$ Thus, if ${y \ec x,}$ then ${\abs{y-x} \le \varepsilon,}$ and if ${x \ec y,}$ then ${\abs{x-y} \le \varepsilon.}$ Since ${\abs{x-y}=\abs{y-x},}$ we have ${(\abs{x-y}=\abs{y-x})\le \varepsilon.}$ It follows that if ${x \ec y,}$ then ${y \ec x.}$ ${\bs}$
+
+> __~sequence~.__ A _sequence_ is a function ${a:\set{n,m \in \uint:n \ge m} \mapsto \rat,}$ denoted ${\seq{a_n}{n=m}{\infty}.}$ The members of ${a}$ are an ordered collection of rationals, which we may denote as ${(a(1), a(2), a(3), \ldots)}$ By convention, we denote each application of ${X}$ as ${(a_1, a_2, a_3, \ldots)}$ in lieu of the standard notation ${a(n).}$
+
+~example~. ${\seq{n}{n=1}{\infty} = (1,2,3,4,\ldots).}$
+
+~example~. ${\seq{2n}{n=1}{\infty} = (2,4,6,8,\ldots).}$
+
+~example~. ${\ar{\frac{1^n+(-1^n)}{2}}_{n=1}^{\infty} = (0,1,0,1,0,1,\ldots).}$
+
+~example~. ${\ar{\frac{2n}{n^2+1}}_{n=1}^{\infty} = \ar{\frac{2}{2}, \frac{4}{5}, \frac{6}{10}, \frac{8}{17},\ldots}.}$
+
+From that definition, we have the _Cauchy sequence_:
+
+> __cauchy sequence.__ A sequence ${(x_n)_{n \in \pint}}$ is a _Cauchy sequence_ if, and only if: For any rational ${\varepsilon \gt 0,}$ there exists an integer ${N \in \pint,}$ such that, if ${n,m \ge N,}$ then ${\abs{x_n-x_m} \lt \varepsilon.}$
+
+Note what this preliminary definition is trying to capture — the behavior we saw earlier. Cauchy chose the symbol ${\varepsilon}$ to denote "error" — that teeny-tiny bit separating ${x_n}$ and ${x_m.}$  Now, remember that sequences are functions. Cauchy's sequence says: There's some positive integer ${N}$ (some _index_), where, for function arguments ${n}$ or ${m}$ greater than ${N}$ (any two indices on or after ${N}$), we're going to see this behavior where ${\abs{x(n) - x(m)}}$ (the distance between the rationals ${x_n}$ and ${x_m}$) is _always_ less than _any_ distance we can think of (the distance ${\varepsilon}$). That is, for any two terms after the index ${N,}$ no matter what ${\varepsilon}$ someone picks  — "they're separated by ${\varepsilon}$" — we can always go back and tell them, "No, they're actually closer than that." That's all ${\varepsilon}$ is — how separated the terms are.
+ 
+Now, we might wonder why Cauchy decided to characterize this distance in terms of an "error." Here's some intuition: Suppose we bought a 16-inch pizza. We get the order back, and it's 12-inches. Would we complain? Of course! The pizza's off by 6 inches (which could very well translate to a price difference of over 10 dollars). How about 14-inches? Certainly. 15 inches? Maybe. What about 15.999999999999 inches? Unlikely — it's unclear whether we'd even notice the difference in the first place. That's what's going on with the term "error." If the error ${\varepsilon}$ is small enough, the number ${x_n,}$ for all intents and purposes, is _tantamount_ to ${x_m.}$
+
+With that intuition, we now state the following definition:
+
+> __convergent sequence.__ Let ${(x_n)}$ be a sequence, with ${n \in \pint.}$ We say that ${(x_n)}$ _converges to_ ${a}$ if, and only if, for all ${\varepsilon \gt 0,}$ there exists an ${N \in \nat,}$ such that, for all ${n \ge N,}$ it is true that ${\abs{x_n - a} \lt \varepsilon.}$ If ${(x_n)}$ coverges to ${a,}$ we say that ${a}$ is the _limit_ of ${(x_n).}$
+
+This seems like a complicated definition. Let's compare its logical form to the Cauchy sequence definition's logical form:
+
+|                       |                         |                                |                         |                        |                                    |
+| --------------------- | ----------------------- | ------------------------------ | ----------------------- | ---------------------- | ---------------------------------- |
+| ~cauchy sequence~     |                         | ${\forall \varepsilon \gt 0.}$ | ${\exists N \in \nat.}$ | ${\forall n,m \ge N.}$ | ${\abs{x_n-x_m} \lt \varepsilon.}$ |
+| ~convergent sequence~ | ${\exists a \in \rat.}$ | ${\forall \varepsilon \gt 0.}$ | ${\exists N \in \nat.}$ | ${\forall n \ge N.}$   | ${\abs{x_n - a} \lt \varepsilon.}$ |
+
+Do we see how this definition is different? It hones in on that ${x_m}$ term from the Cauchy sequence — the term that "comes after" ${x_n.}$ Why the quotes? We're putting quotes around that phrase because we're now going to add a bit more nuance. Suppose we're not the pizza buyers, but the pizza sellers. Would we be upset if an employee accidentally delivered a 32-inch pizza instead of the 16-inch? Sure. How about an 18-inch pizza? Perhaps. How about 16.000000001? Hopefully not. The same idea applies here. The ${x_n}$ isn't necessarily 15.99999. It could also be 16.00000001. When we say that a sequence _converges_, we're saying that all of the sequence elements, eventually, are _tantamount_ to ${a,}$ before or after ${a.}$
+
+All that said, we have to be careful with our language. At no point — never ever ever — is ${x_n = a.}$ It's why we use the phrase "tantamount to" rather than "same" or "indistinguishable." Clearly 15.999999999 and 16 are distinguishable. One has that symbol "5" and the other "6." The word _tantamount_ means "virtually the same as," which is exactly the phrasing we want.
+
+Putting it all together, we get something that looks like the following:
+
+$$
+	\ldots
+	\stackrel{\stackrel{\normalsize a-\varepsilon}{\mid}}{\ws}
+	\circ~~~~~~~~~~
+	\circ~~~~~~~~
+	\circ~~~~~~
+	\circ~~~~
+	\circ~~
+	\circ~
+	\circ
+	\stackrel{\stackrel{\normalsize a}{\mid}}{\ws}
+	\circ
+	~\circ
+	~~~~\circ
+	~~~~~~\circ
+	~~~~~~~~\circ
+	~~~~~~~~~~\circ
+	\stackrel{\stackrel{\normalsize a+\varepsilon}{\mid}}{\ws}
+	\ldots
+$$
+
+The red dots comprise a region called the _epsilon neighborhood_ of ${a.}$ What the convergence definition tells us is, if a sequence ${(x_n)}$ converges, there are only so many points outside this neighborhood. That is, there are _finitely many_ points outside the neighborhood. In contrast, no matter how small we make ${\varepsilon,}$ we're always going to find a term closer to ${a.}$ An often cited example of a convergent sequence is ${(1/n).}$ Examine its values:
+
+| ${n}$                | 1   | 10  | 100  | 1000  | ${10~000}$ | ${100~000}$ | ${1~000~000}$ |
+| -------------------- | --- | --- | ---- | ----- | ---------- | ----------- | ------------- |
+| ${\ar{\frac{1}{n}}}$ | 1   | 0.1 | 0.01 | 0.001 | 0.0001     | 0.00001     | 0.000001      |
+
+Eventually we get something that looks like
+
+$$
+	\footnotesize
+	\ax{
+		& 0.00000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000000 \\
+		& 0000000000000000000000000000000000000000001 \\
+	}
+$$
+
+and yet there will always be something smaller. We should now able to see the connection between the Cauchy sequence and convergent sequences: All convergent sequences are Cauchy sequences, but not all Cauchy sequences are convergent. Why? Because the Cauchy sequences exist only among the rationals — they don't have that number ${a,}$ because the ${a}$ doesn't exist among the rationals. If it did, we wouldn't have this problem of trying to figure out what ${x}$ is in ${x^2 = 2.}$ 
+
+### Convergence of Cauchy Sequences
+Suppose ${(x_n)}$ is a convergent sequence, with some limit ${a.}$ We'll let ${\varepsilon \gt 0,}$ and define ${\varepsilon' := {\varepsilon}/{2} \gt 0.}$ Because we assumed that ${(x_n)}$ is convergent, there exists an ${N \in \nat}$ such that, for any index ${n}$ greater than or equal to ${N}$:
+
+$$
+	\abs{x_n - a} \lt \varepsilon'.
+$$
+
+We need to tie this to the Cauchy sequence's definition of distance (error between ${x_n}$ and ${x_m}$). We can just write:
+
+$$
+	\abs{x_n - x_m} = \abs{x_n - a + a - x_m}.
+$$
+
+And by the triangle inequality:
+
+$$
+	\abs{x_n - x_m} = \abs{x_n - a} + \abs{a - x_m}
+$$
+
+We thus have:
+
+$$
+	\abs{x_n - x_m} = 
+	\tnote{\abs{x_n - a}}{$\lt \varepsilon'$} + 
+	\tnote{\abs{a - x_m}}{$\lt \varepsilon'$}
+$$
+
+And since we defined ${\varepsilon' := \varepsilon/2 \gt 0,}$ we have:
+
+$$
+	(\abs{x_n - x_m}) \le (\abs{x_n - a} + \abs{a - x_m}) \lt (2 \varepsilon'=\varepsilon).
+$$
+
+The Cauchy sequence, does, in fact, converge.
+
+## Dedekind Cuts
+
+_~remark~: For this section, assume Cauchy sequences do not exist. In fact, Dedekind cuts came before Cauchy sequences historically. Cauchy sequences were addressed first because they're generally easier to think about. Dedekind cuts are a bit trickier because the definitions are hefty, but they're well manageable, as long as we follow the definitions very carefully. Otherwise, we can quickly come unstuck!_
+
+Let's think about where ${x}$ might be, given ${x^2 = 2.}$ Let's consider ${x^2 \neq 2.}$ In that case, we have ${x^2 \lt 2,}$ or ${x^2 \gt 2.}$ Let's look at ${x^2 \lt 2}$ first. What is the set of all numbers whose square is less than 2? I.e., what is the set ${X = \set{x \in \rat : x^2 \lt 2}?}$ If we try some values, we'd find that this is a pretty big subset:
+
+$$
+\footnotesize
+	\lset{\ldots, -2, \ldots, \tnote{\lset{
+		\ldots,-1\frac{1}{10},-1,\ldots, -\frac{1}{8}, -\frac{1}{4}, -\frac{1}{3}, -\frac{1}{2},0,\frac{1}{2},\frac{1}{3},\frac{1}{4}, \frac{1}{8}, \ldots, 1,1 \frac{1}{10},\ldots
+	}}{$A$}, \ldots, 2, \ldots}
+$$
+
+The problem with ${A}$ are those pesky dots at the ends. We'd like to know where this set starts and ends. More formally, we'd like to know if ${A}$ has a _least upper bound_. Let's define some terminology.
+
+> __~upper bound~.__ Let ${P}$ be a poset ${(P, \le)}$ with a set ${S \subseteq P.}$ If there exists an element ${\mathcal{a} \in P}$ such that for all ${s \in S,}$ the relation ${s \le \mathcal{a}}$ is true, then ${\mathcal{a}}$ is called an _upper bound_ of ${S.}$ We write ${\df{upper-bounds}[S]}$ to denote the set of all upper bounds of ${S.}$ If ${\df{upper-bounds}[S] \neq \nil,}$ we say that ${S}$ is _bounded above_.
+
+
+~example~. Let ${A = \set{1,2,3,4,5}}$ with ${A \subset \uint.}$ 5 is an upper bound of ${A.}$ So are 6, 7, 8, 9, 10, and so on, because ${A \subset \uint.}$
+
+> __~lower bound~.__ Let ${P}$ be a poset ${(P,\le)}$ with a set ${S \subseteq P.}$ If there exists an element ${\mathcal{a} \in P}$ such that, for all ${s \in S,}$ the relation ${\mathcal{a} \le s}$ is true, then ${\mathcal{a}}$ is called a _lower bound_ of ${S.}$ We write ${\df{lower-bounds}[S]}$ to denote the set of all lower bounds of ${S.}$ If ${\df{lower-bounds}[S] \neq \nil,}$ then we say that ${S}$ is _bounded below_.
+
+~example~. Let ${A = \set{7,8,9,10}}$ with ${A \subset \uint.}$ 7 is a lower bound of ${A.}$ So is 6, 5, 4, and so on, because ${A \subset \uint.}$
+
+> __~bounded set~.__ Given a poset ${(P,\le)}$ with a set ${S \subseteq P.}$ We say that ${P}$ is bounded above and below if, and only if, ${\df{lower-bounds}[S] \neq \nil}$ and ${\df{upper-bounds}[S] \neq \nil.}$ That is, there exists elements ${n}$ and ${N}$ such that ${n \le x \le N}$ for all ${x \in S.}$
+
+> __~least upper bound~.__ Given a poset ${(P,\le)}$ with a set ${S \subseteq P}$ and ${\df{upper-bounds}[S] \neq \nil.}$ If there exists an element ${n \in \df{upper-bounds}[S],}$ such that, for all ${u \in \df{upper-bounds}[S],}$ the relation ${n \le u}$ holds, then we say that ${n}$ is the _least upper bound_ or _supremum_ of ${S}$ and write ${\sup S = n.}$
+
+The least upper bound (supremum), in short, is the least upper bound among all upper bounds. Notice that this implies that the least upper bound need not be in the subset ${S.}$ Why? Because any element in the superset of ${S}$ is a candidate for being an upper bound.
+
+> __~greatest lower bound~.__ Given a poset ${(P,\le)}$ with a set ${S \subseteq P}$ and ${\df{lower-bounds}[S] \neq \nil.}$ If there exists an element ${\ell \in \df{lower-bounds}[S],}$ such that, for all ${L \in \df{lower-bounds}[S],}$ the relation ${\ell \ge L}$ holds, then we say that ${n}$ is the _greatest lower bound_ or _infimum_ of ${S}$ and write ${\inf S = n.}$
+
+The diagram below is helpful for parsing the definitions.
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1665770007/math/inf-sup_ihh5am.svg"}
+imwidth={"494"} imheight={"93"} caption={"infsup"} width={"100"} />
+
+We've marked the maximum and minimum of ${A}$ separately to communicate the fact that they _can_ be distinct, but they don't have to be, and vice versa. If ${\sup A}$ turns out to be in ${A,}$ then it is also ${\max A.}$ Likewise, if ${\inf A}$ turns out to be in ${A,}$ then it is also ${\min A.}$ But it's not always the case that ${\sup A \in A,}$ nor is it always the case that ${\inf A \in A.}$[^note_sup] Put differently, if ${\min A}$ exists, then ${\min A = \inf A,}$ and if ${\max A}$ exists, then ${\max A = \sup A.}$ For both these propositions, neither the sufficient condition nor the converse is guaranteed to be true.
+
+[^note_sup]: As we'll see later, the key distinction between the four concepts is that ${\min A}$ and ${\max A}$ aren't guaranteed to exist for a set ${A \subset \reals,}$ but ${\sup A}$ and ${\inf A}$ are guaranteed to exist for ${A \subset \reals}$ (where ${\reals}$ is the set of all real numbers).
+
+The greatest lower bound (infimum) is the greatest lower bound among all lower bounds. Like the supremum, the least upper bound need not be in the subset ${S.}$ It depends entirely on how we've defined the superset of ${S.}$ The infimum is also denoted ${\text{lub}~S,}$ and the infimum is also alternatively denoted ${\text{glb}~S.}$ We use ${\sup S}$ and ${\inf S}$ because ${\LaTeX}$ provides them natively.
+
+So, for our set ${\Phi = \set{x: x \lt 2},}$ there are many upper bounds. We know that ${\sup \Phi = 2.}$ Why? Because the subset ${\Phi}$ comprises all the rationals less than 2, and for all rationals ${x \ge 2}$ (the upper bounds of ${\set{x:x \lt 2}}$), it is true that ${2 \le x.}$ Is there a supremum for the set ${A=\set{x:x^2 \lt 2}?}$ Let ${y = \frac{p}{q} \in \rat,}$ such that ${y \gt x}$ for all ${x \in A.}$ Suppose ${y}$ is the first rational satisfying ${y^2 \gt 2.}$ Consider ${\hat{y}=\frac{4+3y}{3+2y}.}$ In that case, we have ${\ar{\hat{y}^2-2=\frac{y^2-2}{(3+2y)^2}} \gt 0.}$ So, we have ${\hat{y}^2 \gt 2.}$ But we know that ${\hat{y} \lt y,}$ so it cannot be true that ${y^2 \gt 2.}$ What if ${y^2 \lt 2?}$ Again we have ${\hat{y}=\frac{4+3y}{3+2y},}$ but now we have ${\ar{\hat{y}^2-2=\frac{y^2-2}{(3+2y)^2}} \lt 0.}$ Thus, there can be no such way. The set ${A}$ has no supremum.
+
+These two examples, however, give us an idea. Because of the trichotomy law, we know that for any rational number, we're always going to have one of the following relations apply: ${\lt, =, \gt.}$ So, for any ${r \in \rat,}$ we'll have many numbers to the left of ${r}$ (${\small \lt}$), ${r}$ itself (${\small =}$), and many numbers to the right of ${r}$ (${\small \gt}$). Maybe we could define the real numbers in this way: They're _cuts_ in the sequence of rationals. That is, a real number ${r}$ is either the _supremum_ of a subset containing ${r,}$ or the _gap_ between the two sets.
+
+$$
+	\ldots
+	\ldots
+	\lset{\ldots\ldots\ldots\ldots\ldots}
+	{\large r}
+	\lset{\ldots\ldots\ldots\ldots\ldots}	
+	\ldots
+	\ldots
+\\
+	\ldots
+	\ldots
+	\lset{\ldots\ldots\ldots\ldots\ldots}
+	\lset{{\large r}\ldots\ldots\ldots\ldots\ldots}
+	\ldots
+	\ldots
+$$
+
+This is where the name _Dedekind cut_ comes from. We're defining a new set of numbers by making _cuts_ (or _cutoffs_, _splits_, etc.) along the sequence of rationals. We may may feel that this isn't quite as "natural" or "intuitive" as what we did for the integers and rationals. For those constructions, the new numbers resulted from mappings defined in terms of established operations. We'll revisit this feeling once we've established a bit more rigor to this notion of cutting.
+
+> __~cut~.__ A cut ${\alpha}$ is a subset of ${\rat}$ such that: (1) ${\alpha}$ contains a rational number, but not all rational numbers. (2) Every rational number in ${\alpha}$ is smaller than every rational number _not in_ ${\alpha.}$ (3) No number in ${\alpha}$ is greater than any other number in ${\alpha.}$
+
+Right off the bat, this definition is packed with a lot of conditions:
+
+|       | ~definition components: cut~                                   |
+| ----- | -------------------------------------------------------------- |
+| 2.0.1 | ${{\alpha\subset\rat}}$                                        |
+| 2.0.2 | ${{\alpha\neq\nil}}$                                           |
+| 2.0.3 | ${{\alpha\neq\rat}}$                                           |
+| 2.0.4 | ${{(p\in\alpha)\land(q\in\rat)\land(q \lt p)\nc q \in\alpha}}$ |
+| 2.0.5 | ${{(p\in\alpha)\nc(\exists r.[(r\in\alpha)\land(p\lt r)])}}$   |
+
+We have to be a little careful with the notion of a cut.

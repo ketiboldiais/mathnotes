@@ -1,0 +1,253 @@
+# Linear Approximation
+
+The primary formula we use for linear approximations:
+
+$$
+	f(x) \approx f(x_0) + [f'(x_0) \cdot (x - x_0)]
+$$
+
+The formula above states that the value of some function ${f,}$ at a given
+input ${x}$ is approximately the sum of ${f(x_0)}$ and
+${f'(x_0) \times (x - x_0),}$ where ${x_0}$ is a __base point__. A level
+deeper, the formula provides that if we were given some curve ${f,}$ its
+value at ${x}$ is approximately the same as the value ${x}$ at its tangent
+line.
+
+For example, consider ${f(x) = \ln x.}$ We know ${f'(x)= \dfrac{1}{x}.}$
+Let's pick a base point, say, ${x_0 = 1.}$ We use ${1}$ because it's a
+point where we immediately know the value for the natural logarithm
+${\ln 1 = 0.}$ Where ${x_0 = 1,}$ we have:
+
+- ${f(1) = \ln 1 = 0}$
+- ${f'(1) = \dfrac{1}{1} = 1}$
+
+Applying the approximation formula to our facts:
+
+$$
+	\begin{aligned} \ln x &\approx f(x_0) + f'(x_0) \cdot (x - x_0) \\ &\approx \ln 1 + 1 \cdot (x - 1) \\ &\approx 0 + x - 1 \\ &\approx x - 1 \end{aligned}
+$$
+
+Thus, we have:
+
+$$
+	\ln x \approx x - 1
+$$
+
+If we plot ${f(x) = \ln x}$ and ${g(x) = x - 1,}$ we see the following:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656594230/math/linear_approximation_1_xwuaws.svg"
+	}
+	imwidth={"329"}
+	imheight={"215"}
+	caption={"Visualizing linear approximation"}
+	width={"50"}
+/>
+
+What the graph above tells us is that the value of ${\ln x}$ is roughly
+${x - 1.}$ The key word, however, is &#8220;roughly.&#8221; This is just an
+approximation. And with our plot, we can see that the approximation is good
+as long as we're somewhere near ${x = 1.}$ As we venture further and
+further from ${x = 1,}$ the less accurate the approximation is.
+
+Another way to interpret this approximation method is to refer to the
+definition of a derivative. Recall this definition:
+
+$$
+	f'(x_0) = \lim\limits_{\Delta x \to x} \dfrac{\Delta f}{\Delta x}
+$$
+
+Reading this expression from the other direction, we have:
+
+$$
+	\lim\limits_{\Delta f \to \Delta x} = f'(x_0)
+$$
+
+This effectively states that the average rate of change, when ${\Delta x}$
+is very near zero, is the derivative. This means that:
+
+$$
+	\dfrac{\Delta f}{\Delta x} \approx f'(x_0)
+$$
+
+In other words, the average rate of change is approximately the
+infinitesimal rate of change. All together, the two formulas below are
+essentially the same:
+
+1. ${f(x) \approx f(x_0) + [f'(x_0) \cdot (x - x_0)]}$
+2. ${\dfrac{\Delta f}{\Delta x} \approx f'(x_0)}$
+
+To see how, we manipulate the second formula. Multiplying ${\Delta x}$ to
+both sides:
+
+$$
+	\Delta f \approx f'(x_0) \cdot \Delta x
+$$
+
+Evaluating ${\Delta f}$ and ${\Delta x:}$
+
+$$
+	f(x) - f(x_0) \approx f'(x_0) \cdot (x - x_0)
+$$
+
+Adding ${f(x_0)}$ to both sides, we get the first formula:
+
+$$
+	f(x) \approx f(x_0) + [f'(x_0) \cdot (x - x_0)]
+$$
+
+Thus, formulas (1) and (2) are simply two sides of the same coin, with each
+providing a unique way of interpreting approximations.
+
+When we work with linear approximations, we always want to have the base
+point ${x_0 = 0.}$ Why? Because it result in a more readable formula:
+
+$$
+	f(x) \approx f(0) + f'(0)x
+$$
+
+That said, there are a few precautions to keep in mind with our formulas.
+The first formula,
+
+$$
+	f(x) \approx f(x_0) + f'(x_0)[(x - x_0)]
+$$
+
+only works when ${x \approx x_0.}$ The second formula,
+
+$$
+	f(x) \approx f(x) + f'(x)x
+$$
+
+only works when ${x \approx 0.}$ With these rules in mind, let's consider a
+few key functions: ${y = \sin x,}$ ${y = \cos x,}$ and ${y = e^x.}$
+
+For ${y = \sin x,}$ we know that ${y' = \cos x.}$ Laying the values out in
+a table:
+
+| ${f(x)}$   | ${f'(x)}$  | ${f(0)}$       | ${f'(0)}$      |
+| ---------- | ---------- | -------------- | -------------- |
+| ${\sin x}$ | ${\cos x}$ | ${\sin 0 = 0}$ | ${\cos 0 = 1}$ |
+
+Applying our formula to our findings:
+
+$$
+	\begin{aligned} f(x) &\approx f(0) + f'(0)x \\ \sin x &\approx \sin 0 + (\cos 0)x \\ \sin x &\approx 0 + x \end{aligned}
+$$
+
+Hence, we can infer:
+
+$$
+	\large \sin x \approx x ~~\mid~~ x \approx 0
+$$
+
+Next, the function ${y = \cos x.}$ We know that ${y' = - \sin x.}$ The
+table:
+
+| ${f(x)}$   | ${f'(x)}$    | ${f(0)}$       | ${f'(0)}$        |
+| ---------- | ------------ | -------------- | ---------------- |
+| ${\cos x}$ | ${- \sin x}$ | ${\cos 0 = 1}$ | ${- \sin 0 = 0}$ |
+
+Thus, we have:
+
+$$
+	\begin{aligned} f(x) &\approx f(0) + f'(0)x \\ \cos x &\approx \cos 0 + (-\sin 0)x \\ \cos x &\approx 1 - 0 \\ \cos x &\approx 1 \end{aligned}
+$$
+
+Accordingly, we conclude:
+
+$$
+	\large \cos x \approx 1 ~~\mid~~ x \approx 0
+$$
+
+The same analysis extends to ${f(x) = e^x.}$
+
+| ${f(x)}$ | ${f'(x)}$ | ${f(0)}$    | ${f'(0)}$   |
+| -------- | --------- | ----------- | ----------- |
+| ${e^x}$  | ${e^x}$   | ${e^0 = 1}$ | ${e^0 = 1}$ |
+
+Once more this yields:
+
+$$
+	\large e^x \approx 1 + x
+$$
+
+Let's consider two more useful approximations. These the approximations
+for:
+
+1. ${f(x) = \ln(1 + x)}$
+2. ${f(x) = (1 + x)^r}$
+
+Examining ${f(x) = \ln(1+x),}$ we have:
+
+| ${f(x)}$     | ${f'(x)}$          | ${f(0)}$      | ${f'(0)}$              |
+| ------------ | ------------------ | ------------- | ---------------------- |
+| ${\ln(1+x)}$ | ${\dfrac{1}{1+x}}$ | ${\ln 1 = 0}$ | ${\dfrac{1}{1+x} = 1}$ |
+
+And for ${f(x) = (1+x)^r,}$ we have:
+
+| ${f(x)}$    | ${f'(x)}$        | ${f(0)}$        | ${f'(0)}$            |
+| ----------- | ---------------- | --------------- | -------------------- |
+| ${(1+x)^r}$ | ${r(1+x)^{r-1}}$ | ${(1+0)^r = 1}$ | ${r(1+0)^{r-1} = r}$ |
+
+Our analysis yields the following conclusions:
+
+1. ${\large \ln(1+x) \approx x}$
+2. ${\large (1+x)^r \approx 1 + rx}$
+
+Why are these approximations useful? Because they allow us to think about
+function outputs in a much simpler way. For example, what's the value of
+${\ln(1.1)?}$ Most of us don't know off the top of our heads. But if we
+knew about linear approximation, we'd find that:
+
+$$
+	\ln(1.1) = \ln(1 + 0.1) \approx \dfrac{1}{10}
+$$
+
+Here's another example:
+
+> _Problem: Rational-natural-radicand_. Find a linear approximation near
+> ${x=0}$ (${x \approx 0}$) of the function:
+>
+> $$
+> 	\dfrac{e^{-3x}}{\sqrt{1+x}}
+> $$
+
+The first step to this problem is to rewrite in such a way that we can
+apply our linear approximation formulas. In this case:
+
+$$
+	\dfrac{e^{-3x}}{\sqrt{1+x}}=e^{-3x}(1+x)^{-1/2}
+$$
+
+Applying our formulas:
+
+$$
+	\red{e^{-3x}}\blue{(1+x)^{-1/2}} \approx \red{(1-3x)}\blue{\left(1 - \dfrac{1}{2}x\right)}
+$$
+
+If we carry out the multiplication:
+
+$$
+	(1-3x) \left( 1 - \dfrac{1}{2}x\right) = 1 - 3x - \dfrac{1}{2}x + \dfrac{3}{2}x^2
+$$
+
+With the expanded expression, it turns out that we can throw out the
+${\dfrac{3}{2}x^2}$ term. Why? Because when we performed the original
+linear approximation, we threw out quite a few terms. In fact, the expanded
+expression above omits many other terms. Because we took that liberty in
+our original approximation, we can take that liberty again here:
+
+$$
+	\begin{aligned} (1-3x) \left( 1 - \dfrac{1}{2}x\right) &= 1 - 3x - \dfrac{1}{2}x + \cancel{\dfrac{3}{2}x^2} \\[1em] &\approx 1 - 3x - \dfrac{1}{2}x \\[1em] &\approx 1 - \dfrac{7}{2}x \end{aligned}
+$$
+
+Hence:
+
+$$
+	\dfrac{e^{-3x}}{\sqrt{1+x}} \approx 1 - \dfrac{7}{2}x
+$$
+
+That's very cool. We've effectively come up with a way to reason about the
+original, nasty rational function through a much simpler interpretation.

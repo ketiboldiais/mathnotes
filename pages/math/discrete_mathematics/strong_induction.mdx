@@ -1,6 +1,6 @@
 # Strong Induction
 
-Another kind of proof-by-induction is the **proof-by-strong-induction**.
+Another kind of proof-by-induction is the __proof-by-strong-induction__.
 This is a proof structured according to the _axiom of strong induction_:
 
 > _Axiom: Strong Induction_. Let ${P(n)}$ be any predicate. If ${P(n)}$ is
@@ -8,13 +8,13 @@ This is a proof structured according to the _axiom of strong induction_:
 > true, then ${P(n+1).}$ More formally:
 >
 > $$
-> 		P(0) \land P(1) \land \ldots \land P(n) \implies P(n+1)
+> 		P(0) \land P(1) \land \ldots \land P(n) \nc P(n+1)
 > $$
 
 The only difference between ordinary induction and strong induction is that
 with ordinary induction, we are attempting to prove that
-${P(n) \implies P(n+1).}$ In strong induction, we are trying to prove that
-${P(0) \land \ldots \land P(n) \implies P(n+1).}$ However, he technique is
+${P(n) \nc P(n+1).}$ In strong induction, we are trying to prove that
+${P(0) \land \ldots \land P(n) \nc P(n+1).}$ However, he technique is
 no different. We are still trying to prove an implication, so we assume
 that ${P(n)}$ is true, ${P(n-1)}$ is true, ${P(n-2)}$ is true, all the way
 to ${P(0).}$ It is called strong induction because we are allowed to assume

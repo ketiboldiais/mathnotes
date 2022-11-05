@@ -1,0 +1,47 @@
+# Complexity
+
+_This note covers basic concepts in the theory of computation._
+
+Towards the early twentieth century, mathematicians grew increasingly concerned with the thought experiments philosophers cooked up. Most notably, Bertrand Russell demonstrated paradoxes in set theory. Debugging ensued, and for a brief period, peace prevailed. By this time, Richard Dedekind, Karl Weierstrass, and Giuseppe Peano had constructed a sufficiently robust axiomatic system (what we now know as the _Peano axioms_), and the mathematics community appeared ready to accept. True to form, the philosophers returned with a dish: The axioms were unsatisfactory because Gottlob Frege had shown that they could be reduced to even more primitive notions. A few mathematicians turned to Frege's system. But just as it began drawing in a few followers, the philosophers brought dessert: One of Frege's axioms led to a contradiction. Enter crisis.
+
+Rising to the challenge, David Hilbert proposed a crisis management plan—_Hilbert's program_. In short, the objective was to construct an axiomatic system that ticked five boxes:
+
+> ${\ws~~\df{i.}}$ __Formalism__. The system must be such that all mathematical statements can be written in a formal language.
+>
+> ${\ws~~\df{ii.}}$ __Completeness__. The system must show that all true mathematical statements can be proved in the formal language.
+> 
+> ${\ws~~\df{iii.}}$ __Consistency__. The system must show that there can be no proof of the statements ${p}$ and ${\neg p.}$
+> 
+> ${\ws~~\df{iv.}}$ __Conservation__. The system must show that "real statements" (e.g., computations and combinatorial manipulations) proved by abstract means, can also be proved without abstract means.
+> 
+> ${\ws~~\df{v.}}$ __Decidability__. The system must have a method of determining, in a finite number of steps, whether any given statement is true or false.
+
+Hilbert's program returned a peculiar side-effect. Instead of a single, unified effort to meet these goals, Hilbert also met a growing crowd of logicians, mathematicians, and philosophers who were more interested in the _validity_ of his plan. Indeed, the moment we start discussing entities with such high precision, we have grounds for mathematical research—the systems themselves are mathematical objects. And where there are grounds for mathematical research, there are seedlings of a mathematical field. Today, that field has grown luscious enough to merit a name: _metamathematics_. Research in metamathematics, particularly with respect to consistency, completeness, and decidability, has pollinated other areas. Research into decidability (e.g., a subset of Alan Turing's work) ultimately led to the _theory of computation_.
+
+## Foundational Questions
+Below are a few deep, foundational questions that lie at the heart of the theory of computation.
+
+1. What can a computer do with infinite resources?
+2. What can a computer do with finite resources?
+3. What makes a problem harder on a computer than another?
+4. How do we classify problems as hard, easy, or anything in between?
+5. How _should_ we classify problems as hard, easy, or anything in between?
+
+## Regular Expessions
+Before we proceed further, we establish some symbols and operations.
+
+> __~digits~.__ We call the set of symbols ${\set{0,1,2,3,4,5,6,7,8,9}}$ _digits_, and we denote it with the symbol `\d`.
+
+> __~latin letters~.__ We call the set of symbols
+> 
+> $$
+> 	\small\lset{\ax{
+> 		a & b & c & d & e & f & g & h & i & j \\ 
+> 		k & l & m & o & p & q & r & s & t & u \\
+> 		v & w & x & y & z & A & B & C & D & E \\
+> 		F & G & H & I & J & K & L & M & O & P \\ 
+> 		Q & R & S & T & U & V & W & X & Y & Z
+> 	}}
+> $$
+> 
+> the _Latin alphabet_, and we denote it with the symbol `\w`.

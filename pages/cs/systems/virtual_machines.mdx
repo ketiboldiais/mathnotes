@@ -1,11 +1,6 @@
 import {Stack} from "../../../components/illus/components/Stack/Stack";
 import {FTree} from "../../../components/illus/components/FTree/FTree";
 
-<head>
-	<title>Virtual Machines</title>
-	<description>Notes on virtual machines.</description>
-</head>
-
 # Virtual Machines
 
 
@@ -62,7 +57,7 @@ class Main {
 
 How do these characters above end up being understood and executed by a
 computer? For modern computers, the best place to start in answering this
-question is the **virtual machine**. The general process works as follows:
+question is the __virtual machine__. The general process works as follows:
 
 <Fig
 	link={
@@ -106,7 +101,7 @@ each target computer:
 Needless to say, this is a cumbersome process. Assuming each of those
 programs is a high-level language — the most likely case — the programmer
 must write a separate compiler for all the computers. Is there a better
-approach? Sure. The programmer could just write a **virtual machine** — a
+approach? Sure. The programmer could just write a __virtual machine__ — a
 program allowing them to "write once, run anywhere:"
 
 <Bipartite
@@ -123,17 +118,17 @@ program allowing them to "write once, run anywhere:"
 
 />
 
-This approach is called **two-tier compiling** — compilation consisting of
+This approach is called __two-tier compiling__ — compilation consisting of
 two stages. In the first stage, the source code is sent to a compiler, much
 like traditional compiling. The compiler, however, compiles the source code
-into **bytecode** — virtual machine code. A virtual machine is simply an
+into __bytecode__ — virtual machine code. A virtual machine is simply an
 abstraction of a computer. Essentially, an imaginary computer.
 
 That virtual machine code is understood by a program on the target computer
-called a **virtual machine (VM) implementation**. In short, each computer
+called a __virtual machine (VM) implementation__. In short, each computer
 has a VM implementation installed, This program takes the bytecode as input
 and translates it to the machine language understood by the computer.
-Effectively, a **translator**.
+Effectively, a __translator__.
 
 <Fig
 	link={
@@ -152,7 +147,7 @@ machine languages, but we can mitigate the problem it poses.
 To repeat, the virtual machine is an abstraction of a computer. It isn't an
 actual, physical computer. It's a mental construction that analogizes a
 real-world computer. This idea — analogizing or modelling real world
-entities — is called **virtualization**.
+entities — is called __virtualization__.
 
 Virtualization is a hallmark of not just computer science, but human
 achievement as well. In the very first volume of these notes, we presented
@@ -290,15 +285,15 @@ while-statements, for-statements, and so on.
 As such, in any usable VM language, we'll find some variant of the
 following commands:
 
-1. A **goto command** to execute an instruction other than the next
+1. A __goto command__ to execute an instruction other than the next
    instruction,
-2. An **ifgoto command** to execute an instruction other than the next, but
+2. An __ifgoto command__ to execute an instruction other than the next, but
    only if a certain condition is mset,
-3. a **label command** to "bookmark" particular instructions.
+3. a __label command__ to "bookmark" particular instructions.
 
 In low level programs like the vitual machine's, branching commands fall
-under two broad categories: (1) **unconditional branching** and (2)
-**conditional branching**.
+under two broad categories: (1) __unconditional branching__ and (2)
+__conditional branching__.
 
 Let's illustrate the distinctions between these categories via example.
 Below is some high-level program that performs multiplication, alongside
@@ -363,9 +358,9 @@ thing — some sequence of operations on a set of arguments. Because
 functions are indispensible in modern programming, a VM language will have
 some variant of these commands:
 
-1. A **call command** for calling functions.
-2. A **function command** for indicating functions.
-3. A **return command** to route the function's output elsewhere.
+1. A __call command__ for calling functions.
+2. A __function command__ for indicating functions.
+3. A __return command__ to route the function's output elsewhere.
 
 Let's consider an example. Suppose the programmer writes something that
 looks like:
@@ -438,13 +433,13 @@ int f(n) {
 int x = f(2)
 ```
 
-This structure has a specific **call chain** or **call sequence**:
+This structure has a specific __call chain__ or __call sequence__:
 
 $$
-	\mm{f} \to \mm{g} \to \mm{h}
+	\texttt{f} \to \texttt{g} \to \texttt{h}
 $$
 
-Every single one of the functions above has some **state** — private worlds
+Every single one of the functions above has some __state__ — private worlds
 of their own — and these states must exist as long as the function is on
 the call chain. Otherwise, we either wouldn't have a chain at all, or we'd
 have functions colliding with one another.
@@ -550,7 +545,7 @@ function main 0
 </Grid>
 
 Making these calls results in two separate states: A state for `main` (the
-**caller**), and a state for `multiply` (the **callee**).
+__caller__), and a state for `multiply` (the __callee__).
 
 <Fig
 	link={
@@ -572,11 +567,11 @@ call chain lengthens and shortens with each function call.
 
 $$
 \begin{aligned}
-	&\mm{f} \\
-	&\mm{f} \to \mm{g} \\
-	&\mm{f} \to \mm{g} \to \mm{h} \\
-	&\mm{f} \to \mm{g} \\
-	&\mm{f} \\
+	&\texttt{f} \\
+	&\texttt{f} \to \texttt{g} \\
+	&\texttt{f} \to \texttt{g} \to \texttt{h} \\
+	&\texttt{f} \to \texttt{g} \\
+	&\texttt{f} \\
 \end{aligned}
 $$
 
@@ -658,7 +653,7 @@ additional memory. So, we push a few more values onto the stack. These
 values are the function's _return address_ and the pointers to the
 function's currently used segments (e.g., the pointers to the local
 segment, argument segment, this segment, etc). This area of the stack is
-called the caller's **function frame**.
+called the caller's __function frame__.
 
 With all of this data saved, we can now jump to the instruction
 `function f nVars`, where `nVars` is the number of local variables for `f`.
@@ -745,7 +740,7 @@ come back and pick up where it left off in ${A.}$ That's a non-trivial
 action, and humans themselves occassionally fail it ("Where was I?").
 
 Second, the introduction of function calls now creates the notion of a
-**global stack**. Examining the preceding example, we can imagine a
+__global stack__. Examining the preceding example, we can imagine a
 situation where `f()` calls `g()`, `g()` calls `h()`, `h()` calls `i()`,
 and so on. The sum of all these functions constitutes the global stack.
 
@@ -753,7 +748,7 @@ Third, because of how large the global stack can be, when we program in a
 higher-level language and have to deal with memory issues, it's often
 easier to think of function calls rather than the individual elements of
 the global stack. This is done by dividing the global stack into **function
-blocks** or **call frames**:
+blocks__ or __call frames**:
 
 <Fig
 	link={
@@ -766,7 +761,7 @@ blocks** or **call frames**:
 />
 
 By making these divisions, we can analyze programs with a higher-level
-abstraction called the **call stack**:
+abstraction called the __call stack__:
 
 <Fig
 	link={
@@ -920,9 +915,9 @@ notion of a _class_ is just a high-level abstraction. At the virtual
 machine level and below, they reduce to functions.
 
 The `call` and `return` statements in a language are implemented through a
-set of **protocols**, or **contracts** — a set of rules and conditions that
+set of __protocols__, or __contracts__ — a set of rules and conditions that
 the entities performing the operation must always abide by. For functions,
-these entities are the **caller** and the **callee**. For the caller, these
+these entities are the __caller__ and the __callee__. For the caller, these
 rules apply:
 
 1. If the caller is a callee, it follows the callee protocol, alongside the
@@ -967,7 +962,7 @@ Now that we have the basic protocols, let's look at how calls are handled.
 The VM command for a call might take the form:
 
 $$
-	\mm{call}~\seq{\ii{function-name}}~\seq{\ii{n-args}}
+	\texttt{call}~\ix{\it{function-name}}~\ix{\it{n-args}}
 $$
 
 This command is an encapsulation of the following instructions:
@@ -1082,7 +1077,7 @@ The other command we want to consider is the function command. We've seen
 this command take the form:
 
 $$
-	\mm{function}~\seq{\ii{functionName}}~\seq{\ii{n-vars}}
+	\texttt{function}~\ix{\it{functionName}}~\ix{\it{n-vars}}
 $$
 
 This command is an encapsulation of the following:
@@ -1116,7 +1111,7 @@ Let's say the called function finishes its work. It now encounters the
 command:
 
 $$
-	\mm{return}
+	\texttt{return}
 $$
 
 To understand how this command works, recall the protocols we mentioned
@@ -1389,9 +1384,9 @@ segments `RAM[0]` and `RAM[1]`. The contents of these addresses are the
 values `257` and `1024` respectively. From the diagram above, we see that
 there are two possible interpretations of these numbers:
 
-1. A **substantive interpretation** — the actual, numeric values `257` and
+1. A __substantive interpretation__ — the actual, numeric values `257` and
    `1024`, and
-2. a **procedural interpretation** — the memory addresses `257` and `1024`.
+2. a __procedural interpretation__ — the memory addresses `257` and `1024`.
 
 How does the computer know which interpretation to use? Through _pointer
 syntax_. When we write:
@@ -1589,7 +1584,7 @@ segments they use. Static variables, however, have be visible to _all_
 operations.
 
 There are numerous ways to implement the static segment. One approach is to
-store all of these static variables in a **global space** — a designated
+store all of these static variables in a __global space__ — a designated
 area in memory that will _always_ store some static variable:
 
 <Fig
@@ -1677,12 +1672,12 @@ the simple approach.
 The simple approach is to design the translator as a program of three
 parts:
 
-- A **parser** (named `Parser`) that parses each VM command into lexical
+- A __parser__ (named `Parser`) that parses each VM command into lexical
   elements. This is the program that breaks the stream of virtual machine
   code into smaller, meaningful parts.
-- An **encoder** (named `CodeWriter`) that will take and implement the
+- An __encoder__ (named `CodeWriter`) that will take and implement the
   parser's output.
-- A **driver** (a program called `Main`) that will conduct and direct the
+- A __driver__ (a program called `Main`) that will conduct and direct the
   entire process (the VM translator's "brain").
 
 For the main driver, the process works as follows:

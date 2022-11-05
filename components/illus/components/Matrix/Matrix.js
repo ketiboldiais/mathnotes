@@ -8,7 +8,7 @@ import {
 	isObjectLiteral,
 } from "../utils";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
+import { range, scaleBand, select } from "d3";
 
 const formatData = (arr) => {
 	let data = [];
@@ -43,14 +43,15 @@ export const Matrix = ({
 
 	const columns = getPropertyValues(_data, "col");
 	const numberOfColumns = Math.max(...columns) + 1;
+	
 
-	const x = d3.scaleBand().domain(columns).range([0, _svg.width]).padding(0.04);
-	const y = d3.scaleBand().domain(rows).range([0, _svg.height]).padding(0.04);
+	const x = scaleBand().domain(columns).range([0, _svg.width]).padding(0.04);
+	const y = scaleBand().domain(rows).range([0, _svg.height]).padding(0.04);
 
 	const renderColumnIndices = (selection) => {
 		const columnIndices = selection
 			.selectAll(".columnIndices")
-			.data(d3.range(numberOfColumns))
+			.data(range(numberOfColumns))
 			.enter()
 			.append("g")
 			.attr('class', 'matrixIndices matrixColumnIndex')
@@ -68,7 +69,7 @@ export const Matrix = ({
 	const renderRowIndices = (selection) => {
 		const rowIndices = selection
 			.selectAll(".rowIndices")
-			.data(d3.range(numberOfRows))
+			.data(range(numberOfRows))
 			.enter()
 			.append("g")
 			.attr('class', 'matrixIndices matrixRowIndex')
@@ -85,7 +86,7 @@ export const Matrix = ({
 	};
 
 	const renderMatrix = () => {
-		const canvas = d3.select(_matrixREF.current).select("g.svgElement");
+		const canvas = select(_matrixREF.current).select("g.svgElement");
 		const matrixCanvas = canvas
 			.append("g")
 			.attr("class", className.matrix.canvas);

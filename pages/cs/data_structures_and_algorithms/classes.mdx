@@ -28,17 +28,17 @@ another to number theory.
 
 Trying to model these complex ideas with just primitive types is painful.
 Worse, what if we need to change those models? What we need is an
-_abstraction_—**higher-order data types**.
+_abstraction_—__higher-order data types__.
 
 Recall that a data type is a set consisting of two subsets: a set of
-values, called the data type's **domain**, and a **set of operations** on
+values, called the data type's __domain__, and a __set of operations__ on
 those values. For example, the data type `int` is a data type pre-defined
 by C++. The values it represents are the integers (specifically ${-2^{31}}$
 to ${2^{31}}$), and the operations we may perform on those values are the
 various arithmetic and comparison operators (`+`, `*`, `%`, etc.).
 
 With object-oriented programming, we write C++ code to define new data
-types. We say that an **object** is an entity that holds a _data-type
+types. We say that an __object__ is an entity that holds a _data-type
 value_—you can manipulate the data type value by using the object's
 data-type operations. The practice of defining new data types and
 manipulating objects holding data-type values is called **data
@@ -133,8 +133,8 @@ rectangle.cpp:6:6: note: implicitly declared private here
 ```
 
 We get back an error. Why? We're seeing this error because of the concept
-of **visibility**. By default, all class properties and methods are
-`private`. This is an example of an **access modifier**. If a property or
+of __visibility__. By default, all class properties and methods are
+`private`. This is an example of an __access modifier__. If a property or
 method is `private`, then only functions _within_ the class have access to
 the class's properties or methods. Functions outside of the class—e.g.,
 `main()`—do not have access to the private properties or methods. We can
@@ -193,12 +193,12 @@ int main() {
 ```
 
 It works. Notice the use of dots, or periods, to access properties and
-methods. This is called **dot notation**, and is a common syntactic
+methods. This is called __dot notation__, and is a common syntactic
 approach for accessing properties and methods in object-oriented
 languages.[^dotnotationnote]
 
 [^dotnotationnote]:
-    The use of **dot notation** can be traced back to Simula 67, the
+    The use of __dot notation__ can be traced back to Simula 67, the
     language widely credited as the first object-oriented language.
     However, there is evidence of the dot notation being used even further
     back: The PL/I language for the IBM 360 used dot notation to specify
@@ -211,7 +211,7 @@ In the examples above, we set the properties and methods in our classes
 `public` implies that anyone has access to them. This can be very
 dangerous, depending on what our class is being used for. How do we ensure
 that properties and methods are hidden? I.e., only the class has access to
-its methods and properties? For that, we need **access modifiers**. Access
+its methods and properties? For that, we need __access modifiers__. Access
 modifiers are also called _accessors_ or _access specifiers_.
 
 In C++, there are three access modifiers: `public`, `protected`, and
@@ -379,9 +379,9 @@ read them. Hence the term _access modifier_, rather than something like
 the ability to write; it doesn't necessarily restrict the ability to read.
 
 The methods `setRadius()` and `setHeight()` are examples of what we call
-**setters**. Setters are methods for _initializing_ properties in a class
+__setters__. Setters are methods for _initializing_ properties in a class
 definition. The methods `getRadius()` and `getHeight()` are examples of
-**getters**: methods that _retrieve_, or _read_, the values assigned to
+__getters__: methods that _retrieve_, or _read_, the values assigned to
 properties in a class definition.[^classdefinitionnote]
 
 [^classdefinitionnote]:
@@ -486,14 +486,14 @@ akin to a factory sending us some random cylinder.
 
 So how do we ensure that the factory doesn't send us a random cylinder? By
 ensuring that the factory forces us to specify what the cylinder's radius
-and height should be. To do so, we use a **constructor**. A constructor is
+and height should be. To do so, we use a __constructor__. A constructor is
 a method we write inside a class that is automatically called when we
 create an instance of that class. I.e., whenever we order a particular
 object, we must specify what that object's properties are.
 
 There are four different types of constructors in C++: (1) the **default
-constructor**; (2) **non-parameterized constructor**; (3) **parameterized
-constructor**; and (4) **copy constructor**. Of these four, the last three
+constructor__; (2) __non-parameterized constructor__; (3) __parameterized
+constructor__; and (4) __copy constructor**. Of these four, the last three
 are constructors that we write. The default constructor is the constructor
 provided by the compiler. There are several other constructors, but we will
 focus on the latter three first. To do so, let's write a new class called
@@ -999,7 +999,7 @@ own arrays.
 ## Destructors
 
 Where the constructor initializes an instance of a class, the
-**destructor** is a function that deletes, or destroys, an instance of the
+__destructor__ is a function that deletes, or destroys, an instance of the
 class in memory. For example, suppose we have the following class:
 
 ```cpp
@@ -1189,7 +1189,7 @@ taken up by the instance of `LineSegment`, we must free its pointers as
 well.
 
 But how do we do this if we can't access `p1` and `p2`? The answer is
-through the **destructor**. Inside our `LineSegment` class, we include the
+through the __destructor__. Inside our `LineSegment` class, we include the
 following function:
 
 ```cpp
@@ -1295,7 +1295,7 @@ While the class above works fine, it doesn't exactly coincide with C++'s
 approach to OOP. For starters, a core rule of OOP is to hide away the
 implementation details. Here, we can clearly see how the methods
 `perimeter()` and `area()` are implemented. The first step to ensuring
-they're hidden is to use the **scope resolution operator**, denoted with
+they're hidden is to use the __scope resolution operator__, denoted with
 `::` (two colons).
 
 ```cpp
@@ -1433,7 +1433,7 @@ from different project modules. In our `Rectangle` example above, we have
 three separate modules: `main.cpp`, `Rectangle.cpp`, and `mainProgram` (the
 final executable containing all of the individual executables, linked). A
 `make` file is simply a text file that the `make` command referencs to
-build the **targets**—the modules we want built.
+build the __targets__—the modules we want built.
 
 The basic idea behind `make` is this: We want to be able to write
 `make ${t}$`, where ${t}$ is some target file, after which ${t}$ is built.
@@ -1594,8 +1594,8 @@ Both `func1` and `func2` perform the same computation; namely, outputting
 the string `"Hi"` to the console. However, both functions go about it
 differently.
 
-the function `func1` is an **inline function**, while the function `func2`
-is a **non-inline function**. What's the difference between an inline
+the function `func1` is an __inline function__, while the function `func2`
+is a __non-inline function__. What's the difference between an inline
 function and a non-inline function?
 
 With an inline function, the machine code is "copied-and-pasted" directly
@@ -1724,16 +1724,16 @@ object's_ variable."
 The keyword `static` in C++ has two different meanings depending on
 context. There are four contexts for using `static`:
 
-- **Static variables**—a static variable that exists _outside_ of a class
+- __Static variables__—a static variable that exists _outside_ of a class
   or struct.
 
-- **Static functions**—a static function that exists _outside_ of a class
+- __Static functions__—a static function that exists _outside_ of a class
   or struct.
 
-- **Static properties**—a static variable that exists _inside_ of a class
+- __Static properties__—a static variable that exists _inside_ of a class
   or struct.
 
-- **Static methods**—a static function that exists _inside_ of a class of
+- __Static methods__—a static function that exists _inside_ of a class of
   struct.
 
 ## Static Variables.
@@ -1795,7 +1795,7 @@ keyword `static` included in `statics.cpp`, the linker only looked for the
 definition of `s_Variable` inside `statics.cpp`. Removing that keyword, the
 linker went on to examine `driver.cpp`.
 
-We could avoid this problem by using **external linkage**. Inside
+We could avoid this problem by using __external linkage__. Inside
 `statics.cpp`, we avoid initialization, and write:
 
 ```cpp
@@ -2090,7 +2090,7 @@ only inside `foo()`.
 
 ## Duration.
 
-A variable's **duration**, or **lifetime**, denotes how long a variable
+A variable's __duration__, or __lifetime__, denotes how long a variable
 lives. Or, more specifically, it determines when a variable is created, and
 when a variable is destroyed. There are two types of lifetimes: (a)
 _automatic storage duration_, and (b) _static storage duration_.
@@ -2103,15 +2103,15 @@ specifier, have static storage duration.
 
 ## Linkage.
 
-The term **linkage** refers to whether a variable can accessed (or linked)
+The term __linkage__ refers to whether a variable can accessed (or linked)
 in a file other than where it's defined. There are two kinds of linkage:
 (i) internal linkage, and (ii) external linkage. To understand the
 distinction between these two varieties, it's critical to understand how
 linking works.
 
 Recall that when we execute our source code, the compiler generates a
-_translation unit_. **Internal linkage** refers to variables only within
-the scope of the translation unit. **External linkage** refers to variables
+_translation unit_. __Internal linkage__ refers to variables only within
+the scope of the translation unit. __External linkage__ refers to variables
 that exist beyond the translation unit; i.e., the variables are accessible
 throughout the entire program.
 

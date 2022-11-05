@@ -1,0 +1,70 @@
+<Head>
+	<title>Complex Analysis</title>
+	<meta name={`description`} content={`Introduction to complex analysis.`}/>
+</Head>
+
+# Introduction to Complex Analysis
+
+This chapter covers notes on complex analysis.
+
+## Constructing the Complex Numbers
+
+## Preliminary Definitions
+
+Here is our working definition of a complex number:
+
+<dfn>
+
+__complex numbers.__ The set of complex numbers ${\Complex}$ is the set
+
+$$
+	\Complex = \set{(a,b) \mid a,b \in \reals}.
+$$
+
+Given a complex number ${c = (a,b)}$ we say that ${a}$ is the _real component_ of ${c,}$ denoted ${\text{Re}(c)= a,}$ and that ${b}$ is the _complex component_ of ${c,}$ denoted ${\text{Im}(c) = b.}$ We may express a complex number ${(a,b) \in \Complex,}$ with the notation ${a + bi \in \Complex.}$
+
+</dfn>
+
+<dfn>
+
+__imaginary unit.__ The tuple ${i = (0,1)}$ is called the _imaginary unit._
+
+</dfn>
+
+## Complex Arithmetic
+
+Addition and subtraction of complex numbers is simply component addition and subtraction.
+
+<dfn>
+
+__definition.__ Given ${(a,b), (c,d) \in \Complex,}$ the following operations are are defined:
+
+$$
+	\eqs{
+		&(a + bi) + (c + di) = (a + c) + (b + d)i  &~~~~~~~ \text{addition}\\
+		&(a + bi) - (c + di) = (a - c) + (b - d)i  &~~~~~~~ \text{subtraction}\\ 
+		&(a + bi)(c + di) = (ac - bd) + (ad + bc)i &~~~~~~~ \text{multiplication}\\
+		&(a + bi)/(c + di) = \dfrac{(a+bi)(c-di)}{(c+di)(c-di)} &~~~~~~~ \text{division}
+	}
+$$
+
+where ${a,b,c,d \in \reals.}$
+
+</dfn>
+
+<dfn>
+
+__properties of complex arithmetic.__ Let ${\alpha, \beta \in \Complex.}$ Then the following properties hold:
+
+1. ${\alpha + \beta = \beta + \alpha}$ for all ${\alpha, \beta \in \Complex.}$
+2. ${\alpha\beta = \beta\alpha}$ for all ${\alpha, \beta \in \Complex.}$
+3. ${(\alpha + \beta) + \lambda = \alpha + (\beta + \lambda)}$ for all ${\alpha, \beta, \lambda \in \Complex.}$
+4. ${(\alpha\beta)\lambda = \alpha(\beta\lambda)}$ for all ${\alpha, \beta, \lambda \in \Complex.}$
+5. ${\lambda + 0 = \lambda}$ for all ${\lambda \in \Complex.}$
+6. ${\lambda \by 1 = \lambda}$ for all ${\lambda \in \Complex.}$
+7. For all ${\alpha \in \Complex,}$ there exists a unique ${\beta \in \Complex}$ such that ${\alpha\beta = 1.}$
+8. ${\lambda (\alpha + \beta)= \lambda\alpha + \lambda\beta}$ for all ${\alpha, \beta, \lambda \in \Complex.}$
+
+
+</dfn>
+

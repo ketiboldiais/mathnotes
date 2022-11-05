@@ -1,0 +1,472 @@
+
+_todo: entry point time_.
+
+Suppose we're given a sequence of slots, each occupied by some object.
+
+$$
+	\underset{1}{\sd{\no{\circ}}}
+	\underset{2}{\sd{\no{\circ}}}
+	\underset{3}{\sd{\no{\circ}}}
+	\underset{4}{\sd{\no{\circ}}}
+	\underset{5}{\sd{\no{\circ}}}
+$$
+
+There are several ways to fill and empty the sequence. Below, each row of squares corresponds to a state of the sequence. In method 1, the sequence is filled from right to left, and emptied from right to left. In method 2, the sequence is filled from right to left, and emptied from left to right. In method 3, the sequence is filled and emptied from both ends, with the last inserted element exiting first, and the first inserted element exiting last. In method 4, the sequence is filled and emptited from both ends, with the first inserted element exiting first, and the last inserted element exiting last. In method 5, the sequence is filled from both ends, but can only be emptied from one end. In method 6, the sequence is emptied from both ends, but can only be filled from one end.
+
+<Grid cols={3}>
+$$
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	\underset{1}{\sd{\no{\circ}}}\underset{2}{\sd{\no{\circ}}}\underset{3}{\sd{\no{\circ}}}\underset{4}{\sd{\no{\circ}}}\underset{5}{\sd{\no{\circ}}}
+$$
+$$
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	\underset{1}{\sd{\no{\circ}}}\underset{2}{\sd{\no{\circ}}}\underset{3}{\sd{\no{\circ}}}\underset{4}{\sd{\no{\circ}}}\underset{5}{\sd{\no{\circ}}}
+$$
+$$
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	\underset{1}{\sd{\no{\circ}}}\underset{2}{\sd{\no{\circ}}}\underset{3}{\sd{\no{\circ}}}\underset{4}{\sd{\no{\circ}}}\underset{5}{\sd{\no{\circ}}}
+$$
+$$
+	\tx{method 1}
+$$
+$$
+	\tx{method 2}
+$$
+$$
+	\tx{method 3}
+$$
+$$
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	\underset{1}{\sd{\no{\circ}}}\underset{2}{\sd{\no{\circ}}}\underset{3}{\sd{\no{\circ}}}\underset{4}{\sd{\no{\circ}}}\underset{5}{\sd{\no{\circ}}}
+$$
+$$
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	\underset{1}{\sd{\no{\circ}}}\underset{2}{\sd{\no{\circ}}}\underset{3}{\sd{\no{\circ}}}\underset{4}{\sd{\no{\circ}}}\underset{5}{\sd{\no{\circ}}}
+$$
+$$
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	{\sd{\no{\circ}}}{\sd{\no{\circ}}}{\bd{\no{\circ}}}{\sd{\no{\circ}}}{\sd{\no{\circ}}} \\
+	\underset{1}{\sd{\no{\circ}}}\underset{2}{\sd{\no{\circ}}}\underset{3}{\sd{\no{\circ}}}\underset{4}{\sd{\no{\circ}}}\underset{5}{\sd{\no{\circ}}}
+$$
+$$
+	\tx{method 4}
+$$
+$$
+	\tx{method 5}
+$$
+$$
+	\tx{method 6}
+$$
+</Grid>
+
+Each of the methods corresponds to _fundamental sequence data types_. Method 1 corresponds to a _stack_, method 2 corresponds to a _queue_, method 3 corresponds to a _double stack_, method 4 corresponds to a _deque_, method 5 corresponds to a _shelf_, and method 6 corresponds to a _scroll_.
+
+
+## Operating System
+While the CPU is certainly one of the most important chips on a computer system, it's not necessarily the "highest-ranking" or even the "brain" of a computer system. Because of concurrency, the modern computer system is highly-modularized, resulting in some chips on a computer system working largely independent of the CPU (e.g., the graphics adapter, sound adapter, and netork adapter). Modularity is what ensures that a computer system can still work (albeit in a very limited fashion) should the CPU somehow fail momentarily. This does, however, come at a cost — all of these different chips are competing for RAM. That said, if these other chips want to send data to another chip (which underlies a significant amount of our interactions with a computer system), they will have to rely on the CPU.
+
+$$
+	\tx{RAM} \iff \case{
+		\iff \tx{CPU} \\
+		\iff \tx{disk controller} \iff \df{ssd/hdd} \\
+		\iff \tx{graphics adapter} \iff \tx{monitor} \\
+		\iff \tx{sound adapter} \iff \tx{speaker} \\
+		\iff \tx{network adapter} \case{
+			\iff \tx{ethernet} \\
+			\iff \tx{wifi antenna} \\
+			\iff \tx{bluetooth antenna}
+		} \\
+		\iff \tx{usb controller} \case{
+			\iff \tx{mouse/trackpad} \\
+			\iff \tx{keyboard}
+		} \\
+	}
+$$
+
+> __~device-driver~.__ A program ${(H,A \mapsto O)}$ where ${H}$ is a set of hardware, ${A}$ is a set of parameters called the _API_, and ${O}$ is a set of operations on ${H.}$
+
+### Bootstrap Program
+The _bootstrap program_ is the program that runs when a computer system is powered on or rebooted. This program is stored in ROM. The program's two primary tasks are: (1) Loading the operating system into memory and commence its execution, (2) locate 
+
+## Processes and Threads
+A program, on its own, is just a set of instructions. Below, each block is an instruction.
+
+$$
+	\small{\ax{
+		\sd{1\no{~~~~~~~~}} \\
+		\sd{2\no{~~~~~~~~}} \\
+		\sd{3\no{~~~~~~~~}} \\
+		\sd{4\no{~~~~~~~~}} \\
+	}}
+$$
+
+To get this program to do something we must send each instruction to the CPU.
+
+
+$$
+	\sd{4\no{~~~~~~~~}}
+	\sd{3\no{~~~~~~~~}}
+	\sd{2\no{~~~~~~~~}}
+	\sd{1\no{~~~~~~~~}} \to \df{cpu}
+$$
+
+The sequence of instructions sent is called a _thread_. In the old days, programs could only have one thread. Today, however, we can have _multiple threads_. Multiple threads are a response to the fact that modern programs do many different things, and each of those different things consists of potentially many different instructions. Playing a song on a music-streaming application may require opening a socket and sending an HTTP request. Liking a song may require opening another socket and forwarding data towards some server possibly hundreds of miles away. Such operations are undoubtedly complex, and require multiple instructions.
+
+
+$$
+	\small{\ax{
+		\sd{~\tx{play music}~} \\
+		\sd{~ ~ ~\tx{like song}~ ~ ~}
+	}}
+$$
+
+Rather than sending these instructions on just one path to the CPU — a single thread — modern computers allow us to send them on multiple paths. We call this _multithreading_.
+
+
+$$
+	\rcase{\sd{~\tx{play music}~} \\
+	\sd{~ ~ ~\tx{like song}~ ~ ~}} \to \df{cpu}
+$$
+
+For a computer system with just one CPU, the system _cannot_ execute these sets of instructions all at once. So, the CPU designers must be a bit more clever and use _time slicing_: Switch processing each thread rapidly enough, and it _looks like_ the threads are processed simultaneously.
+
+$$
+	\footnotesize\sd{{\tx{play music}}}\no{\sd{\tx{like song}}}\sd{{\tx{play music}}}\no{\sd{\tx{like song}}}\sd{{\tx{play music}}}\no{\sd{\tx{like song}}}\sd{{\tx{play music}}}\no{\sd{\tx{like song}}} \to \tx{thread 1} \\
+	\no{\sd{\tx{play music}}}\wd{\tx{like song}}\no{\sd{\tx{play music}}}\wd{\tx{like song}}\no{\sd{\tx{play music}}}\wd{\tx{like song}}\no{\sd{\tx{play music}}}\wd{\tx{like song}} \to \tx{thread 2}
+$$
+
+Every program instruction requires some _resource_, whether that's allocated
+memory for the program's use or processing power to transfer data to and from
+memory. To keep track of all these demands, the CPU maintains a record of every
+thread's _state_ when it jumps from one thread to the next: What was the last
+instruction executed, what was the last incoming request, what instruction
+should be executed upon returning, and so on. The set of all the thread states
+is called a _context_, and the set of all threads and their context is called a
+_process_. All of this works at break-neck velocities. Switching between ~firefox~ and ~word~ is seamless, disguising the fact that in less than a blink of an eye, the CPU didn't just jump between threads, it jumped between entire processes — ~firefox~ and ~word~ are two separate programs.
+
+
+## Polar Coordinates
+> __~circle~.__ We define a circle as the relation ${r = \sqrt{x^2 + y^2},}$ where ${r}$ a number called the _radius_ of the circle, and ${x}$ and ${y}$ are numbers.
+
+> __~cartesian plane~.__ We define the Cartesian plane as the set of all pairs ${\reals \times \reals,}$ where each ${(x,y) \in \reals}$ is called a _Cartesian coordinate_.
+
+> __~polar coordinates~.__ Given the Cartesian coordinate ${(x,y),}$ we define the pair ${(r \cos \theta, r \sin \theta)}$ where ${r}$ is the radius of a circle, ${\theta}$ is a number, such that ${(x,y) = (r \cos \theta, r \sin \theta).}$
+
+## Physical Vector
+> __~definition~.__ A _physical vector_ is a triple ${\vc{v} = (m,v_x,v_y)}$ where ${v_x}$ and ${v_y}$ form a pair ${(v_x=v \cos \theta, v_y=v \sin \theta)}$ called the _direction_ of ${\vc{v},}$ and ${m = \sqrt{(v \cos \theta)^2 + (v \sin \theta)^2}}$ is a number called the _magnitude_ of ${\vc{v}.}$ Given a vector ${\vc{v},}$ we may denote the ${\vc{v}}$ with the notation ${v_x \hat{i} + v_y \hat{j},}$ where ${\hat{i}}$ and ${\hat{j}}$ are placeholder variables called _unit vectors_, used purely to demarcate ${v_x}$ and ${v_y}$
+
+> __~vector addition~.__ Let ${\vc{a}}$ and ${\vc{b}}$ be vectors. We define the operation of _vector addition_ as follows:
+> 
+> $$
+> 	\vc{a} + \vc{b} = (\abs{a},a_x,a_y) + (\abs{b},b_x,b_y) = 
+> 	\ar{\sqrt{(a_x + b_x)^2 + (a_y + b_y)^2},~a_x+b_x,~a_y + b_y}.
+> $$
+
+## Motion
+> __~displacement~.__ Let ${\vc{r_f}}$ and ${\vc{r_i}}$ be physical vectors. We define _displacement_ as the vector ${\Delta \vc{r} = \vc{r_f} - \vc{r_i}.}$
+
+> __~average velocity~.__ Given the closed interval ${\ix{a,b} \in \reals.}$ We define _average velocity_ as the vector
+> 
+> $$
+> 	\vc{v}_{\avg} = \frac{\Delta \vc{r}}{\Delta t},
+> $$
+> 
+> where ${\Delta\vc{r}}$ is displacement, and ${\Delta t = b - a,}$ called the _time interval_ of ${\vc{v}_{\avg}.}$
+
+__~instantaneous velocity~.__ Where ${\Delta t}$ is a time interval, we define _instantaneous velocity_ as the vector
+
+> $$
+> 	\vc{v} = \ll{\Delta t}{0} \frac{\Delta \vc{r}}{\Delta t} = \di{\vc{r}}{t}.
+> $$
+
+
+## JavaScript Array Methods
+> __~push~.__ Let ${A}$ be an array of ${n}$ elements, ${\ix{a_0, \ldots, a_{n-1}},}$ and let ${b}$ be a data object. Then the method ${A\mc{push}\px{b}}$ inserts ${b}$ at index ${n.}$ If ${A = \ix{~},}$ then ${b}$ is inserted at index ${0.}$
+
+> __~pop~.__ Let ${A}$ be an array of ${n}$ elements, ${\ix{a_0, \ldots, a_{n-1}}.}$ Then the method ${A\mc{pop}\px{~}}$ removes the last element ${a_{n-1}}$ of ${A,}$ and returns ${a_{n-1}.}$
+
+
+> __~shift~.__ Let ${A}$ be an array of ${n}$ elements, ${\ix{a_0, \ldots, a_{n-1}}.}$ Then the method ${A\mc{shift}\px{~}}$ removes the first element ${a_0}$ of ${A,}$ and returns ${a_0.}$
+
+
+## Machine
+## Chips
+> __~definition~.__ A _chip_ is a function ${c: I \mapsto O,}$ where ${I}$ is a set of Boolean values, and ${O}$ is a set of Boolean values.
+
+### Or-chip
+
+<Grid cols={2}>
+
+> __~or-chip~.__
+> $$
+> 	\df{or}(a,b) = \case{
+> 		1 &\if a = 1 \\
+> 		1 &\if b = 1 \\
+> 		0 &\else
+> 	}
+> $$
+> 
+> Given a bitstring argument of ${n}$ bits ${a\ix{n}=\ix{a_1,\ldots,a_n}}$ and ${b\ix{n}=\ix{b_1,\ldots,b_n}}$
+> 
+> $$
+> 	\small\df{or}(a\ix{n},b\ix{n}) = \case{
+> 		\ix{\df{or}(a_1,b_1)} &\if n = 1 \\
+> 		\df{or}(a\ix{n-1},b\ix{n-1})\uplus\df{or}(a_n,b_n) &\else
+> 	}
+> $$
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1653001259/cs/or_gate.svg"}
+	imwidth={"32"}
+	imheight={"15"}
+	caption={"or-gate"}
+	width={"30"}
+	layout={'responsive'}
+	fit={""}
+/>
+</Grid>
+
+
+
+
+~example~.
+$$
+	~\\
+	\df{or}(\ix{1001},\ix{0101}) = \ax{
+		&\yd{1}\sd{0}\sd{0}\yd{1} \\
+		\df{or}~&\sd{0}\yd{1}\sd{0}\yd{1} \\ \hline
+		&\yd{1}\yd{1}\sd{0}\yd{1} \\
+	}
+$$
+
+### Not-chip
+> __~not-chip~.__
+> 
+> $$
+> 	\df{not}(x) = \case{
+> 		0 &\if x = 1 \\
+> 		1 &\if x = 0
+> 	}
+> $$
+> Given a bitstring argument of ${n}$ bits ${x\ix{n}=\ix{x_1,\ldots,x_n},}$
+> 
+> $$
+> 	\small\df{not}(x\ix{n}) = \case{
+> 		\ix{\df{not}(x_1)} &\if n = 1 \\
+> 		\df{not}(x\ix{n-1})\uplus\df{not}(x_n) &\else
+> 	}
+> $$
+
+### And-chip
+> __~and-chip~.__
+> $$
+> 	\df{and}(a,b) = \case{
+> 		0 &\if a = 0 \\
+> 		0 &\if b = 0 \\
+> 		1 &\else
+> 	}
+> $$
+
+### Nand-chip
+> __~nand-chip~.__
+> $$
+> 	\df{nand}(a,b) = \case{
+> 		0 &\if ~~\df{and}(a,b) = 1 \\
+> 		1 &\else
+> 	}
+> $$
+
+### Xor-chip
+> __~xor-chip~.__
+> $$
+> 	\df{xor}(a,b) = \case{
+> 		1 &\if ~~\df{and}(\df{not}(a), b) = 1 \\
+> 		1 &\if ~~\df{and}(a, \df{not}(b)) = 1 \\
+> 		0 &\else
+> 	}
+> $$
+
+### Mux-chip
+> __~mux-chip~.__
+> $$
+> 	\df{mux}(a,b,s) = \case{
+> 		a &\if s=0 \\
+> 		b &\else
+> 	}
+> $$
+
+### Demux-chip
+> __~demux-chip~.__
+> $$
+>  	\df{dmux}(x,s) = \case{
+> 		(x,0) &\if s = 0 \\
+> 		(0,x) &\if s = 1
+>  	}
+> $$
+
+
+## Iteration and Orders of Growth
+> __~notation~.__ Let ${f}$ be a function with ${x\in\tx{dom}\px{f} \subseteq \reals}$ and ${f(x)\in\tx{codom}\px{f} \subseteq \reals,}$ and let ${a}$ and ${b}$ be constants in ${\reals.}$ The notation ${\iter{x=a}{b}f(x),}$ or, equivalently,
+> 
+> $$
+> 	\diter{x=a}{b}~f(x),
+> $$
+> 
+> denotes ${b-a}$ evaluations of ${f.}$ We define ${\diter{x=a}{b}~f(x)=f(b).}$
+
+<Grid cols={2}>
+
+> ~example~. ${\diter{i=1}{5}i = 5.}$
+> 
+> | ~iteration~ | ${\diter{}{}}$ |
+> | ----------- | -------------- |
+> | 1           | 1              |
+> | 2           | 2              |
+> | 3           | 3              |
+> | 4           | 4              |
+> | 5           | 5              |
+
+
+> ~example~. ${\diter{i=0}{5}(i+1) = 5.}$
+> 
+> | ${i}$ | ${\diter{}{}}$ |
+> | ----- | -------------- |
+> | 0     | 1              |
+> | 1     | 2              |
+> | 2     | 3              |
+> | 3     | 4              |
+> | 4     | 5              |
+
+
+> ~example~. ${\diter{i=1}{5}\ar{ai} = a^5.}$
+> 
+> | ~iteration~ | ${\diter{}{}}$    |
+> | ----------- | ----------------- |
+> | 1           | ${a}$             |
+> | 2           | ${a(a)}$          |
+> | 3           | ${a(a(a))}$       |
+> | 4           | ${a(a(a(a)))}$    |
+> | 5           | ${a(a(a(a(a))))}$ |
+
+> ~example~. ${\diter{i=1}{3}~i\ar{\diter{j=1}{3}~j}=9.}$
+>
+> | ${i}$ | ${j}$ | ${\diter{}{}}$ |
+> | ----- | ----- | -------------- |
+> | 1     | 1(1)  | 1              |
+> |       | 1(2)  | 2              |
+> |       | 1(3)  | 3              |
+> | 2     | 2(1)  | 2              |
+> |       | 2(2)  | 4              |
+> |       | 2(3)  | 6              |
+> | 3     | 3(1)  | 1              |
+> |       | 3(2)  | 6              |
+> |       | 3(3)  | 9              |
+
+</Grid>
+
+We will use the iteration notation to help us prove some theorems associated
+with loops.
+
+
+
+
+
+## Loop Execution Order
+Before we turn to the theorems, let's be very clear about the order of execution for the various loop forms. The most common loop is the _for-loop_.
+
+> __~for-loop~.__ Let ${m,n}$ be constants in ${\reals,}$ let ${C}$ be any constant function, and let ${\tx{dom}\px{f} \subseteq \reals}$ and ${\tx{codom}{\px{f}} \subseteq \reals.}$ Then the statement
+> 
+> $$
+> 	{\bf for}\space(\let{i}{m}, \space i \lt n, \space f\px{i})\mapsto \set{C}
+> $$
+> 
+> is called a _for-loop_. The statement ${\let{i}{a}}$ is executed first and exactly once. The test condition ${i \lt n}$ is performed first at each iteration, for a total of ${(n-m)+1}$ executions. The constant function ${C}$ is performed second at each iteration, for a total of ${n-m}$ executions. The function ${f}$ is performed last at each iteration, for a total of ${n-m}$ executions. 
+
+
+> __~while-loop~.__ Let ${m,n}$ be constants in ${\reals,}$ let ${C}$ be any constant function, and let ${\tx{dom}\px{f} \subseteq \reals}$ and ${\tx{codom}{\px{f}} \subseteq \reals.}$ Then the statement
+> 
+> $$
+> 	\let{i}{m},\space{\bf while}\space(i \lt n)\mapsto \set{C,\space f\px{i}}
+> $$
+> 
+> is called a _while-loop_. The statement ${\let{i}{m}}$ is executed first and exactly once. The test condition ${i \lt n}$ is performed first at each iteration, for a total of ${(n-m)+1}$ executions. The constant function ${C}$ is performed second at each iteration, for a total of ${n-m}$ executions. The function ${f}$ is performed last at each iteration, for a total of ${n-m}$ executions.
+
+In general, determining the time complexity of a for-loop execution amounts to a counting problem, or, more generally, a combinatorics problem.
+
+~example~. How many times does the loop
+${{\bf for}\space(\let{i}{0}, \space i \lt n, \space i\pl\pl)\mapsto \set{C}}$ 
+execute? This nothing more than the sequence ${(0,1,2,\ldots,n-2,n-1).}$ We can count the number of terms of this sequence:
+
+$$
+	\ax{
+		  &(0,1,2,\ldots,n-2,n-1) \\
+		+ &(1,1,1,\ldots,\no{n-}1,\no{n-}1) \\ \hline
+		  &(1,2,3,\ldots,n-1,\no{n-}n)
+	}
+$$
+
+Hence, the loop executes ${n}$ times.
+
+~example~. How many times does the loop
+${{\bf for}\space(\let{i}{0}, \space i \lt n, \space i\pl\pl2)\mapsto \set{C}}$ 
+execute? The sequence we'd normally expect is ${(0,1,2,\ldots,n-1).}$ We know that this executes ${n}$ times. But, because we're incrementing by 2, we're only interested in multiples of 2: ${(1,{\red2},3,{\red4},5,{\red 6},7,\ldots,n).}$ More explicitly: ${(2,4,6,8,\ldots,n).}$ What is the length of this sequence? We can divide by 2:
+
+$$
+	(2/2,4/4,6/2,8/2,\ldots,n/2) = (1,2,3,4,\ldots,n/2).
+$$
+
+Thus, the loop executes ${n/2}$ times.
+

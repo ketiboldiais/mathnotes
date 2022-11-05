@@ -1,0 +1,800 @@
+<Head>
+   <title>Elementary Counting</title>
+   <meta name={`description`} content={`Notes on counting.`}/>
+</Head>
+
+# Elementary Counting
+
+This chapter covers notes on basic counting.
+
+1. [Assignments](#assignments)
+      1. [Counting Assignments](#counting-assignments)
+   1. [Injections](#injections)
+      1. [Counting Injections](#counting-injections)
+   2. [Surjection](#surjection)
+   3. [Bijection](#bijection)
+      1. [Counting Bijections](#counting-bijections)
+2. [The Truth Behind Counting](#the-truth-behind-counting)
+3. [Counting Elements](#counting-elements)
+   1. [Sum Rule](#sum-rule)
+   2. [Difference Rule](#difference-rule)
+   3. [Binary Union Rule](#binary-union-rule)
+   4. [Product Rule](#product-rule)
+4. [Lists](#lists)
+5. [Permutations](#permutations)
+6. [Partial Permutations](#partial-permutations)
+7. [Combinations](#combinations)
+   1. [Binomial Coefficients](#binomial-coefficients)
+8. [Bitstrings](#bitstrings)
+9. [Compositions](#compositions)
+10. [Anagrams](#anagrams)
+11. [Lattice Paths](#lattice-paths)
+
+The materials on this page restrict themselves to _countable sets_. We define a countable set as follows:
+
+> __~enumerability~.__ Let ${S}$ be a set. Then ${S}$ is countably infinite if, and only if, ${\num{S} = \num{\nat}.}$ 
+
+
+## Assignments
+We begin by defining assignments, just to to make our discussion a bit more efficient.
+
+> __~assignment~.__ Let ${A}$ and ${B}$ be sets. Then an _assignment_ ${f: A \mapsto B}$ is a set of pairs ${(a,b)}$ where ${a \in A}$ and ${b \in B,}$ resulting from the following condition: Every element of ${A}$ is paired with exactly one element of ${B.}$ We write ${^X Y}$ to denote the set of all assignments from ${X}$ to ${Y.}$
+
+~example~. Let ${A = \set{\tx{vanilla}, \tx{chocolate}, \tx{strawberry}}.}$ Let ${B = \set{\tx{waffle}, \tx{cake}, \tx{sugar}}.}$ Which of the following are assignments:
+
+$$
+   \eqs{
+      a &= \set{\tx{(vanilla, waffle)}, \tx{(chocolate, cake)}, \tx{(strawberry, sugar)}} \\
+      b &= \set{\tx{(vanilla, waffle)}, \tx{(vanilla, cake)} \tx{(chocolate, cake)}, \tx{(strawberry, sugar)}} \\
+      c &= \set{\tx{(vanilla, cake)}, \tx{(chocolate, cake)}, \tx{(strawberry, sugar)}} \\
+      d &= \set{\tx{(chocolate, waffle)}, \tx{(strawberry, sugar)}}
+   }
+$$
+
+The set ${a}$ is an assignment, since every element of ${A}$ is assigned exactly one element of ${B.}$ The set ${b}$ is not an assignment, since the element "vanilla" is assigned twice. The set ${c}$ is an assignment because every element of ${A}$ is assigned with exactly one element of ${B.}$
+The set ${d}$ is not an assignment, because not every element of ${A}$ is assigned with exactly one element of ${B.}$
+
+An _assignment_ is just another word for _function_, _map_, _mapping_, or
+_transformation_. We use the word _assignment_ because _function_ carries a lot
+of connotations — it conjures up mental images of input-output machines,
+${f(x),}$ the rule "can't divide by zero," ${\reals,}$ pass-by-reference vs.
+pass-by-value, etc. None of these are "wrong," but they all cause unnecessary
+cognitive dissonance; that's the last thing we need when we're trying to count!
+The same reasons extend to the other words. _Maps_ and _mappings_ have specific
+meanings in other areas of mathematics, and _transformation_ is almost
+exclusively used in geometry. Here, an _assignment_ is just a set of pairs that
+look like ${(a,b),}$ where ${a \in A}$ and ${b \in B,}$ resulting from a very
+specific rule: Every element of ${A}$ must be paired with exactly one element of
+${B.}$
+
+It's important to keep the nuances of assignments in mind to avoid common
+"gotchas." To do so, we can turn the definition into a logical formula. Suppose
+${M}$ is an assignment from the sets ${A}$ to ${B.}$ Then ${M}$ is an assignment
+only if the following is true:
+
+$$
+   (\forall a \in A. \forall b \in B. \forall c \in B.
+   [(a,b) \in M] \land [(a,c) \in M]
+   \nc
+   [b = c])
+   \land
+   (\forall a \in A. \exists b \in B.
+   [(a,b) \in M])
+$$
+
+Notice that this is a two part proposition. Let's break it down by letting ${a,b,c}$ be arbitrary elements. The first part says:
+
+$$
+   [(a,b) \in M \land (a,c) \in M] \nc [b = c].
+$$
+
+If we have an ${(a,b)}$ and an ${(a,c),}$ then it better be the case that ${b = c.}$ The second part of the rule says:
+
+$$
+   [a \in A] \implies [b \in B \land (a,b) \in M].
+$$
+
+Let's connect this to what we've seen so far. Given sets ${A}$ and ${B,}$ their Cartesian product, ${A \times B,}$ contains all the possible pairs ${(a,b)}$ where ${a \in A}$ and ${b \in B.}$ This means that an assignment from ${A}$ to ${B}$ is really just a specific _set of pairs_. One where every ${a \in A}$ is ${\df{paired}}$ once.
+
+* ${\df{paired}(a) = 1.}$
+
+Notice that this is entirely focused on the set ${A,}$ the set whose elements
+we're pairing. It doesn't say anything about the ${b}$s, other than existence.
+This leaves us with a few possibilities.
+
+* ${\df{paired}(b) \le 1.}$
+* ${\df{paired}(b) = 1.}$
+* ${\df{paired}(b) \ge 1.}$
+
+This leads to a few different types of assignments, to be discussed shortly.
+
+#### Counting Assignments
+Viewed logically, we can infer a few things. First, suppose we have two sets, ${A = \set{a,b,c},}$ and ${B=\set{x,y,z}.}$ To count the number of possible pairs, we simply multiply the cardinality of ${A}$ by the cardinality of ${B.}$ This gives us ${3 \times 3 = 9}$ possible pairs:
+
+$$
+   \lset{
+      \ax{
+         (a,x) & (a,y) & (a,z) \\
+         (b,x) & (b,y) & (b,z) \\
+         (c,x) & (c,y) & (c,z) \\
+      }
+   }.
+$$
+
+Asking for the number of possible pairs is a different question from asking for the _number of certain combinations of pairs_. If ${A \times B}$ gives us the Cartesian product, then what might be the number of possible combinations? Well, if the Cartesian product has 9 pairs, then the number of possible combinations of pairs is ${2^9 = 512.}$ Not all of those combinations, however, are assignments, per our definition. Why? Because at least one of those combinations is:
+
+$$
+   \lset{
+      \ax{
+         (a,x) & (a,y) & (a,z) \\
+         (b,x) & (b,y) & (b,z) \\
+      }
+   }.
+$$
+
+That's a combination without any ${c \in A}$ at all, which violates the definition of an assignment. What we want to count is just the number of combinations where every element of ${A}$ is paired. Thus, for each ${n \in A,}$ ${n}$ can be paired with ${x,}$ ${y,}$ or ${z.}$ This means that we have: ${3 \times 3 \times 3 = 27}$ possible pairs.
+
+> __~number of possible assignments~.__ Given the sets ${A}$ and ${B,}$ the number of possible assignments, ${A}$ to ${B,}$ denoted ${A_n,}$ is given by:
+> 
+> $$
+>    A_n = \card{B}^{\card{A}}
+> $$
+> 
+> where ${\card{B}}$ is the number of elements in ${B,}$ and ${\card{A}}$ is the number of elements in ${A.}$
+
+### Injections
+When ${\df{paired}(b \in B) \le 1,}$ then we have an _injection_. In other
+words, an assignment ${C: A \mapsto B}$ where no ${b \in B}$ is paired more than
+once. This means that a ${b \in B}$ can either (1) not be paired, or (2) be
+paired exactly once.
+
+> __~injection~.__ Let ${A}$ and ${B}$ be sets. Then an assignment ${r: A \mapsto B}$ is an _injection_ if, and only if, every ${b \in B}$ is paired _at most once_ under ${r.}$
+
+In the British tradition, injections are also called _one-to-one assignments_. We one from a set ${X,}$ to one from a set ${Y.}$
+
+#### Counting Injections
+
+> __~enumeration of injections~.__ Given a set ${A = \set{a_1, a_2, \ldots, a_n},}$ and a set ${Y = \set{a_1, a_2 \ldots, a_m},}$ if ${n \le m,}$ then the number of injections from ${X}$ to ${Y}$ is:
+> 
+> $$
+>   \dfrac{(m)(m-1)(m-2) \ldots (m - n + 1)!}{(m-n)!}.
+> $$
+> 
+> If ${m \lt n,}$ then there are no injections from ${X}$ to ${Y.}$
+
+### Surjection
+When ${\df{paired}(b \in B) \ge 1,}$ then we have a _surjection_. I.e., an
+assignment ${C: A \mapsto B}$ where no ${b \in B}$ is left unpaired.
+
+> __~surjection~.__ Let ${A}$ and ${B}$ be sets. Then an assignment ${r: A \mapsto B}$ is a _surjection_ if, and only if, every ${b \in B}$ is paired
+_at least once_ under ${r.}$
+
+Surjections are also called _onto assignments_.
+
+### Bijection
+A bijective assignment is one where every element of ${B}$ is paired exactly once — ${\df{paired}(b \in B) = 1.}$ That is, no elements are paired more than once, and no elements are left unpaired.
+
+> __~bijection~.__ Let ${A}$ and ${B}$ be sets. Then an assignment ${r: A \mapsto
+B}$ is a _bijection_ if, and only if, ${r}$ is both an _injection_ and a
+_surjection_.
+
+#### Counting Bijections
+> __~enumeration of bijections~.__ Let ${A}$ and ${B}$  be sets, both of cardinality ${n.}$ Then there are ${n!}$ bijections from ${X}$ to ${Y.}$
+
+## The Truth Behind Counting
+We went through the ordeal of defining assignments because there's a small fact that isn't emphasized very often in counting: Counting, fundamentally, is the act of assigning — more specifically, bijections — from the nonzero natural numbers to objects: 1 fish, 2 fish, (3, fish), (4, fish), (5, fish) ${\ldots.}$   
+
+## Counting Elements
+The most basic form of counting is to simply count the elements of a set.
+These rules provide the underlying foundation for subsequent rules.
+
+### Sum Rule 
+
+> __~addition rule.~__ Let ${A}$ and ${B}$ be countable, disjoint sets. Then ${\num{A \cup B} = \num{A \dup B} = \num{A} + \num{B}.}$
+
+The theorem above provides that the cardinality of the disjoin union of sets ${A}$ and ${B}$ is simply the cardinality of ${A}$ plus the cardinality of ${B.}$
+For example, given ${A = \set{a,b,c}}$ and ${B=\set{w,x,y,z},}$ we have ${A \dup B = \set{a,b,c,w,x,y,z}.}$ Thus, ${\num{A \cup B} = \num{A \dup B} = 7.}$
+The disjoint union is equivalent to the symmetric difference of ${A}$ and ${B:}$
+
+$$
+  A \dif B = A \dup B = A \cup B
+$$
+
+Note that when we say _addition rule_, we are referring specifically to the addition rule of disjoint sets. The _sum rule_ is as follows: 
+
+> __~sum rule~.__ Let ${A_1, \ldots, A_n}$ be pairwise disjoint finite sets. Then
+> 
+> $$
+>    \card{\bdup_{i=1}^{n}A_i} = \card{(A_1 \dup \ldots \dup A_m)} = \card{A_1} + \ldots + \card{A_n}.
+> $$
+
+### Difference Rule
+The difference rule states that if some set ${T \subseteq S,}$ then ${\card{(S \rid T)} = \card{S} - \card{T}.}$
+
+> __~difference rule~__. Let ${S}$ and ${T}$ be finite sets, with ${T \subseteq S.}$ Then ${\card{S \rid T} = \card{S} - \card{T}.}$
+
+### Binary Union Rule
+Suppose ${A \dup B = A \cup B.}$ We'll just write ${A \cup B.}$ The symmetric difference is defined as ${A \dif B = (A \rid B) \cup (B \rid A).}$ Thus, we have:
+
+$$
+   A \cup B = (A \rid B) \cup (B \rid A)
+$$
+
+There's nothing stopping us from including ${A \cap B,}$ since ${A \cap B = \nil,}$ and we know from the identity law that, given a set ${S,}$ ${S \cup \nil = S.}$ Thus, we have:
+
+$$
+   A \cup B = (A \rid B) \cup (B \rid A) \cup (A \cap B).
+$$
+
+Next, we can set ${A = (A \rid B) \cup (A \cap B).}$ Again, this simply reduces to ${A = A \cup \nil = A,}$ since ${A \cap B = \nil}$ implies that ${A \rid B = A}$ by definition. Moreover, the fact that ${A \cap B = \nil}$ implies that ${A \rid B}$ and ${A \cap B}$ are disjoint. Thus, we have:
+
+$$
+   \num{A} = \num{A \rid B} + \num{A \cap B}.
+$$
+
+The same goes for ${B.}$ We can express it as ${B = (B \rid A) \cup (A \cap B),}$ since ${A \cap B = \nil.}$ So, we again get:
+
+$$
+   \num{B} = \num{B \rid A} + \num{A \cap B}.
+$$
+
+Earlier, we wrote:
+
+$$
+   A \cup B = (A \rid B) \cup (B \rid A) \cup (A \cap B).
+$$
+
+So, we let's rewrite our findings we can substitute.
+
+$$
+   \eqs{
+      \num{A \rid B} &= \num{A} - \num{A \cap B} \\
+      \num{B \rid A} &= \num{B} - \num{A \cap B}
+   }.
+$$
+
+Substituting to obtain the cardinalities, we have:
+
+$$
+   \eqs{
+      \num{A \cup B} &= \num{A \rid B} + \num{B \rid A} + \num{A \cap B} \\ 
+      &= (\num{A} - \num{A \cap B}) + (\num{B} - \num{A \cap B}) + \num{A \cap B} \\
+      &= \num{A} - \num{A \cap B} + \num{B} - \num{A \cap B} + \num{A \cap B} \\
+      &= \num{A} \sout{- \num{A \cap B}} + \num{B} - \num{A \cap B} \sout{+ \num{A \cap B}} \\
+      &= \num{A} + \num{B} - \num{A \cap B}.
+   }
+$$
+
+The result above is a bedrock of counting called the _binary union rule_.
+
+> __~binary union rule~.__ Let ${A}$ and ${B}$ be finite sets. Then
+> 
+> $$
+>    \num{A \cup B} = \num{A} + \num{B} - \num{A \cap B}.
+> $$
+
+The inclusion-exclusion principle leads to a swathe of inferences with just a bit of algebra and set theory propositions.
+
+> __~cardinality rules~.__ Let ${A}$ and ${B}$ be the only two subsets of a larger set ${U.}$ Then the following propositions are true:
+> 
+> 1. ${\num{A \cup B} = \num{A} + \num{B} - \num{A \cap B}.}$
+> 2. ${\num{A \cup B} + \num{A \cap B} = \num{A} + \num{B}.}$
+> 3. ${\num{A \cap B} = \num{A} + \num{B} - \num{A \cup B}.}$
+> 4. ${\num{A} = \num{A \cup B} + \num{A \cap B} - \num{B}.}$
+> 5. ${\num{B} = \num{A \cup B} + \num{A \cap B} - \num{A}.}$
+
+~example~. Let ${P}$ be a set and ${\card{P} = 12.}$ Each ${p \in P}$ is also a member of the sets ${S}$ and ${F,}$ where ${\card{S} = 8}$ and ${\card{(S \cap F)} = 5.}$ How many ${p}$ in ${F?}$ Since ${\card{P}=12,}$ we have ${\card{(\set{p \in S \cup F : p \in P})} = 12.}$ Since ${\card{S} = 8,}$ and ${\card{(S \cap F)} = 5,}$ it follows that ${\card{(S \setminus S \cap F)} = 8 - 5 = 3.}$ Thus, there are ${12-3 = 9}$ total ${p}$ in ${F}$ or ${S \cap F,}$ which means that there are ${9}$ total ${p}$ in ${F.}$ 
+
+~example~.
+Let ${C}$ be a set with ${\num{C} = 27.}$
+${C}$ contains two subsets, ${S \are C}$ and ${K \are C,}$ not necessarily disjoint.
+${\num{S} = 14.}$
+${\num{K} = 11.}$
+${\num{S' \cap K'} = 5.}$
+What is ${\num{S \cap K}?}$
+From De Morgan's law, we know that ${S' \cap K' = (S \cup K)'.}$
+Thus, ${\num{(S \cup K)'} = 5.}$
+Since ${\num{C} = 27,}$ we have ${\num{S \cup K} + \num{(S \cup K)'} = 27.}$
+Therefore, ${\num{S \cup K} = 27 - 5 = 22.}$
+Since ${\num{S} = 14}$ and ${\num{K}=11,}$ we have ${\num{S} + \num{K} = 25.}$
+Since ${\num{S \cup K} = 22,}$ it must be the case that ${\num{S \cap K} = 25 - 22 = 3.}$
+
+### Product Rule
+The product rule tells us that if an event can occur in ${n}$ ways, and a second event can occur _independently_ in ${k}$ ways, then the two events can occur in ${nk}$ ways.
+
+> __~cardinality of cartesian product~.__ Let ${S_1, S_2, \ldots, S_k}$ be finite sets with ${\card{S_i} = n_i}$ given ${1 \le i \le k.}$ Then
+> 
+> $$
+>   \card{(S_1 \times S_2 \times \ldots \times S_k)} = n_1 \times n_2 \times n_3 \ldots \times n_k.
+> $$
+
+~example~.
+A license plate consists of a digit followed by three uppercase letters, followed by four digits. How many possible plates? Here, a license plate is just a tuple from the Cartesian product:
+
+$$
+   S = D \times L \times L \times L \times D \times D \times D
+$$
+
+where ${D = \set{0,1,2,\ldots,8,9},}$ and ${S = \set{A,B,C,D,\ldots,Z.}}$ Thus, there are:
+
+$$
+   \card{S} = 10 \times 26 \times 26 \times 26 \times 10 \times 10 \times 10 = 175~760~000
+$$
+
+possible plates.
+
+> __~product rule~.__ Let ${S}$ be a set. If there exists a bijection
+> 
+> $$
+>    f: \set{1,2,\ldots,n_1} \times \set{1,2,\ldots,n_2} \times \ldots \times
+>    \set{1,2,\ldots,n_k} \bij S,
+> $$
+> 
+> then ${\card{S} = n_1 \times n_2 \times \ldots n_k.}$
+
+~example~. A fraternity name is a sequence of 2 or 3 uppercase Greek letters. How many possible names are there? There are 24 Greek uppercase letters. In the case of a 2-letter name, we have 24 choices for the first, and 24 choices for the second. In the case of a 3-letter name, we have 24 choices for the first, 24 choices for the second, and 24 choices for the third. It follows that there are: ${24^2 + 24^3 = 14~400}$ possible names.
+
+For many applications, it's also helpful to think of the product rule in terms of types: Given a set of objects, if the objects can be seperated into ${j}$ types, and each of those ${j}$ types can be seperated into ${k}$ different subtypes, then there are ${j \by k}$ different types.
+
+## Lists 
+
+A list is the most basic ordered collection. Some authors call them _tuples_, but we avoid using that term because in these notes, tuples are primitive objects, specifically _nested sets_, that exist independently of the natural numbers. I.e., tuples aren't "ordered" in the sense we're used to — there is no "first" or "second" in a tuple, because the natural numbers don't exist for them. _[See Set Theory Notes: Tuples](./../set_theory/tuples)_. Accordingly, we use the term _lists_, since those can be created after constructing the natural numbers.
+
+> __~list~.__ Let ${A}$ be a finite set. Then a _list_ is a finite sequence ${L = [a_1, a_2, a_3, \ldots, a_n]}$ where each ${a_i \in A}$ and ${n \ge 0.}$ We say that ${n}$ is the _length_ of ${L,}$ and that two lists ${[a_1,\ldots,a_n]}$ and ${[b_1,\ldots,b_m]}$ are equal if, and only if, ${n = m}$ and ${a_i = b_i}$ for each ${1 \le i \le k.}$ 
+
+> __~list enumeration~.__ Given a set ${A}$ with ${\card{A} = n}$ and a list of length ${k,}$ there ${n^k}$ lists over ${A.}$
+
+~example~.
+Let ${A}$ be the Latin alphabet ${\set{a,b,c,\ldots,z,A,B,C,\ldots,Z}.}$ Let ${D}$ be the set of digits ${\set{0,1,2,3,4,5,6,7,8,9}.}$ How many possible strings of length 7 are there, such that: (1) The letter ${O}$ never appears, (2) the first character must be a digit, and (3) the remaining five can be a digit or letter, but not ${O.}$ First, there are 26 letters in the Latin alphabet, each letter uppercase or lowercase. Because the string cannot contain the letter ${O,}$ we have ${25 \times 2 = 50}$ possible letters. The first must be a digit, of which there are ${10}$. For each choice of the first, we have 50 choices for the second. Then we have ${10 + 50 = 60}$ choices for the third, ${60}$ choices for the fourth, ${60}$ choices for the fifth, ${60}$ choices for the sixth, and ${60}$ choices for the seventh. This gives us: ${10 \by 50 \by 60^5 = 388~800~000~000}$ possible strings.
+
+~example~. How many three-digit positive integers are not multiples of 7? We first set the count's bounds. The smallest three-digit positive integer is 100. The largest three-digit positive integer is 999. We can find the smallest three digit multiple of seven by playing around with the integer quotient: ${\floor{100/7} = 104.}$ 7 does not divide 103, so the smallest three-digit multiple of seven is ${105=7 \by 15.}$ We can get the largest three-digit multiple of seven by multiplying ${10:}$ ${105 \by 10 = 1050.}$ This is out of range, so we subtract forty-nine: ${1050-49 = 1001.}$ This is still out of range, so we subtract seven: ${1001-7=994.}$ Thus, the largest three-digit multiple of 7 is 994. So, our count must exclude ${105,112, 119, \ldots, 994.}$ Dividing each of these by ${7,}$ we get ${15,16,17,\ldots,142.}$ Thus, there are ${(142-15)+1 = 128}$ multiples of ${7}$ from ${100}$ to ${999.}$ Since there are ${(999-100)+1 = 900}$ three-digit numbers, subtracting the multiples of seven gives us: ${900-128=772}$ three-digit integers that are not multiples of 7.
+
+
+~example~. A diplomatic meeting consists of 4 American diplomats and 3 Chinese diplomats. In how many ways can they be seated in a row of 7 chairs, such that at least 2 American diplomats are next to each other? Because there are 7 diplomats total, there are ${7! = 5040}$ possible arrangements. There is only one sequence to avoid: ${(a,c,a,c,a,c,a),}$ where ${a}$ is an American diplomat and ${c}$ is a Chinese diplomat. If the diplomats are seated in this bad sequence, then there are ${4!}$ seatings for the Americans, and ${3!}$ seatings for the Chinese. Thus, we have ${4! \by 3! = 144.}$ ways to construct the bad sequence. It follows that there are ${5040 - 144 = 4896}$ ways to seat the diplomats in a row of 7 chairs, such that at least 2 American diplomats are next to each other.
+
+~example~. Let ${N}$ be the set of all 3-digit natural numbers with exactly one zero. What is ${\card{N}?}$
+Consider how we construct 3-digit integers. The first digit can't be 0. So, we have 9 choices for the first. Now we have two more digits. We need exactly one zero, so it doesn't matter if it goes in the first or last, as long as the other place is not a 0. So, we have ${9 \by 9 \by 2 = 162 = \card{N}.}$
+
+~example~.
+How many lists of the form ${[x_1,x_2,x_3,\ldots,x_7]}$
+can be formed where: all ${x_i}$ are integers with ${0 \lt x_i \lt 6}$ and no two adjacent ${x_i}$ are equal.
+Once more, we construct. The interval tells us that we only have a set of ${5}$ integers to work with. We have ${5}$ choices for the first number. Then we have ${4}$ choices for the second. We also have ${4}$ choices for the third, since the requirement is placed on _adjacency._ Thus, we have: ${5 \by 4^6 = 20~480}$ possible sequences.
+
+~example~.
+Let ${A}$ be a non-empty set and let ${B}$ be a non-empty set.
+How many 8-arrangements comprising 3 elements of ${A}$ and 5 elements of ${B}$ if the first and last must be an element of ${A?}$
+First, suppose ${a_0}$ and ${a_1}$ denote the two on the ends:
+
+$$
+   (a, \nil, \nil, \nil, \nil, \nil, \nil, a).
+$$
+
+There are 3 choices of an ${A}$ element for the first, followed by 2 choices of an ${A}$ element for the last: ${3 \by 2 = 6.}$ This leaves us 6 elements to permute, so we have: ${6 \by 6! = 4320}$ possible 8-arrangements.
+
+
+~example~. 
+Let ${S}$ be a set with ${n(S)=4.}$
+Let ${D}$ be a set with ${n(D)=3.}$
+Given ${s \in S}$ and ${d \in S,}$ how many 7-arrangements
+are there such that all three ${d}$ are adjacent?
+Here, it's helpful to construct a few arrangements:
+
+$$
+   (d,d,d,\nil,\nil,\nil,\nil) \\
+   (\nil,d,d,d,\nil,\nil,\nil) \\
+   (\nil,\nil,d,d,d,\nil,\nil) \\
+   (\nil,\nil,\nil,d,d,d,\nil) \\
+   (\nil,\nil,\nil,\nil,d,d,d) \\
+$$
+
+First, there are 3! ways to arrange the ${d}$ themselves. Thus, we have 6 possible arrangements for each of the arrangements above. Then there are 4! possible arrangements for the remaining ${s.}$ Thus, we have ${3! \by 4! = 144}$ possible arrangements _per_ arrangement: ${144 \by 5 = 720}$ possible arrangements.
+
+~example~. How many multiples of three are between 62 and 215? There are 51. First, we determine the smallest and largest multiple. We do so by testing the ends: 
+
+$$
+   {\dfrac{62}{3}} = 20 \frac{2}{3} ~~~~~~~~ {\dfrac{215}{3}} = {71 \frac{2}{3}}.
+$$
+
+The smallest multiple is ${21 \times 3 = 63,}$ and the largest multiple is ${71 \times 2 = 213.}$ Thus, we have the subsequence
+
+$$
+   (63,66,69,\ldots,213).
+$$
+
+Dividing every term by 3, we get:
+
+$$
+   \dfrac{(63,66,69,\ldots,213)}{3} = 21,22,23,\ldots,71.
+$$
+
+That's a sequence we know how to count: ${71 - 21 + 1 = 51.}$
+
+## Permutations
+A permutation has a very specific meaning in mathematics:
+
+> __~permutation~.__ Let ${S}$ be a set. Then a _permutation_ ${p}$ of ${S}$ is a [list](#lists) where each element of ${S}$ appears exactly once. That is, a bijection ${p: [n] \bij S.}$ 
+
+> __~permutation enumeration~.__ Given ${\card{S} = n,}$ there are ${n!}$ permutations over ${S.}$
+
+~example~.
+Let ${A}$ be a set with ${\card{A} = 6.}$
+Let ${B}$ be a set with ${\card{B} = 4.}$
+Let ${C}$ be a set with ${\card{C} = 3.}$
+Let ${D}$ be a set with ${\card{D} = 7.}$
+How many possible sets are there, comprising of one element of ${A,}$ one element of ${B,}$ one element of ${C,}$ and one element of ${D?}$
+We have 6 choices from ${A,}$ and for each of those choices, 4 choices from ${B,}$ and for each of those choices, 3 choices from ${C,}$ and for each of those choices, 7 choices from ${D.}$ Therefore, we have: ${6 \by 4 \by 3 \by 7 = 504}$ possible sets.
+
+~example~.
+Let ${A}$ be a set with ${\card{4}.}$ 
+How many ways are there to arrange all 4 elements?
+We have 4 choices for the first. But once we've placed an element.
+We have 3 choices for the second, since we've already places one element.
+Then we have 2 choices for the third.
+Then 1 choice for the last.
+Hence, there are ${4 \by 3 \by 2 \by 1 = 24}$ possible arrangements.
+
+~example~.
+Let ${\card{S} = 20.}$
+How many possible triples ${(a,b,c)}$ are there,
+such that ${a,b,c \in S,}$ with ${a \neq b \neq c?}$
+There are 20 choices for ${a,}$ 19 choices for ${b,}$ and 18 choices for ${c.}$
+Thus, we have ${20 \by 19 \by 18 = 6840}$ possible triples.
+
+~example~. Let ${S = \set{d,o,g}.}$ How many permutations of ${S}$ elements are there? There are ${3! = 6}$ arrangements.
+
+~example~. Let ${S = \set{b,a,l,l}.}$ How many permutations of ${S}$ are there? If we simply computed ${4!=24,}$ we would overcount. Consider the set of all such arrangements:
+
+$$
+   \lset{
+      \ax{
+         bal_1l_2, & bal_2l_1 & \rightarrow & ball & bl_2al_1, & bl_1al_2 & \rightarrow & blal \\
+         bl_1l_2a, & bl_2l_1a & \rightarrow & blla & abl_1l_2, & abl_2l_1 & \rightarrow & abll \\
+         l_1bal_2, & l_2bal_1 & \rightarrow & lbal & l_1bl_2a, & l_2bl_1a & \rightarrow & lbla \\
+         al_1bl_2, & al_2bl_1 & \rightarrow & albl & l_1abl_2, & l_2abl_1 & \rightarrow & labl \\
+         l_1l_2ba, & l_2l_1ba & \rightarrow & llba & al_1l_2b, & al_2l_1b & \rightarrow & allb \\
+         l_1al_2b, & l_2al_1b & \rightarrow & lalb & l_1l_2ab, & l_2l_1ab & \rightarrow & llab 
+      }
+   }.
+$$
+
+Because the ${ball}$ appears exactly twice, we must divide by 2. There are ${4!/2! = 12}$ possible permutations. The trick is to pretend that every element is different. Since every element is different, there ${2!}$ ways where ${ball}$ occurs.
+
+~example~. Let ${S = \set{t,a,t,t,e,r}.}$ How many permutations of ${S}$ elements are there? Once more, we want to avoid overcounting. Because there ${t}$ is duplicated twice, there are ${3!}$ permutations that result in _tatter_. Thus, we again must divide: ${6!/3! = 120}$ permutations.
+
+~example~. Let ${S = \set{p,a,p,a}.}$ How many permutations? Once more, we must correct for overcounting: ${4!/(2! \by 2!) = 6}$ permutations. Because there are 2 ${p}$s, there are ${2!}$ ways for ${p}$ to repeat. And for each of those ways, there are ${2!}$ ways for ${a}$ to repeat.
+
+## Partial Permutations
+
+> __~partial permutation~.__ Let ${S}$ be a set. Then a _partial permutation_ ${V}$ of ${S}$ is a [list](#lists) of a given length ${k}$ consisting of ${k}$ distinct elements of ${S.}$
+
+> __~partial permutation enumeration~.__ Let ${S}$ be a set with ${\card{S}=n.}$ Then the number of k-permutations of length ${0 \le k \le n}$ is
+> 
+> $$
+>    P(n,k) = \dfrac{n!}{(n - k)!} = n(n-1)\ldots(n-k+1).
+> $$
+
+Here's another formulation of this definition:
+
+> __~partial permutation enumeration~.__ Let ${S}$ be a set with ${n}$ objects, and ${L}$ be a list with ${k}$ ordered slots. Then there are
+> 
+> $$
+>    \dfrac{n!}{(n-k)!} = n(n-1)(n-2)\ldots(n-k+1)
+> $$
+>
+> ways to fill the ${k}$ slots.
+
+~example~.
+Let ${C}$ be a set with ${\card{C} = n}$ and ${n \in \pint.}$
+Let ${D}$ be a set with ${\card{D} = r}$ and ${r \le n.}$
+How many injective assignments are there from ${C}$ to ${D?}$
+There are ${n-0}$ choices for the first, ${n-1}$ choices for the second,
+${n-2}$ choices for the third, ${\ldots,}$ ${n - (r - 1) = n - (r + 1)}$ choices for the last.
+
+The example above is what we call an _variation_ — a bijection from a set ${S}$ to some strict subset of ${S.}$
+
+Consider the expression ${P(n,k) \by P(n-k,j)}$ where ${n,k,j \in \uint}$ with ${k \le n}$ and ${j \le n - k.}$ With a little algebra, we can reduce this expression:
+
+$$
+   \eqs{
+      P(n,k) \by P(n-k,j) &= \dfrac{n}{(n-k)!} \by \dfrac{(n-k)!}{(n-k-j)!} \\[1em]
+      &= \dfrac{n!}{(n-k-j)!} \\[1em]
+      &= P(n,k+j).
+   }
+$$
+
+This is the formula for the number of permutations of size ${k,}$ given a set of ${n}$ objects, multiplied by the number of permutations of size ${j}$ given ${n - k}$ objects.
+
+
+~example~. 
+Let ${A}$ be the set ${\lset{1,2,3,4,\ldots,23,24, 25}}$ with ${\card{A} = 25.}$
+Suppose 4 elements are drawn to construct an arrangement ${(a,b,c,d).}$ First, how many possible arrangements are there if each element is excluded from ${A}$ after drawing? Second, how many possible arrangements are there if each element is not excluded from ${A}$ after drawing?
+The first part of this question imposes a bijection requirement: There are 25 choices for the first, 24 for the second, 23 for the third, and 22 for the fourth. This gives us:
+
+$$
+   25 \times 24 \times 23 \times 22 = 303~600
+$$
+
+possible arrangements. The second question throws the bijection requirement out. Now we have ${25^4 = 390~625}$ possible arrangements. Notice that the parameters are different for the two questions. In elementary terms, the first question does not permit "replacement" (i.e., a bijection). The second question does (no bijection requirement).
+
+~example~. An alphabet ${\Sigma}$ comprises 5 letters. Every valid string over
+${\Sigma}$ has no more than 3 letters, but letters may be used more than once.
+How many possible strings are there? We can have 5 letters for the first, 5
+letters for the second, and 5 letters for the third: ${5 \by 5 \by 5 = 125}$
+strings. That's a 3 letter string. We can also have a 2 letter string: ${5
+\times 5 = 25.}$ And we can also have a 1 letter string: ${5.}$ Thus, we have
+${125 + 25 + 5 = 155}$ possible strings over ${\Sigma.}$
+
+~example~. How many pairs of ${(m,n)}$ with ${m,n \in \uint^+}$ satisfy the
+relation ${m^2 + n \lt 22?}$ Since ${m,n \in \uint^+,}$ it must be the case that
+${0 \lt m^2 \lt 22.}$ The only perfect squares between ${0}$ and ${22}$ are
+${1,2,3,4.}$ If ${m = 1,}$ then ${n \lt 22 - 1 = 21.}$ So, there are ${20}$
+possible pairs when ${m = 1.}$ If ${m = 2,}$ then ${n \lt 22 - 4 = 18.}$ There
+are ${17}$ possible pairs when ${m = 2.}$ If ${m = 3,}$ then ${n \lt 22-9=13,}$
+so ${12}$ pairs. If ${m = 4,}$ then ${n \lt 22-16=6.}$ There are ${5}$ possible
+pairs. Hence, we have ${21+18+13+16=54}$ possible pairs.
+
+~example~. We're given the following grid:
+
+$$
+   \ax{
+      \circ & \circ & \circ & \circ & \circ \\
+      \circ & \circ & \circ & \circ & \circ \\
+      \circ & \circ & \circ & \circ & \circ \\
+      \circ & \circ & \circ & \circ & \circ \\
+      \circ & \circ & \circ & \circ & \circ \\
+   }
+$$
+
+How many squares of any size can we form by connecting the dots? With 4 dots, we can make 1 square. With 6, we can make 2. With 8, we can make 3. With 10, we can make 4. This would comprise the first row, and there are 4 rows remaining. So, at a minimum, we have ${4 \by 4 = 16}$ squares. Those are ${1 \times 1}$ squares. We can also have ${2 \times 2}$ squares. That would give us ${9}$ total. So, we now have ${25}$ possible squares. We can also have a ${3 \times 3}$ square, of which there are ${4}$ possibilities. Now we're up to ${29}$ squares. Then, there's the ${4 \times 4}$ square, which is the whole square itself. This gives us ${30}$ possible squares. We are, however, missing a case: Squares that are _rotated_. I.e., those squares whose sides are not parallel to the grid. Since a square's side lengths are all equal, we can determine the square's side lengths in terms of their diagonals, which, as Pythagoras tells us, is ${\sqrt{a^2 + b^2}.}$
+
+| ${a}$ | ${b}$ | side          | number of squares |
+| ----- | ----- | ------------- | ----------------- |
+| ${1}$ | ${1}$ | ${\sqrt{2}}$  | ${9}$             |
+| ${1}$ | ${2}$ | ${\sqrt{5}}$  | ${8}$             |
+| ${1}$ | ${3}$ | ${\sqrt{10}}$ | ${1}$             |
+| ${2}$ | ${2}$ | ${\sqrt{8}}$  | ${2}$             |
+
+Therefore, there are ${50}$ possible squares.
+
+## Combinations
+~example~. A round-robin tournament consists of each player playing every other player exactly once. How many matches are held during an 8-person round-robin tennis tournament? This is a good example of a question that seems as if ordering matters, but really boils down to a combination.
+
+~example~.  Let ${S}$ be a set with ${\num{C}=3.}$ Let ${P}$ be a set with
+${\num{P}=4.}$ How many many ${(s,p)}$ are there, where ${s \in P}$ and ${p \in
+P?}$ This is nothing more than the cardinality of the Cartesian product ${C
+\times B.}$ Thus, there are ${3 \times 4 = 12}$ pairs of ${(s,p).}$
+
+As simple as this example is, it generalizes many common counting problems.  For
+example, given 3 interns and 10 managers, how many possible pairings are there?
+The first intern can be paired with any of the 10 managers, the second intern
+can be paired with any of the 10 managers, and the third intern can be paired
+with any of the 10 managers. This gives us ${3 \times 10 = 30}$ possible
+pairings.
+
+~example~. 
+Let ${A}$ be the set ${A = \set{a,b,c}.}$
+How many possible ways are there to combine ${a,}$ ${b,}$ and ${c?}$
+There are ${8}$ possible ways: ${\nil,}$ ${\set{a},}$ ${\set{b},}$ ${\set{c},}$
+${\set{a,b},}$ ${\set{b,c},}$ ${\set{a,c},}$ ${\set{a,b,c}.}$
+
+Given some non-empty set ${A,}$ we often want to ask: How many possible combinations of ${A}$'s elements are there? For example, given a set ${A = \set{\text{salty}, \text{sweet}, \text{sour}},}$ how many possible ways are there to combine the elements?
+
+To generate a combination ${C,}$ for each element ${a \in A,}$ either ${a \in C}$ or ${a \notin C.}$ This means means we have two possibilities for the first element, two possibilities for the second, two possibilities for the third, and so on. Thus, we have: ${2^n,}$ where ${n}$ is the number of elements of the set in question. Thus, we have:
+
+| ${\text{salty}}$ | ${\text{sweet}}$ | ${\text{sour}}$ | ~combination~                               |
+| ---------------- | ---------------- | --------------- | ------------------------------------------- |
+| 0                | 0                | 0               | ${\nil}$                                    |
+| 1                | 0                | 0               | ${\set{\tx{salty}}}$                        |
+| 0                | 1                | 0               | ${\set{\tx{sweet}}}$                        |
+| 0                | 0                | 1               | ${\set{\tx{sour}}}$                         |
+| 1                | 1                | 0               | ${\set{\tx{salty}, \tx{sweet}}}$            |
+| 0                | 1                | 1               | ${\set{\tx{sweet}, \tx{sour}}}$             |
+| 1                | 0                | 1               | ${\set{\tx{salty}, \tx{sour}}}$             |
+| 1                | 1                | 1               | ${\set{\tx{salty}, \tx{sweet}, \tx{sour}}}$ |
+
+Notice that this gives us exactly ${2^3 = 8}$ possible combinations. In effect, counting the number of _combinations_ of a given set ${A}$ corresponds to the number of subsets of ${A,}$ that is, how many subsets are in the _power set_ of ${A?}$
+
+> __~number of subsets~.__ Let ${S}$ be a set. Then the number of subsets of ${S}$ is ${2^{\abs{S}},}$ where ${\abs{S}}$ is the cardinality of ${S.}$
+
+~example~. 4 candidates run for President and Vice President. How many possible pairs of (President, Vice President) (assuming no person can be both)? There are 4 choices for President. After we pick one, there are 3 choices for the second: 12 possible pairs.
+
+### Binomial Coefficients  
+
+~example~. How many ways can 2-seat committee be chosen from a group of 4 people (order of choosing irrelevant)?
+Start with a simple set: ${\set{a,b,c,d},}$ enumerating all possible sets:
+
+$$
+   \lset{
+      \eqs{
+         \set{a,b}\set{a,c}\set{a,d} \\
+         {\red{\set{b,a}}}\set{b,c}\set{b,d} \\
+         {\red{\set{c,a}}}{\red{\set{c,b}}}\set{c,d} \\
+         {\red{\set{d,a}}}{\red{\set{d,b}}}{\red{\set{d,c}}} \\
+      }
+   }
+$$
+
+Notice the duplicates in red. There are 6 possible ways.
+
+~example~. In how many ways can three seats ${\set{a,b,c}}$ be taken given a group of 8 people?
+Again, if we simply permuted — ${(8)(7)(6) = 210}$ — we'd get an overcount.
+We know that the first permutation causes an overcount of 1. The second permutation causes an overcount of 2. The third permutation causes an overcount of 3. Thus, we have ${(8 \by 7 \by 6)/(1 \by 2 \by 3) = 56}$ ways.
+
+Determining the maximum number of combinations is so widespread in mathematics that we have special notation for it. The last example can be expressed with any of the following expressions:
+
+$$
+   C(8,3) = 56 ~~~~~~~ _8 C _3 = 56 ~~~~~~~ \binom{8}{3} = 56
+$$
+
+Each of the expressions above is read as "8 choose 3" or "8 pick 3." Is there a general formula for this computation? Recall that a permutation tells us how many ways we can arrange objects in order. Given ${n}$ objects, we have ${n}$ choices for index one, ${n-1}$ objects for index two, ${n-2}$ objects for index 3, all the way down to ${n-(r-1).}$ At each count, we pair an element with every other element. This results in ${r!}$ duplicates, which means that we have:
+
+$$
+   \dfrac{n(n-1)(n-2)\ldots(n-(r-1))}{r!}.
+$$
+
+The numerator of this expression can be expressed another way:
+
+$$
+   \eqs{
+      n(n-1)(n-2)\ldots(n-(r-1)) &= (n)(n-1)\ldots(n - r + 1) \\
+      &= \dfrac{(n-r)(n-r-1)\ldots 2 \ldots 1}{(n-r)(n-r-1)\ldots 2 \ldots 1} \\
+      &= \dfrac{n!}{(n-r)!} \\
+   }
+$$
+
+This gives us:
+
+$$
+   \eqs{
+      \dfrac{(n)(n-1)(n-2)\ldots(n-r+1)}{r!}
+      &= \dfrac{\dfrac{n!}{(n-r)!}}{r!} \\
+      &= \dfrac{n!}{r!(n-r)!}
+   }
+$$
+
+That final expression is called the _binomial coefficient_.
+
+> __~binomial coefficient~.__ Given ${k \in \nat}$ and ${n \in \nat}$ with ${0 \le k \le n,}$ the _binomial coefficient_ of ${n}$ and ${k}$ is
+> 
+> $$
+>    \binom{n}{k} = C(n,k) = \dfrac{n!}{k!(n-k)!},
+> $$
+
+which we read as "${n}$ choose ${k.}$" If ${k \lt 0}$ or ${k \gt n,}$ then we define ${\binom{n}{k} = C(n,k) = 0.}$ For all ${n \ge 0}$ and all ${k,}$ ${\binom{n}{k}}$ is the number of ${k}$-element subsets of an ${n}$-element set.
+
+~example~. In a state lottery, 48 balls are numbered 1 to 48, and 6 are chosen. How many different sets of winning numbers are there? This is a classic combination problem. We a set of 48, and we're asked to count how many subsets of size 6 we can make. So, we have ${\binom{48}{6}=48!/(6!)=12~271~512.}$ As we can see, the odds of winning a state lottery — assuming all outcomes are equally likely — is very, very low.
+
+## Bitstrings
+
+Consider the set of all binary digits, ${\bits = \set{0,1},}$ and a set ${S = \set{a,b,c}.}$ One way we can count all of the possible subsets of ${S}$ is to establish a bijection ${f: S \bij \bits^3.}$ The product ${\bits^3}$ gives us the following strings: 
+
+$$
+\lset{
+   \ax{
+      000 & 100 & 010 & 001 \\
+      110 & 101 & 011 & 111 \\
+   }
+}.
+$$
+
+Now, we can count all of the possible subsets of ${S}$ mapping each element of ${S}$ to each string of ${\bits^3.}$ These mappings are displayed in the table below, where each ${\ws}$ represents an empty position.
+
+|         |                 | ~string~ |
+| ------- | --------------- | -------- |
+| ${000}$ | ${\ws~\ws~\ws}$ | ${\nil}$ |
+| ${100}$ | ${a~\ws~\ws}$   | ${a}$    |
+| ${010}$ | ${\ws~b~\ws}$   | ${b}$    |
+| ${001}$ | ${\ws~c~\ws}$   | ${c}$    |
+| ${110}$ | ${\ws a~b}$     | ${ab}$   |
+| ${101}$ | ${a~\ws~c}$     | ${ac}$   |
+| ${011}$ | ${\ws~b~c}$     | ${bc}$   |
+| ${111}$ | ${a~b~c}$       | ${abc}$  |
+
+This simply confirms that the number of possible subsets of a given set ${S}$
+is ${2^n,}$ where ${n}$ is the cardinality of ${S.}$
+
+## Compositions
+
+Because the naturals are defined as sets, given two naturals ${n}$ and ${m}$ with ${m \lt n,}$ we can break down ${n}$ into its elements (other naturals less than or equal to ${n}$). Thus, the sequence ${(1,1,1,1)}$ is another way to represent 4, and so is ${(1,3),}$ and so is ${(2,2),}$ as well as ${(1,1,2),}$ etc. Each of these sequences is called a _composition_ of ${4.}$
+
+> __~composition~.__ Given an integer ${n,}$ a _composition_ of ${n}$ is a sequence ${t = t_1, t_2, \ldots, t_k,}$ where each ${t_i}$ is a positive integer and ${\tsum{i=1}{k} t_i = t_1+t_2+\ldots+t_k = n,}$ with ${k \in \pint}$ corresponding to the number of _parts_ of ${t.}$ We write ${\df{comp}[n]}$ to denote the set of all compositions of ${n.}$
+
+> __~composition count~.__ For all integers ${n \gt 0,}$ there are ${2^{n-1}}$ compositions of ${n.}$
+
+## Anagrams
+
+What do ${\string{silver},}$ ${\string{sliver},}$ ${\string{livers},}$ and ${\string{ieslrv}}$ have in common? They consist entirely of the same elements. Each of these strings are _anagrams_ of one another. The integer ${172}$ has the anagrams ${127}$, ${712,}$ ${721,}$ ${217,}$ and ${271.}$
+
+> __~anagram~.__ Let ${\set{a_1, a_2, \ldots, a_k}}$ be a list of distinct elements ${n_1, n_2, \ldots, n_k}$ be natural numbers. An _anagram_ is a list ${w = (w_1, w_2, \ldots, w_n)}$ formed by rearranging ${n_1}$ copies of ${a_1,}$ ${n_2}$ copies of ${a_2,}$ ${\ldots,}$ ${n_k}$ copies of ${a_k,}$ such that ${n = n_1 + n_2 + \ldots n_k.}$ We denote the set of all anagrams of a given list ${w}$ with the notation ${\df{anagram}(a_1^{n_1}, a_2^{n_2}, a_3^{n_3}, \ldots, a_k^{n_k}).}$
+
+~example~. ${\df{anagram}(a^1b^2c^1)=\set{abbc,abcb,acbb, cabb,cbab,cbba, bacb,babc,bcab, bbac,bbca,bcba}.}$
+
+If we think about how an anagram is generated, this is simply a binomial coefficient. There are ${n!}$ ways for the first position, ${(n-1)!}$ factorials for the second, ${(n-2)!}$ for the third, and so on, where ${n = n_1 + n_2 + n_3 + \ldots + n_k.}$ As we saw with the binomial coefficient, we then correct for the overcount. Thus, we have:
+
+$$
+\eqs{
+   \dfrac{4!}{(1!)(2!)(1!)} 
+   &= \dfrac{(4)(3)(2)(1)}{(2)} \\
+   &= \dfrac{(4)(3)\out{(2)}(1)}{\out{(2)}} \\
+   &= {(4)(3)(1)} \\
+   &= {12} \\
+}
+$$
+
+From the example above, we see that there are, in fact, 12 such anagrams.
+
+> __~anagram count~.__ Given ${a_1, \ldots, a_k}$ distinct elements and ${n_1,\ldots,n_k}$ natural numbers with ${n = n_1 + \ldots + n_k,}$ there are, at most,
+
+$$
+   \card{\df{anagram}(a_1^{n_1}a_2^{n_2}\ldots a_k^{n_k})}
+   =\dfrac{n!}{\dprod{i=1}{k}n_i!}
+   =\dfrac{n!}{(n_1!)(n_2!)\ldots(n_k!)}
+$$
+
+anagrams.
+
+
+
+## Lattice Paths
+
+Below are a few examples of lattice paths:
+
+<Grid cols={3}>
+
+$$
+   \ax{
+      \circ & \bullet & \bullet \\
+      \bullet & \bullet & \circ \\
+      \bullet & \circ & \circ \\
+      \bullet & \circ & \circ \\
+   }
+$$
+
+$$
+   \ax{
+      \circ & \circ & \bullet \\
+      \circ & \bullet & \bullet \\
+      \circ & \bullet & \circ \\
+      \bullet & \bullet & \circ \\
+   }
+$$
+
+
+$$
+   \ax{
+      \bullet & \bullet & \bullet \\
+      \bullet & \circ & \circ \\
+      \bullet & \circ & \circ \\
+      \bullet & \circ & \circ \\
+   }
+$$
+
+</Grid>
+
+In short, they're dots marking the vertices
+along a path, where, at each vertex, we can only move
+right by 1, or up by 1. It's likely not apparent, but
+these paths are closely related to binomial coefficients.
+
+> __~lattice path~.__ A _lattice path_ is a sequence ${P=((x_0,y0), (x_1,y_1), \ldots,(x_k,y_k)),}$ where each ${x_i}$ and ${y_i}$ is an integer, such that ${(x_i,y_i)=(x_{i-1} + 1, y_{i-1}),}$ or ${(x_i,y_i)=(x_{i-1},y_{i-1}+1),}$ for all ${i \in \nat : i \ge 1.}$ 
+
+While lattice diagrams are helpful, it's often easier to express them as words. If we start at some point ${(a,b)}$ we can denote the path to some other point ${(c,d)}$ with the letters ${N}$ (_north_) and ${E}$ (_east_). For example, if we start at the bottom-left point for the the lattice path:
+
+$$
+   \ax{
+      \circ & \bullet & \bullet \\
+      \bullet & \bullet & \circ \\
+      \bullet & \circ & \circ \\
+      \bullet & \circ & \circ \\
+   }
+$$
+
+we may denote it as: ${NNENE.}$ Viewed this way, we can see that this is an alphabet with two letters. If we want a lattice path from ${(0,0)}$ to ${(a,b),}$ we need ${a}$ of the ${E}$ steps and ${b}$ of the ${N}$ step. Which in turn means that there, at most, ${\binom{a+b}{a,b}}$ lattice paths to get from ${(0,0)}$ to ${(a,b).}$
+
+> __~lattice path count~.__ For all ${a,b \in \nat,}$ there are
+> 
+> $$
+>    \dbinom{a+b}{a,b} = \dfrac{(a+b)!}{a!b!}
+> $$
+> 
+> lattice paths from ${(0,0)}$ to ${(a,b).}$

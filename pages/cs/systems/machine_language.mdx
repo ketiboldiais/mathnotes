@@ -15,7 +15,7 @@ this sudden jump? Because we must organize our work. The fact is, a
 full-fledged computer is complex in its implementation details. Without a
 clear goal in mind, we risk producing poor designs or losing traction in
 certain areas. The remedy is a common software design technique called the
-**top-down approach** &mdash; we establish the final product's behavior and
+__top-down approach__ &mdash; we establish the final product's behavior and
 appearance to the user, then break it down into its component parts. In
 doing so, we gain an organized workflow defined by clear paths to
 particular endpoints.
@@ -30,7 +30,7 @@ so far. This is no coincidence. Servers, laptops, desktops, tablets, mobile
 phones, smart watches &mdash; they're all chips called **computer
 systems**. There are various ways to design a computer system, just as
 there are various ways to design latches and flip-flops. The design above
-is called the **von Neumann architecture**. Other designs include the
+is called the __von Neumann architecture__. Other designs include the
 _Harvard architecture_, the _dataflow architecture_, the _transport
 triggered architecture_, and several others. Of these various
 architectures, the von Neumann architecture is undoubtedly the most common,
@@ -49,20 +49,20 @@ works as such:
 
 Our first focus is on the second step &mdash; the program containing the
 CPU's instructions. All of these instructions, as a whole, comprise the
-computer system's **machine language**. Machine language instructions can
+computer system's __machine language__. Machine language instructions can
 be classified into three categories:
 
-1. **Data instructions.** These instructions tell the CPU to perform a
+1. __Data instructions.__ These instructions tell the CPU to perform a
    particular operation. We can also think of these instructions as
    _operation instructions_. For example, an instruction to add, an
    instruction to subtract, negate, and so on.
 
-2. **Control instructions.** These instructions tell the CPU which
+2. __Control instructions.__ These instructions tell the CPU which
    instruction to perform next. For example, if the CPU is currently at the
    fourth instruction in the program, the fifth instruction might say, Go
    back to instruction three.
 
-3. **Address instructions.** These instructions can be thought of as
+3. __Address instructions.__ These instructions can be thought of as
    _operand instructions_ &mdash; they tell the CPU what to operate on. As
    we know, data is stored in memory. Data instructions tell the CPU where
    in memory it can find the necessary data it needs to perform its
@@ -99,25 +99,25 @@ difficult to write, let alone more complicated operations like simulating
 pressure systems.
 
 Because machine languages are unwieldy, computer scientists, specifically
-**programming language designers**, create programming languages that allow
+__programming language designers__, create programming languages that allow
 us to instead write something like:
 
 ```nasm
 let a = 1 + 9
 ```
 
-This data input is an instruction in some **high-level language**. That
+This data input is an instruction in some __high-level language__. That
 language might be C, Java, Python, JavaScript, etc. How these instructions
 are understood by the computer is a complicated process that we'll explore
 in great detail later. The idea, however, is that the instructions are fed
-to a program called the **compiler**, which transforms these instructions
+to a program called the __compiler__, which transforms these instructions
 into the computer's machine language. To transform the high-level language
 instruction into a machine language instruction, the compiler designer must
 define the high-level language instructions in terms of machine language
 instructions.
 
 All the possible instructions in a given computer system's machine language
-is called the computer system's **instruction set**. The computer system's
+is called the computer system's __instruction set__. The computer system's
 instruction set is its most valuble interface. Without an instruction set,
 there's no way to connect hardware to software.
 
@@ -194,7 +194,7 @@ ADD R2 R1
 They're writing the instruction, "Add the contents of registers 1 and 2,"
 which translates to `01000100110010`. These mnemonics &mdash; `ADD`, `R1`,
 `R2`, and many others &mdash; are called **assembly language
-instructions**, and they constitute the computer system's **assembly
+instructions__, and they constitute the computer system's __assembly
 language**. Since assembly language instructions are just mnemonics for
 machine language instructions, the computer system's _instruction set_ can
 also be defined as the set of all possible assembly language instructions
@@ -202,7 +202,7 @@ we can write in the computer system.
 
 But wait. How does the computer understand `ADD`, `R2`, and `R1`? Isn't
 this the same problem we saw with compilers? While it may seem like it's
-turtles all the way down, the last turtle is the **assembler** &mdash; a
+turtles all the way down, the last turtle is the __assembler__ &mdash; a
 program that converts the assembly language instructions to machine
 language instructions. This program is written in machine language; at
 least at first. Later, when we examine an assembler's implementation, we'll
@@ -235,7 +235,7 @@ understand:
 ADD x y
 ```
 
-Here, `x` and `y` are called a **symbols** or **names** the user provides
+Here, `x` and `y` are called a __symbols__ or __names__ the user provides
 to refer to particular registers. When the user sends these instructions to
 the assembler, the assembler sees these symbols, and automatically
 translates the `x` and `y` into some unoccupied memory location. For

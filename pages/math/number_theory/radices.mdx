@@ -1,0 +1,208 @@
+<Head>
+	<title>Radices</title>
+	<meta name={`description`} content={`Notes on radices.`}/>
+</Head>
+
+# Radices
+_The following are notes on radices._
+
+1. [Notation and Terminology](#notation-and-terminology)
+	1. [Numerals](#numerals)
+	2. [Base Conversion Algorithm](#base-conversion-algorithm)
+	3. [Number of Digits](#number-of-digits)
+2. [Binary Arithmetic](#binary-arithmetic)
+	1. [Binary Set Union](#binary-set-union)
+	2. [Binary Intersection](#binary-intersection)
+	3. [Binary Set Minus](#binary-set-minus)
+	4. [Binary Remainder](#binary-remainder)
+	5. [At Least One is False](#at-least-one-is-false)
+	6. [Must Both Be False](#must-both-be-false)
+	7. [At Least One is False](#at-least-one-is-false-1)
+
+## Notation and Terminology
+Before we examine the substantive material, below is a quick review of some notation:
+
+> __~floor~.__ Given a real number ${x,}$ there exists a function ${f: \reals \to \uint}$ whose image under ${\reals}$ is an integer ${n}$ satisfying the relation ${n \le x \lt n + 1.}$ We call ${n}$ the _floor_ of ${x,}$ denoted ${\floor{x},}$ and ${f}$ the _floor function_. 
+
+> __~ceiling~.__ Let ${x}$ be a real number. Then there exists a function ${f: \reals \to \uint}$ whose image under ${\reals}$ is an integer ${n}$ satisfying the relation ${n - 1 \lt x \le n.}$ We call ${n}$ the _ceiling_ of ${x,}$ denoted ${\ceil{x},}$ and ${f}$ the _ceiling function_. 
+
+> __~truncation~.__ Let ${x}$ be a real number. The _truncation_ of ${x,}$ denoted ${\trunc{x},}$ is defined as follows:
+
+$$
+	\trunc{x} = \case{
+		\floor{x} & \if ~ x \gt 0 \\
+		       0  & \if ~ x = 0 \\
+		\ceil{x}  & \if ~ x \lt 0
+	}. 
+$$
+
+~example~. ${\floor{3.14} = 3.}$
+
+~example~. ${\floor{-2.9} = -3.}$
+
+~example~. ${\ceil{3.14} = 4.}$
+
+~example~. ${\ceil{-2.9} = -2.}$
+
+~example~. ${\trunc{3.14} = 3.}$
+
+~example~. ${\trunc{-2.9} = -2.}$
+
+### Numerals
+Recall that the division theorem provides the following:
+
+> __~division theorem~.__ Let ${n,d \in \uint}$ with ${d \gt 0.}$ Then there exist unique integers ${q}$ and ${r}$ such that ${n = dq + r}$ with ${0 \le r \lt d.}$
+
+Recall further the fundamental theorem of algebra:
+
+> __~fundamental theorem of algebra~.__ Let ${b}$ be an integer greater than 1. Any ${n \in \pint}$ can be expressed uniquely in the form
+> 
+> $$
+> 	n = a_kb^k + a_{k-1}b^{k-1} + \ldots + a_1b + a_0,
+> $$
+>
+> where ${k \in \nat}$ and ${a_0, a_1, \ldots, a_k}$ are natural numbers less than ${b}$ and ${a_k \neq 0.}$ 
+
+~example~.
+${(1101)_2 =  1(2^3) + 1(2^2)  + 0(2^1) + 1(2^0) = 8 + 4 + 0 + 1 = 13.}$
+
+In the example above, the base is 2. We say that 2 is the _radix_ of the binary system.
+
+### Base Conversion Algorithm
+Below is an algorithm for converting to different bases.
+
+<Algo>
+
+__~base-conversion~__
+- __Argument__:
+	- ${n \in \uint}$, the number to convert.
+	- ${b \gt 1}$, the base.
+- __Image__: ${A,}$ an array of bases.
+
+1. ${\let{q}{n}}$
+2. ${\let{i}{0}}$
+3. ${\let{A}{\ix{~}}}$
+3. __while__ ${q \neq 0}$ __do__
+	1. ${\let{a_i}{q} \rem b}$
+	2. ${A \Lleftarrow a_i}$
+	2. ${\let{q}{q} \dv b}$
+	3. ${k \inc}$
+4. __return__ ${A}$
+
+</Algo>
+
+The algorithm above gives us a quick way to convert numbers to binary in our heads. For example, suppose we're given a decimal ${d.}$ To convert to binary ${d_2,}$ we start by writing ${1}$ if ${d}$ is odd, and ${0}$ if ${d}$ is even. Then, compute the integer division of ${d.}$ That is, ${\floor{d/2}.}$ If the result is even, write ${0.}$ If the result is odd, write ${1.}$ We continue this process until we get to ${1.}$ For example, consider converting the integer ${37:}$
+
+| ${d}$               | ~remainder~ |
+| ------------------- | ----------- |
+| ${37}$              | ${1}$       |
+| ${\floor{37/2}=18}$ | ${0}$       |
+| ${\floor{18/2}=9}$  | ${1}$       |
+| ${\floor{9/2}=4}$   | ${0}$       |
+| ${\floor{4/2}=2}$   | ${0}$       |
+| ${\floor{2/2}=1}$   | ${1}$       |
+
+Mentally, we might list: ${101001.}$ Simply reverse this sequence (binary digits are read from right to left): ${100101.}$ There's nothing magical here. All we're doing is computing the remainder, but in a cognitively easier way (for most people, determining if a number is odd or even is faster than thinking about remainders). The same goes for converting numbers in other bases. Simply determine if the integer quotient at each step is a multiple of the base.
+
+### Number of Digits
+> __~definition~.__ Given a integer of the form
+> 
+> $$
+> 	n = a_kb^k + a_{k-1}b^{k-1} + \ldots + a_1b + a_0,
+> $$
+> 
+> the number of terms (i.e., _digits_) comprising ${n}$ is called the _length_ of ${n,}$ denoted ${\text{dig}_b(n),}$ where ${n}$ is an integer of ${k}$ digits in a numeral system of base ${b,}$ satisfying the relation ${b^{k-1} \le n \le b^k.}$ We define ${\text{dig}_b(n)}$ as follows:
+
+$$
+	\text{dig}_b(n) = k = \trunc{\log_b{(n)}} + 1.
+$$
+
+~example~. ${\text{dig}_{10}(225) = \trunc{\log_{10}(225)}+1 = 2 + 1 = 3.}$
+
+
+
+## Binary Arithmetic
+It's helpful to know the basic powers of two for this section:
+
+| ~power~    | ~decimal~ |
+| ---------- | --------- |
+| ${2^0}$    | 1         |
+| ${2^1}$    | 2         |
+| ${2^2}$    | 4         |
+| ${2^3}$    | 8         |
+| ${2^4}$    | 16        |
+| ${2^5}$    | 32        |
+| ${2^6}$    | 64        |
+| ${2^7}$    | 64        |
+| ${2^8}$    | 128       |
+| ${2^9}$    | 512       |
+| ${2^{10}}$ | 1024      |
+| ${2^{11}}$ | 2048      |
+| ${2^{12}}$ | 4096      |
+
+Below are the definitions of bitwise operations.
+
+> __bitwise operations.__ Let ${(n)_2 = (a_{n-1},a_{n-1},\ldots,a_2,a_1,a_0)}$ and ${(m)_2 = (b_{n-1},b_{n-1},\ldots,b_2,b_1,b_0)}$ be binary integers, such that each ${a_i}$ and ${b_i}$ is a bit (1 or 0 but not both), for all ${0 \le i \le n,}$ where ${i,n \in \nat.}$ The following definitions apply for each bit ${a}$ and ${b.}$
+> 
+> $$
+> 	\eqs{
+> 		\bnot a &= 1 - a \equiv \df{not}~ a \\
+> 		a \bor b &= \max{(a,b)} \equiv a ~\df{or} ~ a \\
+> 		a \band b &= \min{(a,b)} \equiv a ~\df{and} ~ b \\
+> 		a \bxor b &= \abs{a-b}  \equiv a ~\df{xor} ~ b \\ 
+> 	}
+> $$
+> 
+> Given ${A, B \in 2^{\nat},}$ the operations are defined as follows:
+> 
+> $$
+> 	\eqs{
+> 		\bnot a &= 1 - a \equiv \df{not}~ a \\
+> 		a \bor b &= \max{(a,b)} \equiv a ~\df{or} ~ a \\
+> 		a \band b &= \min{(a,b)} \equiv a ~\df{and} ~ b \\
+> 		a \bxor b &= \abs{a-b}  \equiv a ~\df{xor} ~ b \\ 
+> 	}
+> $$
+
+The bitwise operators apply to bits (base expansions) of integers, not the integers themselves. 
+
+### Binary Set Union
+The ${A \bor B}$ operation is equivalent to ${A \cup_{2} B}$ (the binary union of ${A}$ and ${B}$).
+
+### Binary Intersection
+The ${A \band B}$ operation is equivalent to ${A \cap_{2} B}$ (the binary intersection of ${A}$ and ${B}$).
+
+### Binary Set Minus
+Given two binary sets ${A}$ and ${B,}$ the binary set minus (${A \rid_{2} B}$) is expressed as ${A \band (\bnot B).}$
+
+### Binary Remainder
+Given binary variables ${a}$ and ${n,}$ the binary remainder of ${a}$ and ${n}$ can be computed as follows:
+
+$$
+	a \rem n \equiv a \band (n-1).
+$$
+
+~example~. ${6 \band (2-1)=6 \rem 2=0.}$
+
+~example~. ${7 \band (2-1) = 7 \rem 2=1.}$
+
+### At Least One is False
+The expression below returns true if _at least one_ of ${a}$ and ${b}$ is 0. Note the different symbols, these are logical operators, not bitwise. The phrase "at least one of" can always be translated in terms of "nand."
+
+$$
+	\neg(a \land b).
+$$
+
+### Must Both Be False
+Given two binary variables ${a}$ and ${b,}$ the expression below returns true if both ${a}$ and ${b}$ are false.
+
+$$
+	[(a \bor b)=0].
+$$
+
+### At Least One is False
+Given two variables ${a}$ and ${b,}$ the expression below returns true if exactly one of the values is false.
+
+$$
+	[(\neg a) \bxor (\neg b)].
+$$

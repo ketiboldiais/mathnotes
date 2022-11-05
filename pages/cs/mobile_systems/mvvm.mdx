@@ -1,12 +1,12 @@
 # MVVM
 
-The **MVVM (Model-View-ViewModel) architecture** is a way of organizing —
+The __MVVM (Model-View-ViewModel) architecture__ is a way of organizing —
 or more generally, a design paradigm — an application's code. MVVM starts
 with the premise that applications consist of two core parts:
 
-The **View** is where all of our user-interface (i.e., frontend) code
-lives. The **Model** is where all of our logic (i.e., backend) code lives.
-The **ViewModel** serves as a liason betwen the View and the model, binding
+The __View__ is where all of our user-interface (i.e., frontend) code
+lives. The __Model__ is where all of our logic (i.e., backend) code lives.
+The __ViewModel__ serves as a liason betwen the View and the model, binding
 the View to the Model.
 
 ## The Model
@@ -59,7 +59,7 @@ Using our chess game app again, the `View` would contain code about:
 As mentioned earlier, the View cannot contain data. That's the Model's
 prerogative. But wait. Isn't the View in charge of showing data like the
 scoreboard or time? Yes, it is. For the View to render the current score or
-time, it needs that data. And to get that data, it must **ask** for it.
+time, it needs that data. And to get that data, it must __ask__ for it.
 
 Because the View never holds data, it is always a current state reflection
 of the model. At no point does it show data other than what the model
@@ -121,23 +121,23 @@ ensure the following:
 2. establishing a one-way connection from the Model to the View, and
 3. ensuring that only Views impacted by a change in the Model are rebuilt.
 
-This is done by the **ViewModel**.
+This is done by the __ViewModel__.
 
 ## The ViewModel
 
 The ViewModel has several duties job:
 
-1. **Binding**. The ViewModel binds the Model to the View, such that
+1. __Binding__. The ViewModel binds the Model to the View, such that
    changes to the Model cause the View to react and get rebuilt.
-2. **Interpreting**. For some applications, our Model might provide SQL or
+2. __Interpreting__. For some applications, our Model might provide SQL or
    network data. These forms of data can be complicated, and we don't want
    our Views performing data processing to render. Accordingly, the
    ViewModel can serve as a system for wrangling the data it receives from
    the model into a simpler format for the Views.
-3. **Gatekeeping**. The ViewModel also serves as a guard. It ensures that
+3. __Gatekeeping__. The ViewModel also serves as a guard. It ensures that
    access to the model — requests for data or indications that data inside
    the model should change — is proper.
-4. **Tracking**. Ancilliary to the three roles above, the ViewModel must
+4. __Tracking__. Ancilliary to the three roles above, the ViewModel must
    also track all of the changes in the model.
 
 Because of the ViewModel's role, if the View ever needs data, it must send

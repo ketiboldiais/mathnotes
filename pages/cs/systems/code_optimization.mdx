@@ -1,10 +1,5 @@
 import { Scatter } from "../../../components/hago";
 
-<head>
-	<title>Code Optimization</title>
-	<description>Notes on code optimization.</description>
-</head>
-
 # Code Optimization
 
 It's easy to think that performance comes down to asymptotic complexity. In
@@ -37,7 +32,7 @@ can do that will hinder the compiler.
 
 ### Reducing Code Motion
 
-When we write code, we want to be cognizant of **code motion** — how often
+When we write code, we want to be cognizant of __code motion__ — how often
 a computation is performed. The most common example is recomputing constant
 values over and over again inside a loop. For example, consider the
 following code:
@@ -257,7 +252,7 @@ At any given moment, different parts of the processor may be working at the
 same time. For example, as operation bits are sent to the functional units,
 addresses are being sent to the instruction cache, and operation results
 are being sent to the retirement unit. This phenomenon is called
-**parallelism**.
+__parallelism__.
 
 Parallelism has its limits. Ultimately, it depends on how many functional
 units the processor has. For example, the schematic above shows a processor
@@ -353,13 +348,13 @@ The key functions to focus on are `sum_vector_element()` and
 (𝑇) it takes to execute the function is given by the equation:
 
 $$
-	𝑇 = (\cc{𝐶} \times 𝑛) + \cc{O}
+	𝑇 = (\cal{𝐶} \times 𝑛) + \cal{O}
 $$
 
-where ${\cc{C}}$ is the number of cycles per element and ${\cc{O}}$ is the
-overhead. ${\cc{C}}$ can be determined by recording the function's
+where ${\cal{C}}$ is the number of cycles per element and ${\cal{O}}$ is the
+overhead. ${\cal{C}}$ can be determined by recording the function's
 execution time with an increasing number of elements.[^cpu_cycle_note] The
-slope of the best fit line is ${\cc{C}.}$ For example, if the slope of the
+slope of the best fit line is ${\cal{C}.}$ For example, if the slope of the
 line is 9.0, then it takes roughly 9 CPU cycles to execute the function for
 ${n}$ elements.
 

@@ -1,0 +1,135 @@
+<Head>
+	<title>Real-valued Functions</title>
+	<meta name={`description`} content={`Notes on real functions.`}/>
+</Head>
+
+# Valued Functions
+_These notes provide an overview of functions in ${\reals.}$_
+
+1. [Preliminaries](#preliminaries)
+	1. [Function Types](#function-types)
+	2. [Function Composition](#function-composition)
+	3. [Inverse Functions](#inverse-functions)
+	4. [Curves](#curves)
+	5. [Branching Functions](#branching-functions)
+	6. [Equality](#equality)
+	7. [Classical Inequalities](#classical-inequalities)
+2. [Intervals](#intervals)
+3. [Properties of Valued Functions](#properties-of-valued-functions)
+	1. [Monotonicity](#monotonicity)
+	2. [Symmetry](#symmetry)
+4. [Graphical Transformations](#graphical-transformations)
+	1. [Ascents](#ascents)
+	2. [Descents](#descents)
+
+## Preliminaries
+We begin with a brief review of functions. We've seen functions
+in the context of set theory, but we now focus specifically on functions
+in the context of real analysis.
+
+> __~valued function~.__ A _valued function_ is a mapping ${f: X \mapsto Y}$ where ${X \subseteq \reals}$ and ${Y \subseteq \reals,}$ such that, for every ${x \in D,}$ there exists a unique ${f(x) \in Y.}$ We call ${X}$ the _domain_ of ${f,}$ that ${\reals}$ is the _codomain_ of ${f,}$ and that ${Y}$ is the _range_ of ${f.}$ By convention, we may denote a function in the form ${f(x) = \E,}$ where ${\E}$ is a predicate called a _procedure_. We say that ${f(x)}$ is the _outcome_ of ${f,}$ that _arguments_ are passed to a _parameter_ of ${f}$ denoted ${x,}$ and that the function ${f}$ bears the name "${f.}$"
+
+The definition above has been tailored to the notes in this volume. A more general treatment of functions is found in the [set theory notes on functions](./../set_theory/functions). Functions are abstractions that assign (i.e., map) every element of one set to a unique element of another set. They do not have to assign numbers to numbers. We can assign apples to oranges, sets to sets, or functions to functions. Granting passports to applicants is a function, because no single passport can be granted to multiple applicants. Assigning the set of all humans to the statuses "dead" or "alive" is a function, because no human can be both dead and alive. This general construct was proposed by the German mathematician Peter Lejeune Dirichlet (1805-1859), in lieu of the old definition where functions were simply formulas. Unfortunately, many elementary schools are still stuck in the 18th century (not necessarily through a fault of their own) and continue to present functions as formulas.
+
+Some authors make a distinction between "natural domains" and "domains." For example, the function ${f(x)=1/x}$ — couched in such authors' terms — has a domain of ${\reals}$ and a natural domain of ${\reals \smallsetminus \set{0}.}$ The distinction starts a quick path to cognitive goose chasing. We just said that functions map all the elements of their domain to a unique element of its codomain, so what's this business of some elements not getting mapped? Fortunately, the fix is simple: ${\dom{f}=\reals \smallsetminus \set{0}.}$ The notation ${\smallsetminus \set{0}}$ merely specifies the domain, which is whatever we say it is, footgun or otherwise. If not every element in the domain has a unique outcome, then we don't have a function. End of story.
+
+> __~identity function~.__ We call the function ${f: X \to X,}$ or, equivalently, ${f(x)=x,}$ the _identity function_. Given ${X\subseteq\reals,}$ we denote the identity function on ${X}$ with the notation ${\tx{Id}_X.}$
+
+> __~equality of functions~.__ We say that two functions ${f}$ and ${g}$ are equal and write ${f = g}$ if, and only if ${\dom{f}=\dom{g}}$ and ${\ran{f}=\ran{g}.}$
+
+> __~algebra of functions~.__ Given the real functions ${f:X\mapsto{Y}}$ and ${g:A\mapsto{B}}$ with ${X \cap A \neq \nil,}$ the following operations are defined for all ${x \in X}$ and for all ${a \in A.}$
+> 
+> $$
+> 	\eqs{
+> 		f + g &= f(x) + g(a). \\
+> 		-f &= -f(x). \\
+> 		f - g &= f(x) - g(a). \\
+> 		fg &= f(x) \by g(a). \\
+> 		\dfrac{f}{g} &= \dfrac{f(x)}{g(a)} ~\nc~ \forall a[g(a) \neq 0].
+> 	}
+> $$
+
+### Function Types
+Below is a quick overview of the different function
+types. The function types can also be viewed from a
+procedural perspective. Suppose ${f:A \mapsto B}$ where ${b \in B.}$ Saying that ${f}$ is _injective_ is akin to: "There is _at most one way_ to reach the result ${b.}$" When we say that ${f}$ is _surjective_: "There is _at least one way_ to reach the result ${b.}$ And _bijective_: "There is _exactly one way_ to reach the result ${b.}$
+
+|            | ${f: x \in \X \mapsto y \in \Y}$ | ~notation~         | ~leeway~                                                            |
+| ---------- | -------------------------------- | ------------------ | ------------------------------------------------------------------- |
+| injective  | ${y}$ mapped to _at most once_   | ${f: \X \inj \Y}$  | some ${y}$ are not mapped to                                        |
+| surjective | ${y}$ mapped to _at least once_  | ${f: \X \surj \Y}$ | some ${y}$ are mapped to more than once (but not by the same ${x}$) |
+| bijective  | ${y}$ mapped to _exactly once_   | ${f: \X \bij \Y}$  | none; unique ${x}$ to unqiue ${y}$                                  |
+
+### Function Composition
+> __~function composition~.__ Let ${f}$ and ${g}$ be functions. The _composition_ of ${f}$ and ${g,}$ denoted ${f \wc g,}$ is defined as ${(f \wc g)(x) = f(g(x)),}$ where ${\dom{f \wc g} = \set{x \in \dom{g} : g(x) \in \dom{f}}.}$
+
+The idea behind function composition: We take the outcome of some function (say, ${g}$), and pass it as an argument to another function (${f(g(x))}$).
+
+### Inverse Functions
+> __~inverse function~.__ Given a function ${f: X \inj Y,}$ we call the relation ${f^{-1}: Y \inj X}$ the _inverse_ of ${f.}$
+
+Informally: Given a function ${f:X \mapsto Y,}$ we call the function ${f^{-1}: Y \mapsto X}$ the _inverse_ of ${f.}$ In other words, if ${f(x)=y}$ then ${f^{-1}(y)=x.}$  We must be careful with the notion of an inverse function, because the inverse of a function ${f}$ is not necessarily a function. Suppose ${A=\set{1,2,3},}$ ${B=\set{a,b,c,d},}$ and ${f = \set{(1,a), (2,b), (3,c)}.}$ Given that ${f}$ is an injective function, we have ${f^{-1}=\set{(a,1),(b,2),(c,3)}.}$ But ${f^{-1}}$ is not a function, since the element ${d}$ doesn't have a unique outcome. Accordingly, we refrain from the characterization of inverses as "undoing" a function, because that's not really what's happening here (and in this author's experience, it leads to a tempting thought that the inverse is a function). As such, we treat a function's inverse as an entirely different construct. It might be a function or not a function at all.
+
+### Curves
+> __~curves~.__ Given a function ${f,}$ we call the set ${\Gamma_f = \set{(x,y)\in \reals^2:y=f(x)}}$ the _curve_ of ${f}$ on the plane ${\reals^2.}$
+
+### Branching Functions
+Some functions are _conditional_, and in that they apply different procedures depending on the arguments passed. We call such functions _branching functions_ (or _piecewise functions_). The most common example is the _absolute value function_:
+
+$$
+	\abs{x} = \case{
+		x &\if x \ge 0 \\
+		-x &\if x \lt 0
+	}
+$$
+
+### Equality
+The absolute value function allows us to define the notion of equality for the reals.
+
+> __~definition~.__ Let ${a, b \in \reals.}$ We say that ${a}$ is equal to ${b}$ and write ${a = b}$ if, and only if, for every real number ${\varepsilon \gt 0,}$ it follows that ${\abs{a - b} \lt \varepsilon.}$
+
+### Classical Inequalities
+> __~triangle inequality~.__ ${\forall(a,b) \in \reals^2:\abs{a+b} \le \abs{a} + \abs{b}.}$
+
+> __~corollary~.__ ${\forall x_1, \ldots, x_n \in \reals:(x_1 + \ldots + x_n) \le (\abs{x_1} + \ldots + \abs{x_n}).}$
+
+> __~corollary~.__ ${\forall(a,b) \in \reals^2~:~\abs{a-b} \ge \abs{\abs{a}-\abs{b}}.}$ 
+
+
+## Intervals
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1665820108/math/neighborhoods_mfgoln.svg"}
+imwidth={"402"} imheight={"146"} caption={"interval"} width={"70"} />
+
+> __~definition~.__ An _interval_ is a set ${I \subset \reals}$ such that, for all ${x,y,z \in I,}$ if ${x \lt y \lt z}$ and ${x,z \in I,}$ then ${y \in I.}$ Given ${a,b \in \reals,}$ we define the following: The interval ${\set{x \in \reals:a \lt x \lt b}}$ is called a _closed interval_. The interval ${x\in\reals: a \le x \le b}$ is called an _open interval_. The interval ${\set{x\in\reals: a \lt x \le b}}$ is called a _right-open interval_. The interval ${\set{x\in\reals:a \le x \lt b}}$ is called a _left-open interval_.
+
+We will always denote intervals with sets. We will not use notations like ${(a,b),}$ ${[a,b)}$ or ${]a,b[,}$ since the sets aren't all that difficult to write and they're clearer.
+
+## Properties of Valued Functions
+### Monotonicity
+> __~definition~.__ Given ${I \subset \reals,}$ and ${R \subseteq \reals,}$ and ${f: I \mapsto R,}$ the following properties are defined:
+> 
+> 1. ${f}$ is _increasing_ if, and only if, for all ${a,b \in I,}$ if ${a \lt b,}$ then ${f(a) \le f(b).}$
+> 2. ${f}$ is _decreasing_ if, and only if, for all ${a,b \in I,}$ if ${a \lt b,}$ then ${f(a) \ge f(b).}$
+> 3. ${f}$ is _strictly increasing_ if, and only if, for all ${a,b \in I,}$ if ${a \lt b,}$ then ${f(a) \lt f(b).}$
+> 2. ${f}$ is _strictly decreasing_ if, and only if, for all ${a,b \in I,}$ if ${a \lt b,}$ then ${f(a) \gt f(b).}$
+> 3. ${f}$ is _monotonic_ if ${f}$ is increasing or decreasing.
+> 4. ${f}$ is _strictly monotonic_ if ${f}$ is strictly increasing or strictly decreasing.
+
+### Symmetry
+> __~definition~.__ Given a funtion ${f}$ and a number ${x \in \dom{f} \subseteq \reals,}$ we define the following:
+> 
+> 1. ${f}$ is an _even function_  iff for all ${x \in \dom{f},}$ ${f(-x) = f(x).}$
+> 2. ${f}$ is an _odd function_ iff for all ${x \in \dom{f},}$ ${f(-x)=-f(x).}$
+
+The descriptors "even" and "odd" come from the powers of some ${(-x).}$ Given ${x^n}$ where ${n,k \in \nat,}$ if ${n=2k}$ (an even number) then ${(-x)^{n}=x.}$ If ${n=2k+1,}$ then ${(-x)^n=-x.}$ Even functions have the special property of being symmetric about the ${y}$-axis, since all their tuples are either ${(-x,y)}$ or ${(x,y).}$ Odd functions have the property of being symmetric about the origin: ${(-x,-y)}$ or ${(x,y).}$
+
+## Graphical Transformations
+### Ascents
+> __~definition~.__ Given the functions ${f}$ and ${g}$ in ${\reals,}$ and a real number ${C \gt 0,}$ we the function ${g(x)=f(x)+C}$ the _ascent_ of ${f.}$ Graphically, this shifts the graph of ${f}$ _up_ the ${y}$-axis.
+
+### Descents
+> __~definition~.__ Given the functions ${f}$ and ${g}$ in ${\reals,}$ and a real number ${C \gt 0,}$ we the function ${g(x)=f(x)-C}$ the _descent_ of ${f.}$ Graphically, this shifts the graph of ${f}$ _down_ the ${y}$-axis.
+
+
+

@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import Route from "./route";
 
-const Tree = ({ data = [], allLinks = false, clickHandler }) => {
+export const Tree = ({ data = [], allLinks = false, clickHandler }) => {
 	return (
 		<ul>
 			{data.map((tree, index) => (
@@ -44,5 +44,3 @@ const TreeNode = ({ node, allLinks, clickFunction }) => {
 		</li>
 	);
 };
-
-export default Tree;

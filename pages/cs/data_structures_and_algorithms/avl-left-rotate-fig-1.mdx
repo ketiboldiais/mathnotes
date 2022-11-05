@@ -1,0 +1,33 @@
+import {Tree} from "../../../components/illus/components/Tree/Tree";
+
+<Grid cols={2}>
+<Tree
+	data={[
+		{ child: "c", parent: "" },
+		{ child: "b", parent: "c" },
+		{ child: "d", parent: "c", display: "none" },
+		{ child: "a", parent: "b" },
+		{ child: "e", parent: "b", display: "none" },
+	]}
+	markBalanceFactor={true}
+	scale={100}
+	width={170}
+	height={70}
+	margins={[15,0,15,0]}
+	id={`rr0`}
+/>
+<Tree
+	data={[
+		{ child: "b", parent: "", focus: "red" },
+		{ child: "c", parent: "b" },
+		{ child: "a", parent: "b" },
+	]}
+	markBalanceFactor={true}
+	scale={100}
+	width={170}
+	height={70}
+	margins={[15,0,15,0]}
+	id={`rr1`}
+/>
+</Grid>
+

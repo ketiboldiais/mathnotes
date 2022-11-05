@@ -1,16 +1,18 @@
 import {BinaryTree} from "../../../components/illus/components/BinaryTree/BinaryTree";
 import {Tree} from "../../../components/illus/components/Tree/Tree";
 
-<head>
-	<title>Introduction to Trees</title>
-	<description>General notes on trees.</description>
-</head>
+<Head>
+	<title>Intro to Trees</title>
+	<meta name={`description`} content={`Notes on trees.`}/>
+</Head>
 
 # Introduction to Trees
 
+This chapter covers notes on _trees_.
+
 <div className={`outline`}>
 
-1. [Terminology](#terminology)
+1. [Tree Relations](#tree-relations)
 2. [Tree Paths](#tree-paths)
 3. [Binary Trees](#binary-trees)
 	1. [Tree Counting](#tree-counting)
@@ -45,77 +47,46 @@ import {Tree} from "../../../components/illus/components/Tree/Tree";
 
 </div>
 
-In this section, we examine the **tree** data structure. There are many
-kinds of trees—_general trees_, _binary trees_, special types of binary
-trees, and so on. Below is a diagram of some tree.
+In this section, we examine the _trees_. Trees are a fundamental data structure in computer science. They're used as auxiliary data structures for many algorithms (in particular, searching algorithms), as well as a primary data structure for organizing data. As we'll see throughout the materials, there are many kinds of trees—binary trees, AVL trees, M-way trees, B-trees, and so on. The materials we present in this section are general propositions regarding trees. As such, there is little to no code for this specific section. Instead, much of the content pertains to key properties and ideas that apply to _all_ trees.
 
-<Tree
-	data={[
-		[1, ""],
-		[2, 1],
-		[3, 1],
-		[4, 1],
-		[5, 2],
-		[6, 2],
-		[10, 6],
-		[11, 6],
-		[13, 6],
-		[7, 4],
-		[8, 4],
-		[9, 4],
-		[12, 8],
-		[14, 12],
-		[15, 12],
-	]}
-	edgeLength={100}
-	scale={60}
-/>
+<div className={`float-right`}>
+	<Tree data={[[1, ""], [2, 1], [3, 1], [4, 1], [5, 2], [6, 2], [10, 6], [11,
+	6], [13, 6], [7, 4], [8, 4], [9, 4], [12, 8], [14, 12], [15, 12], ]}
+	edgeLength={100} scale={100} width={200} height={130}/>
+</div>
 
-A _tree_ is a collection of **nodes** and **edges**; the nodes being the
-colored circles, and the edges being the numbered lines. The nodes need not
-be occupied by number, nor do the edges have to be numbered. The diagram
-above is presented as such for demonstration purposes.
+Roughly speaking, a _tree_ is a collection of __nodes__ and __edges__; the nodes
+being the colored circles, and the edges being the numbered lines. The nodes
+need not be occupied by number, nor do the edges have to be numbered. More generally, a tree is simply a particular type of graph.
 
-To refer to each node, we use the syntax:
+Below is a working definition of a tree. Keep in mind that this is the mathematical definition. In later sections, we'll present a structural definition relevant to programming applications.
 
-$$
-	\Large n_d
-$$
+<dfn>
 
-where ${d}$ is either the data contained in the node, or the index of the
-node. For example, the first node, containing `1`, is denoted:
+__tree (graph theoretic).__ Let ${\Tt}$ be the nonempty graph ${\set{\Nn, \Ee,}}$ where ${\Nn}$ is the set of all nodes on ${\Tt,}$ and ${\Ee}$ is the set of all edges. Then ${\Tt}$ is a _tree_ if, and only if, the following propositions are true. (1) For any two nodes ${x,y \in \Nn,}$ there exists an edge ${(x,y) \in Ee.}$ (2) ${\Tt}$ is _acyclic_.
 
-$$
-	\Large n_1
-$$
+</dfn>
 
-For edges, we use the following notation:
+This is the definition with respect to graph theory. Set theory, however, presents a slightly stricter definition.
 
-$$
-	\Large (n_i, n_j)
-$$
+<dfn>
 
-where ${n_i}$ is some node, and ${n_j}$ is a node connected to ${n_i}$ via
-_an_ edge. For example, the edge connecting the node containing `1`
-(${n_1}$) and the node containing `4` (${n_4}$), is written as:
+__tree (set theoretic).__ Let ${\Nn}$ be a set of nodes and ${\preceq}$ a partial ordering on ${\Nn.}$ Then the poset ${(\Nn,\preceq)}$ is a _tree_ if, and only if, the following propositions are true. (1) ${\preceq}$ is a wellfounded partial ordering. (2) For every ${n \in \Nn,}$ the set ${\set{m \in \Nn : m \prec n}}$ is well-ordered by ${\preceq.}$ (3) For all ${m,n \in \Nn}$ there exists a ${v \in \Tt}$ such that ${v \preceq m}$ and ${v \preceq n.}$
 
-$$
-	\Large (n_1, n_4)
-$$
+</dfn>
 
-With this basic notation, we can now discuss terminology.
+## Tree Relations
 
-## Terminology
+Having given the mathematical definition of a tree, we now define a few relations relevant to trees.
 
-Trees have specific terminology regarding the relationships between nodes
-to other nodes, nodes to edges, and edges to edges.
+
 
 First, if there are ${n}$ nodes, there are ${n-1}$ edges. Examining the
 tree above, notice that there are ${15}$ total nodes, and ${14}$ edges. We
-get ${n-1}$ edges because the very first node, called the **root**, has no
-**parents** or **ancestors**.
+get ${n-1}$ edges because the very first node, called the __root__, has no
+__parents__ or __ancestors__.
 
-First, the total number of nodes in a tree is called the tree's **order**,
+First, the total number of nodes in a tree is called the tree's __order__,
 denoted with ${|N|.}$ It may also be denoted ${\text{card}(V),}$ or
 ${\lvert V \rvert.}$
 
@@ -169,13 +140,13 @@ And this tree is of order ${|N| = 15.}$
 	scale={60}
 />
 
-A **root** is a node with at least one edge to a node below it, but no
+A __root__ is a node with at least one edge to a node below it, but no
 edges to nodes above it (i.e., a node with a child, but no parents, or, in
 some trees, the topmost node).
 
 For all trees other than the empty tree, every node either (1) has a child,
 or (2) has no children. If a node ${n_i}$ has a child, then the node is
-called a **parent.** A **child** is a node with at least one edge to a node
+called a __parent.__ A __child__ is a node with at least one edge to a node
 above it. For example, in the tree below, the node ${n_e}$ is a _child_ of
 ${n_b.}$ The nodes ${n_b,}$ ${n_c,}$ and ${n_d}$ are _children_ of ${n_a.}$
 ${n_a}$ is the parent of three nodes: ${n_b,}$ ${n_c,}$ and ${n_d.}$ And
@@ -194,16 +165,16 @@ ${n_b}$ is the parent of ${n_e}$ and ${n_f.}$
 	scale={60}
 />
 
-A node with one child is called a **uniparous node**. A node with two
-children is called a **biparous** node. A node with three children, a
-**triparous node**, and so on.
+A node with one child is called a __uniparous node__. A node with two
+children is called a __biparous__ node. A node with three children, a
+__triparous node__, and so on.
 
-A node with no children is called a **leaf**. Any node that is not a
-leaf—i.e., a node with children—is called a **branch node**. In the tree
+A node with no children is called a __leaf__. Any node that is not a
+leaf—i.e., a node with children—is called a __branch node__. In the tree
 diagrams we've seen thus far, branch nodes have been colored beige, and
 leaves have been colored green.
 
-The number of leaves in a tree is called the **foliage count**, denoted
+The number of leaves in a tree is called the __foliage count__, denoted
 ${n(\ell).}$ For example, in the tree below, the ${n(\ell) = 8.}$
 
 <Tree
@@ -230,7 +201,7 @@ ${n(\ell).}$ For example, in the tree below, the ${n(\ell) = 8.}$
 />
 
 If a path exists from node ${n_0}$ to node ${n_i,}$ we say that ${n_0}$ is
-an **ancestor** of ${n_i,}$ and ${n_i}$ is a **descendant** of ${n_0.}$ In
+an __ancestor__ of ${n_i,}$ and ${n_i}$ is a __descendant__ of ${n_0.}$ In
 the tree below, ${n_c}$ is an _ancestor_ of ${n_f,}$ ${n_l,}$ and ${n_g.}$
 Similarly, ${n_j}$ is _descendant_ of ${n_b.}$
 
@@ -249,9 +220,9 @@ Similarly, ${n_j}$ is _descendant_ of ${n_b.}$
 
 Notice that following these definitions, the root node is the ancestor of
 all nodes within the tree. To refer to all the descendants of a particular
-node ${n_i,}$ we use the term **strict descendants**, denoting such set
+node ${n_i,}$ we use the term __strict descendants__, denoting such set
 ${I(n_i).}$[^issues_note] To refer to all the ancestors of ${n_i,}$ we use
-the term **strict ancestors**, and denote the set ${A(n_i).}$ For example,
+the term __strict ancestors__, and denote the set ${A(n_i).}$ For example,
 in the tree below, the strict descendants of ${n_b}$ are
 ${I(n_b) = \{ n_d, n_h, n_i, n_e, n_j \}.}$
 
@@ -272,7 +243,7 @@ ${I(n_b) = \{ n_d, n_h, n_i, n_e, n_j \}.}$
 
 And the strict ancestors of ${n_h}$ are ${A(n_h) = \{ n_d, n_b, n_a \}:}$
 
-A **sibling** is a node that shares a parent with another node. For
+A __sibling__ is a node that shares a parent with another node. For
 example, in the tree below, the nodes ${n_b}$ and ${n_c}$ are siblings,
 since they share the parent ${n_a.}$ The nodes ${n_h}$ and ${n_i}$ are also
 siblings, since they share the parent ${n_d.}$ The nodes ${n_h,}$ ${n_i,}$
@@ -290,18 +261,18 @@ parent different from ${n_j.}$
 	scale={60}
 />
 
-The nodes ${n_h,}$ ${n_i,}$ and ${n_j,}$ however, are **cousins**—nodes
+The nodes ${n_h,}$ ${n_i,}$ and ${n_j,}$ however, are __cousins__—nodes
 whose parents are siblings. We also say that ${n_e,}$ the parent of
-${n_j,}$ is a **pibling** of ${n_h}$ and ${n_i,}$ and that ${n_h}$ and
-${n_i}$ are **niblings** of ${n_j.}$
+${n_j,}$ is a __pibling__ of ${n_h}$ and ${n_i,}$ and that ${n_h}$ and
+${n_i}$ are __niblings__ of ${n_j.}$
 
-A node with no siblings is called a **monoprogeny**, or **monoprog**. In
+A node with no siblings is called a __monoprogeny__, or __monoprog__. In
 the tree above, the nodes ${n_j}$ and ${n_c}$ are monoprogs, since they are
 the only children of ${n_e}$ and ${n_a}$ respectively. From this
 definition, it follows that the root is always a monoprog, since it has no
 siblings.
 
-The **degree** of a node ${n_i}$ is the number of the ${n_i}$'s _children_
+The __degree__ of a node ${n_i}$ is the number of the ${n_i}$'s _children_
 (not descendants), denoted ${\text{deg}(n_i).}$ For example, in the tree
 below, ${\text{deg}(n_b) = 3,}$ since ${n_b}$ has three children: ${n_f,}$
 ${n_g,}$ and ${n_h.}$ The degree of ${n_c}$ is ${\text{deg}(n_c) = 2,}$
@@ -332,11 +303,11 @@ ${\text{deg}(n_g) = 0,}$ and so on.
 	scale={60}
 />
 
-The **degree of a tree**, or **tree degree**, has varying definitions. Some
+The __degree of a tree__, or __tree degree__, has varying definitions. Some
 authors will define the tree's degree as the degree of the root, others
 will define it as the maximum degree of any given node in a tree (i.e., the
 maximum number of children a node may have). In these materials, we define
-the **tree degree** as follows:
+the __tree degree__ as follows:
 
 > __definition__ The _degree of a tree_ ${T}$ denoted ${k,}$ is the maximum
 > degree of any given node in the tree.
@@ -401,7 +372,7 @@ within the tree. For example, consider the following tree:
 	scale={60}
 />
 
-A **path** is essentially a "route" or "road" from some node to another
+A __path__ is essentially a "route" or "road" from some node to another
 node. For example, a path from the root to the node ${n_F}$ would be:
 
 $$
@@ -420,7 +391,7 @@ ${p(n_A, n_F)}$ has the length ${L(p(n_A, n_F)) = 2.}$ The path
 ${p(n_A, n_K)}$ has the length ${L(p(n_A, n_K)) = 3.}$
 
 For any node ${n}$ within a tree, there is a unique path from the root to
-${n.}$ The length of this path is called the **depth** of ${n.}$ Because
+${n.}$ The length of this path is called the __depth__ of ${n.}$ Because
 there is no edge connecting the root to the root, we say that the depth of
 the root is ${0.}$
 
@@ -441,10 +412,10 @@ For example, the tree below presents different depths:
 	scale={60}
 />
 
-The **tree depth** ${D}$ is the maximum depth among all nodes in the tree.
+The __tree depth__ ${D}$ is the maximum depth among all nodes in the tree.
 In the tree above, the tree depth is ${3.}$
 
-Each node ${n}$ in the tree also has a **height**, the number of edges on
+Each node ${n}$ in the tree also has a __height__, the number of edges on
 the longest path from ${n}$ to a leaf. To illustrate, the tree below marks
 the various heights for each node. The leaf nodes have a height of ${0,}$
 because there is no path from the leaf node to a leaf node. The nodes
@@ -466,12 +437,12 @@ the longest path from those nodes to a leaf node consists of ${1}$ edge.
 	scale={60}
 />
 
-The **tree height** ${H}$ is the maximum height among all nodes in the
+The __tree height__ ${H}$ is the maximum height among all nodes in the
 tree. In the tree above, the tree height is ${3.}$
 
 ## Binary Trees
 
-The **binary tree** is a tree of degree-${2}$—a tree where every node can
+The __binary tree__ is a tree of degree-${2}$—a tree where every node can
 have, at most, ${2}$ children. For example, below is a binary tree
 consisting of fifteen nodes:
 
@@ -489,7 +460,7 @@ consisting of fifteen nodes:
 	scale={60}
 />
 
-The binary tree above is an example of a **perfect binary tree**—a binary
+The binary tree above is an example of a __perfect binary tree__—a binary
 tree where all branch nodes have exactly two children, and every leaf is at
 the same generation or depth within the tree. Binary trees can be thought
 of in various shapes and sizes. For example, this is a binary tree:
@@ -498,8 +469,8 @@ of in various shapes and sizes. For example, this is a binary tree:
 
 Remember, the only requirement for a binary tree is that each node has, _at
 most_, two children. The tree above is a special kind of binary tree called
-a **degenerate binary tree** or a **pathological binary tree**. When the
-degenerate tree skews left, we call it a **left-skewed tree**.
+a __degenerate binary tree__ or a __pathological binary tree__. When the
+degenerate tree skews left, we call it a __left-skewed tree__.
 
 <BinaryTree
 	data={[
@@ -510,7 +481,7 @@ degenerate tree skews left, we call it a **left-skewed tree**.
 	scale={60}
 />
 
-And when the tree skews right, we call it a **right-skewed tree**:
+And when the tree skews right, we call it a __right-skewed tree__:
 
 <BinaryTree
 	data={[
@@ -634,7 +605,7 @@ $$
 $$
 
 possible unordered, structurally different trees. Each of these trees is
-called an **unordered tree permutation of order ${|N|}$ (${N}$-UTP)**.
+called an __unordered tree permutation of order ${|N|}$ (${N}$-UTP)__.
 
 ## Tallest Unordered Binary Tree Permutation
 
@@ -850,7 +821,7 @@ Thus, we have the formula:
 Alternatively, some problems require us to find the tallest (i.e., the
 greatest possible height) tree given ${n}$ nodes. Knowing the height of
 this tree provides an upper bound for certain calculations. We call such a
-tree a **lumber**.
+tree a __lumber__.
 
 > __definition__. A lumber ${L}$ is a tree with the greatest possible height
 > ${H(L)}$ given ${n}$ nodes.
@@ -877,7 +848,7 @@ formula:
 In many problems, we often want to find the shortest (i.e., the smallest
 possible height) tree given ${n}$ nodes. Knowing the height of this tree is
 a useful asset for analyzing various computations. We call such a tree a
-**shrub**.
+__shrub__.
 
 > __definition__. A shrub ${S}$ is a tree with the least possible height
 > ${H(S)}$ given ${n}$ nodes.
@@ -957,11 +928,11 @@ the binary tree ${B:}$
 
 ## Branch Nodes v. Leaf Nodes
 
-Recall that a **leaf node** is a node with no children; i.e., a node with
+Recall that a __leaf node__ is a node with no children; i.e., a node with
 ${\text{deg}(n) = 0.}$ Nodes that do have children are called **branch
 nodes**. With binary trees, branch nodes either have ${\text{deg}(n) = 1}$
 or ${\text{deg}(n) = 2.}$ We call a branch node with ${1}$ child a
-**twig**, and a branch node with ${2}$ children a **bough**. Is there a
+__twig__, and a branch node with ${2}$ children a __bough__. Is there a
 mathematical relationship between leaf nodes and branch nodes? Let's find
 out.
 
@@ -1042,34 +1013,34 @@ efficiently communicate various propositions.
 
 ### Rooted Binary Tree
 
-Recall that a **binary tree** is a tree where each node has at most two
+Recall that a __binary tree__ is a tree where each node has at most two
 children. Notice that this definition imposes no requirement for a _root_.
 In most applications, when we use the term "binary tree," we're actually
-referring to a **rooted binary tree**—a tree data structure with: (1) a
+referring to a __rooted binary tree__—a tree data structure with: (1) a
 _root_, and (2) each node in the tree has at most ${2}$ children.
 
 > _Definition: Rooted Binary Tree_. A binary tree ${B}$ with nodes
 > ${\{v \in V_B\}}$ is a _rooted binary tree_ if and only if:
 >
 > - ${B}$ has ${1}$ root, and
-> - ${v \in V_B \implies \text{deg}(v) \in \{ 0,1,2 \}}$
+> - ${v \in V_B \nc \text{deg}(v) \in \{ 0,1,2 \}}$
 
 ### Proper Binary Tree
 
-A **proper binary tree** is a binary tree where each node has either ${0}$
+A __proper binary tree__ is a binary tree where each node has either ${0}$
 or ${2}$ children.[^proper_binary_tree_note] The proper binary tree's
 definition is simply a modification of the second prong of the rooted
 binary tree's definition:
 
 [^proper_binary_tree_note]:
-    Proper binary trees are also called **full binary trees** or **plane
+    Proper binary trees are also called __full binary trees__ or **plane
     binary trees**.
 
 > _Definition: Proper Binary Tree_ A binary tree ${B}$ with nodes
 > ${\{v \in V_B\}}$ is a _proper binary tree_ if and only if:
 >
 > - ${B}$ has ${1}$ root, and
-> - ${v \in V_B \implies \text{deg}(v) \in \{ 0,2 \}}$
+> - ${v \in V_B \nc \text{deg}(v) \in \{ 0,2 \}}$
 
 Binary trees that are not proper binary trees are called **improper binary
 trees**. For example, the green trees below are all proper binary trees,
@@ -1137,7 +1108,7 @@ $$
 > $$
 
 The same reasoning extends to deriving the formula for the height of the
-**proper lumber**—the tallest possible binary tree given ${n}$ nodes:
+__proper lumber__—the tallest possible binary tree given ${n}$ nodes:
 
 $$
 	\begin{aligned} n &= 2H + 1 \\[1em] n - 1 &= 2H \\[1em] \dfrac{n-1}{2} &= H \end{aligned}
@@ -1187,7 +1158,7 @@ leaves? It turns out yes:
 
 ### Complete Binary Trees
 
-A **complete binary tree** is a binary tree where each generation other
+A __complete binary tree__ is a binary tree where each generation other
 than possibly the last is completely filled (i.e., each node has exactly
 two children). The last generation may be completely or partially filled,
 but if it is partially filled, it must be filled from left to right.
@@ -1202,7 +1173,7 @@ but if it is partially filled, it must be filled from left to right.
 >   parent.
 
 For example, the green trees below are all complete binary trees, while the
-non-green trees are **incomplete binary trees**—binary trees that are not
+non-green trees are __incomplete binary trees__—binary trees that are not
 complete.
 
 ![Complete and incomplete binary trees.](https://res.cloudinary.com/sublimis/image/upload/v1652916631/cs/complete_and_incomplete_binary_trees.svg)
@@ -1226,7 +1197,7 @@ children, and all leaves have the same depth or are on the same generation.
 > - all leaves have the same depth.
 
 For example, all of the green trees below are perfect binary trees, while
-the non-green trees are **imperfect binary trees**— trees that are not
+the non-green trees are __imperfect binary trees__— trees that are not
 perfect binary trees:
 
 ![Perfect and imperfect binary trees.](https://res.cloudinary.com/sublimis/image/upload/v1652916751/cs/perfect_and_imperfect_binary_trees.svg)
@@ -1237,8 +1208,8 @@ have the same depth.
 
 ### Balanced Binary Tree
 
-Balanced binary trees come in two forms: **height-balanced trees** and
-**weight-balanced trees**. Below are the definitions.
+Balanced binary trees come in two forms: __height-balanced trees__ and
+__weight-balanced trees__. Below are the definitions.
 
 > _Definition: Height-balanced Binary Tree_. Let ${B}$ be a binary tree.
 > ${B}$ is a _height-balanced binary tree_ if and only if:
@@ -1320,7 +1291,7 @@ Thus, for the binary tree, we have ${k = 2.}$ This means that each node in
 the tree can only have ${0,}$ ${1,}$ or ${2}$ children. These are the only
 possiblities.
 
-A **ternary tree** is a 3-ary tree, so ${k=3.}$ Thus, in a ternary tree,
+A __ternary tree__ is a 3-ary tree, so ${k=3.}$ Thus, in a ternary tree,
 each node can only have ${0,}$ ${1,}$ ${2,}$ or ${3}$ children. For
 example, the green trees below are all ternary trees, but the red tree is
 not:
@@ -1342,18 +1313,18 @@ children or (2) exactly ${k}$ children.
 > __definition__. Let ${T}$ be a k-ary tree. ${T}$ is a _strict k-ary tree_
 > iff every node in ${T}$ has a ${0}$ or ${k}$ children.
 
-Thus, a **strict binary tree** (what we referred to earlier as a _proper
+Thus, a __strict binary tree__ (what we referred to earlier as a _proper
 binary tree_) is a binary tree where every node has either ${0}$ or ${2}$
-children. A **strict ternary tree** is a ternary tree where every node has
-either ${0}$ or ${3}$ children. A **strict 4-ary tree** is a 4-ary tree
+children. A __strict ternary tree__ is a ternary tree where every node has
+either ${0}$ or ${3}$ children. A __strict 4-ary tree__ is a 4-ary tree
 where every node has either ${0}$ or ${4}$ children. And so on.
 
 ### Strict k-ary Shrub Sizes
 
 The shrub size lemmas we saw earlier apply to strict k-ary trees.
 
-> _Lemma: Strict ${k}$-ary Shrub Sizes_. Let ${H \in \ZZ+}$ and
-> ${k \in \ZZ+.}$ The minimum number of nodes, i.e., the _minimum size_,
+> _Lemma: Strict ${k}$-ary Shrub Sizes_. Let ${H \in \uint+}$ and
+> ${k \in \uint+.}$ The minimum number of nodes, i.e., the _minimum size_,
 > necessary to achieving a k-ary tree of height ${H}$ is the _strict
 > ${k}$-ary shrub size_, denoted ${S_{min}^k(H),}$ where:
 >
@@ -1365,8 +1336,8 @@ The shrub size lemmas we saw earlier apply to strict k-ary trees.
 
 A similar lemma is found for timber sizes:
 
-> _Lemma: Strict ${k}$-ary Shrub Sizes_. Let ${H \in \ZZ+}$ and
-> ${k \in \ZZ+.}$ The maximum number of nodes, i.e., the _maximum size_,
+> _Lemma: Strict ${k}$-ary Shrub Sizes_. Let ${H \in \uint+}$ and
+> ${k \in \uint+.}$ The maximum number of nodes, i.e., the _maximum size_,
 > necessary to achieving a k-ary tree of height ${H}$ is the _strict
 > ${k}$-ary timber size_, denoted ${S_{max}^k(H),}$ where:
 >
@@ -1385,7 +1356,7 @@ $$
 
 Hence, we have the following lemma:
 
-> _Lemma: Strict ${k}$-ary Shrub Height_. Let ${N, k \in \ZZ^+.}$ Given
+> _Lemma: Strict ${k}$-ary Shrub Height_. Let ${N, k \in \pint.}$ Given
 > ${N}$ nodes, the shortest possible height strict k-ary tree, called the
 > _${k}$-ary shrub_, has the height ${H_{min}^k(N),}$ called the _${k}$-ary
 > shrub height_, where:
@@ -1406,7 +1377,7 @@ $$
 
 Thus, we have the lemma:
 
-> _Lemma: Strict ${k}$-ary Timber Height_. Let ${N, k \in \ZZ^+.}$ Given
+> _Lemma: Strict ${k}$-ary Timber Height_. Let ${N, k \in \pint.}$ Given
 > ${N}$ nodes, the tallest possible height strict k-ary tree, called the
 > _${k}$-ary timber_, has the height ${H_{max}^k(N),}$ called the
 > _${k}$-ary timber height_, where:
@@ -1420,7 +1391,7 @@ Thus, we have the lemma:
 As we saw with binary trees, there's a relationship between the leaves of a
 k-ary tree and its branch nodes.
 
-> __lemma__. Let ${k, \ell, b \in \ZZ^+,}$ where ${\ell}$ is the number of
+> __lemma__. Let ${k, \ell, b \in \pint,}$ where ${\ell}$ is the number of
 > leaves and ${b}$ is the number of branch nodes in a strict k-ary tree.
 > Then:
 >

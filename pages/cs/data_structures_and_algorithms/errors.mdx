@@ -1,14 +1,14 @@
 # Errors
 
 Errors are unexpected or unintended program results. They fall into four
-categories: (1) **compiler errors**; (2) **linker errors**; (3) **runtime
-errors**; and (4) **logic errors**. We cover them briefly below.
+categories: (1) __compiler errors__; (2) __linker errors__; (3) **runtime
+errors__; and (4) __logic errors**. We cover them briefly below.
 
 ### Compiler Errors
 
 Like a human language, any given programming language has specific rules
 for how we write and use the language. These rules fall into two sets: (a)
-**syntax** and (b) **semantics**. A language's syntax is the set of all
+__syntax__ and (b) __semantics__. A language's syntax is the set of all
 rules defining how meaning should be conveyed (in other words, how we can
 _write_ in the language). A language's semantics is the set of all rules
 defining when there is _meaning_. For example, below are all syntax errors.
@@ -33,22 +33,22 @@ int main()
 ```
 
 When we violate these rules &mdash; syntax and semantics &mdash; we receive
-a **compiler error**. Syntax errors are relatively easy to fix. The
+a __compiler error__. Syntax errors are relatively easy to fix. The
 compiler will usually pinpoint the particular line where the error
 occurred. Semantics errors are a little more difficult, but they should be
 easy to spot as long as we have a good understanding of semantic rules.
 
-Alternatively, the compiler may return a **compiler warning** rather than a
+Alternatively, the compiler may return a __compiler warning__ rather than a
 compiler error. The difference is that the source will still compile, but
 there is an inordinate amount of risk in doing so. A rule of thumb: Treat
 compiler warnings as if they are errors.
 
 ### Linker Errors
 
-The process of **linking** is when the _linker_ attempts to piece together
+The process of __linking__ is when the _linker_ attempts to piece together
 all of the difference parts of the program in preparation for execution. If
 the linker has trouble linking the program's object files together, we will
-receive a **linker error**. The most common culprit behind linker errors: A
+receive a __linker error__. The most common culprit behind linker errors: A
 missing library or object file. Usually, this happens when we use an
 incorrect file path or incorrect name.
 

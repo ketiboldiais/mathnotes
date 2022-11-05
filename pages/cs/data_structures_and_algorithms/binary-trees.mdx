@@ -1,0 +1,653 @@
+import {Tree} from "../../../components/illus/components/Tree/Tree";
+
+<Head>
+	<title>Binary Trees</title>
+	<meta name={`description`} content={`Notes on binary trees.`}/>
+</Head>
+
+
+# Binary Trees
+_This is a note on binary trees. Basic graph theory results associated with trees are assumed. These results may be found in the note on [basic graph theory.](../../math/combinatorics/basic-graph-theory)_
+
+1. [Definitions](#definitions)
+2. [Notation](#notation)
+3. [Tree Node](#tree-node)
+4. [Traversal](#traversal)
+	1. [Depth-first Traversal (DFS)](#depth-first-traversal-dfs)
+	2. [Breadth First Traversal](#breadth-first-traversal)
+5. [Problems](#problems)
+	1. [Tree Sum](#tree-sum)
+	2. [Includes](#includes)
+	3. [Min Find](#min-find)
+	4. [Max Path Sum](#max-path-sum)
+	5. [Path Find](#path-find)
+	6. [Tree Tally](#tree-tally)
+	7. [Tree Height](#tree-height)
+	8. [Bottom Right Value](#bottom-right-value)
+	9. [All Paths](#all-paths)
+	10. [Level Array](#level-array)
+
+Binary trees are a core data structure behind much of the software products and services we use today: The most common use case is the _binary search tree_, used in numerous search applications where data is constantly ebbing and flowing in a given system. _Binary space partitionining_ is used in 3D video games for determining which objects must be rerendered.  _Binary tries_ are used in high-bandwidth routers for storing _router-tables_, large address books that routers use to direct internet traffic. _Huffman coding trees_ are binary trees used in compression algorithms, most notably the .jpeg and .mp3 file formats. The list goes on.
+
+Why are binary trees more commonly used than ternary trees or other ${n}$-ary trees? Simply because ${n}$-ary trees are much more complicated.  We can do many interesting things with ${n}$-ary trees, but for most applications, we gain little in terms of time savings. And as we know, speed is everything when it comes to data structures. Of course, ${n}$-ary trees outperform binary trees in certain situations, but the fact is, binary trees are easier to work with and cover more problem domains.
+
+## Definitions
+Binary trees are acylic graphs. They consist of _nodes_ in a _parent-child relationship_. All binary trees have a single root—what we might think of as the _first node_—from which all other nodes descend. Moreover, binary trees have a two-child policy—go to any node, and we'll find either zero, one or two children, nothing more. Because of these properties, we say that all binary trees are trees, but not all trees are binary trees. 
+We also have several arboreal terms. The _root_ is the top, or first, node in the tree. A _child_ is a node directly descending from a node. The _parent_ of a node ${n}$ is the node ${n}$ descends from. _Siblings_ are nodes with the same parent. A _leaf_ is a node with no children. An _internal node_, or _shoot_, is a node with children.
+Below are some basic properties of binary trees. More detailed accounts of these properties may be found in the [note on k-ary trees](../../math/combinatorics/basic-graph-theory#k-ary-trees).
+
+__~properties~.__ Let ${T}$ be a binary tree and let ${i \in \nat.}$ Then the following properties are true:
+1. Every node of ${T}$ is either a _leaf_ or a _shoot_.
+2. If ${T}$ has a height of ${h,}$ then the number of nodes ${n}$ of ${T}$ is bounded as:
+	$$
+		h + 1 \le n \le 2^{h+1} - 1.  
+	$$
+3. If ${T}$ has ${n}$ nodes, then the height ${h}$ of ${T}$ is bounded as:
+	$$
+		\lg(n+1) - 1 \le h \le n - 1.
+	$$
+4. If ${T}$ has a height of ${h,}$ then the number of leaves ${\ell}$ of ${T}$ is bounded as:
+	$$
+		1 \le \ell \le 2^h.
+	$$
+5. If ${T}$ has a height of ${h,}$ then the number of shoots ${s}$ of ${T}$ is bounded as:
+	$$
+		h \le s \le 2^{h} - 1.
+	$$
+6. If ${T}$ has ${L \in \nat}$ levels, then ${T}$ has at most ${2^{L}-1}$ nodes.
+7. If ${T}$ has ${n \in \pint}$ nodes, then ${T}$ has at least ${\ceil{\lg(n+1)}}$ levels.
+8. If ${T}$ has ${\ell \in \pint}$ leaves, then ${T}$ has at least ${\ceil{\lg \ell} + 1}$ levels.
+9. Given nodes ${a,b,c}$ if there exists an edge ${(b,a)}$ and edge ${(b,c),}$ then we say that ${b}$ is the _parent_ of ${a}$ and ${c,}$ and that ${a}$ and ${c}$ are the _children_ of ${b.}$ We denote this relation with the notation ${\tup{a{^b}c}.}$
+	1. If ${\tup{a{^b}c},}$ we say that ${a}$ is the _left-child_ of ${b}$ and that ${c}$ is _right child_ of ${b.}$
+	2. If ${\tup{{^b}},}$ then ${b}$ is _nulliparous_.
+	3. If ${\tup{{^b}c},}$ then ${b}$ is _right-uniparous_.
+	4. If ${\tup{a{^b}},}$ then ${b}$ is _left-uniparous_.
+	5. If ${\tup{a{^b}c},}$ then ${b}$ is _multiparous_.
+10. If every shoot of ${T}$ has exactly two children, then ${T}$ is a _full binary tree_.
+	1. Let ${T_f}$ be a full binary tree. Then the following properties hold:
+		1. If ${T_f}$ has ${s}$ shoots and ${\ell}$ leaves, then ${T_f}$ has ${s + \ell}$ nodes.
+		2. If ${T_f}$ has ${s}$ shoots, then ${T_f}$ has ${s + 1}$ leaves.
+		3. If ${T_f}$ has ${s}$ shoots, then ${T_f}$ has ${2s + 1}$ nodes.
+		4. If ${T_f}$ has ${n}$ nodes, then ${T_f}$ has ${\frac{n-1}{2}}$ shoots.
+		5. If ${T_f}$ has ${n}$ nodes, then ${T_f}$ has ${\frac{n+1}{2}}$ leaves.
+		6. If ${T_f}$ has ${\ell}$ leaves, then ${T_f}$ has ${2\ell - 1}$ nodes.
+		7. If ${T_f}$ has ${\ell}$ leaves, then ${T_f}$ has ${\ell - 1}$ shoots.
+		8. There are, at most, ${2^k}$ nodes at each level ${k}$ of ${T_f.}$
+		9. If ${T_f}$ has ${L}$ levels, then there are, at most, ${2^{L-1}}$ leaves in ${T_f.}$
+11. The _height_ of ${T}$ is the maximum depth of any node in the tree.
+12. Suppose ${T_c}$ has ${L_0, L_1, \ldots, L_{n-1}}$ levels. Then ${T_c}$ is a _complete binary tree_ if, and only if, either of the following conditions is true:
+	1. ${T_c}$ has exactly ${2^{h+1}-1}$ nodes.
+	2. Every level ${L_i}$ has exactly ${2^{L_i}}$ nodes.
+	3. Every level ${L_i}$ with ${i \neq n-1}$ has exactly ${2^{L_i}}$ nodes, and for every node at level ${L_{n-1},}$ either ${\tup{a{^b}c}}$ or ${\tup{a{^b}}}$ where ${b}$ is a parent at level ${L_{n-2}.}$
+
+## Notation
+A few words on notation. Consider the following tree ${T:}$
+
+<Tree
+	data={[
+		{ child: "r", parent: "",dx:-20},
+		{ child: "a", parent: "r"},
+		{ child: "b", parent: "r"},
+		{ child: "x", parent: "a" },
+		{ child: "z", parent: "a" },
+		{ child: "n", parent: "b" },
+		{ child: "m", parent: "b" },
+	]}
+/>
+
+In text, we may denote the tree above with the notation:
+
+$$
+	\set{r}\set{{a{^r}b}}\set{{x{^a}z}~~{n{^b}m}}
+$$
+
+where each braced collection is a _level_, whose elements are parent-child relations.
+
+## Tree Node
+We will assume the following definition of a binary tree node:
+
+<Algo>
+
+__~treenode~__
+
+1. ${\textbf{structure}}$ ~treenode~ ${\textbf{contains}}$
+	1. ${\var}$ ${\df{comparable}}$ ${\tx{data}}$
+	2. ${\var}$ ${\df{treenode}^*}$ ${\tx{left}}$
+	3. ${\var}$ ${\df{treenode}^*}$ ${\tx{right}}$
+2. ${\textbf{end}}$
+
+</Algo>
+
+To instantiate a new node, we will use the following code:
+
+<Algo>
+
+__~new treenode~__
+- __Argument__: ${\d,}$ a ${\df{comparable}}$ data value
+- __Image__: ${\df{treenode}^*}$
+
+1. ${\let{node}{\df{malloc}(\df{sizeof}(\df{treenode}))}}$
+2. ${\let{node\ix{\tx{data}}}{\d}}$
+3. ${\let{node\ix{\tx{left}}}{\nil}}$
+4. ${\let{node\ix{\tx{right}}}{\nil}}$
+5. __return__ ${node}$
+
+</Algo>
+
+We will also assume that the left and right children of a node can be assigned directly. For example, the tree below is a direct result of the ~slang~ code to right:
+
+<Grid cols={2}>
+<Tree
+	data={[
+		{ child: 1, parent: "",},
+		{ child: 2, parent: 1},
+		{ child: 3, parent: 1},
+		{ child: 4, parent: 2},
+		{ child: 5, parent: 2},
+		{ child: 6, parent: 3},
+		{ child: null, parent: 3},
+	]}
+	id={`treenode-a`}
+	width={120}
+	height={80}
+	scale={100}
+	r={3}
+	fs={0.7}
+/>
+<Algo>
+
+1. __init__
+	1. ${\let{a}{\df{new treenode}}(1)}$
+	2. ${\let{b}{\df{new treenode}}(2)}$
+	3. ${\let{c}{\df{new treenode}}(3)}$
+	4. ${\let{d}{\df{new treenode}}(4)}$
+	5. ${\let{e}{\df{new treenode}}(5)}$
+	6. ${\let{f}{\df{new treenode}}(6)}$
+7. ${\let{a\ix{\tx{left}}}{b}}$
+8. ${\let{a\ix{\tx{right}}}{c}}$
+9. ${\let{b\ix{\tx{left}}}{d}}$
+10. ${\let{b\ix{\tx{right}}}{e}}$
+11. ${\let{c\ix{\tx{left}}}{f}}$
+
+</Algo></Grid>
+
+## Traversal
+### Depth-first Traversal (DFS)
+Below is the depth-first traversal algorithm for binary trees. This traversal method is also called _preorder traversal_.
+
+Preorder traveral is defined as follows:
+
+> __~depth-first traversal.~__ Let ${B}$ be a binary tree. To traverse
+> ${B}$ in preorder:
+>
+> 1. Visit some node ${n}$ in ${B.}$
+> 2. Traverse the left subtree of ${n}$ in preorder.
+> 3. Traverse the right subtree of ${n}$ in preorder.
+
+Below is an algorithm in ~slang~:
+
+<Algo>
+
+__~dfs~__
+- __Argument__: a pointer to a tree node ${\T,}$ and a function ${f.}$
+- __Image__: the return value of ${f.}$
+
+1. __function__ ${\lambda(n): \df{treenode*} \mapsto \df{treenode}^*}$
+	1. __if__ ${n = \nil}$ __return__ ${\nil}$
+	2. __else__
+		1. __if__ ${n \neq \nil}$ __then__ ${f(n\ix{\tx{data}})}$
+		2. __if__ ${n\ix{\tx{left}} \neq \nil}$ __then__ ${\lambda(n\ix{\tx{left}})}$
+		2. __if__ ${n\ix{\tx{right}} \neq \nil}$ __then__ ${\lambda(n\ix{\tx{right}})}$
+2. __return__ ${\lambda(\T)}$
+
+</Algo>
+
+Preorder traversal has a time complexity of order ${\bigO{n},}$ and a space complexity of order ${\bigO{n}.}$ Below is a trace of the preorder traversal, where each ${f_i}$ marks the ${\nth{i}}$ call.
+
+<Tree
+	data={[
+		{ child: "8", parent: "",  ant: "f_0"},
+		{ child: "3", parent: "8", ant: "f_1"},
+		{ child: "5", parent: "8", ant: "f_4"},
+		{ child: "4", parent: "3", ant: "f_2"},
+		{ child: "9", parent: "3", ant: "f_3"},
+		{ child: "7", parent: "5", ant: "f_5"},
+		{ child: "2", parent: "5", ant: "f_6"},
+	]}
+	scale={50}
+/>
+
+
+There are fifteen calls total for this trace. This is because given ${n}$ nodes, there are ${n}$ nonnull pointers and ${n+1}$ null pointers. Thus, the total number of calls we make is ${2n + 1.}$ This conforms to our data: Given a binary tree of ${7}$ nodes, we have ${2(7) + 1 = 15}$ calls for preorder traversal. Fifteen calls, however, does not imply that the size of the call stack grows to ${15.}$ Indeed, the most the call stack grows up to is a height of 4. Because of this up and down movement, the most the call stack grows to is ${h + 2,}$ where ${h}$ is the height of the binary tree. For our example tree, the height is ${h = 2,}$ which yields the call stack size of ${S_c = h + 2 = 4.}$
+
+While recursion is the more common approach, we can also use an iterative version:
+
+<Algo>
+
+__~dfs~__
+- __Argument__: a pointer to a tree node ${\T,}$ and a function ${f.}$
+- __Image__: the return value of ${f.}$
+
+1. ${\let{p}{\T}}$
+2. __while__ ${p \neq \nil}$
+	1. __if__ ${p\ix{\tx{left}} \neq \nil}$ __then__
+		1. ${f(p\ix{\tx{data}})}$
+		2. ${\let{p}{p\ix{\tx{next}}}}$
+	2. __else if__ ${p\ix{\tx{right}} \neq \nil}$ __then__
+		1. ${f(p\ix{\tx{data}})}$
+		2. ${\let{p}{p\ix{\tx{next}}}}$
+	3. __else__
+		1. __return__
+
+</Algo>
+
+This algorithm also has a time complexity of order ${\bigO{n},}$ since we're traversing the entire tree. The difference, however, is that the space complexity _could be_ ${\bigO{1},}$ depending on what the function ${f}$ does, as well as whether the language's compiler performs any sort of optimizations. 
+
+### Breadth First Traversal
+Another traversal approach is _breadth-first traversal_ (also called _level-order_): we traverse the tree by starting at the root, and exploring all nodes at the present level before moving to nodes at a subsequent level.
+
+<Tree
+	data={[
+		{ child: "8", parent: "",  ant: "f_0"},
+		{ child: "3", parent: "8", ant: "f_1"},
+		{ child: "5", parent: "8", ant: "f_2"},
+		{ child: "4", parent: "3", ant: "f_3"},
+		{ child: "9", parent: "3", ant: "f_4"},
+		{ child: "7", parent: "5", ant: "f_5"},
+		{ child: "2", parent: "5", ant: "f_6"},
+	]}
+	scale={50}
+	id={`bfs1`}
+/>
+
+To perform a bread-first traversal, we need an auxiliary data structure: The queue. In the algorithm below, we assume a queue has been constructed.
+
+<Algo>
+
+__~bfs~__
+- __Argument__: a treenode pointer ${\R}$ and a function ${f.}$
+- __Image__: the return value of ${f}$
+
+1. __if__ ${\T = \nil}$ __return__ ${\nil}$
+2. __else__
+	1. __init__
+		1. ${\let{Q}{\df{new queue}}}$
+		2. ${\let{n}{\nil}}$ `node pointer`
+	2. ${\let{Q}{\df{enqueue}~\T}}$
+	3. __while__ ${\len{Q} \gt 0}$
+		1. ${\let{n}{\df{dequeue} ~ Q}}$
+		2. ${f(n\ix{\tx{data}})}$ `process data`
+		3. __if__ ${n\ix{\tx{left}} \neq \nil}$ __then__
+			1. ${\let{Q}{\df{enqueue} ~~ n\ix{\tx{left}}}}$
+		4. __if__ ${n\ix{\tx{right}} \neq \nil}$
+			1. ${\let{Q}{\df{enqueue} ~~ n\ix{\tx{right}}}}$
+3. __return__
+
+</Algo>
+
+This algorithm has a time complexity of order ${\bigO{n},}$ and a space complexity
+of order ${\bigO{n};}$ assuming the ${\df{enqueue}}$ and ${\df{dequeue}}$ operations are constant time operations.[^noteq]
+
+[^noteq]: Most languages do not provide queues via a standard library. This can lead to implementations using static arrays. If static arrays are used, the ${\df{dequeue}}$ operation would take ${\bigO{n}}$ time at worst, since elements must be shifted upon removal of the first element in the array. This introduces a bottleneck, bringing the level-order traversal implementation into the set ${\bigO{n^2}.}$
+
+## Problems
+### Tree Sum
+_Let ${t}$ be the root of a tree whose nodes contain numbers. Write an algorithm that, given ${t,}$ returns the sum of all values in the tree._
+
+<Minutiae>
+
+One approach is a straighforward traversal.
+
+<Algo>
+
+__~treesum~__
+- __Argument__: ${\T,}$ the root of a tree whose nodes contain numbers.
+- __Image__: ${\image \in \reals}$
+
+1. __init__ ${\let{\image}{0}}$
+2. __function__ ${f(n):\df{treenode}^* \mapsto \df{treenode}^*}$
+	1. __if__ ${n = \nil}$ __return__ ${\nil}$
+	2. __else__
+		1. __if__ ${n \neq \nil}$ __then__ ${\let{\image}{\image'}+{n\ix{\tx{data}}}}$
+		2. __if__ ${n\ix{\tx{left}} \neq \nil}$ __then__ ${f(n\ix{\tx{left}})}$
+		3. __if__ ${n\ix{\tx{right}} \neq \nil}$ __then__ ${f(n\ix{\tx{right}})}$
+3. ${f(\T)}$
+4. __return__ ${\image}$
+
+</Algo>
+
+Another approach is to simply rely on the system's stack. This yields a particularly elegant implementation:
+
+<Algo>
+
+__~treesum~__
+- __Argument__: ${\T,}$ the root of a tree whose nodes contain numbers.
+- __Image__: ${\image \in \reals}$
+
+1. __if__ ${\T=\nil}$ __return__ ${0}$
+2. __return__ ${\T\ix{\tx{data}} + \df{treesum}(\T\ix{\tx{left}}) + \df{treesum}(\T\ix{\tx{right}})}$
+
+</Algo>
+
+Both approaches have a time complexity of order ${\bigO{n}}$ and a space complexity of order ${\bigO{n}.}$
+
+</Minutiae>
+
+### Includes
+_Let ${\R}$ be the root of a binary tree, and let ${\t}$ be a primitive data value. write an algorithm that takes ${\R}$ and ${\t}$ returns a boolean ${1}$ if ${\t}$ is stored in the tree ${\R,}$ and ${0}$ otherwise._
+
+<Minutiae>
+
+The approach below is a short recursive one. The time complexity is of order ${\bigO{n},}$ and the space complexity is of order ${\bigO{n}.}$
+
+<Algo>
+
+__~includes~__
+- __Argument__: ${\R,}$ the root of a tree containing primitive data values, and ${\t,}$ a primitive data value.
+- __Image__: ${\df{true}}$ if ${\t \in \R,}$ ${\df{false}}$ otherwise.
+
+1. __if__ ${\R=\nil}$ __return__ ${\df{false}}$
+2. __return__ ${(\R\ix{\tx{data}} = \t)}$ ${\lor}$ ${\df{includes}(\R\ix{\tx{left}},\t)}$ ${\lor}$ ${\df{includes}(\R\ix{\tx{right}},\t)}$
+
+</Algo></Minutiae>
+
+### Min Find
+_Given the root ${\R}$ of a binary tree containing number values, write an algorithm that returns the smallest value in the tree. ${\R}$ is defined as non-empty._
+
+<Minutiae>
+
+Another fairly short recursive solution, with a time complexity of order ${\bigO{n}}$ and a space complexity of order ${\bigO{n}.}$
+
+<Algo>
+
+__~minfind~__
+- __Argument__: A root ${\R}$ of a binary tree containing number values.
+- __Image__: ${n \in \reals}$
+
+1. __if__ ${\R = \nil}$ __return__ ${+\infty}$
+2. __init__ ${\let{L_{min}}{\df{minfind}(\R\ix{\tx{left}})}}$
+3. __init__ ${\let{R_{min}}{\df{minfind}(\R\ix{\tx{right}})}}$
+4. __return__ ${\min\set{\R\ix{\tx{data}},L_{min},R_{min}}}$
+
+</Algo></Minutiae>
+
+### Max Path Sum
+_Let ${t}$ be the root of a tree. Write an algorithm, that, given ${t,}$ returns the maximum sum among all root to leaf paths within the tree._
+
+<Minutiae>
+
+The approach below has a time complexity of order ${\bigO{n}}$ and a space complexity of order ${\bigO{n}.}$ This problem involves two bases cases — where the node is ${\nil,}$ and where the node is a leaf node. This stems from the fact that we're tracking paths from the root to a _leaf_.
+
+<Algo>
+
+__~maxpathsum~__
+- __Argument__: ${\t,}$ the root of a binary tree containing numbers.
+- __Image__: ${n \in \reals}$
+
+1. __if__ ${\t = \nil}$ __return__ ${-\infty}$
+2. __if__ ${(\t\ix{\tx{left}}=\nil) \land (\t\ix{\tx{right}}=\nil)}$ __return__ ${\t\ix{\tx{data}}}$
+3. __return__ ${\t\ix{\tx{data}} + \max\set{\df{maxpathsum}(\t\ix{\tx{left}}),\df{maxpathsum}(\t\ix{\tx{right}})}}$
+
+
+</Algo></Minutiae>
+
+### Path Find
+_Let ${\R}$ be the root of a binary tree containing primitive values and let ${\t}$ be a target value. Write an algorithm that, given ${\R,}$ returns an array representing a path to the target value ${\t.}$ If there is no such path, return ${\nil.}$_
+
+<Minutiae>
+The tree below shows the path from the root to the target ${e.}$ The expected output, then, should be ${\ix{a,b,e}.}$ The arrays annotated below are in reverse because of the way the algorithm works. At each call, we're going to have to push to an array.
+
+<Tree
+	data={[
+		{ child: "a", parent: "",ant:`[e,b,a]`},
+		{ child: "b", parent: "a",ant:`[e,b]`},
+		{ child: "c", parent: "a"},
+		{ child: "d", parent: "b"},
+		{ child: "e", parent: "b",ant:`[e]`},
+		{ child: "f", parent: "c"},
+		{ child: null, parent:"c"},
+	]}
+	scale={50}
+	id={`pathfind1`}
+/>
+
+As usual with recursive algorithms, we start by considering the base cases. A good way to determine what the base cases are is to identify the simplest case, then think about what we should do if we're given that case. Here, the simplest case is when we're given an empty tree. In that case, we should return ${\nil.}$ The next simplest case is when we're given a tree with just one node. For this, we check if it's the target. If it isn't, we return null. If it is, we return an array containing the node's data. From these two cases, we have the following:
+
+> (i) ${r = \nil \nc \nil}$ 
+>
+> (ii) ${r\ix{\tx{data}} = \t \nc \ix{r\tx{data}}}$ 
+
+Now we consider the next case: What happens if someone gives us a tree with two
+nodes? For two nodes, one of them is a root. Call it ${r}$ and call the child
+${c.}$ First, we need to check if ${c}$ contains the target. To do that, we must
+check both the left and right children of ${r,}$ because this is a binary tree.
+
+> (1) ${f(r\ix{\tx{left}})}$
+>
+> (2) ${f(r\ix{\tx{right}})}$
+
+Now, we know that both these calls have two outcomes.
+
+> (1a) ${f(r\ix{\tx{left}})}$ and ${\ix{\tx{left}}}$
+>
+> (1b) ${f(r\ix{\tx{left}})}$ and ${\nil}$
+>
+> (1c) ${f(r\ix{\tx{right}})}$ and ${\ix{\tx{right}}}$
+>
+> (1d) ${f(r\ix{\tx{right}})}$ and ${\nil}$
+
+For cases (1a) and (1c), we want to _push_ ${r}$'s value in response.
+
+> (1a) ${f(r\ix{\tx{left}})}$ and ${\ix{\tx{left}}}$ ${\nc}$ ${\df{push}}$ ${r\ix{\tx{data}}}$
+>
+> (1b) ${f(r\ix{\tx{left}})}$ and ${\nil}$
+>
+> (1c) ${f(r\ix{\tx{right}})}$ and ${\ix{\tx{right}}}$ ${\nc}$ ${\df{push}}$ ${r\ix{\tx{data}}}$
+>
+> (1d) ${f(r\ix{\tx{right}})}$ and ${\nil}$
+
+How about cases (1b) and (1d)? We've already addressed that case in (i): return ${\nil.}$
+
+> (1a) ${f(r\ix{\tx{left}})}$ and ${\ix{\tx{left}}}$ ${\nc}$ ${\df{push}}$ ${r\ix{\tx{data}}}$
+>
+> (1b) ${f(r\ix{\tx{left}})}$ and ${\nil}$ ${\nc}$ (i)
+>
+> (1c) ${f(r\ix{\tx{right}})}$ and ${\ix{\tx{right}}}$ ${\nc}$ ${\df{push}}$ ${r\ix{\tx{data}}}$
+>
+> (1d) ${f(r\ix{\tx{right}})}$ and ${\nil}$ ${\nc}$ (i)
+
+The algorithm below has a time complexity of order ${\bigO{n},}$ and a space complexity of ${\bigO{n}.}$
+
+We can now put it all together:
+
+<Algo>
+
+__~pathfind~__
+- __Argument__: ${\R,}$ the root of a binary tree, and a target ${\t.}$
+- __Image__: an array ${P}$ containing a path from ${\R}$ to ${\t,}$ if it exists; ${\nil}$ otherwise.
+
+1. __function__ ${\lambda(r)}$
+	1. __if__ ${r = \nil}$ __return__ ${\nil}$
+	2. __if__ ${r\ix{\tx{value}}=\t}$ __return__ ${\ix{r\ix{\tx{value}}}}$
+	3. __init__ ${\let{P_{left}}{\lambda(\r\ix{\tx{left}})}}$
+	4. __if__ ${P_{left} \neq \nil}$ __then__
+		1. ${\let{P_{left}}{\df{push }\r\ix{\tx{val}}}}$
+		2. __return__ ${P_{left}}$
+	5. __init__ ${\let{P_{right}}{\lambda(\r\ix{\tx{left}})}}$
+	6. __if__ ${P_{right} \neq \nil}$ __then__
+		1. ${\let{P_{right}}{\df{push }\r\ix{\tx{val}}}}$
+		2. __return__ ${P_{right}}$
+	7. __return__ ${\nil}$
+2. __init__ ${\let{P}{\lambda(\R)}}$
+3. __return__ ${\nil}$ __if__ ${P=\nil}$ __else__ ${\df{array-reverse}~P}$
+
+</Algo></Minutiae>
+
+### Tree Tally
+_Let ${\R}$ be the root of a tree and let ${\t}$ be a target value. Write an algorithm that, taking ${\R}$ and ${\t,}$ returns the number of times ${\t}$ appears in the tree._
+
+<Minutiae>
+
+If we get one node, then we have a leaf. If ${n}$ is a leaf, then either ${n}$
+is nonnull, or ${n}$ is null. If ${n = \nil,}$ return ${0.}$ Otherwise, ${\rw{n}{data}=\t}$ or ${\rw{n}{data} \neq t.}$ If ${\rw{n}{data}=\t,}$ we return 1. If ${\rw{n}{data}\neq\t,}$ we return 0.
+
+$$
+	f(n) = \case{
+		0 &\if n = \nil \\
+		1 &\if \rw{n}{data} = \t \\
+		0 &\if \rw{n}{data} \neq \t \\
+	}.
+$$
+
+The cases above entirely address the case of a _leaf_. Now we extend it to apply it to a shoot. This is just a matter of calling ${f}$ on the left and right nodes.
+
+$$
+	f(n) = \case{
+		0 &\if n = \nil \\
+		1 + f(\rw{n}{left}) + f(\rw{n}{right}) &\if \rw{n}{data} = \t \\
+		0 + f(\rw{n}{left}) + f(\rw{n}{right}) &\if \rw{n}{data} \neq \t \\
+	}.
+$$
+
+This algorithm has a time complexity of order ${\bigO{n}}$ and a space complexity of order ${\bigO{n}.}$
+
+<Algo>
+
+__~treetally~__
+- __Argument__: ${\R,}$ the root of a binary tree and ${\t,}$ a target value.
+- __Image__: ${n \in \nat,}$ the number of times ${\t}$ appears.
+
+1. __if__ ${\R = \nil}$ __return__ 0
+2. __init__ ${\let{m}{1} ~\if \rw{\R}{data}=\t ~\else 0.}$
+3. __return__ ${m + \df{treetally}(\rw{\R}{left}) + \df{treetally}(\rw{\R}{right})}$
+
+</Algo></Minutiae>
+
+
+### Tree Height
+Let ${\R}$ be the root of a binary tree. Write an algorithm that returns the height ${\R.}$ The height of ${\R}$ is defined as the length of the longest path (the maximum number of edges) from the root to a leaf. If ${\R}$ is the empty tree, return ${-1.}$
+
+<Minutiae>
+
+Let ${n}$ be a node. We state the base cases: By problem's definition, the height of the empty tree is ${-1.}$ If ${n}$ is a leaf, then there are 0 edges. 
+
+$$
+	h(n) = \case{
+		-1 &\if~ n = \nil \\
+		0 &\if~ \rw{n}{left} = \nil \land \rw{n}{right} = \nil \\
+	}
+$$
+
+If the node ${n}$ is neither the empty tree nor the leaf, then ${n}$ is shoot. So, we take the inductive step: The length of the longest path is 1 plus the longer of the left- and right-subtrees.
+
+$$
+	h(n) = \case{
+		-1 &\if~ n = \nil \\
+		0 &\if~ \rw{n}{left} = \nil \land \rw{n}{right} = \nil \\
+		1 + h(\rw{n}{left}) &\if h(\rw{n}{left}) \gt h(\rw{n}{right}) \\
+		1 + h(\rw{n}{right}) &\if h(\rw{n}{right}) \gt h(\rw{n}{left}) \\
+	}
+$$
+
+The algorithm below has a time complexity of order ${\bigO{n}}$ and a space complexity of order ${\bigO{n}.}$ 
+
+<Algo>
+
+__~treeheight~__
+- __Argument__: ${\R,}$ the root of a binary tree.
+- __Image__: ${n \in \uint_{\ge -1},}$ the height of ${\R.}$
+
+1. __if__ ${\R = \nil}$ __return__ ${-1}$
+2. __if__ ${(\rw{\R}{left}=\nil) \land (\rw{\R}{right}=\nil)}$ __return__ ${0}$
+3. __init__
+	1. ${\let{P_{left}}{\df{treeheight}}(\rw{\R}{left})}$
+	2. ${\let{P_{right}}{\df{treeheight}}(\rw{\R}{right})}$
+4. __return__ ${1 + P_{left}~\if~(P_{left} \gt P_{right})~\else~1+P_{right}}$
+
+</Algo></Minutiae>
+
+### Bottom Right Value
+_Given a binary tree root ${\R,}$ write an algorithm that returns the right-most value in the bottom-most level of the tree. ${\R}$ is non-empty._
+
+<Minutiae>
+
+In contrast to the previous problems, here we want to employ level-order traversal, since we're our search parameter specifically targets levels. This algorithm has a time complexity of order ${\bigO{n}}$ and a space complexity of order ${\bigO{n}.}$
+
+<Algo>
+
+__~bottomrightvalue~__
+- __Argument__: ${\R,}$ the root of a binary tree.
+- __Image__: ${\image,}$ the data object in the right-most, bottom-most level of the tree.
+
+1. __init__
+	1. ${\let{Q}{\df{new Queue}}}$
+	2. ${\let{\image}{\nil}}$
+	3. ${\let{p}{\nil}}$
+	4. ${\let{Q}{\df{enqueue}~\R}}$
+2. __while__ ${\len Q \gt 0}$
+	1. ${\let{p}{\df{dequeue}~Q}}$
+	2. ${\let{\image}{\rw{p}{data}}}$
+	3. __if__ ${\rw{p}{left}\neq\nil}$ __then__
+		1. ${\let{Q}{\df{enqueue}~{\rw{p}{left}}}}$
+	4. __if__ ${\rw{p}{right}\neq\nil}$ __then__
+		1. ${\let{Q}{\df{enqueue}~{\rw{p}{right}}}}$
+3. __return__ ${\image}$
+
+</Algo></Minutiae>
+
+### All Paths
+_Let ${\T}$ be the root of a non-empty binary tree. Write an algorithm that returns the following array ${A:}$_
+
+> _Let ${A}$ be a 2-dimensional array containing all the paths ${P_i}$ of ${\T}$ such that, ${P_i}$ starts at the root of ${\T}$ and ends on a unique leaf of ${\T,}$ irrelevant of the relative order of the paths within the outer array._
+
+
+<Minutiae>
+
+The algorithm below has a runtime complexity of order ${\bigO{n^2}}$ and a space complexity of ${\bigO{n}.}$ We say ${\bigO{n^2}}$ because of the use of loops for each recursive call, as well as the use of a spread operator (the ${\ldots}$ syntax). We can bring the time complexity down closer to ${\bigO{n}}$ by simply pushing into each returned array then returning a reversed version in an external function. In general, finding all possible paths in a binary tree hovers between ${\bigO{n}}$ and ${\bigO{n^2},}$ particularly when we're asked to present the paths in the form of a nested array.
+
+<Algo>
+
+__~allpaths~__
+- __Argument__: ${\T,}$ the root of a non-empty binary tree.
+- __Image__: ${A,}$ a nested array containing all the possible paths of the tree.
+
+1. __if__ ${\T = \nil}$ __return__ ${\ix{~}}$
+2. __if__ ${(\rw{\T}{left}=\nil) \land (\rw{\T}{right}=\nil)}$ __then__
+	1. __return__ ${\ix{\ix{\rw{\T}{data}}}}$
+3. __init__ ${\let{A}{\ix{~}}}$
+4. __init__ ${\let{P_{left}}{\df{allpaths}(\rw{\T}{left})}}$
+5. __for each__ ${p \in P_{left}}$ __do__
+	1. ${\let{A}{\df{push}~\ix{\rw{\T}{data}, \ldots {p}}}}$
+6. __init__ ${\let{P_{right}}{\df{allpaths}(\rw{\T}{right})}}$
+7. __for each__ ${p \in P_{right}}$ __do__
+	1. ${\let{A}{\df{push}~\ix{\rw{\T}{data}, \ldots {p}}}}$
+8. __return__ ${A}$
+
+</Algo></Minutiae>
+
+### Level Array
+_Let ${\T}$ be the root of a binary tree. Write an algorithm that returns a 2-dimensional array where each subarray represents a level of the tree._
+
+<Minutiae>
+
+The algorithm below has a time complexity of order ${\bigO{n}}$ and a space complexity of order ${\bigO{n}.}$
+
+<Algo>
+
+__~treelevel~__
+- __Argument__: ${\T,}$ the root of a binary tree.
+- __Image__: ${\tx{\L},}$ a nested array wherein are subarrays corresponding to each tree level.
+
+1. __init__ ${\let{\tx{\L}}{\ix{~}}}$
+2. __function__ ${\lambda(\tx{node},\tx{level})}$
+	1. __if__ ${\tx{node}=\nil}$ __return__ ${\nil}$
+	2. __if__ ${\len{\tx{\L}}=\tx{level}}$ __then__
+		1. ${\let{\tx{\L}{\ix{n}}}{\rw{\tx{node}}{data}}}$
+	3. __else__
+		1. ${\let{\tx{\L}{\ix{n}}}{\df{push}~\rw{\tx{node}}{data}}}$
+	4. ${\lambda(\rw{\tx{node}}{left},\tx{level}+1)}$
+	4. ${\lambda(\rw{\tx{node}}{right},\tx{level}+1)}$
+3. ${\lambda(\T,0)}$
+4. __return__ ${\tx{\L}}$
+
+</Algo></Minutiae>

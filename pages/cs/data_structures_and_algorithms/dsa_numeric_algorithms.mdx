@@ -22,11 +22,11 @@ $$
 $$
 
 Number systems that use ten symbols to represent all numbers are called
-**decimal number systems**, or **base-10 systems**. In the Western decimal
-number system, ten symbols (called the **Hindu-Arabic numerals**) are used
+__decimal number systems__, or __base-10 systems__. In the Western decimal
+number system, ten symbols (called the __Hindu-Arabic numerals__) are used
 to represent every conceivable number. The number of unique symbols used in
 a numbering system to represent a number in that system is called the
-**base** or **radix** of the numbering system. For example, with the
+__base__ or __radix__ of the numbering system. For example, with the
 decimal system, the radix is ${10.}$ For the ancient Mayans, the radix was
 ${20}$ (called a _vigesimal system_). For the Babylonians, the radix was
 ${60}$ (called a _base-60 system_).
@@ -129,7 +129,7 @@ we are to commit computational errors. The tradeoff, however, is
 readability. With fewer digits, larger numbers are long and difficult to
 decipher. Nevertheless, some problems (as we'll later see) do not require
 humans to directly read the numbers, so we've gone ahead and used number
-systems with fewer symbols. One such system is the **octal number system**.
+systems with fewer symbols. One such system is the __octal number system__.
 
 To understand the octal number system, it's worth mentioning a bit of its
 history. Before the French Revolution, most of Europe used a dizzying array
@@ -243,7 +243,7 @@ $$
 $$
 
 Algorithms that determine whether a given number ${n}$ is a prime number
-are called **primality tests**. These algorithms are immensely important in
+are called __primality tests__. These algorithms are immensely important in
 cryptography. Cryptography itself is what ensures sensitive data like
 passwords, text messages, emails, and credit card numbers stay secure as
 they are transmitted across networks.
@@ -251,11 +251,11 @@ they are transmitted across networks.
 ### Brute-force Primality Test
 
 There are a variety of ways to implement a primality test, but we start
-with the simplest algorithm: a **brute-force primality test**. This
+with the simplest algorithm: a __brute-force primality test__. This
 algorithm is part of a family of algorithms called **brute-force
 algorithms**. These algorithms solve problems in the most simple, direct,
 or obvious way. For the prime number testing, the brute-force primality
-test is closely related to **proof-by-exhaustion**, a method of proof in
+test is closely related to __proof-by-exhaustion__, a method of proof in
 mathematics. We exhaust all of the possibilities before we exhaust
 ourselves (or more accurately, our machine's RAM).
 
@@ -299,13 +299,13 @@ another algorithm.
 
 ### Trial Division
 
-The second primality test we investigate is **trial division**. This
+The second primality test we investigate is __trial division__. This
 algorithm relies on the same definition above, but the key insight lies in
 honing in on what constitutes a composite number—a number that is not
 prime.
 
 > __definition__. If ${n}$ is composite, then the following proposition is
-> true: $$ \large n = a \cdot b $$ where ${a, b \in \NN,}$ ${a \geq 2,}$ and
+> true: $$ \large n = a \cdot b $$ where ${a, b \in \nat,}$ ${a \geq 2,}$ and
 > ${b \leq n - 1}$
 
 With the brute-force primality test, we attempted to find the divisor
@@ -376,7 +376,7 @@ trial_division_primality(int n):
 
 ## Prime Factorization
 
-Closely related to primality tests is **prime factorization**—expressing a
+Closely related to primality tests is __prime factorization__—expressing a
 number as a product of their prime factors. For example, the number ${12}$
 in terms of its prime factors is:
 

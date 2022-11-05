@@ -1,0 +1,248 @@
+import {Tree} from "../../../components/illus/components/Tree/Tree";
+
+<Head>
+	<title>Dynamic Programming</title>
+	<meta name={`description`} content={`Note on dynamic programming.`}/>
+</Head>
+
+# Dynamic Programming
+
+_This note presents an overview of dynamic programming_.
+
+1. [Sequence Generation: Fibonacci Numbers](#sequence-generation-fibonacci-numbers)
+2. [Memoization](#memoization)
+3. [Decision Tree Problems](#decision-tree-problems)
+
+## Sequence Generation: Fibonacci Numbers
+Perhaps the best introduction to dynamic programming is the procedure for generating the Fibonacci numbers. Below is a straightforward, recursive approach:
+
+<Algo>
+
+- __Argument__: ${n \in \nat}$
+- __Image__: ${\tx{fib}(n) \in \nat}$
+
+1. __function__ ${\tx{fib}\px{n}}$
+	1. __if__ ${n = 0}$ __return__ 0
+	2. __else if__  ${n = 1}$ __return__ 1
+	3. __else__ __return__ ${\tx{fib}(n-2) + \tx{fib}(n-1)}$
+
+</Algo>
+
+This algorithm is elegant, but it _will_ hang for sufficiently large ${n.}$ The reason being, generating the Fibonacci numbers recursively amounts to constructing a tree. Suppose we're asked to compute ${\tx{fib}(6).}$ This results in the following tree:
+
+<Tree data={[
+	{child:'\\text{fib}(6)', parent: '', ant: '\\text{fib}(6)'},
+	{child:'\\text{fib}(5)', parent: '\\text{fib}(6)', ant: '\\text{fib}(5)'},
+	{child:'\\text{fib}(4)', parent: '\\text{fib}(6)',ant:'\\text{fib}(4)'},
+	{child:'\\text{fib}(4)_5', parent: '\\text{fib}(5)', ant:'\\text{fib}(4)'},
+	{child:'\\text{fib}(3)~', parent: '\\text{fib}(5)', ant:'\\text{fib}(3)'},
+	{child:'\\text{fib}(2)_35', parent: '\\text{fib}(3)~', ant: '\\text{fib}(2)'},
+	{child:'\\text{fib}(1)_35', parent: '\\text{fib}(3)~', ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(1)_235', parent: '\\text{fib}(2)_35',ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(0)_235', parent: '\\text{fib}(2)_35',ant:'\\text{fib}(0)'},
+	{child:'\\text{fib}(3)_45', parent: '\\text{fib}(4)_5',ant:'\\text{fib}(3)'},
+	{child:'\\text{fib}(2)_45', parent: '\\text{fib}(4)_5',ant:'\\text{fib}(2)'},
+	{child:'\\text{fib}(1)_245', parent: '\\text{fib}(2)_45',ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(0)_245', parent: '\\text{fib}(2)_45',ant:'\\text{fib}(0)'},
+	{child:'\\text{fib}(2)_345', parent: '\\text{fib}(3)_45',ant:'\\text{fib}(2)'},
+	{child:'\\text{fib}(1)_345', parent: '\\text{fib}(3)_45',ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(1)_2345', parent: '\\text{fib}(2)_345',ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(0)_2345', parent: '\\text{fib}(2)_345',ant:'\\text{fib}(0)'},
+	{child:'\\text{fib}(3)_4', parent: '\\text{fib}(4)',ant:'\\text{fib}(3)'},
+	{child:'\\text{fib}(2)_4', parent: '\\text{fib}(4)',ant:'\\text{fib}(2)'},
+	{child:'\\text{fib}(1)_2', parent: '\\text{fib}(2)_4',ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(0)_2', parent: '\\text{fib}(2)_4',ant:'\\text{fib}(0)'},
+	{child:'\\text{fib}(2)_3', parent: '\\text{fib}(3)_4',ant:'\\text{fib}(2)'},
+	{child:'\\text{fib}(1)_3', parent: '\\text{fib}(3)_4',ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(1)_23', parent: '\\text{fib}(2)_3',ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(0)_23', parent: '\\text{fib}(2)_3',ant:'\\text{fib}(0)'},
+]} anon={true} fs={0.65} r={2.5} width={350} id={'fibtree1'}/>
+
+All of these nodes are _distinct function calls_. Given that we make 2 calls for every call, this algorithm has a time complexity of order ${\bigO{2^n},}$ and the space complexity is the height of the tree, ${\bigO{n},}$ where ${n}$ is the input index. It's no surprise that this approach will eventually (in fact, rather quickly) hang.
+
+## Memoization
+Examining the call tree, we see numerous duplicates:
+
+<Tree data={[
+	{child:'\\text{fib}(6)', parent: '', ant: '\\text{fib}(6)'},
+	{child:'\\text{fib}(5)', parent: '\\text{fib}(6)', ant: '\\text{fib}(5)'},
+	{child:'\\text{fib}(4)', parent: '\\text{fib}(6)',ant:'\\text{fib}(4)',class:'nil'},
+	{child:'\\text{fib}(4)_5', parent: '\\text{fib}(5)', ant:'\\text{fib}(4)'},
+	{child:'\\text{fib}(3)~', parent: '\\text{fib}(5)', ant:'\\text{fib}(3)',class:'nil'},
+	{child:'\\text{fib}(2)_35', parent: '\\text{fib}(3)~', ant: '\\text{fib}(2)',class:'nil'},
+	{child:'\\text{fib}(1)_35', parent: '\\text{fib}(3)~', ant:'\\text{fib}(1)',class:'nil'},
+	{child:'\\text{fib}(1)_235', parent: '\\text{fib}(2)_35',ant:'\\text{fib}(1)',class:'nil'},
+	{child:'\\text{fib}(0)_235', parent: '\\text{fib}(2)_35',ant:'\\text{fib}(0)',class:'nil'},
+	{child:'\\text{fib}(3)_45', parent: '\\text{fib}(4)_5',ant:'\\text{fib}(3)'},
+	{child:'\\text{fib}(2)_45', parent: '\\text{fib}(4)_5',ant:'\\text{fib}(2)',class:'nil'},
+	{child:'\\text{fib}(1)_245', parent: '\\text{fib}(2)_45',ant:'\\text{fib}(1)',class:'nil'},
+	{child:'\\text{fib}(0)_245', parent: '\\text{fib}(2)_45',ant:'\\text{fib}(0)',class:'nil'},
+	{child:'\\text{fib}(2)_345', parent: '\\text{fib}(3)_45',ant:'\\text{fib}(2)'},
+	{child:'\\text{fib}(1)_345', parent: '\\text{fib}(3)_45',ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(1)_2345', parent: '\\text{fib}(2)_345',ant:'\\text{fib}(1)'},
+	{child:'\\text{fib}(0)_2345', parent: '\\text{fib}(2)_345',ant:'\\text{fib}(0)'},
+	{child:'\\text{fib}(3)_4', parent: '\\text{fib}(4)',ant:'\\text{fib}(3)',class:'nil'},
+	{child:'\\text{fib}(2)_4', parent: '\\text{fib}(4)',ant:'\\text{fib}(2)',class:'nil'},
+	{child:'\\text{fib}(1)_2', parent: '\\text{fib}(2)_4',ant:'\\text{fib}(1)',class:'nil'},
+	{child:'\\text{fib}(0)_2', parent: '\\text{fib}(2)_4',ant:'\\text{fib}(0)',class:'nil'},
+	{child:'\\text{fib}(2)_3', parent: '\\text{fib}(3)_4',ant:'\\text{fib}(2)',class:'nil'},
+	{child:'\\text{fib}(1)_3', parent: '\\text{fib}(3)_4',ant:'\\text{fib}(1)',class:'nil'},
+	{child:'\\text{fib}(1)_23', parent: '\\text{fib}(2)_3',ant:'\\text{fib}(1)',class:'nil'},
+	{child:'\\text{fib}(0)_23', parent: '\\text{fib}(2)_3',ant:'\\text{fib}(0)',class:'nil'},
+]} anon={true} fs={0.65} r={2.5} width={350} id={'fibtree2'}/>
+
+Above, all of the filled nodes correspond to ${\tx{fib}}$ calls that are _unnecessary_. We've already done all the work for that particular value of ${n,}$ so it's a waste of time to do it all over again. So, what we ought to do is _reuse our previous work_. Functions that "remember" the results of their previous executions are called __memoized functions__, and the technique of using memoized functions is called __memoization__. British cryptographer Donald Michie (1923-2007, a pioneer of artifical intelligence and a decoder during the Second World War) coined the term, derived from the Latin _memorandum_, meaning "to be remembered." The simplest approach to memoization is to store the function's results in a data structure within the scope of all subsequent calls:
+
+<Algo>
+
+> __~fib~.__ Let ${n \in \nat.}$ The function ${\df{fib}}$ takes ${n,}$ and returns the ${\ith{n}}$ Fibonacci number.
+
+- __Argument__: ${n \in \nat}$
+- __Image__: ${\df{fib}(n) \in \nat}$
+
+1. __function__ ${\df{fib}\px{n}}$
+	1. ${\let{memo}{\df{new hashmap}}}$ _all ${f}$ calls have access to ${memo}$_
+	2. ${\let{memo\ix{0}}{0}}$ _equivalent to ${\df{fib}(0)}$_
+	2. ${\let{memo\ix{1}}{1}}$ _equivalent to ${\df{fib}(1)}$_
+	2. __function__ ${f(n)}$
+		1. __if__ ${n \in memo}$ __then__ __return__ ${memo\ix{n}}$ _reuse work_
+		2. __else__
+			1. ${\let{term}{f(n-1) + f(n-2)}}$ _do work_
+			2. ${\let{memo\ix{n}}{term}}$ _save work_
+			3. __return__ ${term}$
+	3. __return__ ${f(n)}$
+
+</Algo>
+
+Employing memoization, the algorithm's time complexity reduces to an order of ${\bigO{n}}$ (space complexity remains of order ${\bigO{n}}$).
+
+## Decision Trees
+> __~definition: palette~.__ Let ${Z}$ be a set of natural numbers, let ${n}$ be a positive integer, and let ${x}$ be a natural number. We say that ${A}$ is a _palette_ of ${x}$ if it contains (1) a factor of ${x,}$ or (2) ${k \in \pint}$ elements such that ${\tsum{i=0}{k} z_i = x,}$ where ${z_i \in Z.}$ If ${Z}$ is a palette of ${x,}$ we write ${\df{palette}\px{Z,x} = 1.}$ If ${Z}$ is not a palette of ${x,}$ we write ${\df{palette}\px{Z,x}=0.}$
+
+~example~. ${\df{palette}\px{\set{1,2,3},5} = 1,}$ since:
+
+$$
+	\eqs{
+		2 + 3 &= 5 \\
+		3 + 1 + 1 &= 5 \\
+		2 + 1 + 1 + 1 &= 5 \\
+		2 + 2 + 1 &= 5 \\
+		1 + 1 + 1 + 1 + 1 &= 5 \\
+	}
+$$
+
+> __~problem: palette verification~.__ Does there exist an algorithm that returns true if a set of positive integers ${Z}$ is a palette of a natural number ${x,}$ and false otherwise?
+
+The palette verification problem can be modelled with a _decision tree_.
+
+> __~decision tree~.__ Let ${T = (V,E)}$ be a rooted binary tree with a set of vertices ${V}$ and a set of edges ${E.}$ We call ${T}$ a _decision tree_ if each nonleaf ${\set{n \in V:\deg\px{n} \neq 1}}$ represents a variable, each leaf ${\set{\ell \in V:\deg\px{\ell}=1}}$ represents a Boolean 1 or 0 (i.e., true or false), and each edge ${\e \in E}$ represents a a value that a nonleaf ${n}$ can take.
+
+Below are the decision trees for two example ${\df{palette}}$ values. The left decision tree corresponds to a ${\df{palette}}$ value of false, and the right decision tree corresponds to a ${\df{palette}}$ value of true.
+
+
+<Grid cols={2}>
+<Tree data={[
+	{child:15, parent:''},
+		{child:11, parent:15, el:'-4'},
+			{child:'11-7', parent:11, n:7, el:'-4'},
+				{child:'11-7-3', parent:'11-7', n:3, el:'-4',class:'red'},
+				{child:'11-7-1', parent:'11-7', n:1, el:'-6',class:'red'},
+			{child:'11-5', parent:11, n:5, el:'-6'},
+				{child:'11-5-1', parent:'11-5', n:1, el:'-4',class:'red'},
+		{child:9, parent:15, el:'-6'},
+			{child:'9-5', parent:9, n:5, el:'-4',class:'red'},
+			{child:'9-3', parent:9, n:3, el: '-6', class: 'red'},
+		{child:5, parent:15, el:'-10'},
+			{child:'5-1', parent:5, n:1, el: '-4',class:'red'},
+]} tx={-11} r={3} id={'pv0'} wh={[480,220]} scale={100} fs={0.8}/>
+<Tree data={[
+	{child:4, parent:''},
+	{child:3, parent:4, el:'-1'},
+		{child:432, parent:3, n:2, el:'-1'},
+			{child:4321, parent:432, n:1, el: '-1'},
+				{child:43210, parent:4321, n:0, el: '-1', class:'nil'},
+			{child:4320, parent:432, n:0, el: '-2', class: 'nil'},
+		{child:431, parent:3, n:1, el: '-2'},
+			{child:4310, parent:431, n:0, el: '-1', class: 'nil'},
+		{child:430, parent:3, n:0, el: '-3'},
+	{child:2, parent:4, el: '-2'},
+		{child:421, parent:2, n:1, el:'-1'},
+			{child:4210, parent:421, n:0, el: '-1', class: 'nil'},
+		{child:420, parent:2, n:0, el: '-2', class: 'nil'},
+	{child:1, parent:4, el:'-3'},
+		{child:410, parent:1, n:0, el: '-1', class: 'nil'},
+]} tx={-11} r={3} id={'pv1'} wh={[480,220]} scale={100} fs={0.8}/>
+$$
+	\df{palette}(\set{4,6,10},15) = \tx{false}
+$$
+$$
+	\df{palette}(\set{1,2,3},4) = \tx{true}
+$$
+</Grid>
+
+Each edge is a decision to subtract either 1, 2, or 3 — the elements of ${Z.}$ The idea is this. We start with ${x,}$ and subtract each element of ${Z.}$ This results in three residual sums: 3, 2, 1. Visually, these are the root's three child nodes. For each of these residual sums, we subtract an element of ${Z}$ that _less than_ the residual sum. The goal is to keep subtracting until we either get to 0, or until there are no longer any suitable elements to serve as subtrahends. If we can get to 0, then we return true. Failure to return a 0 implies that there are no elements in ${Z}$ that sum to ${x.}$ Thus, as long as one of the paths in the recursion tree leads to a 0, we know that ${Z}$ is a palette of ${x.}$ Above, we've marked the recursion tree's leaves in black. These leaves serve as _base cases_. Notice that if we travel from a leaf 0 to the root and add the amount we subtraced, we get the natural number ${x.}$ For example, below is one such path, highlighted in blue. This corresponds to the sum ${1 ~\pl~ 2 ~\pl~ 1 = 4.}$
+
+
+<Tree data={[
+	{child:4, parent:'', ec: 'teal'},
+	{child:3, parent:4, el:'\\texttt{+}1', ec:'teal'},
+		{child:432, parent:3, n:2, el:'\\texttt{+}1'},
+			{child:4321, parent:432, n:1, el: '\\texttt{+}1'},
+				{child:43210, parent:4321, n:0, el: '\\texttt{+}1', class:'nil'},
+			{child:4320, parent:432, n:0, el: '\\texttt{+}2', class: 'nil'},
+		{child:431, parent:3, n:1, el: '\\texttt{+}2', ec:'teal'},
+			{child:4310, parent:431, n:0, el: '\\texttt{+}1', class: 'nil', ec:'teal'},
+		{child:430, parent:3, n:0, el: '\\texttt{+}3'},
+	{child:2, parent:4, el: '\\texttt{+}2'},
+		{child:421, parent:2, n:1, el:'\\texttt{+}1'},
+			{child:4210, parent:421, n:0, el: '\\texttt{+}1', class: 'nil'},
+		{child:420, parent:2, n:0, el: '\\texttt{+}2', class: 'nil'},
+	{child:1, parent:4, el:'\\texttt{+}3'},
+		{child:410, parent:1, n:0, el: '\\texttt{+}1', class: 'nil'},
+]} tx={-10} r={3} id={'pv2'}/>
+
+Below is one possible approach, employing memoization. Without memoization, a recursive implementation would have a time complexity of order ${\bigO{n^x},}$ where ${n}$ is the cardinality of the set ${Z}$ (the number of possible subtrahends) and ${x}$ is the natural number to construct. This corresponds to the recursion tree's order (number of nodes). The space complexity corresponds to the height of the recursion tree—${\bigO{x}.}$ Clearly, a non-memoized approach is undesirable.
+
+<Algo>
+
+> __~palette~.__ Given a set of positive integers ${Z}$ and a natural number ${x,}$ the function ${\df{palette}}$ returns true if ${Z}$ contains elements that can be either multiplied or summed to to ${x.}$ Otherwise, ${\df{palette}}$ return false.
+
+- __Arguments__: ${Z,}$ a set of positive integers, and ${x,}$ a natural number.
+- __Image__: Boolean ${\tx{true}}$ or ${\tx{false}}$
+
+1. __function__ ${\df{palette}(Z,x)}$
+	1. ${\let{memo}{\df{new hashmap}}}$
+	2. __function__ ${f(n)}$
+		1. __if__ ${n = 0}$ __then return__ ${0}$
+		2. __else if__ ${n \lt 0}$ __then return__ ${\tx{false}}$
+		3. __else if__ ${n \in memo}$ __return__ ${memo\ix{n}}$
+		4. __else__
+			1. __for each__ ${z \in Z}$ __do__
+				1. __if__ ${f(n-z)}$ __then__
+					1. ${\let{memo\ix{z}}{\tx{true}}}$
+					2. __return__ ${\tx{true}}$
+			2. ${\let{memo\ix{n}}{\tx{false}}}$
+			3. __return__ ${\tx{false}}$
+	3. __return__ ${f(x)}$
+
+</Algo>
+
+The algorithm above has a time complexity of order ${\bigO{x \by n},}$ and the space complexity remains ${\bigO{x}.}$ This stems from the fact that by memoizing the function, we cut out all of the unnecessary subtrees:
+ 
+<Tree data={[
+	{child:4, parent:''},
+	{child:3, parent:4},
+		{child:432, parent:3, n:2},
+			{child:4321, parent:432, n:1},
+				{child:43210, parent:4321, n:0, class:'nil'},
+			{child:4320, parent:432, n:0, class:'nil'},
+		{child:431, parent:3, n:1},
+			{child:4310, parent:431, n:0, class:'nil'},
+		{child:430, parent:3, n:0},
+	{child:2, parent:4},
+		{child:421, parent:2, n:1, tc:'out'},
+			{child:4210, parent:421, n:0, class:'nil'},
+		{child:420, parent:2, n:0, class:'nil', tc:'out'},
+	{child:1, parent:4 },
+		{child:410, parent:1, n:0, class:'nil', tc:'out'},
+]} tx={-10} r={3} id={'pv3'}/>

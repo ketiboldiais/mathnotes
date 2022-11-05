@@ -1,0 +1,52 @@
+<Head>
+	<title>Queues</title>
+	<meta name={`description`} content={`Notes on queues.`}/>
+</Head>
+
+# Queues
+
+_This note provides an overview of stacks_.
+
+## Definitions
+> __~queue~.__ Let ${Q}$ be a linked-list of objects: ${\ix{x_1, x_2, \ldots, x_{n-1}, x_n},}$ where ${\len{S}=n.}$ A _queue_ is a structure ${(Q,P),}$ where ${P}$ is a set of operations on ${S,}$ with the members defined below:
+
+<Grid cols={2}>
+<Algo>
+
+__~enqueue~.__ Where ${Q}$ is a linked-list and ${x}$ is an object, ${\df{enqueue}}$ inserts ${x}$ at the tail of the linked list, and returns ${Q.}$
+
+- __operation__ ${\let{Q}{\df{enqueue}~x}}$
+	1. ${\let{Q}{\df{append}~x}}$
+	2. __return__ ${Q}$
+
+</Algo>
+<Algo>
+
+__~dequeue~.__ Where ${Q}$ is a linked-list, ${\df{pop}}$ removes the first element of ${Q.}$ If ${Q}$ is empty, then ${\df{dequeue}}$ returns ${Q.}$ Otherwise, ${\df{dequeue}}$ returns the element removed.
+
+- __operation__ ${{\df{dequeue}~Q}}$
+	1. __if__ ${Q = \nil}$ __return__ ${Q}$
+	2. __else__
+		1. __init__
+			1. ${\let{x}{Q\ix{first}}}$
+		2. ${\df{behead}~Q}$
+		3. __return__ ${x}$
+
+</Algo>
+</Grid>
+
+~example~. Below is a trace of a program enqueueing and dequeuing into a queue.
+
+| ~${\df{state}_{n-1}}$~ | ~statement~                 | ${\df{state}_{n}}$                          |
+| ---------------------- | --------------------------- | ------------------------------------------- |
+| ${\nil}$               | ${\let{Q}{\df{new queue}}}$ | ${\px{\no{1}~\no{2}~\no{3}~\no{4}~\no{5}}}$ |
+| ${\px{~}}$             | ${\let{Q}{\df{enqueue}~1}}$ | ${\px{1~\no{2}~\no{3}~\no{4}~\no{5}}}$      |
+| ${\px{1}}$             | ${\let{Q}{\df{enqueue}~2}}$ | ${\px{1~2~\no{3}~\no{4}~\no{5}}}$           |
+| ${\px{1~2}}$           | ${\let{Q}{\df{enqueue}~3}}$ | ${\px{1~2~3~\no{4}~\no{5}}}$                |
+| ${\px{1~2~3}}$         | ${\let{Q}{\df{enqueue}~4}}$ | ${\px{1~2~3~4~\no{5}}}$                     |
+| ${\px{1~2~3~4}}$       | ${\let{Q}{\df{enqueue}~5}}$ | ${\px{1~2~3~4~5}}$                          |
+| ${\px{1~2~3~4~5}}$     | ${{\df{dequeue}~Q}}$        | ${\px{\no{1}~2~3~4~5}}$                     |
+| ${\px{2~3~4~5}}$       | ${{\df{dequeue}~Q}}$        | ${\px{\no{1}~\no{2}~3~4~5}}$                |
+| ${\px{3~4~5}}$         | ${{\df{dequeue}~Q}}$        | ${\px{\no{1}~\no{2}~\no{3}~4~5}}$           |
+| ${\px{4~5}}$           | ${{\df{dequeue}~Q}}$        | ${\px{\no{1}~\no{2}~\no{3}~\no{4}~5}}$      |
+| ${\px{5}}$             | ${{\df{dequeue}~Q}}$        | ${\px{\no{1}~\no{2}~\no{3}~\no{4}~\no{5}}}$ |

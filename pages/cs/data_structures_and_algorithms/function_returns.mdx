@@ -9,7 +9,7 @@ also perform _return-by-address_ and _return-by-reference_.
 
 Suppose we wanted a function to return an array, which we can then use and
 mutate elsewhere. One way to do so is to write a function with
-**return-by-address** &mdash; a function that returns the address of stored
+__return-by-address__ &mdash; a function that returns the address of stored
 data:
 
 ```cpp
@@ -40,7 +40,7 @@ the newly allocated array.
 ## Return-by-reference
 
 With return-by-address, we use an explicit pointer. We can instead use an
-implicit pointer with **return-by-reference**. By writing a function as
+implicit pointer with __return-by-reference__. By writing a function as
 return-by-reference, we instruct C++ that the particular reference returns
 a pointer to its return value, rather than the value itself. The end
 result: We can use functions on the left side of an assignment statement,

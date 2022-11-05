@@ -1,0 +1,89 @@
+<Head>
+	<title>Preface: Combinatorics</title>
+	<meta name={`description`} content={`Preface to notes on combinatorics.`}/>
+</Head>
+
+# Combinatorics
+
+This volume of notes covers combinatorics, the study of counting. Like number theory, combinatorics is one area of mathematics that manages to appear, particularly when we least expect it. This is particularly the case with one of its subfields, graph theory.
+Below is a small sample of some common counting questions.
+
+How many ways can I place ${n}$ marked balls into ${x}$ marked boxes with or without multipacking?
+
+$$
+	\large x^n
+$$ 
+
+How many ways can I place ${n}$ marked balls into ${x}$ marked boxes without multiplacking?
+
+$$
+	x^{\underline{n}}=x(n-1)(n-2)\ldots(x-n+1)
+$$
+
+How many ways can I place ${n}$ marked balls into ${x}$ marked boxes so that all the boxes have at least one ball?
+	
+$$
+	2!{n \brace x}
+$$
+
+
+How many ways can I place ${n}$ plain balls into ${x}$ marked boxes, with or without multipacking?
+
+$$
+	\dbinom{x+n-1}{n}=\dfrac{(x+n-1)(x+n-2)\ldots(x+1)x}{n(n-1)\ldots(2)(1)}=\dfrac{x^{\underline{n}}}{n!}
+$$
+
+How many ways can I place ${n}$ plain balls into ${x}$ marked boxes, without multipacking?
+
+$$
+	\dbinom{x}{n} = \dfrac{x^{\underline{n}}}{n!}=\dfrac{x(x-1)(x-n+2)(x-n+1)}{n(n-1)\ldots(2)(1)}
+$$
+
+How many ways can I place ${n}$ plain balls into ${x}$ marked boxes so that all the boxes have at least one ball? 
+
+$$
+	\dbinom{n-1}{x-1}
+$$
+
+
+How many ways can I place ${n}$ marked balls into ${x}$ plain boxes, with or without multipacking?
+
+$$
+	\dsum{k=0}{x}{n \brace k}
+$$
+
+How many ways can I place ${n}$ marked balls into ${x}$ plain boxes, without multipacking?
+
+$$
+	[n \le x]
+$$
+
+How many ways can I place ${n}$ marked balls into ${x}$ plain boxes, so that all the boxes have at least one ball?
+
+$$
+	{n \brace x}
+$$
+
+How many ways can I place ${n}$ plain balls into ${x}$ plain boxes, with or without multipacking?
+
+$$
+	p_x(n+x)
+$$
+
+(the number of partitions of ${n}$ into ${\le x}$ parts).
+
+
+How many ways can I place ${n}$ plain balls into ${x}$ plain boxes, without multipacking?
+	
+$$
+	[n \le x]
+$$
+
+How many ways can place ${n}$ plain balls into ${x}$ plain boxes, with no empty boxes allowed? 
+
+$$
+	p_x(n)
+$$
+
+(the number of partitions of ${n}$ into exactly ${x}$ parts). 
+

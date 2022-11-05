@@ -1,0 +1,113 @@
+import { Plot } from "../../../components/hago";
+
+# Integration Techniques
+
+The notes below provide an overview of common integration techniques. The notes
+that follow assume a strong background in [trigonometry](../geometry/trigonometry).
+
+## Trigonometric Integrals
+
+Below are the basic trigonometric integrals:
+
+<Grid cols={2}>
+
+$$
+	\int \cos x ~dx = \sin x + C
+$$
+
+$$
+	\int \sin x ~dx = - \cos x + C
+$$
+
+$$
+	\int \sec^2 x ~dx = \tan x + C
+$$
+
+$$
+	\int \csc^2 x ~dx = -\cot x + C
+$$
+
+$$
+	\int \sec x \tan x ~dx = \sec x + C
+$$
+
+$$
+	\int \csc x \cot x ~dx = -\csc x + C
+$$
+
+$$
+	\int \tan x ~dx = \ln \abs{\sec x} + C
+$$
+
+$$
+	\int \cot x ~dx = \ln \abs{\sin x} + C  
+$$
+
+$$
+	\int \sec x ~dx = \ln \abs{\sec x + \tan x} + C
+$$
+
+$$
+	\int \csc x ~dx = \ln \abs{\csc x - \cot x} + C
+$$
+
+</Grid>
+
+We now turn to slightly more complicated trigonometric integrals.
+
+### Dealing with Exponents
+
+One of the most common forms of real-world trigonometric integrals is the
+following:
+
+$$
+	\int \sin^n (x) \cos^m(x) ~dx
+$$
+
+When we encounter these integrals, the first question to ask is:
+
+> Are any of the exponents odd?
+
+For example, suppose we had this integral:
+
+$$
+	\int \sin^n(x) \cos(x) ~dx
+$$
+
+We already know what the integral of ${\cos x ~dx}$ is, so we make a
+substitution:
+
+$$
+	u = \sin(x)
+$$
+
+Now, when we make this substitution, we __must__ change everything in the
+expression that involves ${\sin(x).}$ This is so important to keep in mind.
+Substitution is an all-or-nothing game. Forget this fact, and we don't just lose
+— we're sent to the shadows. As such, we can't just get rid of ${\sin(x)}$ and
+call it a day. We must also get rid of the ${\cos(x) ~dx:}$
+
+$$
+	u = \sin(x) ~~~~ du = \cos(x) ~dx
+$$
+
+Thus, we now have:
+
+$$
+	\int u^n ~du
+$$
+
+This is easy to integrate:
+
+$$
+	\int u^n ~du = \dfrac{u^{n+1}}{n+1} + C
+$$
+
+Substituting for ${u = \sin(x),}$  we get our answer:
+
+$$
+	\int \sin^n(x) \cos(x) ~dx = \dfrac{\sin^{n+1} x}{n+1} + C	 
+$$
+
+In this example, we relied on the fact that ${\cos(x)~dx}$ has an odd power (in
+this case, 1), allowing us to use it as a differential.

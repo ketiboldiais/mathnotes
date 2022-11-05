@@ -1,0 +1,4370 @@
+import { Plot } from "../../../components/illus/components/Plot/Plot";
+
+<Head>
+	<title>Arithmetic</title>
+	<meta name={`description`} content={`Notes on arithmetic.`}/>
+</Head>
+
+# Arithmetic 
+
+_These notes are notes on basic arithmetic. All other notes on this site assume familiarity with topics covered here._
+
+1. [Speaking Mathematics](#speaking-mathematics)
+	1. [Expressions](#expressions)
+	2. [The Domain of an Expression](#the-domain-of-an-expression)
+	3. [Truth Sets](#truth-sets)
+	4. [Open Sentences](#open-sentences)
+	5. [Families of Equations](#families-of-equations)
+		1. [Linear Equations](#linear-equations)
+		2. [Polynomial Equations](#polynomial-equations)
+			1. [Quadratic Equations](#quadratic-equations)
+		3. [Trigonometric Equations](#trigonometric-equations)
+		4. [Exponential Equations](#exponential-equations)
+		5. [Radical Equations](#radical-equations)
+		6. [Rational Equations](#rational-equations)
+		7. [Conditional Equations](#conditional-equations)
+		8. [Equivalent Equations](#equivalent-equations)
+		9. [Inequations](#inequations)
+2. [Number Sets](#number-sets)
+	1. [The Natural Numbers](#the-natural-numbers)
+	2. [Integers](#integers)
+	3. [Rational Numbers](#rational-numbers)
+	4. [Irrational Numbers](#irrational-numbers)
+	5. [Real Numbers](#real-numbers)
+	6. [Complex Numbers](#complex-numbers)
+	7. [Laws of Arithmetic](#laws-of-arithmetic)
+	8. [Order of Operations](#order-of-operations)
+3. [Addition](#addition)
+	1. [Identity Property of Real Addition](#identity-property-of-real-addition)
+	2. [Real Subtraction](#real-subtraction)
+	3. [Commutativity of Real Addition](#commutativity-of-real-addition)
+	4. [Associative Law of Addition](#associative-law-of-addition)
+	5. [The Cancellation Law of Addition](#the-cancellation-law-of-addition)
+4. [Closure](#closure)
+5. [Inequalities](#inequalities)
+6. [Multiplication](#multiplication)
+	1. [Laws of Multiplication](#laws-of-multiplication)
+		1. [Commutative Law of Multiplication.](#commutative-law-of-multiplication)
+		2. [Reciprocal Law of Multiplication](#reciprocal-law-of-multiplication)
+		3. [Associative Law of Multiplication](#associative-law-of-multiplication)
+		4. [Multiplication by Zero](#multiplication-by-zero)
+		5. [Identity Property of Multiplication](#identity-property-of-multiplication)
+7. [Distributivity](#distributivity)
+8. [Multivariable Relationships](#multivariable-relationships)
+	1. [Expansions](#expansions)
+	2. [The Multiplication Algorithm](#the-multiplication-algorithm)
+9. [Exponentiation](#exponentiation)
+	1. [Perfect Powers](#perfect-powers)
+10. [Radicals](#radicals)
+	1. [The Square Root](#the-square-root)
+	2. [The Quotient Rule of Square Roots](#the-quotient-rule-of-square-roots)
+	3. [Adding and Subtracting Square Roots](#adding-and-subtracting-square-roots)
+	4. [nth Root](#nth-root)
+	5. [Rational Exponents](#rational-exponents)
+11. [Ratios](#ratios)
+	1. [Percentages](#percentages)
+	2. [Proportions](#proportions)
+	3. [Rational Expressions](#rational-expressions)
+		1. [Simplifying Rational Expressions](#simplifying-rational-expressions)
+		2. [Multiplying Rational Expressions](#multiplying-rational-expressions)
+		3. [Adding and Subtracting Rational Expressions](#adding-and-subtracting-rational-expressions)
+		4. [Simplifying Nested Rational Expressions](#simplifying-nested-rational-expressions)
+		5. [Rationalizing Radical Denominators](#rationalizing-radical-denominators)
+12. [Division](#division)
+	1. [Divisibility](#divisibility)
+	2. [Composites & Primes](#composites--primes)
+	3. [Division & Rational Numbers](#division--rational-numbers)
+	4. [The Division Algorithm](#the-division-algorithm)
+13. [Absolute Value](#absolute-value)
+	1. [Removing Absolute Value Symbols](#removing-absolute-value-symbols)
+	2. [Absolute Values and Inequalities](#absolute-values-and-inequalities)
+14. [Logarithms](#logarithms)
+15. [The Binomial Theorem](#the-binomial-theorem)
+16. [Solving Quadratic Equations](#solving-quadratic-equations)
+	1. [Completing the Square](#completing-the-square)
+	2. [Why Does Completing the Square Work?](#why-does-completing-the-square-work)
+	3. [The Quadratic Formula](#the-quadratic-formula)
+	4. [The Discriminant](#the-discriminant)
+	5. [The Product and Sum of Polynomial Roots](#the-product-and-sum-of-polynomial-roots)
+17. [The Factorial](#the-factorial)
+18. [Binomial Coefficients](#binomial-coefficients)
+	1. [Pascal's Triangle](#pascals-triangle)
+19. [Invervals](#invervals)
+	1. [Neighborhoods](#neighborhoods)
+20. [The Cartesian Plane](#the-cartesian-plane)
+21. [The Distance Formula](#the-distance-formula)
+22. [Functions](#functions)
+	1. [Properties of Functions](#properties-of-functions)
+	2. [Arrow Notation](#arrow-notation)
+23. [Function Graphs](#function-graphs)
+	1. [The Vertical Line Test](#the-vertical-line-test)
+	2. [Graphing Transformations](#graphing-transformations)
+	3. [Vertical Translation](#vertical-translation)
+	4. [Horizontal Translation](#horizontal-translation)
+24. [Slope](#slope)
+	1. [Comparing Slopes](#comparing-slopes)
+	2. [The Point-Slope Formula](#the-point-slope-formula)
+	3. [Slope-Intercept Formula](#slope-intercept-formula)
+	4. [Parallel and Perpendicular Lines](#parallel-and-perpendicular-lines)
+
+## Speaking Mathematics
+### Expressions
+In algebra, we use letters like ${x,}$ ${y,}$ ${n,}$ and ${m}$ to represent
+numbers. We call such letters variables. When we combine these variables
+with mathematical operations like addition, subtraction, multiplication,
+etc., we have an expression. For example, the following are all
+expressions:
+
+- ${a + 2}$
+- ${x^2}$
+- ${\sqrt{x} - y}$
+- ${\dfrac{x^{1/3} + x^2}{a/b}}$
+
+When we place an equal sign between two expressions, we have an equation:
+
+$$
+	a^2 + b^2 = c^2.
+$$
+
+In mathematics, the equal sign is a symbol that expresses the relation
+between mathematical objects. In the example above above, these objects are
+expressions. When we place an equal sign between two expressions, we are
+saying: The expression ${a^2 + b^2}$ is the same, in every way, as the
+expression ${c^2.}$ This is a proposition. Notice its gravity. There are
+very few things in the world that have that property &mdash; the same in
+every way.
+
+We will see in later sections that equality is just one kind of relation.
+In fact, a significant portion of mathematics (if not most) concerns
+inequations &mdash; propositions like ${x^2 < y^2.}$ We will revisit
+inequations (also called inequalities) once we've established familiarity
+with equations.
+
+### The Domain of an Expression
+All mathematical expressions have a domain &mdash; the set of all values
+for which the expression is defined. Less formally, the domain of an
+expression is essentially the boundaries of what we're discussing. For
+example, if we were debating the costs and benefits of capitalism, the
+debate might be limited to economies that exist today, rather than the
+economies of ancient Egypt. The basic idea is that, outside of the domain,
+the expression is undefined &mdash; all bets are off.
+
+For example, the expression $3x + 4$ has a domain of $\mathbb{R}$, since it
+is defined for all real numbers. We denote the domain of $3x + 4$ with the
+notation: $dom(3x + 4) = \mathbb{R}$.
+Example: What is the domain of $\dfrac{1}{(t-1)(t+3)}$?
+
+$$
+\text{dom}\left(\dfrac{1}{(t-1)(t+3)}\right) = \{t \in \mathbb{R} \mid t \neq 1, t \neq
+-3\}
+$$
+
+We impose restrictions on the domain, since $t = 1$ and $t = -3$ lead to
+the denominator evaluating to 0, which is undefined.
+For example, what is the domain of $4x + 3x^{-1}$?
+
+$$
+\text{dom}\left(4x + \dfrac{3}{x}\right) = \{ \mathbb{R} \mid x \neq 0 \}
+$$
+
+### Truth Sets
+Because expressions contain variables, an equation is true or false if, and
+only if, we substitute values into those variables. Until then, an equation
+is neither true nor false. If a value is inputted and the equation is true,
+we call that value the solution, or root, of the equation. The set of all
+roots to an equation is called the equation's truth set.
+
+If an equation's truth set is the equation's domain, we say that equation
+is an _identity_. For example, the equations:
+
+- ${x^2 - 9 = (x - 3)(x + 3)}$
+- ${\dfrac{4x^2}{x} = x}$
+
+are identities. Both equations have a domain of $\mathbb{R}$, and
+substituting $x$ with any real number will render the equations true.
+
+### Open Sentences
+Consider the following:
+
+$$
+	1 + x = 4
+$$
+
+The above is clearly an equation, but more broadly, it is called an **open
+sentence** &mdash; a statement that contains a variable, and becomes a
+proposition when an element of the universal set is substituted for the
+variable. In this case, the universal set is the set of all real numbers,
+${\reals.}$ If we substitute ${1,}$ an element of the universal set, into the
+variable, we obtain ${1 + 1 = 2,}$ a false proposition. But, if we instead
+substituted 3, another element of the universal set, we obtain
+${1 + 3 = 4,}$ a true proposition.
+
+Like propostions, we denote open sentences with lower-case letters, with
+the one key difference &mdash; there is a subscript appended, corresponding
+to the variables used in the open sentence. For example, the open sentence
+above might be denoted ${p_x.}$
+
+The rule of substituting remains applicable for variables that occur more
+than once in the sentence:
+
+$$
+	1 + x + x = 2
+$$
+
+To return a true proposition for the sentence above, we must substitute a
+value into each ${x}$ in the open sentence.
+
+We call these statements open sentences because they are in fact sentences.
+Equations, at the end of the day, are simply sentences. The equation
+${2x = 3}$ is just another way of saying, &#8220;Two multiplied by some
+value is three.&#8221; The use of the symbols 2, ${x,}$ ${=,}$ and ${3,}$
+and arranging those symbols in a particular way, is nothing more than a
+means of making things more concise and easier to read. Mathematicians
+invent and use symbols because certain propositions cannot be expressed
+concisely and clearly in plain English:
+
+$$
+	\int_0^{3.8}\frac{\pi^4 x y (a+9 c+8 b \cos(\frac{\pi z}{l})+18 c \cos(\frac{2 \pi z}{l})) \sin^2(\frac{\pi z}{l})}{l^4} dz
+$$
+
+&#8220;The ingegral with respect to ${z}$ from 0 to 3.8 of the quotient of
+the product of the product of the fourth power of Pi, ${x,}$ and ${y}$
+multiplied by the sum of ${a,}$ the product of ${8,}$ ${b,}$ and the cosine
+of the quotient of the product of Pi and ${z}$ divided by ${l,}$ the
+product of ${18,}$ ${c,}$ and the cosine of the quotient of 2, Pi, and
+${z,}$ and the square of the sine of the quotient of Pi and ${z}$ divided
+by ${l,}$ all divided by the the fourth power of ${l.}$&#8221;
+
+### Families of Equations
+Equations fall into several types. Mathematicians have constructed these
+groupings because equations often share many properties. We will explore
+what these properties are carefully, but before doing so, we have some
+familiarity of the type names. The overview provided below is strictly
+informal. We will provide more formal definitions when we address each type
+of equation in turn.
+
+#### Linear Equations
+The linear equation is the simplest equation. Here are some examples of
+linear equations:
+
+- ${12x - 2 = 0}$
+- ${19x = 24}$
+- ${17x + 4y = z}$
+- ${ax + by + nz = g}$
+
+Notice that the number of variables doesn't prevent an equation from being
+classified as a linear equation. Indeed, the only requirements for
+something to be a linear equation is that each term is either a constant or
+the product of a constant and a single variable. If the linear equation
+consists of just one variable, we say that the equation is a linear
+equation of one-variable. If there are two variables, it's a linear
+equation of two-variables, and so on.
+
+Despite their simplicity, linear equations are extremely important in both pure and applied mathematics. In physics, the distance an object travels, called displacement, is given by a linear equation: ${s = x_f - x_i,}$ where ${s}$ is the displacement, ${x_f}$ is the final position, and ${x_i}$ is the initial position. The final velocity of an object can also be determined by the equation ${v_f = v_0 + at,}$ where ${v_f}$ is the final velocity, ${v_0}$ is the initial velocity, ${a}$ is the acceleration, and ${t}$ is the time interval. These are both linear equations.
+
+#### Polynomial Equations
+Polynomial equations are equations consisting of polynomials &mdash;
+expressions that consist of variables and coefficients where the
+onperations involved are addition, subtraction, multiplication, and
+non-negative integer exponentiation. This is a bit of a mouthful, so here
+are some examples of polynomial expressions:
+
+- ${x^2 - 4x + 13}$
+- ${x^2 + y^2}$
+- ${bx^3}$
+- ${2x}$
+
+and here are some examples of polynomial equations:
+
+- ${a^2 + b^2 = c^2}$
+- ${\Delta x = v_0t + \dfrac{1}{2}at^2}$
+- ${3x^2 - 9 = 0}$
+- ${2x - 1 = 0}$
+
+Wait a minute. Isn't that ${2x - 1 = 0}$ a linear equation? It is in fact a
+linear equation. All linear equations are polynomial equations of degree-1.
+But, not every polynomial equation is a linear equation. For example, a
+polynomial equation of degree-2:
+
+$$
+	ax^2 + x + c = 0
+$$
+
+Put simply, the degree of a polynomial equation is the leading exponent in
+the equation. A polynomial equation of degree-3:
+
+$$
+	ax^3 + bx^2 + cx + d = 0
+$$
+
+Because it's fairly cumbersome to write &#8220;of degree-${n}$&#8221; every
+time, we have some special names for certain degrees. A quadratic equation
+is a polynomial equation of degree-2. For example:
+
+$$
+	3x^2 + x - 9 = 0
+$$
+
+A cubic equation is a polynomial equation of degree-3:
+
+$$
+	4x^3 - x = 12
+$$
+
+A quartic equation is a polynomial equation of degree-4:
+
+$$
+	x^4 + 3x^3 - 9x^2 + 12 = 0
+$$
+
+Quartic equations are sometimes called biquadratic equations. We use the
+term quartic because it's shorter to write.
+
+Polynomial equations are also classified by the number of terms the
+equation contains. A polynomial equation with only one term is called a
+monomial. For example, ${x^2 = 0}$ is a monomial equation. A polynomial
+equation with two terms is called a binomial. For example,
+${a^2 + b^2 = 2}$ is a binomial equation. A polynomial equation with three
+terms is called a trinomial &mdash; ${a^2 + b + c = 0.}$
+
+##### Quadratic Equations
+Quadratic equations are equations in one variable that can be written in
+the form:
+
+$$
+	ax^2 + bx + c = 0
+$$
+
+If we seek to determine the the truth set of a quadratic equation (i.e.,
+the set of all roots, or values of ${x}$ where the equation is true), our
+first course of action is to factor. And whenever we factor, we should be
+cognizant of the basic law of multiplication:
+
+$$
+pq = 0 \iff \begin{cases} p = 0, \text{ or } \\ q = 0, \text{ or } \\ p
+= 0 \text{ and } q = 0 \end{cases}
+$$
+
+> Example: What is the value of ${x}$ in ${ 8x^2 - 3 = 10x?}$
+
+Subtracting ${10x}$ from both sides, we get:
+
+$$
+	8x^x - 10x - 3 = 0
+$$
+
+Factoring:
+
+$$
+	(2x + 3)(4x + 1) = 0
+$$
+
+Solving for ${x}$ for one of the expressions:
+
+$$
+\begin{aligned}
+	2x + 3 &= 0 \\
+	2x &= -3 \\
+	x &= \frac{-3}{2}
+\end{aligned}
+$$
+
+And for the other expression:
+
+$$
+\begin{aligned}
+	4x + 1 &= 0 \\
+	4x &= -1 \\
+	x &= \frac{-1}{4} \\
+\end{aligned}
+$$
+
+Thus, we have:
+
+$$
+	x = \frac{-3}{2}, \frac{-1}{4}
+$$
+
+#### Trigonometric Equations
+Many equations represent cycles, and wherever there are cycles, there's
+likely a trigonometric operator involved. Such equations are called
+trigonometric equations. These equations might look something like:
+
+- ${\sin x + \cos y = z}$
+- ${(\tan^2 x + 5) - \sin x = 0}$
+- ${\arctan z - y^2 = x}$
+
+#### Exponential Equations
+Exponential equations look very much like polynomials, with the distinctive
+feature that their exponents have variables instead. For example:
+
+- ${y = e^x}$
+- ${z = y^x - 24}$
+- ${2^a + c = b^2}$
+
+Exponential equations are often seen in mathematical models for population
+growth and areas of finance.
+
+#### Radical Equations
+Radical equations have the distinctive feature of containing one or more
+radicands or fractional exponents:
+
+- ${y = \sqrt{x}}$
+- ${a = b^{1/2}}$
+
+#### Rational Equations
+Finally, we have the rational equations. These are equations with rational
+expressions or negative exponents:
+
+- ${\dfrac{x}{4} = \dfrac{(y - 3)^2}{17}}$
+- ${y = \dfrac{1}{x}}$
+- ${f = n^{-1}}$
+
+#### Conditional Equations
+The opposite of an identity is a conditional equation. These are equations
+that are true only if some condition(s) is/are true. For example, the
+following are conditional equations:
+
+- ${2x = 10}$
+- ${x = x + 1}$
+
+The equation $2x = 10$ is true only if it is true that $x = 5$. The
+equation $x = x + 1$ is true only if there is some number that equals one
+more than itself (a condition that can never be satisfied, so the equation
+can never be true).
+
+#### Equivalent Equations
+Equivalent expressions are represented by expressions. Equations themselves
+can be equivalent. Two equations are equivalent if, and only if, they have
+exactly the same solutions.
+
+#### Inequations
+Most critical findings in mathematics result from inequalities rather than
+equations. And understandibly so &mdash; it is often easier to determine
+whether particular expressions are greater or less than others, in
+comparison to concluding that they are equal. Whenever we replace the equal
+sign in an equation with one of the symbols ${\leq}$ or ${\geq,}$ we obtain
+an an __inequation__. Both equations and inequations are mathematical
+statements. As such, inequations, like equations, have truth sets &mdash;
+the set of all values that render the inequality true if any member of that
+set is substituted into a variable, or variables, of the inequality.
+
+For example, suppose ${2x - 3 < 8.}$ The value ${x = 5}$ would be a member
+of the inequation's truth set, since ${2(5) - 3 = 7 < 8.}$ The value
+${x = 10,}$ however, would not be a member of that truth set, since
+${2(10) - 3 = 17 \nless 8.}$ We can find the entire truth set for the
+inequation by solving for $x$, using the same techniques for equations:
+
+$$
+	2x - 3 < 8 = 2x - 3 + 3 < 8 + 3 \\
+	2x < 8 + 3 \\
+	2x < 11 \\
+	x < \dfrac{11}{2} \\
+$$
+
+Although inequations can be solved by mostly applying the techniques for
+equations, there are some situations we should take care when handling.
+Particularly, we must be careful whenever we multiply or divide both sides
+of an inequation by the same nonzero number.
+
+For example, suppose ${1 < 3.}$ If we multiplied both sides of the
+inequality by 10, we would obtain ${10 < 30.}$ Clearly this is true. But if
+were to multiply both sides by -5, we would obtain ${-5 < -15.}$ This is
+false. This observation returns 2 general rules:
+
+> __lemma__. If both sides of an inequation are multiplied or divided by a
+> positive real number, then the inequation is preserved.
+
+> __lemma__. If both sides of an inequation are multiplied or divided by a
+> negative real number, then the inequation is reversed.
+
+More explicit rules:
+
+> __lemma__. If ${a < b,}$ then ${a + c < b + c,}$ and ${a - c < b - c.}$
+
+> __lemma__. If ${a < b}$ and ${c \in \mathbb{R}^+,}$ then ${ac < bc,}$ and >
+> ${\dfrac{a}{c} < \dfrac{b}{c}.}$
+
+> __lemma__. ${a < b}$ and ${c \in \mathbb{R}^-,}$ then ${ac > bc,}$ and >
+> ${\dfrac{a}{c} > \dfrac{b}{c}.}$
+
+> __lemma__. If ${a < b}$ and ${b < c,}$ then ${a < c.}$
+
+
+## Number Sets
+Numbers have been around for a long time. Early humans used all sorts of
+ways to record their enumerations: Scratches on cave walls and bones; knots
+on strings; pebbles and shells; notches cut into twigs &mdash; all attempts
+to quantify, to make sense of the environment. It's as if the numbers
+revealed themselves magically.
+
+But what is it really magic? Or was it purely out of necessity? The
+intuitive response is that our ancestors needed to quantify objects.
+Perhaps the earliest hunters needed to determine how much game was needed
+for the village. Or the chief having to decide a fair tribute. But this
+response neglects the fact that our forebears weren't just concerned with
+survival. They were also deeply superstitious.
+
+Some of the earliest forms of counting date to religious ceremonies and
+mysticism. Many of these ceremonies required ordering participants and
+events, hinting at the possibility that the ordinal numbers &mdash; numbers
+used to denote position &mdash; came before the cardinal numbers &mdash;
+numbers used for quantity.
+
+Indeed, there's a plausible argument there. Some of the earliest forms of
+the cardinal numbers were rudimentary and simple, in contrast to their
+ordinal counterparts. Cardinal numbers were limited to ${2,}$ and anything
+beyond that was a word for "many" or "lots." Moreover, the view that the
+ordinals preceded the cardinals would be in line with the recurring
+phenomenon of dividing the integers into "male" and "female," an idea that
+would eventually lead to "odd" and "even."
+
+Regardless of whether the ordinal or the cardinal came first, the human
+need for numerating grew increasingly complex. And as complexity increased,
+so too did our sophistication. Sticks, stones, and bones were too
+ephemeral, so we developed number systems to more efficiently analyze our
+states of affairs. As far back as 3600 BC, the Ancient Egyptians used a
+numbering system where every ${10}$ unique characters could be abstracted,
+or symbolized, by a new, unique character. The Egyptian system evidences
+one of the earliest forms of a base-10 system, or decimal system. Unlike
+the number system we're familiar with, the Ancient Egyptian number system
+introduced a new symbol for every ${10}$ symbols. In other words, a symbol
+for ${1,}$ then for every ten ${1s}$, a symbol for ${10,}$ then ${100,}$
+then ${1,000,}$ then ${10,000,}$ then ${100,000,}$ and so on.
+
+Centuries later, the Greeks concocted their own number system, where a
+unique character for ${5}$ was introduced. The ancient Romans followed
+suit, utilizing the familiar capital letter numerals now relegated to
+formal headings and cryptic date tattoos. The numerals ${I,}$ ${II,}$ and
+${III}$ are derived directly from using three fingers to symbolize ${3;}$
+the numeral ${V}$ from the angle formed by all five fingers; and ${X}$ from
+the joining of two ${V.}$ The numeral ${C}$ represented ${100,}$ and half
+of a ${C}$ &mdash; an ${L}$ &mdash; represented ${50.}$ The numeral ${M}$
+represented ${1,000.}$ Split it in half and turn it on its side, we obtain
+something that looks like ${D,}$ the numeral for ${500.}$
+
+The ancient Mayans too had a sophisticated and flourishing number system,
+where dots and tallies were used as numerals. The beauty in the Mayan
+system was its strong connection to addition. Numerals logically followed
+from arithmetic. In contrast to the Egyptians, Greeks, and Romans, the
+ancient Mayans introduced a new, unique character for every ${20}$ symbols,
+an example of a base-20 system, or vigesimal system. Moreover, like the
+ancient Egyptians, the Mayans understood the need to represent zero and
+assigned it a unique symbol &mdash; well before zero was accepted in
+Europe.
+
+Ancient China, whose characters made their way into the Korean peninsula
+and the Japanese isles, developed a number system from a mixture of
+pictographs and arithmetic. Unlike the Mayans and their connection to
+addition, the Chinese number system draws directly from multiplication and
+addition. By incorporating two arithmetic operators, the Chinese number
+system allowed for a smaller set of numerals, which in turn permitted
+efficient enumeration of large quantities.
+
+The numerals we use today are the Hindu-Arabic numerals, derived from Hindu
+and Arabic number systems. Developed about ${2,000}$ years ago in India,
+the numerals made their way into Europe, via the Spanish peninsula. The
+Moors (Spanish Muslims), in their search for trade, brought both the
+Hindu-Arabic numerals and Ancient Greek philosophy, preserved by Arabic
+scholars. In the 12th century, Leonardo Fibonacci, for whom the Fibonacci
+numbers are named, furthered the numerals spread into continental Europe.
+By the 15th century, the Roman numerals &mdash; until then the predominant
+symbols &mdash; were entirely replaced by the Hindu-Arabic numerals we know
+today.
+
+All of this is to say that there is a distinction between a numeral and a
+number. The numeral is purely a symbol. We could have just as easily
+continued using Roman symbols to do mathematics, just as medieval Europeans
+did. Understanding this distinction is crucial for when we study numbers.
+The Chinese symbol 五 is different from the Hindu-Arabic symbol ${5}$, but
+they both communicate the same idea &mdash; the number five. Often, we'll
+find that numerals are inappropriate for a particular analysis because of
+the underlying idea they communicate &mdash; a discrete number. In those
+situations, we must let go of the numeral abstraction, and think in
+different terms, different symbols, and different relationships. To do so
+effectively, we study the properties of the real numbers.
+
+### The Natural Numbers
+We define the natural numbers as the positive integers including zero
+(i.e., the nonnegative integers). These are what we refer to as the
+counting numbers in regular speech. Importantly, mathematicians differ on
+whether ${0}$ is a natural number. This is more a matter of convenience
+than anything else, but in these materials, we follow the premise that
+${0}$ is a natural number. If there is a variation, we will explicitly
+state that ${0}$ is not included in the set.
+
+$$\nat = \{ 0, 1, 2, 3, 4, 5, \ldots \} $$
+
+Some texts define the natural numbers as the positive integers, and instead
+refer to the nonnegative integers as the whole numbers. For reasons beyond
+the scope of the current discussion, defining the natural numbers as
+including zero has benefits for later sections.
+
+### Integers
+The integers are the numbers we use for counting (also called the cardinal
+numbers in other contexts), and their negatives. They are denoted with the
+special symbol, ${\uint,}$ from the German zehr, meaning "number".
+
+${ \uint = \{ \ldots , \texttt{-}4, \texttt{-}3, \texttt{-}2, \texttt{-}1, 0,
+1, 2, 3, 4, \ldots \} }$
+
+Some elementary mathematical texts call the counting numbers the whole
+numbers, and go so far as to denote them with the symbol ${\mathbb{W}.}$
+This terminology is seldom used in higher level mathematics, so we'll stick
+to the more common integers. Nevertheless, the idea of a whole number is
+helpful for communicating the notion of an integer, so we'll momentarily
+use it.
+
+But what is a whole number? We can think of the whole number as such: If a
+number has at least one non-zero digit after its decimal point, then it is
+not a "whole number" because we cannot count from or to zero with that
+number exactly 1 unit at a time on the number line. For example, ${1.1}$ is
+not a whole number, because no matter how much we try, to get to zero, we
+have to subtract ${0.1.}$ This is not 1 unit, so it does not constitute a
+whole number. And since it does not constitute a whole number, it is not an
+integer.
+
+The whole numbers greater than ${0}$ are called the positive integers. We
+can think of these numbers as the numbers we use to count forwards (e.g.,
+inserting a certain amount of objects into a space).
+
+$$
+	\uint^{+} = \{ 1, 2, 3, 4, \ldots \}
+$$
+
+Notice symbol for the set, a zehr with a superscripted plus sign. And the
+whole numbers less than ${0}$ are called the negative integers. Here, we
+can think of these numbers as the numbers we use to count backwards (e.g.,
+removing a certain number of objects from a space).
+
+$$
+	\uint^{-} = \{ \ldots , \texttt{-}4, \texttt{-}3, \texttt{-}2, \texttt{-}1 \}
+$$
+
+The number ${0}$ is neither negative nor positive. It has a special
+duality: It is both a non-positive and non-negative number. The
+non-positive integers are negative integers including zero:
+
+$$
+	\Z_{\leq 0} = \{ \ldots , \texttt{-}4, \texttt{-}3, \texttt{-}2, \texttt{-}1, 0 \}
+$$
+
+and the non-negative integers are the positive integers including zero:
+
+$$
+	\Z_{\geq 0} = \{ 0, 1, 2, 3, 4, \ldots \}.
+$$
+
+### Rational Numbers
+
+When we divide one integer by another nonzero integer, we get a **rational
+number**. Specifically, if, and only if, a number can be written in the
+form $\frac{a}{b}$, where $a$ is an integer and $b$ is a nonzero integer,
+then the number is a rational number. For example, 4 is a rational number,
+since 4 can be written as $\frac{4}{1}$. 0.5 is a rational number, since it
+can be written as $\frac{1}{2}$.
+
+### Irrational Numbers
+If a number cannot be written in the form $\frac{a}{b}$, where $a$ is an integer and $b$ is a nonzero integer, then the number is an _irrational number_. For example, the number $\pi$ is an irrational number, because it cannot be written in the form $\frac{a}{b}$.
+
+### Real Numbers
+${1, 3.14, \pi, \phi, e, 4}$ and ${0,}$ all of these numbers are called _real numbers_. In the simplest terms, a real number is a number that can be written as a decimal. Thus, 7 is a real number, since ${7 = 7.0.}$ Similarly, while ${\pi}$ is an irrational number. It is a real number since it can be written as a decimal (${3.14 \ldots}$), albeit non-terminating.
+
+Real numbers are written in _decimal notation_. This is the prevailing
+standard (with the exception of _binary_, favored by computers). The
+decimal system is useful because it allows us to quickly add numbers
+through the process of _carrying over_.
+
+### Complex Numbers
+Outside of the real numbers, we have the imaginary numbers. These are the
+numbers that result from operations such as $\sqrt{\texttt{-}1}$. We will treat
+and analyze this numbers in a separate chapter.
+
+
+### Laws of Arithmetic
+The following materials discuss arithmetic, the set of rules and
+conventions governing the manipulation of numbers. The word arithmetic is
+derived from the Greek arithmetike, meaning "art of counting," which is
+itself derived from the Greek arithmos, meaning "number."
+
+There are four basic arithmetic operators:
+
+| Symbol         | Operation      |
+| -------------- | -------------- |
+| $a + b$        | Addition       |
+| $a - b$        | Subtraction    |
+| $a \times b$   | Multiplication |
+| $\dfrac{a}{b}$ | Division       |
+| $a^b$          | Exponentiation |
+
+Above, we used the letters $a$ and $b$. These are called variables. They
+are simply placeholders that we can plug numbers, other variables, or even
+other operations with variables into. Variables allow us to generalize, or
+abstract, statements. For example, ${2 + 2 = 4}$, and ${3 + 8 = 11}$. We
+make an abstraction of this pattern, or idea, by writing something like
+${a + b = n.}$ This communicates the idea, "The number ${n}$ is the sum of
+${a}$ and ${b.}$"
+
+There are many ways to read an equation, but they all express the same
+idea. The human mind, however, is a peculiar thing. Often, reading and
+writing the same equation in different ways can lead to drastically
+different insights. Consider all the different ways we can read
+${a + b = n:}$ The sum of ${a}$ and ${b}$ is ${n.}$ The number ${n}$ is the
+sum of ${a}$ and ${b.}$ The numbers ${a}$ and ${b}$ such that the sum is
+${n.}$ The number ${b}$ is the difference of ${n}$ and ${a.}$
+
+All of this is to say that addition and subtraction are just fast and
+flexible ways to express counting forwards and backwards. For example, the
+expression ${4 + 8}$ is just another way of saying "Count ${8}$ positions
+from ${4}$." This leads to: ${5, 6, 7, 8, 9, 10, 11, 12.}$ This in turn is
+just another way of saying "Count ${12}$ positions from ${0}$" or "Count
+${1}$ position from ${11.}$" Notice that with these addition (and
+subtraction), we are just offsetting from one or the other of the operands.
+${1 + 1}$ is simply "1 offset 1," which is ${2.}$
+
+All of this evidences that addition and subtraction are abstractions of
+counting. Abstractions are useful because they allow us greater flexibility
+and accuracy with our statements. Suppose we want to say, "I'm looking for
+two numbers that add to 10." We can write: $a + b = 10$. This flexibility
+and accuracy is a powerful tool in mathematics, because it gives us plenty
+of room to write statements that say what we can and cannot do &mdash;
+rules.
+
+Understanding the basic rules of arithmetic at a very high level is
+priceless in mathematics. Part of the elegance and power of mathematics is
+that we can arrive at beautiful, and often shocking, results from a set of
+very basic rules.
+
+### Order of Operations
+Arithmetic allows us to combine numbers, through the operations listed
+above, to form other numbers. The way we order operations matters in
+mathematics. Otherwise, we run into problems. For example, consider the
+following:
+
+$$
+   2 + 3 \times 4
+$$
+
+What does this expression mean? Well, it could be: (1) Add 2 and 3, then
+(2) multiply the sum by 4. Or, it could mean: (1) Multiply 3 and 4, and (2)
+add 2 to the product. This ambiguity is unacceptable in mathematics. We
+need be clear and precise with our words. For these reason, mathematics
+follows a few conventions on how to write mathematical expressions:
+
+1. Evaluate expressions in parentheses first, working from the inner most
+   to the outer most, applying the rules below.
+2. Perform all exponentiations.
+3. Perform all multiplications and divisions from left to right.
+4. Perform all additions and subtractions from left to right.
+
+The conventions above are collectively called the __order of operations__.
+Again, these are conventions. They are not universal truths; they're simply
+what mathematicians have come to agree to about how mathematics is
+communicated and understood.
+
+## Addition
+
+Addition can be thought of as moving to the right along the real number
+line by whatever number we are adding. So, for example, the expression
+${4 + 2}$ can be thought of as "Start at 4, and move 2 to the right." This
+give us the final destination of 6. Subtraction is really just addition,
+only instead of moving towards the right, we move towards the left. For
+example, $4 - 3$ is really $4 + (-3)$, returning 1. Visually:
+
+![A number line.](https://res.cloudinary.com/sublimis/image/upload/v1652601514/math/number_line_arithmetic_qdyuls.svg)
+
+### Identity Property of Real Addition
+
+Pius, a bank robber, goes to Ultimate Safety Bank, and robs it. He leaves
+with 4,000 dollars. Pius then goes to another bank Safer Bank, 4,000
+dollars and fake gun in hand, and tells the teller to put the money in the
+bag. The teller takes the bag, disappears below the counter, and pretends
+to place money in the bag; the teller, in fact, didn't place anything in
+the bag. She returns the bag, and Pius sprints out the building to his
+e-scooter, and zooms away. He gets home and opens the bag. How much money
+does Pius have?
+
+Pius starts with 0, then takes 4,000 from Ultimate Safety, then goes to
+Safer Bank, and gets 0. When we add 0 to a number, we are effectively
+saying "no movement" along the number line. Thus, we have the following
+rule:
+
+> __~identity property of addition~__. Given ${a \in \reals,}$ it follows that ${a + 0 = 0 + a = a.}$
+
+### Real Subtraction
+
+Knowing whether operands are negative or positive can allow us to
+immediately conclude certain propositions. First, the sum of two positive
+integers is a positive integer.
+
+> __~theorem~__. If ${a, b \in \reals,}$ then ${a + b \in \reals.}$
+
+From the rule property above, we have a further property: The sum of two
+negative numbers is a negative number.
+
+> __~theorem~__. If ${a, b \in \reals^{-},}$ then ${a + b \in \reals^{-}.}$
+
+The operation of subtraction is not exactly an independent operation.
+Really, subtraction is just addition with a negative. The "operation" of
+subtraction is really just a shorthand way for writing out addition of
+positive and negative numbers. For example, when we write ${a + (-b),}$< we
+instead just write ${a - b.}$ It's just a faster way of writing the same
+expression.
+
+The identity property of addition leads to the additive inverse. As
+aforementioned, subtraction is really just adding negative numbers.
+Considering the addition with zero rule, we have the following inference:
+
+> __~additive inverse~__. Given ${a \in \reals,}$ ${a + (-a) = (-a) + a = 0}$
+
+Given the equation ${a + (-a) = 0}$, we say that ${-a}$ is the additive
+inverse of ${a.}$ Whenever we see the equation ${-a + a = 0}$, we should
+immediately become aware that we ${a}$ and ${-a}$ are on opposite sides of
+0 on the real line. Furthermore, because ${-a + a = 0}$, subtracting ${-a}$
+from both sides, we have ${-a =
+-(-a)}$.
+
+The additive inverse also allows us to draw another inference. Given the
+equation ${a + x = a,}$ we should immediately know that ${x = 0.}$
+Similary, if we see the equation ${a + x = 0,}$ then we should immediately
+know that ${x = -a.}$
+
+### Commutativity of Real Addition
+
+The commutative law of addition states that:
+
+$$
+	a + b = b + a
+$$
+
+In other words, the order of the terms in an addition expression does not
+change the sum of those terms. We call the property above more generally as
+__commutativity__. One way to remember it: In addition, terms can
+"commute."" In other words, the terms can move around as they please, as
+long as they stay within addition (and as we'll see later, multiplication).
+
+The idea is made apparent from a simple analogy. If we want sweet iced tea,
+we can: add the tea, then the ice, then the sugar; or we can add the sugar,
+then the ice, then the tea; or we can add the tea, then the sugar, then the
+ice, and so on and so forth. Either or, the result is the same &mdash;
+sweet iced tea.[^tea]
+
+[^tea]:
+    Granted, greater minds may differ on how sweet iced tea should be made.
+
+### Associative Law of Addition
+
+The associative law of addition states that the sum of the terms does not
+depend on the grouping of the terms. In other words, we can group the terms
+however way we'd like.
+
+> __~associative property of addition~__. If ${a, b, c \in \reals,}$ then ${a + b + c = (a + b) + c = a + (b + c).}$
+
+We call the property above more generally as _associativity_. We can
+remember it as: In addition, the terms are free to _associate_. In other
+words, the terms can gather together or separate as they please, as long as
+they stay within addition (and again, as we'll see later, multiplication).
+
+From the definition above, if we have the expression ${a + b + c + d,}$ we
+can generate numerous different possibilities:
+
+$$
+	a + b + c + d \\
+	a + b + c + d \\
+	a + (b + c + d) \\
+	a + (b + (c + d)) \\
+	a + b + (c + d)
+$$
+
+All these possibilities are equivalent, but some may be easier to compute
+than others. The associative law of addition leads to another useful
+property:
+
+> __~theorem~__. If $a + b = 0$, then $b = -a$ and $a = -b$.
+
+The above property is the direct result of subtracting either $a$ or $b$
+from both sides. Associativity and commutativity are what allow us to
+rewrite expressions in numerous different ways:
+
+$$
+\begin{aligned}
+(a - b) + c &= (a + (-b)) + c \\
+&= a + (-b + c) ~\text{by associativity} \\
+&= a + (c - b) ~\text{by commutativity} \\
+&= (a + c) - b ~\text{by associativity}
+\end{aligned}
+$$
+
+Importantly, the associative property of addition does not apply to
+subtraction. For example, ${a - b}$ does not imply that ${b - a.}$
+${a - b}$ is equivalent to ${a + (-b),}$ but it is not equivalent to
+${b + (-a).}$ The proposition ${a - b = b - a}$ is true iff ${a = b.}$
+
+### The Cancellation Law of Addition
+The Cancellation Law for Addition Suppose we have the following
+relationship:
+
+$$
+	a + b = a + c
+$$
+
+Subtracting ${ a }$ from both sides, we have ${ a + b - a = a + c - a }$.
+Simplifying, we have: ${ b = c }$.
+
+> __~cancellation law of addition~__. If ${ a + b = a + c }$, then ${ b = c }$.
+
+## Closure
+
+> __~property~__. Let ${a, b \in \reals}$ then ${a + b \in \reals}$ and ${a \cdot b \in \reals.}$
+
+From the property above, we say that the reals are _closed_ under addition and multiplication. In other words, if we add two reals numbers, then the sum is a real number. If we multiply two real numbers, then the product is real number.
+We can draw a few other useful properties.
+
+## Inequalities
+
+Inequalities arguably appear more often than equalities in mathematics.
+This is because equality imposes an extraordinarily high burden of proof:
+When we write ${a = b,}$ we are implying that ${a}$ and ${b}$ are the same
+in every possible way. Because of that burden, we often must speak in terms
+of relativity, using the symbols
+${ <, >, \leq, \geq, \nless, \ngtr, \nleq, \ngeq.}$ Let's discuss how each
+of these symbols are used and the propositions they can express.
+
+First, when we write ${a < b,}$ we are stating, ${a}$ is greater than
+${b.}$\_ The same proposition can be written as ${b < a.}$
+
+Second, if ${a < 0,}$ we say that ${a}$ is __negative__. If ${a > 0,}$ we
+say that ${a}$ is __positive__.
+
+Third, the inequality symbols operate similarly to the equal sign: There
+are two sides, and we can manipulate the expression accordingly &mdash; so
+long as the expression remains true. For example, consider the proposition
+${a > b.}$ We can manipulate this expression as such:
+
+$$
+	\begin{aligned} a &> b \\ a - b &> b - b \\ a - b &> 0 \end{aligned}
+$$
+
+We see that given the expression ${a > b,}$ it follows that ${a - b}$ is
+positive. This analysis leads to several laws. First, the **Trichotomy
+law**:
+
+> _Trichotomy Law_. For every ${a \in \reals,}$ one, and only one, of the
+> following propositions is true: ${a = 0}$ ${a \in \reals^{+}}$ >
+> ${-a \in \reals^{+}}$
+
+The rule above tells us that every real number ${a}$ can be only one of
+three things: zero, positive, or negative. Those are the only three
+possible states. Nothing else. Additionally, we have the **laws of
+closure**. We can think of these laws as defining the boundaries of
+addition and multiplication. First, the __law of closure under addition__:
+
+> _Closure Under Addition._ If ${a}$ and ${b}$ are in ${R^{+},}$ then
+> ${a + b}$ is in ${R^{+}.}$
+
+And the __law of closure under multiplication__:
+
+> _Closure Under Multiplication._ If ${a}$ and ${b}$ are in ${R^{+},}$ then
+> ${a \cdot b}$ is in ${R^{+}.}$
+
+Complementing the laws above, we have the following definitions:
+
+> _Definition._ Given any two numbers ${a}$ and ${b,}$ the following
+> propositions hold:
+>
+> 1. ${a - b \in \reals^{+} \nc a > b}$
+> 2. ${b > a \nc a}$
+> 3. ${(a > b) \lor (a = b) \nc a \geq b}$
+> 4. ${a > 0 \iff a \in \reals^{+}}$
+
+As a consequence of the definitions above, we have:
+
+> __definition__. Given any two numbers ${a}$ and ${b,}$ exactly one of the
+> following propositions is true:
+> * ${a - b = 0,}$ 
+> * ${a - b > 0,}$ xor
+> * ${-(a - b) = b - a > 0}$
+
+Manipulating the above definitions, we have:
+
+> Definition. Given any two numbers ${a}$ and ${b,}$ exactly one of the
+> following propositions is true: ${a = b,}$ ${a > b,}$ xor ${b > a}$
+
+That is to say, given any numbers ${a}$ and ${b,}$ one is less than or
+equal to the other.
+
+## Multiplication
+
+Multiplication is simply repeated addition. Accordingly, we can think of
+multiplication as an even faster method of counting. For example,
+${2 \cdot 2}$ is just another way of saying "Move 2 positions 2 times
+forward, from the origin." This leads to 4. Similarly,
+${2 \cdot \texttt{-}3}$ is equivalent to, "Move 2 positions 3 timees
+backward, from the origin." This leads to ${\texttt{-}6.}$ This reveals
+that whenever we write the expression ${a \cdot b,}$ there's an implicit
+${(a \cdot b) + 0.}$ Whenever we multiply integers, the following rule
+holds true:
+
+> _Closure Property of Multiplication_. The product of two integers is an
+> integer.
+
+### Laws of Multiplication
+
+Like addition, there are several laws of multiplication. These are
+equivalent to the laws of addition with just a few differences.
+
+#### Commutative Law of Multiplication.
+
+The commutative law of multiplication states that we the order in which we
+multiply two real numbers ${a}$ and ${b}$ doesn't affect the result. In
+other words, we can freely move terms around and arrive at the same
+product.[^mnemonic]
+
+[^mnemonic]:
+    A helpful mnemonic for the commutative law: "Factors freely flow."
+
+> _Commutative Property of Multiplication._ >
+> ${a \cdot b = b \cdot a = (a)(b) = (b)(a)}$
+
+#### Reciprocal Law of Multiplication
+
+What is the result of ${2 \cdot \frac{1}{2}?}$ Clearly, it is ${1.}$ How
+about ${3 \cdot \frac{1}{3}?}$ It's also ${1.}$ Indeed,
+${n \cdot \dfrac{1}{n}}$ will always return ${1,}$ where ${n}$ is a real
+number. We call this the _reciprocal law of multiplication_:
+
+> _Reciprocal Law of Multiplication._ Given any ${n \neq 0,}$ there exists
+> a number ${n^{-1} = \dfrac{1}{n}}$ such that:
+> $$n \cdot n^{-1} = n^{-1} \cdot n = 1$$
+
+While we haven't covered exponents yet, the notation ${n^{\texttt{-}1}}$ is
+the same as the expression ${\dfrac{1}{n}}$. We call the number
+${n^{\texttt{-}1}}$ the __reciprocal__ or the __multiplicative inverse__ of
+the number ${n.}$ The law above tells us that multiplying a real number by
+its reciprocal always yields the number ${1,}$ as long as that real number
+isn't ${0.}$ Why not ${0?}$ Because if ${n = 0,}$ then we would have the
+reciprocal ${\dfrac{1}{0}.}$ And for our purposes, division by ${0}$ is
+always _undefined_.
+
+#### Associative Law of Multiplication
+
+The associative law of multiplication tells us that we can group factors
+however way we'd like, and still arrive at the same
+product.[^assocmnemonic]
+
+[^assocmnemonic]:
+    A helpful mnemonic for the associative law: "Factors freely faction."
+
+> _Associative Property of Multiplication._ ${ (ab)c = a(bc)}$
+
+The laws of commutativity and associativity apply whether ${ a }$, ${ b }$,
+and ${ c }$ are negative, positive, or 0.
+
+#### Multiplication by Zero
+
+A man goes to a café and asks the barista for a Bombón. The barista asks,
+"How many tablespoons of sugar would you like?" The man replies,
+"Zero."[^kantfootnote]
+
+Question: How many table spoons of sugar would the man get? Very clearly
+zero! Zero of something is zero. We state this property of multiplication
+formally:
+
+> _Zero Property of Multiplication._ Given any real number ${a,}$ >
+> ${0 \cdot a = 0}$
+
+[^kantfootnote]:
+    As an aside, the coffee example above is a play on the philosopher
+    Slavoj Zizek's joke:
+
+        A man comes into a restaurant. He sits down at the table and he says, “Waiter, bring me a cup of coffee without cream.” Five minutes later, the waiter comes back and says, “I'm sorry, sir, we have no cream. Can it be without milk?”
+
+    Zizek's joke is an attempt at revitilizing Hegelian logic through an
+    alternative reading. The idea is that the existence of a negation can
+    be just as significant and worthy of consideration as the negation
+    itself. In other words, when we encounter the proposition "coffee
+    without cream", it's just as important to consider the possibility that
+    what's being expressed is not "coffee _without cream_", but rather
+    "coffee _without_".
+
+    This idea has its roots in Kant's essay _An Attempt to Introduce the
+    Concept of Negative Magnitudes of Philosophy._ There, Kant presented a
+    thought experiment: Two equal forces start at zero. One moves five feet
+    to the right, the other moves five feet to the left. Is the zero
+    resulting from their movement different from the zero they started at?
+    Kant argued yes, they are different. The "zero" resulting from the two
+    forces cancelling one another is different from the zero before any
+    force moved. The ${+5}$ and the ${-5}$ have in themselves a ${0,}$ in
+    that ${+5}$ means "Move 5 to the right from ${0}$" and ${-5}$ means
+    "Move 5 to the left from ${0.}$" That inherent ${0}$ never went
+    anywhere. It's always been there.
+
+    Hegel took this several steps further by arguing that the zero we get
+    from ${5 + (-5)}$ is not only different, but that the process of
+    negation alters the very thing we're negating. ${5 + (-5)}$ results in
+    a non-being ${0,}$ from a process that starts with a being, the origin
+    ${0.}$ This is the act of _negation_, and its result is different from
+    zero, which represents nothingness. In Hegel's view, nothingness is
+    always there. It requires no action by another to "be". In contrast,
+    negation &mdash; the act of ${(5) + (-5)}$ &mdash; requires an action
+    by another.
+
+    Hegel's arguments on negation (and logic in general), no doubt had an
+    impact on mathematical logic. In particular, Hegel's formulation of the
+    _absolute_ (a concept that follows from his work on negations) is
+    contemporaneous with the concept of _absolute value_, a topic to be
+    discussed in later sections.
+
+    The zero property of multiplication may seem straightforward, but it
+    leads a particularly useful fact to keep in mind. The equation
+    ${a \cdot b = a \cdot c}$ does not immediately imply that ${b = c.}$
+    Why? Because if ${a = 0,}$ then either ${b}$ or ${c}$ could be any real
+    number and ${b \neq c.}$ Never assume that ${ab = ac}$ implies
+    ${b = c}$ without first verifying, or stating explicitly, that
+    ${a \neq 0.}$
+
+    Additionally, if we know that ${a \cdot b = 0,}$ then we have three
+    possibilities: (1) ${a = 0,}$ (2) ${b = 0,}$ or (3) ${a = 0}$ and
+    ${b = 0.}$
+
+#### Identity Property of Multiplication
+
+Ayuri is about to walk to a smoke shop to buy some flavored tobacco. She
+asks her roommate Elena, "Do you want any flavored tobacco?" looking for
+flavored tobacco. Elena responds, "I do need some flavored tobacco." "What
+would you like?" Ayuri asks. Elena answers, "Surprise me." At the smoke
+shop, Ayuri asks the shopkeeper what flavors of tobacco the shop has. The
+shopkeeper says, "There are 100 flavors &mdash; tobacco, mint, mango, lemon
+... " enumerating each. After several minutes, Ayuri responds, "One of
+each!" Ayuri returns home with a heavy bag, greeted by her roommate Elena
+with, "Good grief, how many did you buy?" Ayuri stares, "100 I think.".
+
+The computation above is governed by the **identity law of
+multiplication**. More formally:
+
+> _Identity Law of Multiplication._ Given ${a \in \reals,}$ then:
+> ${1 \cdot a = a.}$
+
+The above rules allow us to perform elaborate simplifications:
+
+$$
+\begin{aligned}
+	(2a)(5b) &= 2(a(5b)) ~\text{by associativity}\\
+	&= 2(5a)b ~\text{by commutativity}\\
+	&= ( 2 \cdot 5 )ab ~\text{by associativity}\\
+	&= 10ab
+\end{aligned}
+$$
+
+The above example represents a useful technique when handling expressions
+involving multiple factors: group all of the integers into a single
+multiplication expression, and all of the variables elsewhere.
+
+~example~. Numbers consisting entirely of the digit "8" are added, resulting in the sum 1000. What are these numbers?
+
+First, assume the following:
+
+$$
+	\begin{matrix}
+	\begin{alignedat}{8}
+		\ldots 8 \\\ldots \\ + \space \ldots 8 \\ \hline 1000
+	\end{alignedat}
+	\end{matrix}
+$$
+
+What we know: Each number ends with an 8. Since the sum is 1000, the sum
+of the last digit, an 8, is 0.
+
+~example~. How many 8s do we need to arrive at a sum where the last digit is 0?  At least five 8s, since $8 \times 5 = 40$. Thus, we have:
+
+$$
+	\begin{matrix}
+	\begin{alignedat}{8} \ldots 8 \\ \ldots 8 \\ \ldots 8 \\ \ldots 8 \\ + \space \ldots 8 \\ \hline 1000
+	\end{alignedat}
+	\end{matrix}
+$$
+
+Now note that there is a 4 that must be carried to the next place. To
+keep the sum's digits 0, we need a sum of 8s and a 4 that returns the
+last digit 0. We know that $8 + 8 + 4 = 20$. Further, we need one more 8
+to get a 10:
+
+$$
+	\begin{matrix} \begin{alignedat}{8} 8 \\ 8 \\ 8 \\ 88 \\ + \space 888 \\ \hline 1000 \end{alignedat} \end{matrix}
+$$
+
+Thus, the numbers are 8, 8, 8, 88, and 888.
+
+~example~. Suppose the following:
+
+$$
+	\begin{matrix} \begin{align*} AAA \\ + \space BBB \\ \hline AAAC
+	\end{align*} \end{matrix}
+$$
+
+The ${As}$ denote some digit, the ${Bs}$ denote another digit, and ${Cs}$ denotes a third digit. What are these digits? To start, we are looking for a number where $A + B = nC$, where $n$ and $C$ are digits. Furthermore, $A + B + n = mA$, where $m$ and $A$ are digits. Then, $m + A + B = AAA$. Next, we note that $A + B$ must result in a two digit number. Second, we further note that $A$ appears in the thousands position of the result ($AAAC$). Because $A$ appears in the thousands place, no other digit can be carried over into the thousands place. There is only one number for $B$ that can satisfy these conditions: 9.
+
+$$
+	\begin{align*}
+	111 \\ + \space 999 \\ \hline 1110
+	\end{align*}
+$$
+
+~example~. Daniel claims that he can multiply any three-digit number by 1001 instantly. If his friend, Helga, says to him, "715" he gives the answer immediately. Compute his answer and explain Daniel's secret.
+
+First, $715 \times 1001 = 715715$. We can see this with the
+multiplication algorithm:
+
+$$
+	\begin{array}{cc} & & & 1 & 0 & 0 & 1 \\ \times & & & & 7 & 1 & 5
+	\\ \hline & & & 5 & 0 & 0 & 5 \\ & & 1 & 0 & 0 & 1 \\ + & 7 & 0 & 0
+	& 7 \\ \hline & 7 & 1 & 5 & 7 & 1 & 5 \end{array}
+$$
+
+Under the multiplication algorithm, Daniel simply takes the three
+digits, ABC, and performs the following:
+
+$$
+	C00C \\
+	B00B \\
+	A00A
+$$
+
+Then, he adds the numbers, shifting one place to the left on each line:
+
+$$
+	\begin{array}{cc} & & & C & 0 & 0 & C \\ & & B & 0 & 0 & B \\ + &
+	A & 0 & 0 & A \\ \hline & A & B & C & A & B & C \end{array}
+$$
+
+The result then is $ABCABC$, a repetition of the digits $ABC$. Note
+further that there are two 0s, and the digits are repeated twice.
+
+~example~. Compute $1010101010 \times 57$. The multiplication algorithm tells us that we are simply shifting the number 57 over and over, but, with an added 0, since the the first place does not shift:
+
+$$
+	\begin{array}{cc} & 01 & 01 & 01 & 01 & 01 & 01 \\ & & & & & & 57
+	\\ \hline & & 57 & 57 & 57 & 57 & 57
+	\end{array}
+$$
+
+Thus, the product is 5757575757.
+
+~example~. Compute $10001 \times 1020304050$.  Solution We can compute this with the following:
+
+$$
+	\begin{array}{cc} & & & 10 & 20 & 30 & 40 & 50 \\ \times & & & &
+	& 01 & 00 & 01 \\ \hline & & & 10 & 20 & 30 & 40 & 50 \\ & & 00 & 00
+	& 00 & 00 & 00 & 00 \\ + & 10 & 20 & 30 & 40 & 50 \\ \hline & 10 &
+	20 & 40 & 60 & 80 & 40 & 50 \end{array}
+$$
+
+Thus, the product is 10204060804050.
+
+~example~. Compute $11111 \times 1111$. Rewriting the expression with the multiplication algorithm:
+
+$$
+	\begin{array}{cc} & & & & 1 & 1 & 1 & 1 & 1 \\ \times & & & & & 1
+	& 1 & 1 & 1 \\ \hline & & & & 1 & 1 & 1 & 1 & 1 \\ & & & 1 & 1 & 1 &
+	1 & 1 \\ & & 1 & 1 & 1 & 1 & 1 \\ + & 1 & 1 & 1 & 1 & 1 \\ \hline &
+	1 & 2 & 3 & 4 & 4 & 3 & 2 & 1 \end{array}
+$$
+
+
+## Distributivity
+
+With the rules thus far, we can make even further inferences. We know that if ${ a + b = 0 }$, then ${ a = -b }$ and ${ b = -a }$. Thus, if ${ a + b = 0 }$, then it must be true that ${ (a + b) + (-a - b) = 0 }$, since ${ a + b = 0 }$ and ${ -a - b = 0 }$. If ${ (a + b) + (-a-b) = 0 }$, then it follows that ${ a + b - a -b = 0 }$. Rearranging the equation, we have ${ a - a + b - b = 0 }$. Rearranging again, we have: ${ -(a + b) = -a + (-b) }$. This yields the following inference:
+
+$$
+-(a + b) = -a - b
+$$
+
+Note that we should always be vigilant about distributing a minus sign to a
+sum involving negative numbers: ${ -(-a) = a }$. To ensure that vigilance,
+we should make the following rules clear:
+
+> __~lemma~__. If ${a,b \in \reals}$ and ${ b }$ are positive integers, then ${a+b}$
+> is a positive integer.
+
+> __~lemma~__. If ${a}$ and ${b}$ ${\reals^-}$, then ${ a + b \in \reals^-.}$
+
+We can see that these rules are true with a simple proof. Let ${ a = -n }$ and ${ b = -m }$, where ${ m }$ and ${ n }$ are positive. It follows then that ${ a + b = -n - m = -(n + m) }$. Since ${ n }$ and ${ m }$ are positive, ${ n + m }$ is positive. Since ${ n + m }$ is positive, it follows that ${ a + b }$ is negative, because ${ n + m }$ is positive only if ${ a + b }$ is negative. This analysis hints at another law, the _distributive property._
+
+> __~distributive property~__. If ${a, b, c \in \reals,}$ then:
+> ${a(b + c) = ab + ac}$
+
+With the distribute property, we have another way of proving that
+${a \cdot 0 = 0:}$
+
+$$
+\begin{aligned} (a \cdot 0) + (a \cdot 0) &= a \cdot (0 + 0) \\ &= a
+\cdot 0 \end{aligned}
+$$
+
+The distributive property is also what leads to what at first appears to be
+a mysterious rule: The product of two negative numbers is a positive
+number. First, we start by proving that ${(-a)(b) = -(a \cdot b):}$
+
+$$
+\begin{aligned} (-a)(b) + (a)(b) &= ((-a) + a)(b) \\ &= (0)(b) \\ &= 0
+\end{aligned}
+$$
+
+Because ${(-a)(b) = -(a \cdot b),}$ we can make the following inferences.
+First, the factor ${(-a)(b) = -(ab).}$ Adding ${-(ab)}$ to both sides:
+
+$$
+\begin{aligned} (-a)(-b) + (-(ab)) &= (-a)(-b) + (-ab) \\ &= (-a) \cdot
+((-b) + b) \\ &= (-a) \cdot 0 \\ &= 0 \end{aligned}
+$$
+
+Adding ${(a)(b)}$ to both sides:
+
+$$
+(-a)(-b) = (a)(b)
+$$
+
+Multiplying ${37 \cdot 25 \cdot 4,}$ we get:
+
+$$
+\begin{aligned}
+	37 \cdot 25 \cdot 4 &= 37 \cdot (25 \cdot 4)
+	&= 37 \cdot (100) \\
+	&= 3700 \\
+\end{aligned}
+$$
+
+Anoter example: Multiply ${125 \cdot 37 \cdot 8}$
+
+$$
+\begin{aligned}
+	125 \cdot 37 \cdot 8 = (25 \cdot 5 \cdot 4 \cdot 2) \cdot 37 \\
+	= (100 \cdot 10) \cdot 37 \\
+	= (1000) \cdot 37 \\
+	= 37000
+\end{aligned}
+$$
+
+## Multivariable Relationships
+
+Suppose we know the following relationship:
+
+$$
+	a + b = c
+$$
+
+Three number relationships are ripe for inferences. If we add ${ -b }$ to
+both sides of the equation, we obtain ${ a + b - b = c - b }$. Simplifying,
+we have ${ a + 0 = c - b }$. We can then infer:
+
+$$
+	a = c - b \\
+	b = c - a
+$$
+
+~example~. Add 357 + 17999 + 1 without paper and pencil.
+
+$$
+\begin{aligned}
+	357 + 17999 + 1 &= 357 + (17999 + 1)\\
+	&= 357 + (18000)\\
+	&= 18357
+\end{aligned}
+$$
+
+~example~. Add 899 + 1343 + 101 without paper and pencil.
+
+$$
+\begin{aligned}
+	899 + 1343 + 101 &= (899 + 1) + 1343 + (101 - 1) \\
+	&= (900) + 1343 + (100) \\
+	&= (1000) + 1343 \\
+	&= 2343
+\end{aligned}
+$$
+
+~example~. ${ (a + b) + (c + d) = (a + d) + (b + c) }$
+
+$$
+	\begin{aligned}
+	(a + b) + (c + d) &= (a + d + b + c) ~\text{by commutativity} \\
+	&= (a + d) + (b + c) ~\text{by associativity}
+	\end{aligned}
+$$
+
+~example~. Prove: ${ (a + b) + (c + d) = (a + c) + (b + d) }$
+
+$$
+	\phantom{(a + b) + (c + d)} = (a + b + c + d) ~\text{by associativity} \\
+	\phantom{(a + b) + (c + d)} = (a + c + b + d) ~\text{by commutativity} \\
+	\phantom{(a + b) + (c + d)} = (a + c) + (b + d) ~\text{by associativity}
+$$
+
+~example~. Prove: ${(a - b) + (c - d) = (a + c) + (-b - d).}$ Following the rule ${n - m = n + (-m),}$ ${(a - b) + (c - d) = (a + (-b)) + (c + (-d))}$. Then, by associativity, ${(a + (-b)) + (c + (-d)) = a + (-b) + c + (-d)}$. By commutativity, ${a + (-b) + c + (-d) = (a + c) + ((-b) + (-d)).}$ Following the rule ${n - m = n + (-m)}$, it follows that ${(a + c) + ((-b) + (-d)) = (a + c) + (-b - d).}$ Therefore, ${(a - b) + (c - d) = (a + c) + (-b - d).}$
+
+
+### Expansions
+There are some expansions that every student in mathematics should know. An
+__expansion__ is just a way of rewriting &mdash; expanding &mdash; a
+shortened expression. The expansions are the following:
+
+$$
+\begin{aligned}
+	(a + b)^2 &= a^2 + 2ab + b^2 \\
+	(a - b)^2 &= a^2 - 2ab + b^2 \\
+	(a + b)(a - b) &= a^2 - b^2
+\end{aligned}
+$$
+
+
+### The Multiplication Algorithm
+The law of distributivity is what leads to the
+multiplication algorithm we're all farmiliar with from elementary school.
+The multiplication algorithm allows us to compute large numbers without the
+need for memorization. For example, ${17 \times 38}$:
+
+$$
+\begin{array}{cc} & \space & 1 & 7 & \\ & \times & 3 & 8 & \\ \hline &
+1 & 3 & 6 & \\ + & 5 & 1 \\ \hline & 6 & 4 & 6 & \end{array}
+$$
+
+Similarly:
+
+$$
+\begin{array}{cc} & \space & 3 & 8 & \\ & \times & 1 & 7 & \\ \hline &
+2 & 6 & 6 & \\ + & 3 & 8 \\ \hline & 6 & 4 & 6 & \end{array}
+$$
+
+The algorithm above is really an embodiment of applying the distributive
+property:
+
+$$
+\begin{aligned} 17 \times 38 &= 17 \times (3 \times 10 + 8) \\ &= (17
+\times 3 \times 10) + (17 \times 8) \\ &= 510 + 136 \\ &= 646
+\end{aligned}
+$$
+
+## Exponentiation
+
+We can get by with the operations of addition, subtraction, multiplication,
+and division alone. However, having just these operations would be
+particularly cumbersome for many mathematical statements. Consider for
+example, the following expression:
+
+$$
+xxxxxxx + xxx
+$$
+
+This is difficult to parse, and delimiting with parentheses and operator
+symbols is no better:
+
+$$
+(x)(x)(x)(x)(x)(x)(x) + (x)(x)(x)
+$$
+
+$$
+x \cdot x \cdot x \cdot x \cdot x \cdot x \cdot x + x \cdot x \cdot x
+$$
+
+Even worse:[^zenzizenzic]
+
+$$
+xxxxxxx \times xxx = xxxxxxxxxx
+$$
+
+[^zenzizenzic]:
+    As an aside, the eighth power of a number is called zenzizenzizenzic.
+    Coined by the 16th century Welsh physician Robert Recorde, the root of
+    the word is "zenzic," The German spelling of the Latin "censo," meaning
+    "squared." At the time, there was no easy way to denote powers of
+    numbers, so various forms of "zenzic" were used: zenzic for squared,
+    zenzizenzic for the square of a square, and zenzizenzizenzic for the
+    square of a square of a square.
+
+Because of this difficulty, we have the special operation of
+_exponentiation_. We can think of this as repeated multiplication. And
+because multiplication is already a pretty fast way of counting,
+exponentiation is even faster.
+
+$$
+xxxxxxx + xxx = x^7 + x^3
+$$
+
+$$
+xxxxxxx \times xxx = x^7 \times x^3 = x^{10}
+$$
+
+From the multiplication example, we have the following rule:
+
+> __~product rule of exponents~__. For any ${a \in \reals,}$ given ${m \in \nat}$ and
+> ${n \in \nat:}$ ${a^m a^n = a^{m + n}}$
+
+Now, consider the following:
+
+$$
+\dfrac{a \cdot a \cdot a \cdot a}{a \cdot a \cdot a \cdot a \cdot a} =
+\dfrac{a^4}{a^5}
+$$
+
+Really, this reduces to:
+
+$$
+\dfrac{\cancel{a} \cdot \cancel{a} \cdot \cancel{a} \cdot
+\cancel{a}}{\cancel{a} \cdot \cancel{a} \cdot \cancel{a} \cdot
+\cancel{a} \cdot a} = \dfrac{1}{a}
+$$
+
+The computation above provides us this rule:
+
+> __~the quotient rule of exponents~__. For any ${a \in \reals,}$ and
+> ${m \in \nat,}$ > ${n \in \nat,}$ such that ${m > n,}$ >
+> ${\dfrac{a^m}{a^n} = a^{m - n}}$
+
+and this rule:
+
+> __~the negative rule of exponents~__. For any ${a \in \reals,}$ and
+> ${n \in \nat,}$ > ${a^{-n} = \dfrac{1}{a^n}}$
+
+From the _Quotient Rule of Exponents_, we can observe:
+
+$$
+	\dfrac{a \cdot a \cdot a}{a \cdot a \cdot a} = \dfrac{a^3}{a^3}
+$$
+
+$$
+\dfrac{\cancel{a} \cdot \cancel{a} \cdot \cancel{a}}{\cancel{a} \cdot
+\cancel{a} \cdot \cancel{a}} = a^{3-3}
+$$
+
+$$
+	\phantom{\dfrac{a \cdot a \cdot a}{a \cdot a \cdot a}} = a^0
+$$
+$$
+	\phantom{\dfrac{a \cdot a \cdot a}{a \cdot a \cdot a}} = 1
+$$
+
+Thus, we have the rule:
+
+> __~the zero exponent rule~__. For any ${\{a \in \reals : a \neq 0 \},}$ >
+> ${a^0 = 1.}$
+
+The _Zero Exponent Rule_ as applied to the number ${0}$ &mdash; ${0^0}$
+&mdash; is a point of debate. Some mathematicians treat 0 as ${0^0 = 1.}$
+In algebra and calculus, however, ${0^0 \nc \text{undefined}.}$ In
+computer science, programming languages handle ${0^0}$ in numerous
+different ways; some languages provide an explicit value (i.e., 1), others
+undefined, others return an error.
+
+Each approach has valid premises. If you consider ${x^y}$ as a function of
+two variables, then we have a problem with the definition ${0^0 = 1.}$ If
+we approach 0 along the line ${y = 0,}$ then following the definition,
+${\lim\limits_{x \to 0^{+}} = 1.}$ However, if we approach 0 along the line
+${x = 0,}$ then we get
+${\lim\limits_{y \to 0^{y}} = \lim\limits_{y \to 0^{+}}0 = 0.}$ This would
+mean ${0^0 = 0.}$ Thus, continuous mathematics generally treats
+${0^0 \nc \text{undefined}.}$
+
+On the other hand, discrete mathematics treats ${0^0 = 1.}$ In set theory,
+${A^B}$ denotes the set of all functions from ${B}$ to ${A.}$ If ${A}$ and
+${B}$ denote the cardinalities (i.e., the "size" of the sets) then ${A^B}$
+is the size of the set of all functions from ${A}$ to ${B.}$ If we use the
+value 0 for ${A}$ and ${B,}$ then 0 denotes the empty set &mdash; ${0^0}$
+is the collection of all functions from the empty set to the empty set.
+This is the _empty function_. There is one, and only one, empty function.
+Accordingly, ${0^0 = 1.}$ Thus, it must be true that ${0^0 = 1.}$
+
+In these materials, we will limit the _Zero Exponent Rule_ to a number
+${x}$ where ${\{ x \in \reals : x \neq 0 \}.}$ Next, consider the following
+example:
+
+$$(b^3)^2$$
+
+This expression captures:
+
+$$(b \cdot b \cdot b ) \cdot (b \cdot b \cdot b)$$
+
+Following the associative property of multiplication:
+
+$$
+\begin{aligned}
+	(b \cdot b \cdot b ) \cdot (b \cdot b \cdot b) &= b \cdot b \cdot b \cdot b \cdot b \cdot b \\
+	& = b^6
+\end{aligned}
+$$
+
+Again, we have another rule:
+
+> __~the power rule of exponents~__. For any ${a \in \reals,}$ and ${m \in \nat,}$ >
+> ${n \in \nat,}$ ${(a^m)^n = a^{m \cdot n}}$
+
+Using the commutative and associative properties of multiplication yields
+another inference:
+
+$$
+\begin{aligned}
+	(ab)^3 &= (ab) \cdot (ab) \cdot (ab) ~\text{expansion} \\
+	&= a \cdot a \cdot a \cdot b \cdot b \cdot b ~\text{by associativity} \\
+	&= (a \cdot a \cdot a) \cdot (b \cdot b \cdot b) ~\text{by commutativity} \\
+	&= a^{3}b^{3} ~\text{by the Definition of Exponent}
+\end{aligned}
+$$
+
+Thus, it follows that:
+
+> __~the power of a product rule of exponents~__. For all ${a, b \in \reals,}$
+> given a ${n \in \nat,}$ ${(ab)^n = a^n b^n}$
+
+This rule leads to another rule. Consider the expression
+${(a^{-2}b^{2})^3.}$ Expanding and reducing this expression with the
+negative rule of exponents, we get:
+
+$$
+	(a^{-2}b^{2})^3 = \left(\dfrac{b^2}{a^2}\right)^3
+$$
+
+Applyting the definition of an exponent:
+
+$$
+(a^{-2}b^{2})^3 = \left(\dfrac{b^2}{a^2}\right) \cdot
+\left(\dfrac{b^2}{a^2}\right) \cdot \left(\dfrac{b^2}{a^2}\right)
+$$
+
+Then by commutativity:
+
+$$
+(a^{-2}b^{2})^3 = \dfrac{b^2 \cdot b^2 \cdot b^2}{a^2
+\cdot a^2 \cdot a^2}
+$$
+
+And by the product rule of exponents:
+
+$$
+	(a^{-2}b^{2})^3 = \dfrac{b^6}{a^6}
+$$
+
+Finally, by the negative rule of exponents:
+
+$$
+\phantom{(a^{-2}b^{2})^3} = a^{-6}b^{6}
+$$
+
+This yields the rule:
+
+> __~the power of a quotient rule of exponents~__. For all ${a, b \in \reals}$ and
+> any ${n \in \uint,}$ $$\left( \dfrac{a}{b} \right)^n = \dfrac{a^n}{b^n}$$
+
+### Perfect Powers
+
+With exponentiation, we arrive at several special properties. First, we
+have the notion of a __perfect square__. The set of all perfect square
+looks something like:
+
+${\{ 0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, \ldots \}}$
+
+Notice the pattern. These are all numbers that can be written in the form
+${n^2,}$ where ${n}$ is some integer. for example, ${9}$ is a perfect
+square because it can be written as ${3^2.}$ So too are ${1}$ and ${0.}$
+They can be written as ${1^2}$ and ${0^2,}$ respectively. Formally:
+
+> __definition__. A _perfect square_ is a positive integer ${n}$ such that:
+> ${n = m^2 \space \space \space (m \in \uint^{+})}$
+
+Alongside perfect squares, we have the __perfect cube__. The set of all
+perfect cubes looks like:
+
+${\{ 0, 1, 8, 27, 54, 125, 216, 343, 512 \}}$
+
+And the formal definition:
+
+> Definition. A _perfect cube_ is a positive integer ${n}$ such that:
+> ${n = m^3 \space \space \space (m \in \uint^{+})}$
+
+Both perfect squares and perfect cubes are examples of __perfect powers__.
+In other words, we can have a "perfect tesseract"[^perfecttesseract]
+
+[^perfecttesseract]:
+    A "perfect tesseract" is not a formal term. The names "square" and
+    "cube" come directly from geometry, so the next logical name would be a
+    tesseract &mdash; perfect squares of squares. A more general definition
+    for the perfect power:
+
+> Definition. A positive integer ${n}$ is a _perfect power of ${x}$_ iff:
+> ${n = m^x \space \space \space (m \in \uint, \space x \in \uint^{+})}$
+
+## Radicals
+By introducing the exponentiation notation, it would be very helpful to
+have notation that quickly reverses the results. This notation is provided
+by the radical. The syntax:
+
+![Radical notation](https://res.cloudinary.com/sublimis/image/upload/v1652643923/math/radical_notation_tyfjvt.svg)
+
+### The Square Root
+
+Suppose we have a number ${a}$ where ${a \in \reals^{+}.}$ The __square root__
+of ${a}$ is the number that, when multiplied by itself, i.e., ${a^2,}$
+returns ${a.}$ Now, that number may be positive or negative, because
+squaring two numbers, positive or negative, yields a positive number.
+
+> __definition__. Given ${a \in \reals^{+},}$ ${\sqrt{a}}$ is the number ${n,}$
+> where ${n \in \reals}$ such that ${n^2 = a.}$
+
+From the square root definition, we have the following rule:
+
+> _The Product Rule of Square Roots_. Given ${a \in \R_{\geq 0}}$ and
+> ${b \in \R_{\geq 0},}$ ${\sqrt{ab} = \sqrt{a} \cdot \sqrt{b}}$
+
+When simplifying radical expressions, there is a useful algorithm:
+
+1. Algorithm. Given a square root radical expression:
+2. Factor perfect squares from the radicand.
+3. Write the radical expression as a product of radical expressions.
+4. Simplify.
+
+For example, consider implifying the following radical expression:
+
+$$
+\sqrt{300}
+$$
+
+Factoring the perfect square:
+
+$$
+	\sqrt{100 \cdot 3}
+$$
+
+By the product rule:
+
+$$
+	\sqrt{100} \cdot \sqrt{3}
+$$
+
+Then, simplifying:
+
+$$
+	10 \sqrt{3}
+$$
+
+Here's another example. Consider this square root:
+
+$$
+	\sqrt{162 a^2 b^4}
+$$
+
+Factoring:
+
+$$
+	\sqrt{81 \cdot 2 \cdot a^4 \cdot a \cdot b^4}
+$$
+
+Then, by the product rule of square roots:
+
+$$
+	(\sqrt{81}) (\sqrt{2}) (\sqrt{a}) (\sqrt{a^4}) (\sqrt{b^4})
+$$
+
+And simplifying:
+
+$$
+	(9) (\sqrt{2}) (\sqrt{a}) (a^2) (b^2)
+$$
+
+By commutativity:
+
+$$
+	9a^2 b^2 \sqrt{2a}
+$$
+
+Another useful algorithm is combining multiple radical expressions into a
+single radical expression:
+
+1. Combine all the multiple radical expressions into a single expression.
+2. Simplify.
+
+For example, consider the radical expression: ${(\sqrt{12})(\sqrt{3}).}$ We
+can multiply the this expression's terms into a single expression:
+
+$$
+	(\sqrt{12})(\sqrt{3}) = \sqrt{36}
+$$
+
+### The Quotient Rule of Square Roots
+
+The _Quotient Rule of Square Roots_ natural results from multiplication.
+First, suppose the following:
+
+1. ${a, b \geq 0.}$
+2. ${c = \sqrt{\dfrac{a}{b}}.}$
+3. ${x = \sqrt{a}}$ and ${y = \sqrt{b}.}$
+
+This implies that ${x^2 = a}$ and ${y^2 = b.}$ Next, suppose exists a
+nonnegative number ${n}$ such that ${\sqrt{n^2} = n.}$ It follows that, by
+substitution: $$ \left(\dfrac{x}{y}\right)^2 = \dfrac{x^2}{y^2} =
+\dfrac{a}{b} $$
+
+Hence,
+
+$$
+c = \dfrac{x}{y} = \sqrt{\dfrac{a}{b}} =
+\dfrac{\sqrt{a}}{\sqrt{b}}
+$$
+
+by Assumptions 2 and 3. Thus, we have the following rule:
+
+> Property. Let ${a, b \geq 0.}$ Suppose ${n = \sqrt{\dfrac{a}{b}},}$ where
+> ${n \in \R_{\geq 0}.}$ Then:
+> $$n = \sqrt{\dfrac{a}{b}} = \dfrac{\sqrt{a}}{\sqrt{b}}$$
+
+The rule above is particularly useful for rational expressions, which often
+contain radicands. Here's a useful algorithm for handling such expressions.
+Given a radical expression in the form of a quotient:
+
+1. Write the radical quotient has the quotient of two radical expressions.
+2. Simplify the numerator and denominator.
+
+### Adding and Subtracting Square Roots
+
+We can add or subtract radical expressions only if (1) they have the same
+radicand and (2) they have the same ${n^{\text{\scriptsize{th}}}}$ root.
+For example:
+
+$$\sqrt{2} + 3\sqrt{2} = 4 \sqrt{2}$$
+
+Radican expressions can often be simplified by rewriting the relevant
+expression as a sum, followed by reductions.
+
+$$
+\begin{aligned}
+	\sqrt{2} + \sqrt{18} &= \sqrt{2} + \sqrt{2 \cdot 9} \\
+	&= \sqrt{2} + (\sqrt{2} \cdot \sqrt{9}) \\
+	&= \sqrt{2} + 3 \sqrt{2} \\
+	&= 4 \sqrt{2}
+\end{aligned}
+$$
+
+Here's a helpful algorithm. Given an expression that adds or subtract
+radical expressions,
+
+1. Simplify each radical expression to yield as many equal radicands as
+   possible.
+2. Add or subtract expressions with equal radicands.
+
+### nth Root
+
+The proposition ${a^3 = 8,}$ implies that ${\sqrt[3]{8} = a.}$ Thus, the
+phrase "the ${n^{\text{\scriptsize{th}}}}$ root of ${a}$" implies a number
+that, when raised to the the ${n^{\text{\scriptsize{th}}}}$ power, equals
+${a.}$
+
+If ${a}$ is a real number with at least one ${n^{\text{\scriptsize{th}}}}$
+root, then the __principal ${n^{\text{\scriptsize{th}}}}$ root__ of ${a}$
+is the number with the same sign as ${a}$ that, when raised to the
+${n^{\text{\scriptsize{th}}}}$ power, equals ${a.}$
+
+> Definition. Let ${a \in \reals,}$ where ${a}$ has at least one
+> ${n^{\text{\scriptsize{th}}}}$ root.
+
+Then the principle ${n^{\text{\scriptsize{th}}}}$ root of ${a,}$ written as
+${\sqrt[n]{a},}$ is the number with the same sign as ${a,}$ such that, when
+raised to the ${n^{\text{\scriptsize{th}}}}$ power, equals ${a.}$ We say
+that ${n}$ is the __index__ of ${\sqrt[n]{a}.}$
+
+### Rational Exponents
+
+Rather than using a radical symbol, we can express radical expressions with
+rational exponents. Needless to say, the index of such an exponent must be
+a positive integer:
+
+$$a^{\frac{1}{n}} = \sqrt[n]{a}$$
+
+A useful fact: If the index ${n}$ is even, then ${a}$ cannot be negative.
+
+We can also have rational exponents with numerators other than 1. If the
+numerator is a number other than 1, then we raise the base to a power and
+take an ${n^{\text{\scriptsize{th}}}}$ root. The numerator tells us the
+power, and the denominator tells us the root:
+
+$$a^{\frac{m}{n}} = (\sqrt[n]{a})^{m} = \sqrt[n]{a^{m}}$$
+
+Here's a useful procedure for handling rational exponents. Given an
+expression with a rational exponent:
+
+1. Determine the power by looking at the exponent's numerator. Determine
+   the root by looking at the exponent's denominator.
+
+2. Using the base as the radicand, raise the radicand to the power and use
+   the root as the index.
+
+
+
+## Ratios
+The __ratio__ of two quantities tells us the relative _sizes_ of the
+quantities. For example, if we say, "There were 3 bachelors for every 5
+bachelorettes," are expressing the ratio:
+
+$$
+	\dfrac{\text{bachelors}}{\text{bachelorettes}} = \dfrac{3}{5} = 3:5
+$$
+
+The use of a colon is often helpful when expressing the relative sizes of
+the quantities of multiple discrete objects: The sentence, "For every 1
+house on Main Street, there are 2 cats and 100 mice," may be expressed as:
+${1:2:100.}$
+
+Example: The ratio of instructors to professors at the conference is 3:4.
+There are 84 total conference attendees, of which only instructors and
+professors attended.
+
+Suppose ${a}$ is the number of instructors, and ${b}$ is the number of
+professors. Write an equation using the ratio information. Remember, a
+ratio tells us nothing about the actual sizes of the sets. It only gives us
+_relative sizes_. Thus, we know that:
+
+$$
+	\dfrac{\text{number of instructors}}{\text{number of professors}} = \dfrac{a}{b} = \dfrac{3}{4}
+$$
+
+Write an equation using the total number of conference attendees. We know
+that only instructors and professors attended. Hence:
+
+$$
+	a + b = 84
+$$
+
+Question: How many professors were at the conference? We solve the system
+of equations. First, isolate the ${a}$ in the first equation:
+
+$$
+	\dfrac{a}{b} = \dfrac{3}{4} \\
+	a = \dfrac{3b}{4}
+$$
+
+Then, substitute:
+
+$$
+\begin{aligned}
+	a + b = 84 \\
+	\dfrac{3b}{4} + b = 84 \\
+	\dfrac{3b + 4b}{4} = 84 \\
+	\dfrac{7b}{4} = 84 \\
+	7b = 331 \\
+	b = 48
+\end{aligned}
+$$
+
+Example: The ratio of papayas to mangoes to rambutans in the fruit basket
+is 2:3:30. Only papayas, mangoes, and rambutans comprise the fruit basket.
+
+What is the number of mangoes to the number of fruits in the fruit basket?
+
+From the ratio, we know that there are at least 2 papayas, 3 mangoes, and
+30 rambutans. Thus, there ${2 + 3 + 30 = 35}$ total fruits. Hence:
+
+$$
+	\dfrac{m}{t} = \dfrac{3}{35}
+$$
+
+Suppose there are 385 fruits in the fruit basket. How many mangoes are
+there? The ratio of mangoes to fruits is ${\dfrac{3}{35}.}$ Thus, we have:
+
+$$
+	\dfrac{3}{35} = \dfrac{t_m}{385}
+$$
+
+where ${t_m}$ is the total amount of mangoes. Solving for ${t_m}$:
+
+$$
+	\dfrac{3}{35} = \dfrac{t_m}{385} \\
+	35t_m = 3 \cdot 385 \\
+	t_m = \dfrac{3 \cdot 11 \cdot 35}{35}\\
+	\phantom{t_m} = 33
+$$
+
+Exercise. Shylock has a jewel box filled with only emeralds and rubies. The
+ratio of emeralds to the total number of jewels in the box is ${2:5.}$ If
+Shylock adds 4 emeralds and removes 10 rubies, there will be twice as many
+emeralds in the box as rubies. How many jewels were in the box originally?
+
+Let ${e}$ be the number of emeralds, ${r}$ the number of rubies, and ${t}$
+the total number of jewels. We know that the box consists only of emeralds
+and rubies, so:
+
+$$
+	e + r = t
+$$
+
+Thus, the original ratio of emeralds to jewels can be expressed as:
+
+$$
+	\dfrac{e}{e + r} = \dfrac{2}{5}
+	5e = 2(e + r)
+	5e = 2e + 2r
+	3e = 2r
+$$
+
+Next, we are told that if Shylock adds 4 emeralds and removes 10 rubies,
+there are twice as many emeralds in the box as there are rubies. This
+statement expresses a ratio:
+
+$$
+	\dfrac{e + 4}{r - 10} = \dfrac{2}{1} = 2
+$$
+
+Once more, we can express this ratio as a linear equation:
+
+$$
+	\dfrac{e + 4}{r - 10} = \dfrac{2}{1} = 2 \\
+	2(r - 10) = e + 4 \\
+	2r - 20 = e + 4
+$$
+
+We know ${2r = 3e,}$ so we can substitute:
+
+$$
+	3e - 20 = e + 4
+	2e = 24
+	e = 12
+$$
+
+Since ${e = 12,}$ we know there are
+${r = \dfrac{3e}{2} = \dfrac{3(12)}{2} = \dfrac{36}{2} = 18}$ rubies. Thus,
+there are ${e + r = 12 + 18 = 30}$ jewels in the box.
+
+Exercise. 9 out of every 11 of Daniel's lawyers recommended against the
+merger. The rest said recommended it. 18 of Daniel's lawyers recommended
+the merger. How many lawyers does Daniel have?
+
+Suppose ${a}$ is the number of lawyers against the merger, and ${t}$ is the
+total number of lawyers. Thus, we have the following ratio:
+
+$$
+	\dfrac{a}{t} = \dfrac{9}{11}
+$$
+
+Since there are exactly 18 lawyers who recommend against the merger, there
+are ${t - 18}$ lawyers who recommend the merger. Thus:
+
+$$
+	\dfrac{t - 18}{t} = \dfrac{9}{11}
+$$
+
+Now we merely must solve for ${t:}$
+
+$$
+	\dfrac{t - 18}{t} = \dfrac{9}{11} \\
+	11(t - 18) = 9t \\
+	11t - 198 = 9t \\
+	-198 = -2t \\
+	99 = t
+$$
+
+Daniel has 99 lawyers &mdash; a hefty bill.
+
+Exercise. The ratio of correct answers to all answers is 7/10. What is the
+ratio of incorrect answers to the number of correct answers?
+
+Because there are at least 7 correct answers, the remaining 3 answers are
+incorrect answers. Thus, the ratio of incorrect answers to correct answers
+is 3/7.
+
+Exercise. Nio is given a bag filled with pills. There are only red, blue,
+and green pills. The ratio of red pills to blue pills to green pills is
+${1:5:3.}$ There are 27 green pills in the bag. How many total pills are in
+the bag?
+
+We know there are 27 green pills. For every 3 of those pills, there is 1
+red pill. Thus, there are ${27 / 3 = 9}$ red pills. Then, for every 1 red
+pill, there are 5 blue pills. Thus, there are ${9 \cdot 5 = 45}$ blue
+pills. The total number of pills then is:
+
+$$
+	9 + 45 + 27 = 81
+$$
+
+pills. Alternatively, we know that with just the ratio, there are
+${1 + 5 + 3 = 9}$ total pills. Hence, the ratio of green pills to total
+pills is ${3/9 = 1/3.}$ Suppose ${t}$ is the total number of pills in the
+bag. Because there are 27 green pills total, we have:
+
+$$
+	\dfrac{27}{x} = \dfrac{1}{3} \\
+	x = 27 \cdot 3 \\
+	\phantom{x} = 81
+$$
+
+Exercise. Two-thirds of Thneedville's residents voted for executing
+Order 66. If 634 residents did not vote for executing Order 66, how many
+residents does Thneedville have?
+
+Since 2/3 voted for, we know that 1/3 did not vote for. We know that 634
+total did not vote for, so we have the ratio:
+
+$$
+	\dfrac{1}{3} = \dfrac{634}{t}
+$$
+
+where ${t}$ is the total. Solving for ${t:}$
+
+$$
+	t = 634 \cdot 3 \\
+	\phantom{t} = 1902
+$$
+
+Thneedville has a total of 1,902 residents.
+
+Exercise. Count Dracula changes height several times. The ratio of his
+original height to his second height is 24:5. The ratio of his second
+height to his third height is 1:12. The ratio of his original height to his
+fourth height is 16:1. The tallest of these four heights is 10 meters. What
+is Dracula's shortest height?
+
+There are four heights total. We denote each with ${h_1,}$ ${h_2,}$
+${h_3,}$ and ${h_4.}$ We thus have the following ratios:
+
+$$
+	\dfrac{h_1}{h_2} = \dfrac{24}{5} \\
+	\dfrac{h_2}{h_3} = \dfrac{1}{12} \\
+	\dfrac{h_1}{h_4} = \dfrac{16}{1}
+$$
+
+Since ${h_1 : h_2}$ is ${24 : 5,}$ we know that ${h_2 : h_1}$ is
+${5 : 24.}$ This means that ${h_2}$ is ${5/24}$ of ${h_1.}$
+
+$$
+	h_2 = \dfrac{5}{24}h_1
+$$
+
+Then, since ${h_2:h_3}$ is ${1:12,}$ we know that ${h_3}$ is 12 times the
+second height:
+
+$$
+	h_3 = 12h_2 = 12 \left( \dfrac{5}{24} \right)
+$$
+
+Since ${h_1 : h_4 = 16:1,}$ the original height is 16 times the fourth
+height. Thus,
+
+$$
+	h_4 = \dfrac{x}{16}
+$$
+
+From the analysis thus far, we have:
+
+$$
+	h_1 \\
+	h_2 = \dfrac{5h_1}{24} \\
+	h_3 = \dfrac{5h_1}{2} \\
+	h_4 = \dfrac{h_1}{16}
+$$
+
+Of these values, ${h_3}$ is the largest, since its constant multiplier is
+${5/2.}$ Hence, we solve for ${x}$ with 10:
+
+$$
+	\dfrac{5x}{2} = 10 \\
+	5x = 20 \\
+	x = 20/5 \\
+	x = 4
+$$
+
+The shortest height is ${h_4,}$ since its constant multiplier is ${1/16.}$
+Evaluating:
+
+$$
+	h_4 = \dfrac{4}{16} = 0.25
+$$
+
+Hence, Count Dracula's shortest height is ${0.25}$ meters.
+
+Exercise. What is the ratio of ${x}$ to ${y}$ if:
+
+$$
+	\dfrac{10x - 3y}{13x - 2y} = \dfrac{3}{5}
+$$
+
+The objective is rewrite the equation to express a relation of
+${\dfrac{x}{y}.}$ The key is cross multiplication:
+
+$$
+	\dfrac{10x - 3y}{13x - 2y} = \dfrac{3}{5} \\
+	5(10x - 3y) = 3(13x - 2y) \\
+	50x - 15y = 39x - 6y \\
+	11x = 9y \\
+	\dfrac{x}{y} = \dfrac{9}{11}
+$$
+
+Exercise. If ${x/y = 2/3}$ and ${y/z = 7/5,}$ then what is ${z/x?}$
+
+### Percentages
+
+The word __percent__ is likely an abbreviation for the pseudo-Latin _per
+centum_, meaning "per hundred." Denoted by the ${\%,}$ a percent is a
+shorthand for ${n/100,}$ where ${n}$ ${n \in \reals.}$ Thus,
+${1/4 = 25/100 = 25\%.}$
+
+Exercise. What percent of 240 is 48?
+
+We solve for ${x}$:
+
+$$
+\begin{aligned}
+		240 (x/100) &= 48 \\
+		x/100 &= 48/240 \\
+		x &= 100(48/240) \\
+		&= 4800/240 \\
+		&= 480/24 \\
+		&= 20
+\end{aligned}
+$$
+
+Thus, ${48}$ is ${20\%}$ of ${240.}$ Of course, we could have found the
+percentage with simple arithmetic: ${48/240 = 0.2.}$ Then, multiplying
+${0.2}$ by ${100,}$ we get ${20\%.}$ We used algebra first because it
+provides the appropriate approach for handling more complex percentage
+problems.
+
+Exercise. 36 is ${120\%}$ of what number?
+
+We solve for ${x:}$
+
+$$
+\begin{aligned}
+	x(120/100) &= 36 \\
+	x(12/10) &= 36 \\
+	\dfrac{12x}{10} &= 36 \\
+	12x &= 360 \\
+	x &= 360/12 \\
+	&= 30
+\end{aligned}
+$$
+
+When we increase a number ${x}$ by some percentage, we add the percent of
+${x}$ to ${x}$ itself. For example, if we increase 100 by ${1\%}$, we
+increase 100 by 1, since ${1\%}$ of 100 is 1 &mdash; 101. Likewise, if we
+increase 100 by ${100\%,}$ we obtain 200, since ${100\%}$ of 100 is 100
+${(100 + 100 = 200.)}$
+
+### Proportions
+
+Suppose there is a ratio of two variable quantities. If this ratio is
+always the same, we say the two quantities are in __direct proportion__.
+For example, suppose ${x = 5}$ and ${y = 9.}$ Now suppose that ${x}$ and
+${y}$ are directly proportional. What is ${y}$ when ${x = 14?}$ Since ${x}$
+and ${y}$ are directly proportional:
+
+$$
+\begin{aligned}
+	\dfrac{x}{y} &= \dfrac{5}{9} \\
+	\dfrac{5}{9} &= \dfrac{14}{y} \\
+	9(14) &= 5y \\
+	126 &= 5y \\
+	y &= 126/5 = 25.2 \\
+\end{aligned}
+$$
+
+Another example: Suppose ${a}$ and ${b^2}$ are directly proportional,
+${a = 5,}$ and ${b = 9.}$ What is ${a}$ when ${b = 12?}$ Since ${a}$ and
+${b^2}$ are directly proportional:
+
+$$
+\begin{aligned}
+	\dfrac{a}{b^2} &= \dfrac{5}{(9)^2} \\
+	&= \dfrac{5}{81} \\
+	\dfrac{5}{81} &= \dfrac{a}{(12)^2} \\
+	81a &= 5(12)(12) \\
+	(3)(3)(3)(3) a &= 5(3)(4)(3)(4) \\
+	\cancel{(3)}\cancel{(3)}(3)(3) a &= 5\cancel{(3)}(4)\cancel{(3)}(4) \\
+	9a &= 80 \\
+	a &= 80/9
+\end{aligned}
+$$
+
+### Rational Expressions
+
+The quotient of two polynomial expressions is called a _rational
+expression_. When handling rational expressions, we use the same rules
+applicable to fractions.
+
+#### Simplifying Rational Expressions
+
+Simplifying a rational expressions is no different from simplifying a
+fraction. The only differences is that we must often use the techniques of
+factorization, as well as be mindful of the laws governing variable
+manipulation. To simplify a rational expression:
+
+1. Factor the numerator and denominator;
+2. cancel any common factors
+
+For example:
+
+$$
+\begin{aligned}
+	\dfrac{x^2 - 9}{x^2 + 4x + 3} &= \dfrac{(x+3)(x-3)}{(x+3)(x+1)} \\
+	&= \dfrac{\cancel{(x+3)}(x-3)}{\cancel{(x+3)}(x+1)}
+	&= \dfrac{(x-3)}{(x+1)}
+\end{aligned}
+$$
+
+#### Multiplying Rational Expressions
+
+We follow the same procedures for multiplying fractions when we multiply
+rational expressions: To multiply two rational expressions:
+
+1. Factor the numerator and denominator;
+2. multiply the numerators;
+3. multiply the denominators
+4. simplify.
+
+For example, given:
+
+$$
+	\left(\dfrac{x^2 + 4x - 5}{3x + 18}\right)\left(\dfrac{2x-1}{x+5}\right)
+$$
+
+By factorization:
+
+$$
+	\left(\dfrac{x^2 + 4x - 5}{3x + 18}\right)\left(\dfrac{2x-1}{x+5}\right) = \left(\dfrac{(x+5)(x-1)}{3(x+6)}\right)\left(\dfrac{2x-1}{x+5}\right)
+$$
+
+Using the associative property of multiplication:
+
+$$
+	\left(\dfrac{x^2 + 4x - 5}{3x + 18}\right)\left(\dfrac{2x-1}{x+5}\right) = \dfrac{(x+5)(x-1)(2x-1)}{3(x+6)(x+5)}
+$$
+
+Cancelling like terms:
+
+$$
+	\left(\dfrac{x^2 + 4x - 5}{3x + 18}\right)\left(\dfrac{2x-1}{x+5}\right) = \dfrac{\cancel{(x+5)}(x-1)(2x-1)}{3(x+6)\cancel{(x+5)}}
+$$
+
+We can thus conclude:
+
+$$
+	\left(\dfrac{x^2 + 4x - 5}{3x + 18}\right)\left(\dfrac{2x-1}{x+5}\right) = \dfrac{(x-1)(2x-1)}{3(x+6)}
+$$
+
+#### Adding and Subtracting Rational Expressions
+
+Once more, adding and subtracting rational expressions works the same way
+was adding and subtracting fractions: We may add and subtract the fractions
+iff the rational expressions have a common denominator. To ease the
+computation, the _least common denominator_ &mdash; the smallest multiple
+that the denominators have in common &mdash; should be used whenever
+possible.
+
+To add or subtract rational expressions:
+
+1. Factor the numerator and denominator.
+2. Find the least common denominator of the expressions &mdash; to find the
+   least common denominator:
+   1. Factor the expressions.
+   2. Multiply all of the distinct factors.
+3. Multiply the expressions by a form of 1 that changes the denominators to
+   the LCD.
+4. Add or subtract the numerators. Simplify.
+
+For example, given:
+
+$$
+	\dfrac{5}{x} + \dfrac{6}{y}
+$$
+
+The least common denominator is ${(x)(y).}$ Multiplying the expressions by
+a form of 1 to ensure the denominator is the least common denominator:
+
+$$
+	\left(\dfrac{5}{x} \cdot \dfrac{y}{y}\right) + \left(\dfrac{6}{y} \cdot \dfrac{x}{x} \right)
+$$
+
+Carrying out the multiplication:
+
+$$
+\begin{aligned}
+	\left(\dfrac{5}{x} \cdot \dfrac{y}{y}\right) + \left(\dfrac{6}{y} \cdot \dfrac{x}{x} \right) &= \dfrac{5y}{xy} + \dfrac{6x}{xy} \\
+	&= \dfrac{5y + 6x}{xy}
+\end{aligned}
+$$
+
+#### Simplifying Nested Rational Expressions
+
+Often, the numerators and denominators of a rational expression will
+themselves contain rational expressions. They might look like:
+
+$$
+	\dfrac{a + \dfrac{b}{c}}{\dfrac{d}{e} + \dfrac{f}{g}}
+$$
+
+We call such expressions _nested rational expressions_ (the rational
+expressions in the numerators and denominators are colloquially called
+_nesting rats_). Nested rational expressions often strike fear in students,
+partly because of their size, partly because they are not often
+encountered. Nested rational expressions, however, are a good example of
+where _Polish notation_ has an advantage over the more common _infix
+notation_ (the notation above). The same expression above can be expressed
+as:
+
+$$
+\begin{aligned}
+	(/ \space &[+ \space a \space (/ \space b \space c)] \\[1em] &[+ \space (/ \space d \space e) (/ \space f \space g)])
+\end{aligned}
+$$
+
+When encountering deeply nested rational expressions like the above,
+consider rewriting the expression in Polish notation and simplifying the
+expression from inside to outside. For most nested rational expressions,
+however, we use the following algorithm:
+
+1. Combine the expressions in the numerator into a single rational
+   expression by adding or subtracting.
+2. Combine the expressions in the denominator into a single rational
+   expression by adding or subtracting.
+3. Rewrite the overall expression as the numerator divided by the
+   numerator.
+4. Rewrite the overall expression as a multplication.
+5. Multiply.
+6. Simplify.
+
+For example, 
+
+$$
+	\dfrac{y + \dfrac{1}{x}}{\dfrac{x}{y}}.
+$$
+
+Combine the expressions in the numerator into a single expression:
+
+$$
+	\dfrac{\dfrac{yx}{x} + \dfrac{1}{x}}{\dfrac{x}{y}} = \dfrac{\dfrac{yx + 1}{x}}{\dfrac{x}{y}}.
+$$
+
+Rewrite the expression as multiplication:
+
+$$
+\begin{aligned}
+	\dfrac{\dfrac{yx}{x} + \dfrac{1}{x}}{\dfrac{x}{y}} &= \dfrac{yx + 1}{x} \cdot \dfrac{y}{x} \\
+	&= \dfrac{y(xy + 1)}{x^2}
+\end{aligned}
+$$
+
+#### Rationalizing Radical Denominators
+
+Rational expressions can contain radicals in the denominator. These can be
+cumbersome to handle, and it is almost always best to simplify them.
+
+To remove radicals from the denominators of rational expressions, we
+multiply the radical expression by the form of 1 that will eliminate the
+radical. If the denominator contains a single term, we multiply the
+rational expression by its reciprocal. I.e., if the rational-radical
+expression is ${\dfrac{1}{b \sqrt{c}},}$ we multiply the expression by
+${\dfrac{\sqrt{c}}{\sqrt{c}}.}$
+
+Now, if the denominator of the rational-radical expression contains the sum
+of a rational and an irrational term, we multiply the numerator and the
+denominator by the conjugate of the denominator &mdash; the expression
+wherein the sign of the radial portion of the denominator is made opposite.
+For example, if the denominator is ${a + b \sqrt{c},}$ then the conjuage is
+${a - b \sqrt{c}.}$
+
+Given a radical expression of the form ${\dfrac{a}{\sqrt{b}},}$
+
+1. Multiply the numerator and the denominator by the radical in the
+   denominator.
+2. Simplify.
+
+
+## Division
+
+Of the core arithmetic operators, division is the most complex. In any
+discussion of division, we must first begin with two subsets of integers,
+the __even integers__:
+
+$$
+    \{ 2, 4, 6, 8, \ldots \}
+$$
+
+and the odd integers:
+
+$$
+    \{1, 3, 5, 7, \ldots\}
+$$
+
+Notice that both the even integers and the odd integers increment by 2. The
+difference, however, is that the even integers start at 2, and the odd
+integers start at 1. A number's property of odd-ness or even-ness is called
+the number's __parity__. Note that parity is a property held only by the
+positive integers. The negative integers are neither even nor odd. We can
+abstract this idea with algebra: An even integer is an integer that can be
+written as ${2k,}$ where ${k}$ is a positive integer. Denoting the set of
+even integers with the symbol ${\Z_{\text{even}},}$ and the set of positive
+integers with the symbol ${\Z_{\text{odd}},}$ we can define an even integer
+more formally as:
+
+> Definition. Let ${x \in \uint.}$ >
+> ${x \in \Z_{\text{even}} \iff x = 2k : k \in \uint^{+}}$ I.e., an integer
+> ${x}$ is even if, and only if, it can be written in the form ${2k,}$
+> where ${k}$ is a positive integer.
+
+For the odd integers, we write:
+
+> Definition. Let ${x \in \uint.}$ >
+> ${x \in \Z_{\text{odd}} \iff x = 2k - 1 : k \in \uint^{+}}$
+
+I.e., an integer ${x}$ is odd if, and only if, it can be written in the
+form ${2k - 1,}$ where ${k}$ is a positive integer. Alternatively, we can
+define odd integers as the following:
+
+> Definition. Let ${x \in \uint.}$ >
+> ${x \in \Z_{\text{odd}} \iff x = 2k + 1 : k \in \nat}$
+
+In other words, an integer ${x}$ is odd if, and only if, it can be written
+in the form ${2k + 1,}$ where ${k}$ is a natural number.
+
+The only meaningful difference between the first and second definition is
+whether ${k}$ is a natural number or a positive integer. In other words,
+whether ${k}$ can be 0. If ${k}$ can be 0, then we must change the
+definition from ${2k - 1}$ to ${2k + 1,}$ because if ${k = 0,}$ then
+${2k - 1 = -1.}$ ${-1}$ is neither odd nor even, because parity is a
+property that applies only to positive integers (0 is also neither odd nor
+even).
+
+Knowing the parity of two integers allows us to quickly determine the
+parity of their sums:
+
+> __lemma__. Let ${a, b \in \uint^{+}.}$ Then:
+>
+> 1. ${a, b \in \Z_{\text{even}} \nc a + b \in \Z_{\text{even}}}$
+> 2. ${[(a \in \Z_{\text{even}}) \land (b \in \Z_{\text{odd}})] \nc a - b \in \uint\_{\text{odd}}}$
+> 3. ${[(a \in \Z_{\text{odd}}) \land (b \in \Z_{\text{even}})] \nc a - b \in \uint\_{\text{odd}}}$
+> 4. ${[(a \in \Z_{\text{odd}}) \land (b \in \Z_{\text{odd}})] \nc a + b \in \Z_{\text{even}}}$
+
+That is, the sum of two even integers is an even integer; the sum of an odd
+integer and an even integer is an odd integer; and the sum of two odd
+integers is an even integer. From the rule of addition by 0, we also have
+the following propositions:
+
+> __lemma__. Let ${a \in \uint^{+}.}$ Then:
+> ${a \in \Z_{\text{even}} \nc a + 0 \in \Z_{\text{even}}}$ >
+> ${a \in \Z_{\text{odd}} \nc a + 0 \in \Z_{\text{odd}}}$
+
+Let's prove the first property. First, the hypothesis to be proved:
+
+    Let ${a, b \in \uint^{+}.}$ If ${a \in \Z_{\text{even}}}$ and ${b \in \Z_{\text{even},}}$ then ${a + b \in \Z_{\text{even}}.}$
+
+Because ${a}$ and ${b}$ are even integers, then by definition, ${a}$ and
+${b}$ can be written in the forms:
+
+$$
+    a = 2n, ~ b = 2m
+$$
+
+where ${n, m \in \uint^{+}}$. Thus, by substitution, the expression ${a + b}$
+can be written as:
+
+$$
+    a + b = 2n + 2m
+$$
+
+By distributivity:
+
+$$
+    a + b = 2(n + m)
+$$
+
+The sum of two positive integers is a positive integer. Accordingly, the
+sum of ${n}$ and ${m}$ is some positive integer ${k.}$ As such, the
+expression ${2(n + m)}$ can be written as:
+
+$$
+    a + b = 2k
+$$
+
+Because ${a + b}$ is an expression of the form ${2k,}$ then by definition,
+${a + b}$ is even.
+
+Now let's prove the second. Again, we'll use a direct proof. First, the
+hypothesis to proved:
+
+> Let ${a,b \in \uint^{+}.}$ If ${a}$ is even and ${b}$ is odd, then ${a + b}$
+> is odd.
+
+Suppose ${a}$ is even and ${b}$ is odd. Then by definition, ${a}$ and ${b}$
+are positive integers of the form:
+
+$$
+    a = 2n, b = 2m + 1
+$$
+
+where ${n}$ is a positive integer, and ${m}$ is a natural number. It
+follows that:
+
+$$
+    a + b = 2n + 2m + 1
+$$
+
+Then, by commutativity:
+
+$$
+    a + b = (2n + 2m) + 1
+$$
+
+And by associativity:
+
+$$
+    a + b = 2(n + m) + 1
+$$
+
+Given that ${n}$ is a positive integer and ${m}$ is a non-negative integer
+(since ${m}$ is a natural number), ${n + m}$ is a natural number.
+Accordingly:
+
+$$
+    a + b = 2k + 1
+$$
+
+where ${k = n + m,}$ which is some natural number. Hence, ${a + b}$ must be
+odd, by definition.
+
+Parity provides yet another proposition:
+
+> Lemma. Let ${a \in \uint^{+}.}$ Then
+>
+> 1. ${a \in \Z_{\text{even}} \nc a^2 \in \Z_{\text{even}}}$
+> 2. ${a \in \Z_{\text{odd}} \nc a^2 \in \Z_{\text{odd}}}$
+
+The proposition above tells us that the square of an even integer is even,
+and the square of an odd integer is odd. Let's prove it.
+
+The method here is by direct proof. There are two hypotheses to be proved:
+
+1. If ${a}$ is even, then ${a^2}$ is even.
+2. If ${a}$ is odd, then ${a^2}$ is odd.
+
+We prove each hypothesis in turn, beginning with the first.
+
+Suppose ${a \in \Z_{\text{even}}.}$ Since ${a}$ is an even integer, then by
+definition, ${a}$ is a positive integer of the form ${2n,}$ where ${n}$ is
+a positive integer. By substitution:
+
+$$
+    a^2 = (2n)^2
+$$
+
+Applying the definition of an exponent:
+
+$$
+    a^2 = (2n)(2n)
+$$
+
+By the associative property of multiplication, we get:
+
+$$
+    a^2 = (2)(2 \cdot n \cdot n)
+$$
+
+And by the definition of an exponent:
+
+$$
+    a^2 = (2)(2n^2)
+$$
+
+Because the product of positive integer is a positive integer, the intger
+${2n^2}$ is a positive integer. Hence:
+
+$$
+    a^2 = 2m
+$$
+
+where ${m}$ is a positive integer. Because ${2m}$ is an even integer by
+definition, ${a^2}$ is even.
+
+Next, we consider the second hypothesis. Suppose ${a \in
+\Z_{\text{odd}}.}$
+Given that ${a}$ is an odd integer, then by definition, ${a}$ is a positive
+integer of the form ${2n + 1,}$ where ${n}$ is a positive integer. By
+substitution:
+
+$$
+    a^2 = (2n + 1)^2
+$$
+
+By expansion:
+
+$$
+    a^2 = 4n^2 + 4n + 1
+$$
+
+By associativity:
+
+$$
+    a^2 = (4n^2 + 4n) + 1
+$$
+
+By distributivity:
+
+$$
+    a^2 = 2(2n^2 + 2n) + 1
+$$
+
+Because ${n}$ is a positive integer, $$2n^2 + 2n$$ is a positive integer.
+Hence:
+
+$$
+    a^2 = 2k + 1
+$$
+
+where ${k}$ is a positive integer. Because ${2k + 1}$ is an odd integer by
+definition, ${a^2}$ is odd. The proposition we've just proven yields a
+corollary:
+
+> Corollary. Let ${a \in \uint^{+}.}$ Then:
+>
+> 1. ${a^2 \in \Z_{\text{even}} \nc a \in \Z_{\text{even}}}$
+> 2. ${a^2 \in \Z_{\text{odd}} \nc a \in \Z_{\text{odd}}}$
+
+As with many corollaries, the propositions above are implied by the
+previous theorem. If ${a^2}$ is even, then ${a}$ must be even, for if ${a}$
+is odd, then ${a^2}$ is odd. Similarly, if ${a^2}$ is odd, then ${a}$ must
+be odd, for if ${a}$ is even, then ${a^2}$ is even. This is a
+straightforward example of logical contradiction.
+
+### Divisibility
+
+It is from parity that we generalize the concept of __divisibility__.
+Suppose ${a}$ is a positive integer and ${b}$ is an integer. When we say
+that ${b}$ is divisible by ${a,}$ we mean that ${a}$ divides ${b.}$ We
+denote this proposition with the notation ${a \space\vert\space b.}$ An
+integer ${b}$ is divisible by ${a}$ if, and only if, ${b = an,}$ where
+${n}$ is some integer.
+
+> Definition. Let ${a \in \uint^{+}}$ and ${b \in \uint.}$ Then:
+>
+> $$
+> a \space\vert\space b \iff b = an
+> $$
+>
+> where ${n \in \uint.}$
+
+The definition above yields several useful propositions:
+
+> _Proposition_. Every integer is divisible by 1. Every positive integer is
+> divisible by itself.
+
+The first proposition is implied by the fact that every integer can be
+written as ${n = (1)(n).}$ This in turn implies the second proposition.
+
+### Composites & Primes
+
+![Compounds and primes along the number line](https://res.cloudinary.com/sublimis/image/upload/v1652645939/math/compound_prime_ifd6hq.svg)
+
+From the definition above, there are two subsets within the natural
+numbers. Any natural number that can be grouped into a solid rectangle is
+called a __composite number__ (also called _compound numbers_). More
+formally:
+
+> __definition__. A _composite number_ ${k}$ is a natural number greater than
+> 1, divisible by some positive integer ${n,}$ where ${n \neq 1.}$
+
+The negation of this definition yields the __prime numbers__, numbers that
+cannot be grouped into a solid rectangle.
+
+> __definition__. A _prime number_ ${m}$ is a natural number greater than 1,
+> divisible only by 1 and itself.
+
+Note that from the definitions above, we see that the numbers 0 and 1 have
+a special property: Both 0 and 1 are neither prime nor compound.
+
+### Division & Rational Numbers
+
+The operation of division is closely tied to the __rational numbers__. A
+rational number is any number that can be written in the form:
+
+$$ \dfrac{m}{n} \text{or} m/n $$
+
+where ${m}$ and ${n}$ are integers, and ${n \neq 0.}$ The last condition is
+crucial, because in this particular world (classical algebra), we cannot
+divide by 0. The rational numbers come in various forms:
+${\ldots, \dfrac{1}{3}, - \dfrac{1}{2}, \dfrac{2}{3}, 1.4, 0.08, 12.0, 0.0, \ldots}$
+
+The rule is, as long as a number can be written as ${m/n,}$ where ${m, n}$
+are integers and ${n \neq 0,}$ then the number is rational
+number.[^rationalnumberscs]
+
+[^rationalnumberscs]:
+    In computer science, the rational numbers are called __floats__ or
+    __floating point numbers__ (the decimal point "floats" as needed).
+
+Otherwise, the number is an irrational number. Note what this definition
+means. Every integer satisfies the definition rational number definition,
+so we say that the rational numbers are a proper superset of the integers.
+In other words, every integer is a rational number, but not every rational
+number is an integer.
+
+### The Division Algorithm
+
+Question: A six-digit number having 1 as its leftmost digit becomes three
+times bigger if we take this digit off and put it at the end of the number.
+What is this number?
+
+Let the number be $1ABCDE$. Then, $ABCDE1 = 3 \times 1ABCDE$. Rewrite this
+with the multiplication algorithm:
+
+$$
+\begin{array}{cc} & A & B & C & D & E \\ \times & & & & & 3 \\ \hline A & B
+& C & D & E & 1 \end{array}
+$$
+
+Let's focus on $E$. We need a digit $E$ where $3 \times E = n1$, where $n$
+is a digit. This digit must be 7, for $7 \times 3 = 21$. We know that $E$
+is 7, so what might $D$ be? Well, we need a digit $D$ where
+$(D \times 3) + 2 = 7$. Or, rearranging, $D \times 3 = 5$. The only digit
+that would satisfy this condition is $D = 5$ (since $3 \times 5 + 2
+= 17$.
+
+We know that $D$ is 5, so now we look at $C$. We need a digit $C$ such that
+$(C \times 3) + 1 = 5$, or, rearranging, $C \times 3 = 4$. There is only
+one digit that satisfies this condition, 8. Thus, $C = 8$.
+
+Now we look at $B$. What digit satisfies the condition $B \times 3 = 6$? It
+must be 2. Therefore, $B = 2$.
+
+Finally, we look at $A$. What digit results in $A \times 3 = 12$. It must
+be 4, since $3 \times 4 = 12$. Hence, the digits are $A = 4$, $B = 2$,
+$C = 8$, and $D = 5$.
+
+Question: Divide 123123123 by 123. Again, we use the division algorithm:
+
+$$
+\begin{array}{r} 1001001 \\ 123{\overline{\smash{\big)}\,123123123}} \\ - 123 \phantom{123123} \\ \hline 0 123 \phantom{123} \\ - 123 \phantom{123} \\ \hline 0 123 \\ - 123 \\ \hline 0 \end{array}
+$$
+
+We can confirm the result with the multiplication algorithm:
+
+$$
+\begin{array}{cc} \begin{align*} 1001001 \\ \times \phantom{1001} 123
+\\ \hline \phantom{00} 3 003 003 \\ \phantom{00} 2 002 002 \phantom{1} \\
++ \phantom{00} 1 001 001 \phantom{12} \\ \hline 123123123 \end{align*}
+\end{array}
+$$
+
+Question: Can one predict the remainder when ${111
+\ldots 1}$ (100 ones) is
+divided by ${11 11 11 1}$?
+
+$11 11 11 1$ is 7 ones. Consider a simpler case:
+
+$$
+\begin{array}{r} 10 \\ 11 {\overline{\smash{\big)}\, 111}} \\ -11
+\phantom{0} \\ \hline \phantom{0} 01 \\ - \phantom{00} 0 \\ \hline
+\phantom{000} 1 \end{array}
+$$
+
+Question: Divide $1000 \ldots 0$ (20 zeros) by 7.
+
+Consider a simpler case:
+
+$$
+\begin{array}{r} 14 \\ 7 {\overline{\smash{\big)}\, 100}} \\ - 7
+\phantom{0} \\ \hline 30 \\ - 28 \\ \hline 4 \end{array}
+$$
+
+Let's keep adding 0s to see if there's a pattern:
+
+$$
+\begin{array}{r} 142857 \\ 7 {\overline{\smash{\big)}\, 1 000 000}} \\
+- 7 \phantom{000 00} \\ \hline 30 \phantom{000 0} \\ -28 \phantom{000 0}
+\\ \hline 20 \phantom{000} \\ - 14 \phantom{000} \\ \hline 60 \phantom{00}
+\\ - 56 \phantom{00} \\ \hline 40 \phantom{0} \\ - 35 \phantom{0} \\
+\hline 50 \\ - 49 \\ \hline 1 \end{array}
+$$
+
+We return to a remainder of 1. This tells us that if we add another 0,
+we're back at 10, which gives us 30, then 20, then 60, then 40, and so on.
+
+This also tells us that after every six 0s, we return to 10. Thus, for
+twenty 0s, we make 3 "laps" of returning to 10, with two more "runs":
+
+- Lap 1 (six 0s): 142857 remainder 1
+- Lap 2 (twelve 0s): 142857 14285 remainder 7
+- Lap 3 (eighteen 0s): 142857 142857 remainder 1
+- Lap 4 (nineteen 0s): 142857 142857 1 remainder 4
+- Lap 5 (twenty 0s): 142857 142857 14 remainder 2
+
+Hence, the quotient is: 14,285,714,285,714 + 2.
+
+## Absolute Value
+Given a real number ${x,}$ be a real number, the _absolute value_ of $x$ is the distance between $x$ and the origin. We denote the absolute value of $x$ with the notation: $\lvert x \rvert$ For example, the numbers -8 and 8 are both 8 units from the origin. Thus, $\lvert 8 \rvert = 8$ and $\lvert -8 \rvert = 8$. We define the absolute value as follows:
+
+> __~absolute value~.__ Given ${x \in \reals,}$
+>
+> $$
+>	 \lvert x \rvert = \begin{cases} x &\text{ if } x \geq 0 \\ -x &\text{ if } x < 0 \end{cases}
+> $$
+
+For example, $\lvert -8 \rvert = -(-8) = 8$. From the definition of absolute value, we can make the following inferences:
+
+| ${\forall x \in \reals}$                                                  |
+| ------------------------------------------------------------------------- |
+| $\lvert x \rvert \geq 0$                                                  |
+| $x \leq \lvert x \rvert$ and $-x \leq \lvert x \rvert$                    |
+| ${\lvert x \rvert}^2 = x^2$                                               |
+| $\sqrt{x^2} = \lvert x \rvert$                                            |
+| $\lvert ab \rvert = \lvert a \rvert \cdot \lvert b \rvert$                |
+| $\lvert \dfrac{a}{b} \rvert = \dfrac{\lvert a \rvert }{\lvert b \rvert }$ |
+| $\lvert a + b \rvert \leq \lvert a \rvert + \lvert b \rvert $             |
+
+### Removing Absolute Value Symbols
+When we encounter expressions containing absolute values, it's often a good idea to rewrite the expression without the absolute value symbols. For example, consider the expression $\lvert -2 - x^2 \rvert$. Using our algebraic definition above, we can rewrite this expression:
+
+$$
+\begin{aligned}
+	\lvert -2 - x^2 \rvert &= -(-2 - x^2) \\
+	&= 2 + x^2
+\end{aligned}
+$$
+
+The example above reveals useful insight. Suppose that real numbers are points along the real number line. Let $a$ and $b$ be real numbers. Because $a$ and $b$ are points along a line, the distance between $a$ and $b$ is $a - b$. And since the absolute value of a number is only concerned with the distance between a point and the origin, we can infer:
+
+> For real numbers $a$ and $b$, the distance between $a$ and $b$ is, ${\lvert a - b \rvert = \lvert b - a \rvert.}$
+
+### Absolute Values and Inequalities
+Whenever we see absolute values in inequalities, we should be on high alert. Suppose that ${a \in \mathbb{R},}$ ${u \in \mathbb{R},}$ and ${a > 0.}$ The following rules hold:
+
+> ${\lvert u \rvert < a \iff -a < u < a}$
+> ${\lvert u \rvert < a \iff (u < -a \text{ or } u > a) }$
+
+These rules follow from observing the number line. The statement ${-a < u < a}$ implies that $u$ is somewhere between $-a$ and $a$, which is equivalent to saying that the distance from $u$ to 0 is less than $a$ (which, in mathematical notation, is simply ${\lvert u \rvert < a }$).
+
+When inequalities contain expressions couched between absolute value symbols,
+the inequality is effectively expressing the expression's distance from 0. For
+example, suppse ${\lvert x - 3 \rvert < 1. }$ This statement tells us that the
+distance of ${\lvert x - 3 \rvert }$ from 0 is less than 1. Because absolute
+values tell us the distance from 0, the statement ${\lvert x - 3 \rvert < 1,}$
+allows us to infer:
+
+$$
+	-1 < x - 3 < 1
+$$
+
+## Logarithms
+
+Consider the number 16. How many times can we divide 16 by 2? Let's try it:
+
+$$
+\begin{aligned}
+	16 / 2 &= 8 \\
+	8 / 2 &= 4 \\
+	4 / 2 &= 2 \\
+	2 / 2 &= 1
+\end{aligned}
+$$
+
+Above, we can see that we can divide the number 16 by 2 a total of 4 times.
+This corresponds to:
+
+$$
+\begin{aligned} 2 \cdot 2 \cdot 2 \cdot 2 &= 2^4 \\ &= 16 \end{aligned}
+$$
+
+The answer to "How many times can we divide a number ${n}$ by this constant
+${x?}$" is the __logarithm__. More formally:
+
+> __definition__. Given ${b = a^x,}$ ${a \neq 1,}$ ${a > 0,}$ and
+> ${b > 0,}$ > ${a^x = b \iff x = \log_{a}b}$
+
+We say that ${x}$ is the logarithm in base ${a}$ of ${b.}$ The logarithm
+provides a way of deducing, and rewriting, the exponent of a number. For
+example:
+
+- ${2^3 = 8 \iff \log_{2}8 = 3}$
+- ${5^2 = 25 \iff \log_{5}25 = 2}$
+- ${10^3 = 1000 \iff \log_{10}1000 = 3}$
+
+Suppose that ${y = a^x.}$ From the definition above, it follows that
+${a =
+\log_{a}y.}$ Then, it follows then that ${x = \log_{a}a^x}$ by
+substitution. We state this as a corollary:
+
+> _Corollary_. ${x = \log_{a}a^x}$
+
+If ${x = a^y,}$ then again from the definition, ${y = \log_{a}x.}$ It
+follows that ${x = a^{\log_{a}x},}$ provided that ${x > 0.}$ We again state
+this as a corollary:
+
+> _Corollary_. ${x = a^{\log_{a}x},}$ where ${x > 0}$
+
+The definition and corollaries above directly lead to the **laws of
+logarithms**:
+
+> _Log Laws_. Where ${A, B \in \nat,}$ ${c > 0,}$ and ${c \neq 1,}$
+>
+> $$
+> \begin{aligned} \log_{c}A + \log_{c}B &= \log_{c}(AB) \\[1em]
+> \log_{c}A - \log_{c}B &= \log_{c}\left(\dfrac{A}{B}\right) \\[1em] n
+> \log_{c}A &= \log_{c}(A^n) \end{aligned}
+> $$
+
+## The Binomial Theorem
+
+Recall that a binomial is a polynomial consisting of the sum of two
+monomials. In other words, a polynomial with two terms. For example, the
+expression:
+
+$$
+	ax^m - bx^n
+$$
+
+is a binomial, where ${a}$ and ${b}$ are numbers, ${m}$ and ${n}$ are
+distinct, nonnegative integers, and ${x}$ is a variable (or more formally,
+the indeterminate). Taking higher powers of binomials and expanding them is
+a process that quickly grows tedious. To see how, let's consider a few
+examples.
+
+First, let's expand ${(a + b)^0.}$ This is straightforward; it's just
+${1:}$
+
+$$
+	(a + b)^0 = 1
+$$
+
+Similarly, ${(a + b)^1}$ isn't so bad either:
+
+$$
+	(a + b)^1 = a + b
+$$
+
+$(a + b)^2$ isn't terrible if we know our expansions by heart:
+
+$$
+	(a + b)^2 = a^2 + 2ab + b^2
+$$
+
+How about ${(a + b)^3}$? Well, we can carry it out:
+
+$$
+	\begin{aligned}
+		(a + b)^3 &= (a + b)(a + b)(a + b) \\ &= (a + b)(a^2 +
+		2ab + b^2) \\ &= a^3 + 2a^2b + ab^2 + a^2b + 2ab^2 + b^3 \\ &= a^3 + 3a^2b +
+		3ab^2 + b^3
+	\end{aligned}
+$$
+
+And ${(a + b)^4:}$
+
+$$
+\begin{aligned}
+	(a + b)^4 &= (a + b)(a^3 + 3a^2b + 3ab^2 + b^3) \\ &= a(a^3 + 3a^2b + 3ab^2 + b^3) + b(a^3 + 3a^2b + 3ab^2 + b^3)\\ &= a^4 + 3a^3b
+	+ 3a^2b^2 + ab^3 + a^3b + 3a^2b^2 + 3ab^3 + b^4 \\ &= a^4 + 4a^3b + 6a^2b^2 + 4ab^3 + b^4
+\end{aligned}
+$$
+
+Notice how these expressions are getting more and more tedious. Laying out
+the expansions in a table:
+
+| expression    | expansion                                           | term count |
+| ------------- | --------------------------------------------------- | ---------- |
+| ${(a + b)^0}$ | 1                                                   | 1          |
+| ${(a + b)^1}$ | ${a + b}$                                           | 2          |
+| ${(a + b)^2}$ | ${a^2 + 2ab + b^2}$                                 | 3          |
+| ${(a + b)^3}$ | ${a^3 + 3a^2b + 3ab^2 + b^3}$                       | 4          |
+| ${(a + b)^4}$ | ${a^4 + 4a^3b + 6a^2b^2 + 4ab^3 + b^4}$             | 5          |
+| ${(a + b)^5}$ | ${a^5 + 5a^4b + 10a^3b^2 + 10a^2b^3 + 5ab^4 + b^5}$ | 6          |
+
+Needless to say, expanding binomials with higher powers by hand is tedious
+and prone to error. Attempting to expand something like ${(a + b)^{100}}$
+would take a very, very long time. And then after we're done, we must still
+go through the process of checking if our algebraic manipulation is
+correct.
+
+Fortunately, there's a theorem to make our lives easier. But, before we
+examine this theorem, let's segue briefly into the world of counting.
+
+## Solving Quadratic Equations
+
+There are four primary ways of finding the truth set of quadratic
+equations:
+
+1. using the square root method;
+2. factoring;
+3. completing the square; and
+4. using the quadratic equation
+
+The next few sections explore how each of these methods are used.
+
+### Completing the Square
+
+Given the quadratic equation ${x^2 + Ax = B}$ ompleting the square can be
+summarized into a simple algorithm:
+
+1. Look at the cofficient of ${x.}$
+2. $A$ Divide the coefficient by 2: ${\dfrac{A}{2}.}$
+3. Square the result: ${\left(\dfrac{A}{2}\right)^2}$
+4. Add the number from step 1 to both sides of the equation:
+   $$
+   	x^2 - Ax + \left(\dfrac{A}{2}\right)^2 = B + \left(\dfrac{A}{2}\right)^2
+   $$
+5. Simplify the equation.
+6. Factor the result Solve for $x.$
+
+For example, suppose we were confronted by the quadratic equation:
+
+$$
+	x^2 - 2x = 4.
+$$
+
+Applying the method of completing the square, we look at the coefficient of
+$x$ first. We see that it's -2. We divide this number by 2 and square it:
+
+$$
+	\left(\dfrac{(-2)}{2}\right)^2 = 1.
+$$
+
+Then we add this number to both sides of the equation:
+
+$$
+	x^2 - 2x + 1 = 4 + 1.
+$$
+
+Simplifying, we obtain:
+
+$$
+	x^2 - 2x + 1 = 5
+$$
+
+We factor the left-hand side, and reach
+
+$$
+	(x-1)(x-1) = 5.
+$$
+
+Or, with a square,
+
+$$
+	(x-1)^2 = 5.
+$$
+
+Taking the square root of both sides, we have
+
+$$
+	x - 1 = \pm \sqrt{5}.
+$$
+
+(always be mindful of the the fact that squares result from both positive
+and negative numbers). Finally, we solve for ${x}$ by adding 1 to both
+sides:
+
+$$x = 1 \pm \sqrt{5}.$$
+
+Thus, the truth set of the equation ${x^2 - 2x = 4}$ is
+${x \in \{ 1 + \sqrt{5}, 1 - \sqrt{5} \}.}$
+
+### Why Does Completing the Square Work?
+
+The method of completing the square follows from geometry. Suppose we had a
+square, ${\square ABCD}$ with sides of length ${x}$:
+
+![A square of arbitrary side length.](https://res.cloudinary.com/sublimis/image/upload/v1652651951/math/square_of_length_x_cmldt4.svg)
+
+We know that the area of ${\square ABCD}$ is ${x^2.}$ Now suppose that we
+were to add a rectangle with a width of $b$ and a length of $x$ to the
+square. This rectangle has an area of ${bx}$. When we add the rectangle, we
+obtain a total area of ${x^2 + bx:}$
+
+![Adding a rectangle of arbitrary width and length.](https://res.cloudinary.com/sublimis/image/upload/v1652652009/math/rectangles_added_completing_the_square_fi7rne.svg)
+
+Now suppose we rearranged the resulting shape by (1) splitting the added
+rectangle vertically, (2) leaving one half at the original square's side,
+and (3) moving the other half to the square's base:
+
+![Rearranging the squares.](https://res.cloudinary.com/sublimis/image/upload/v1652652082/math/rearrange_completing_the_square_cs3u5n.svg)
+
+Notice that a gap is left. What might be the dimensions of the shape that
+would fill that gap? Well, we know that the total area of the rectange we
+created earlier is ${x^2 + bx}$. We also know that the two halves we
+created must respectively have an area of ${x\left(\dfrac{b}{2}\right).}$
+Thus, the shape we need to fill the gap must have an area of
+${\left(\dfrac{b}{2}\right)^2}$, or, simplifying the expression,
+${\dfrac{b^2}{4}.}$
+
+To see the connection to the algebraic method, consider the shape above
+without filling the gap. That shape has an area of
+${x^2 + \left(\dfrac{b}{2}\right)x + \left(\dfrac{b}{2}\right)x = x^2 + bx.}$
+When we complete the square, we add the area of the "missing square":
+${\dfrac{b^2}{4}.}$ Look familiar? Algebraically, the area of the
+incomplete shape is a quadratic equation.
+
+If we had an equation of the form ${ax^2 + bx + c}$, where $a$, $b$, and
+$c$ are constants and ${a \neq 1,}$ that tells us that our original square
+has an area of ${ax^2}$. That $a$ makes computations needlessly difficult,
+and we want our original shape to be a square of area ${x^2}$. Since $a$ is
+a constant, we can get rid of its place before $x$ by dividing all of the
+terms in the equation by $a:$
+
+$$
+	x^2 + \left(\dfrac{b}{a}\right)x + \dfrac{c}{a} = 0.
+$$
+
+We can then move the term ${\dfrac{c}{a}}$ to the right side of the
+equation, to give us our incomplete shape:
+
+$$
+	x^2 + \left(\dfrac{b}{a}\right)x = - \dfrac{c}{a}
+$$
+
+The term ${b/a}$ represents the side of our added rectangle. The side of
+our halved rectangles then, is ${\frac{b/a}{2} = \frac{b}{2a}}$. And since
+${\frac{b}{2a}}$ represents the side of our halved rectangles, the missing
+square has an area of
+${\left(\frac{b}{2a}\right)\left(\frac{b}{2a}\right) = \frac{b^2}{4a},}$
+the term we add to both sides of
+${x^2 + \left(\frac{b}{a}\right)x = - \frac{c}{a}.}$
+
+### The Quadratic Formula
+
+The truth set for quadratic equations cannot be found by simple
+factorization. Instead, a more robust formula must be used: the quadratic
+formula.
+
+From the method of completing the square, we can derive the quadratic
+formula, a formula that allows us to quickly deduce the truth set of a
+quadratic equation. To derive the formula, we begin wtih the general
+quadratic equation: ${ax^2 + bx + c = 0,}$ where ${a \neq 0.}$ We divide
+both sides by $a$, and obtain:
+
+$$
+	x^2 + \left( \dfrac{b}{a} \right)x + \left( \dfrac{c}{a} \right) = 0.
+$$
+
+Then we subtract ${\dfrac{c}{a}}$ from both sides, and obtain:
+
+$$
+	x^2 + \left( \dfrac{b}{a} \right)x = - \left( \dfrac{c}{a} \right)
+$$
+
+Now we comlete the square, by adding ${\dfrac{b^2}{4a^2}}$ to both sides:
+
+$$
+\begin{aligned}
+	x^2 + \left( \dfrac{b}{a} \right)x + \dfrac{b^2}{4a^2} &= \dfrac{b^2}{4a^2} - \dfrac{c}{a} \\
+	\left( x + \dfrac{b}{2a} \right)^2 &= \dfrac{b^2 - 4ac}{4a^2} \\
+	x + \dfrac{b}{2a} &= \pm \sqrt{\dfrac{b^2-4ac}{4a^2}}\\
+	&= \pm \dfrac{\sqrt{b^2 - 4ac}}{2 \lvert a \rvert } \\
+	&= \pm \dfrac{\sqrt{b^2 - rac}}{2a}
+\end{aligned}
+$$
+
+Thus, the truth set of the quadratic equation ${a^2 + bx + c = 0}$ is:
+
+$$
+	x \in \left\{-\dfrac{b}{2a} + \dfrac{\sqrt{b^2 - 4ac}}{2a}, \space - \dfrac{b}{2a} - \dfrac{\sqrt{b^2 - 4ac}}{2a} \right\}
+$$
+
+The quadratic formula will always yield the truth set for quadratic
+equations of the form ${ax^2 + bx + c = 0.}$ In the event that the term
+${b^2 - 4ac \in \mathbb{R}^-}$ (the discriminant), however, the truth set
+of the equation consists of complex numbers, rather than real numbers.
+
+Thus, given a quadratic equation of the form ${ax^2 + bx +c}$, where $a$,
+$b$, and $c$ are constants and ${a \neq 0}$, the truth set of the equation
+can be found with the equation:
+
+$$
+	x^2 + \left(\dfrac{b}{a}\right)x + \dfrac{b^2}{4a} = - \dfrac{c}{a} + \dfrac{b^2}{4a}
+$$
+
+> Quadratic Formula. Given the quadratic equation ${ ax^2 + bx + c = 0 }$,
+> where ${ a \neq 0, }$ the solutions are given by:
+>
+> $$
+> 	x = \dfrac{-b \pm \sqrt{b^2 - 4ac} }{2a}
+> $$
+
+### The Discriminant
+
+In the quadratic formula, the expression that appears below the radical
+sign, ${b^2 - 4ac,}$ is called the discriminant. If the discriminant
+evaluates to a positive real number, then the quadratic equation has 2 real
+solutions. If the discriminant evaluates to 0, then the quadratic equation
+has only 1 real solution. If the discriminant evaluates to a negative real
+number, then the quadratic equation has no real solutions &mdash; instead,
+it has a pair of complex conjugate solutions. Generalizing these results:
+
+$$
+	\text{roots} \begin{cases} \text{1 distinct real root} &\text{iff }
+	b^2 - 4ac > 0 \\ \text{2 distinct real roots} &\text{iff } b^2 - 4ac =
+	0 \\ \text{0 real roots} &\text{iff } b^2 - 4ac < 0 \end{cases}
+$$
+
+### The Product and Sum of Polynomial Roots
+
+Suppose we were faced with the equation ${x^2 = 5 - 3x.}$ What are the
+roots of this equation? First, let's rewrite the equation:
+
+$$
+	x^2 + 3x - 5 = 0.
+$$
+
+Then let's use the quadratic formula:
+
+$$
+\begin{aligned}
+x = \dfrac{-b \pm \sqrt{b^2-4ac}}{2a} \\
+&=\dfrac{-3 \pm \sqrt{3^2-4(1)(-5)}}{2(1)} \\
+&=\dfrac{-3 \pm \sqrt{9+20}}{2} \\
+&=\dfrac{-3 \pm \sqrt{29}}{2}
+\end{aligned}
+$$
+
+Thus, the truth set of ${x^2 = 5 - 3x}$ is:
+
+$$
+	x \in \left\{ \dfrac{-3 + \sqrt{29}}{2}, \space \dfrac{-3 - \sqrt{29}}{2}\right\}
+$$
+
+What would happen if we multiplied the two roots?
+
+$$
+\begin{aligned}
+	\left( \dfrac{-3 - \sqrt{29}}{2} \right) \left( \dfrac{-3 + \sqrt{29}}{2} \right) &= \dfrac{(-3)^2 - (\sqrt{29})^2}{4} \\
+	&= \dfrac{9 - 29}{4}\\
+	&= \dfrac{-20}{4} \\
+	&= -5
+\end{aligned}
+$$
+
+The product of the two roots is -5. What would happen if we added the two
+roots?
+
+$$
+\begin{aligned}
+	\dfrac{-3 + \sqrt{29}}{2} + \dfrac{-3 - \sqrt{29}}{2} &= \dfrac{-3 - \sqrt{29} + (-3) - \sqrt{29}}{2} \\
+	&= \dfrac{-6}{2}\\
+	&= -3
+\end{aligned}
+$$
+
+The sum of the two roots is -3. Recall that the quadratic equation was
+${x^2 + 3x - 5 = 0.}$ Is it pure coincidence that product of the two roots
+is -5, the $c$ term in the equation, and the sum of the two roots, -3, is
+the negative of the the $b$ term? Not a coincidence at all. In fact, it
+follows from a more general rule.
+
+> __lemma__. Let $r_1$ and $r_2$ be the roots of the quadratic equation
+> ${x^2 + bx + c = 0.}$ It follows that ${r_1 r_2 = c}$ and
+> ${r_1 + r_2 = -b.}$ In other words, the product of the roots of
+> ${x^2 + bx + c = 0}$ is the constant term in the equation, $c$, and the
+> sum of the roots is the negative of the coefficient of the $x$ term, $b$
+> (i.e., $-b$).
+
+The general rule follows from manipulating the quadratic formula. Suppose
+there exists a quadratic equation ${ax^2 + bx + c = 0,}$ where ${a = 1.}$
+From the quadratic formula, it follows that the roots of the equation are:
+
+$$
+\begin{aligned}
+	x &= \dfrac{-b \pm \sqrt{b^2 - 4(1)c}}{2(1)} \\[1em]
+	&= \dfrac{-b \pm \sqrt{b^2 - 4c}}{2}.
+\end{aligned}
+$$
+
+Thus, the roots are:
+
+$$
+	r_1 = \dfrac{-b + \sqrt{b^2 - 4c}}{2} \\[1em]
+	r_2 = \dfrac{-b - \sqrt{b^2 - 4c}}{2}
+$$
+
+The products of the roots:
+
+$$
+	r_1 r_2 = \left(\dfrac{-b + \sqrt{b^2 - 4c}}{2}\right) \left( \dfrac{-b - \sqrt{b^2 - 4c}}{2} \right) \\[1em]
+	\phantom{r_1 r_2} = \dfrac{b^2 - \left( b^2 - 4c \right)}{4} = \dfrac{4c}{4} = c
+$$
+
+And the sum of the roots:
+
+$$
+	r_1 + r_2 = \dfrac{-b + \sqrt{b^2 - 4c}}{2} + \dfrac{-b - \sqrt{b^2 - 4c}}{2} \\[1em]
+	\phantom{r_1 + r_2} = \dfrac{-b + \sqrt{b^2 - 4c} + (-b) - \sqrt{b^2 - 4c}}{2} = \dfrac{-2b}{2} = -b
+$$
+
+## The Factorial
+A common operation in counting is the factorial. It is defined as follows:
+
+> _Definition: Factorial_. Let ${n}$ be a positive integer. Then ${n!,}$
+> read ${n}$ factorial, is denoted:
+>
+> $$
+> 	n! = n \cdot (n - 1) \cdot (n-2) \cdot \ldots \cdot 3 \cdot 2 \cdot 1
+> $$
+
+Alongside the definition above is the following axiom:
+
+> _Axiom: Zero Factorial_. The factorial of zero is one: $$ 0! = 1 $$
+
+To illustrate, ${6!}$ is computed as:
+
+$$
+\begin{aligned}
+6! &= (6)(6-1)(6-2)(6-3)(6-4)(6-5)\\[1em]
+&= (6)(5)(4)(3)(2)(1) \\[1em]
+&= (6)(5)(2)(4)(3) \\[1em]
+&= (6)(10)(12) \\[1em]
+&= (6)(120) \\[1em]
+&= 720
+\end{aligned}
+$$
+
+## Binomial Coefficients
+
+Suppose we had the following balls:
+
+Our friend Leibniz comes up to us and says, Pick ${1.}$ How many possible
+choices do we have? Well, we would have ${4}$ possible choices: A, B, C,
+and D. Now what if Leibniz said, Pick ${2.}$ How many choices do we have
+here? Well, we can count the number of possible choices: AB, AC, AD, BC,
+BD, CD. These are six possible choices. In fact, we can layout these
+possibilities:
+
+Choose Possibilities Number of Possibilities
+
+In mathematics, we have special syntax for expressing our thought process
+above. When Leibniz says, Pick 1, we express this as:
+
+$$
+	\dbinom{4}{1}
+$$
+
+This notation is read "Four choose one." There are four balls, and we are
+to pick one. When Leibniz says, Pick 2, we write this as:
+
+$$
+	\dbinom{4}{2}
+$$
+
+"Four choose two." And when Leibniz says, Pick 3, we have:
+
+$$
+	\dbinom{4}{3}
+$$
+
+"Four choose three." The notation ${\dbinom{n}{k}}$ is called a _binomial
+coefficient_, and it is read as ${n}$ choose ${k.}$ Formally:
+
+> Definition: Binomial Coefficient. For nonnegative integers ${n}$ and
+> ${k,}$ where ${n \geq k,}$ the expression ${\binom{n}{k},}$ also written
+> as ${_cC_k,}$ is called a binomial coefficient, and it is defined as:
+>
+> $$
+> 	\dbinom{n}{k} = \dfrac{n!}{k!(n - k)!}
+> $$
+>
+> Otherwise, where ${k > n,}$ the binomial coefficient is defined as:
+>
+> $$
+> 	\dbinom{n}{k} = 0
+> $$
+
+To understand where the binomial coefficient comes from, it's helpful to
+illustrate by example. Suppose we had the following ingredients for a cup
+of coffeee: coffee, milk, sugar. Now suppose we were asked, how many
+possible ways are there to make a cup of sweet coffee? Well, we can
+enumerate the number of ways with a table (where ${c}$ is for coffee, ${m}$
+is for milk, and ${s}$ is for sugar):
+
+| pick | possible picks         | number of possibilities |
+| ---- | ---------------------- | ----------------------- |
+| 0    | 1                      |
+| 1    | A, B, C, D             | 4                       |
+| 2    | AB, AC, AD, BC, BD, CD | 6                       |
+| 3    | ABC, ABD, ACD, BCD     | 4                       |
+| 4    | ABCD                   | 1                       |
+
+Reading the table above, we count six different orders. For example,
+${(c, m, s)}$ is coffee, then milk, then sugar, and ${(s,m,c)}$ is sugar,
+then milk, then coffee. This result follows directly from the
+multiplication rule in counting. Since we have three different ingredients,
+the number of recipes is yielded by:
+
+$$
+	3 \times 2 \times 1 = 6
+$$
+
+Generalizing the multiplication rule, given ${n}$ ingredients and ${k}$
+choices, we have:
+
+$$
+	n \times (n - 1) \times (n - 2) \ldots \times (n - k + 1) = \dfrac{n!}{(n - k)!}
+$$
+
+Importantly, the question of how many different recipes there are is
+distinct from asking: How many combinations of coffee, sugar, and milk are
+there? The former requires a distinct order, while the latter does not. The
+latter question &mdash; how many different combinations are there
+(disregarding order) &mdash; is what the binomial coefficient attempts to
+capture.
+
+Hence, using our sweet coffee example, when write ${\dbinom{3}{2},}$ we are
+expressing the number of combinations of two ingredients among three, where
+order does not matter. If we enumerated all of the possibilities out on a
+table:
+
+Counting the number of possibilities, we have ${6.}$ But because we're
+disregarding order, the table above is incorrect because we've overcounted.
+Some of the possibilities are duplicated. As such, we must eliminate the
+duplicates:
+
+| ingredient | combination | combination |
+| ---------- | ----------- | ----------- |
+| ${c}$      | ${(c, m)}$  | ${(c, s)}$  |
+| ${m}$      | ${(m, c)}$  | ${(m, s)}$  |
+| ${s}$      | ${(s, c)}$  | ${(s, m)}$  |
+
+Notice that eliminating the overcount leaves us with three possibilities.
+Further notice that this is half of our original count. This is no
+coincidence. Looking back at our general formula for the multiplication
+rule, we can see that eliminating the overcount is a matter of dividing by
+a ${k!}$ term (since we've overcounted by a factor of ${k!}$):
+
+$$
+\begin{aligned} n \times (n - 1) \times (n - 2) \ldots \times (n - k +
+1) &= \dfrac{n!}{(n - k)!} \\[2em] \dfrac{n \times (n - 1) \times (n - 2)
+\ldots \times (n - k + 1)}{k!} &= \dfrac{\dfrac{n!}{(n - k)!}}{k!} \\[2em]
+&= \dfrac{n!}{k!(n - k)!} \end{aligned}
+$$
+
+And there it is &mdash; the binomial coefficient definition.
+
+### Pascal's Triangle
+
+Do we notice any patterns in this triangle? There are several. The Binomial
+Theorem This is where the binomial theorem comes in handy:
+
+> _Binomial Theorem_. For any positive integer ${n,}$ the following is
+> true:
+>
+> $$
+> \begin{aligned} (a + b)^n &= \sum\limits_{k = 0}^{n} \dbinom{n}{k}
+> a^{n - k}b^k \\[2em] &= \dbinom{n}{0}a^n + \dbinom{n}{1}a^{n - 1}b +
+> \dbinom{n}{2}a^{n-2}b^2 + \ldots + \dbinom{n}{n}b^n \end{aligned}
+> $$
+
+## Invervals
+An __interval__ $I$ is a special kind of set. It is a subset of
+${\mathbb{R}}$ with the property: If ${s \in I,}$ ${t \in I,}$ and
+${s < x < t,}$ then ${x \in I.}$ In other words, an interval is simply a
+set of real numbers with two explicit members, called __endpoints__, with
+the added property that every number between the two endpoints is also an
+element of the set. Because there are infinitely many real numbers between
+two different real numbers, intervals with distinct endpoints have
+infinitely many members.
+
+Intervals can be restricted to include or exclude its endpoints. If the
+interval excludes its endpoints, we say that the interval is an **open
+interval**. If the interval includes its endpoints, we say that the
+interval is an __open interval__.
+
+Because of the special place intervals have in continuous mathematics, they
+have two different forms of notation: interval notation, and set notation.
+The table below lists some common intervals in both interval and set
+notation.
+
+| Interval Notation        | Set Notation                               |
+| ------------------------ | ------------------------------------------ |
+| ${[a, b]}$               | ${\{x \in \mathbb{R} : a \leq x \leq b\}}$ |
+| ${(a,b)}$                | ${\{x \in \mathbb{R} : a < x < b\}}$       |
+| ${[a, b)}$               | ${\{ x \in \mathbb{R} : a \leq x < b \}}$  |
+| ${(a, b]}$               | ${\{ x \in \mathbb{R} : a < x \leq b \}}$  |
+| ${(a, + \infty)}$        | ${\{ x \in \mathbb{R} : x > a \}}$         |
+| ${[a, + \infty)}$        | ${\{ x \in \mathbb{R} : x \geq a \}}$      |
+| ${(- \infty, b)}$        | ${\{ x \in \mathbb{R} : x < b \}}$         |
+| ${(- \infty, b]}$        | ${\{ x \in \mathbb{R} : x \leq b \}}$      |
+| ${(- \infty, + \infty)}$ | ${\mathbb{R}}$                             |
+
+To graphically indicate that an interval includes its endpoints, we color
+in the the dot marking the endpoint. To indicate exclusion, we leave the
+mark unfilled.
+
+Suppose the interval ${(a, b) \in \mathbb{R}^2,}$ and ${a < b.}$ Now
+suppose there is a number ${\lambda \in [0,1].}$ Since ${a < b}$, we can
+infer ${a - b < 0.}$ We know that
+${\lambda{a} + (1 - \lambda){b} = b + \lambda{(a-b)}}$ (simplifying this
+expression will yield ${0 = 0}$.) Since ${a - b < 0,}$ we can solve for
+$b$: ${b = b + 0(a - b) \leq b + 1(a - b) = a.}$
+
+Now suppose there is a number ${x \in [a,b],}$ and that
+${x = \lambda{a} + (1 - \lambda){b}.}$ Solving for ${\lambda,}$ we obtain
+${\lambda = \dfrac{x - b}{b - a}.}$ Given that ${0 \leq x - b \leq b - a,}$
+it is evident that ${0 \leq \lambda \leq 1.}$
+
+Thus, we can infer the following rule:
+
+> __lemma__. Given the open interval ${(a,b) \in \mathbb{R^2}}$ and
+> ${a < b,}$ every number of the form ${\lambda{a} + (1 - \lambda)b,}$ >
+> ${\lambda \in [0,1]}$ belongs to the interval ${[a,b].}$ Conversely, if
+> ${x \in [a,b],}$ then we can find a ${\lambda \in [0,1]}$ such that
+> ${x = \lambda{a} + (1 - \lambda){b}.}$
+
+### Neighborhoods
+
+Suppose ${a \in \mathbb{R}.}$ The set $\mathcal{N}_a$ is a __neighborhood__
+of $a$ if: There exists an open inteval $I$ centered at $a$ such that
+${I \subseteq \mathcal{N}_a.}$ I.e., $\mathcal{N} _a$ is a neighborhood of
+$a$ if there exists a ${\delta > 0}$ such that the open interval
+${(a - \delta, a + \delta) \subseteq \mathcal{N}_a.}$
+
+If $\mathcal{N}_a$ is a neighborhood of $a$, then the notation
+${\mathcal{N}_a \setminus \{ a \}}$ signifies the __deleted neighborhood__
+of $a$. This implies that ${\mathcal{N}_a}$ is a neighborhood of $a$ if $a$
+has neighbors left and right.
+
+For example, consider the following intervals:
+
+<Plot
+	geo={[
+		{ type: "line", start: [-10, 5], end: [10, 5] },
+		{ type: "line", start: [-5, 5], end: [5, 5], class: 'red'},
+		{ type: "line", start: [-10, 3], end: [10, 3] },
+		{ type: "line", start: [0, 3], end: [5, 3], class: 'red'},
+		{ type: "line", start: [-10, 1], end: [10, 1] },
+		{ type: "line", start: [-5, 1], end: [0, 1], class: 'red'},
+		{ type: "point", xy: [-5, 5] },
+		{ type: "point", xy: [5, 5] },
+		{ type: "point", xy: [5, 3] },
+		{ type: "point", xy: [-5, 1] },
+		{ type: "point", xy: [0, 3] },
+		{ type: "point", xy: [0, 5] },
+		{ type: "point", xy: [0, 1] },
+		{ type: "label", id: "a", xy: [0.25, 6.3],fontSize:0.8},
+		{ type: "label", id: "a", xy: [0.25, 4.3],fontSize:0.8},
+		{ type: "label", id: "a", xy: [0.25, 2.3],fontSize:0.8},
+		{ type: "label", id: "a+\\delta", xy: [5.2, 4.3], w: 30,fontSize:0.8},
+		{ type: "label", id: "a+\\delta", xy: [5.2, 6.3], w: 30,fontSize:0.8},
+		{ type: "label", id: "a-\\delta", xy: [-6.5, 6.3], w: 30,fontSize:0.8},
+		{ type: "label", id: "a-\\delta", xy: [-6.5, 2.3], w: 30,fontSize:0.8},
+	]}
+	id="interval1"
+	noTicks={true}
+	noAxes={true}
+	margins={[0, 0, 100, 0]}
+	containerHeight={"50%"}
+	height={400}
+	width={400}
+/>
+
+The first interval demarcates the neighborhood of $a$. The second
+interval demarcates the _sinistral neighborhood_ of $a$. Finally, the
+third interval demarcates the _dextral neighborhood_ of $a$.
+More formally:
+
+> __lemma__. Let ${a \in \mathbb{R}.}$ The set ${V \subseteq \mathbb{R}}$ is
+> a __dextral neighborhood__ (right-hand) of $a$ if there exists a
+> ${\delta > 0}$ such that ${[a, a + \delta) \subseteq V.}$ The set
+> ${V' \subseteq \mathbb{R}}$ is a __sinistral neighborhood__ (left-hand)
+> of $a$ if there exists a ${\delta' > 0}$ such that
+> ${(a - \delta', a] \subseteq V'.}$
+
+In sum, neighborhoods are open intervals centered at a particular real
+number $a.$ They can be large or small. The intervals ${(-1000, 1000)}$,
+${(-0.00001, 0.00001)}$, and ${(-\pi, \pi)}$ are all neighborhoods of the
+real number 0. Moreover, we can restrict our discussion to certain sections
+of the neighborhood: the sinistral (left-hand) and dextral (right-hand)
+neighborhoods. For example, the interval ${(-100, 0]}$ is the sinistral
+neighborhood of 0, and the interval ${[0, 100)}$ is the dextral
+neighborhood of 0.
+
+A neighborhood is free to include or exclude its _reference point_. Thus, where ${a \in \mathbb{R},}$ the ${\delta \text{-neighborhood} }$ of $a$ is defined as ${U_{\delta}(a) = \{ x \in \mathbb{R} : \lvert x - a \rvert < \delta \}.}$ This particular set is simply called the neighborhood of $a$, and the variable ${U_{\delta}(a)}$ is equivalent to ${\mathcal{N}_a}$. If, however, we were to exclude the reference point $a$, then we obtain what is called a __reduced neighborhood__&mdash;the set ${P_{\delta}(a) = \{ x \in \mathbb{R} : 0 < \lvert x - a \rvert < \delta \}.}$ Thus, the difference between a _neighborhood of $a$_ and a _reduced neighborhood of $a$_ is that the reduced neighborhood of $a$ excludes the reference point $a$, whereas the neighborhood of $a$ includes $a$.
+
+## The Cartesian Plane
+Continuous mathematics depends heavily on graphs. One way to represent
+graphs is through the Cartesian plane:
+
+<Plot geo={[
+	{type:'label', xy: [4,5], id: '\\reals^+ \\times \\reals^+', fontSize:0.9,w:60},
+	{type:'label', xy: [-7,5], id: '\\reals^- \\times \\reals^+', fontSize:0.9,w:60},
+	{type:'label', xy: [-7,-4], id: '\\reals^- \\times \\reals^-', fontSize:0.9,w:60},
+	{type:'label', xy: [4,-4], id: '\\reals^+ \\times \\reals^-', fontSize:0.9,w:60},
+]}/>
+
+The Cartesian plane consists of two perpendicular real number lines. The
+point where the lines intersect is 0, and is called the __origin__. The
+horizontal number line is usually called the x-axis, and the vertical
+number line the $y$-axis. On the $x$-axis, all points to the right of
+the origin represent the positive real numbers, and all points to the left
+of the origin represent the negative real numbers. On the $y$-axis, all
+points above the origin reprepresent the positive real numbers, and all
+points below the origin represent the negative real numbers.
+
+A point on the Cartesian plane is represented by an __ordered pair__, of
+the form ${ x, y }$, where ${ x }$ is a point on the $x$-axis, and ${ y }$
+is a point on the $y$-axis. For example:
+
+<Plot geo={[
+	{type: 'point', xy: [2,2]},
+	{type: 'label', xy: [2,2],id:'(2,2)'},
+	{type: 'point', xy: [3,5]},
+	{type: 'label', xy: [3,5],id:'(3,5)'},
+	{type: 'point', xy: [-7,4]},
+	{type: 'label', xy: [-7,4],id:'(-7,4)'},
+	{type: 'point', xy: [-8,1]},
+	{type: 'label', xy: [-8,1],id:'(-8,1)'},
+	{type: 'point', xy: [-4,-4]},
+	{type: 'label', xy: [-4,-4],id:'(-4,-4)'},
+	{type: 'point', xy: [2,-8]},
+	{type: 'label', xy: [2,-8],id:'(2,-8)'},
+	{type: 'point', xy: [8,-3]},
+	{type: 'label', xy: [8,-3],id:'(8,-3)'},
+]}
+	
+/>
+
+Each of the points in the diagram above are __Cartesian coordinates__, or
+simply _coordinates_. The $x$-coordinate is formally called the
+__abscissa__ of the point, and the $y$-coordinate the __ordinate__. When we
+refer to coordinates generally, or in the abstract, we write:
+
+$$
+	P(x,y)
+$$
+
+The notation above is read "the point ${ (x,y) }$."
+
+## The Distance Formula
+The Cartesian plane constructs a bridge between algebra and geometry. Many
+theorems and ideas from geometry can be applied in continuous mathematics.
+One such theorem is the Pythagorean theorem:
+
+> __theorem__. Given a right trangle, the lengths of the sides are related by
+> the equation: ${a^2 + b^2 = c^2,}$ where ${a}$ and ${b}$ are the lengths
+> of the sides forming the right triangle, and ${c}$ is the length of the
+> hypotentuse.
+
+Conversely, if ${a,}$ ${b,}$ and ${c}$ are the sides of a triangle, and all
+three lengths are related by an equation of the form ${a^2 + b^2 = c^2,}$
+then the triangle is a right triangle, and ${c}$ is the hypotenuse.
+
+We can visualize the Pythagorean Theorem with the following diagram:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1654153307/math/pythagorean__theorem__puxuug.svg"
+	}
+	caption={"Visualizing the Pythagorean Theorem"}
+	width={50}
+	imwidth={265}
+	imheight={302}
+/>
+
+The Pythagorean Theorem leads directly to the __Distance Formula__, an
+equation that allows us to compute the distance between two points on the
+Cartesian plane:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1654153622/math/distance_formula_diagram_ibwyfc.svg"
+	}
+	caption={"Visualizing the distance formula."}
+	width={80}
+	imwidth={487}
+	imheight={427}
+/>
+
+> Formula. Given two points ${ P_1(x_1, y_1) }$ and ${ P_2(x_2, y_2) }$,
+> the distance $d$ between ${ P_1 }$ and ${ P_2 }$ is given by the formula:
+>
+> $$
+> \begin{aligned}
+> 	d^2 &= {\lvert x_2 - x_1 \rvert}^2 + { \lvert y_2 - y_1 \rvert }^2 \\
+> 	d &= \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
+> \end{aligned}
+> $$
+
+## Functions
+
+Functions. What are they? At the most basic level, a function is a rule
+assigning a number to another number. At a more abstract level, a function
+is a _relation_ between mathematical objects. There are many relations in
+mathematics (equality, inequality, congruence, proximity, etc.). Functions
+are just one kind of relation. Most commonly, functions are relations
+between numbers, where one number shares a specific relationship, defined
+by a rule, to exactly one number. More explicitly: A function is a rule
+that assigns one number to another number. Do not confuse this idea of
+"one-to-one" with "one-to-unique." A relation can still be a function even
+if one or more numbers are related to the same number.
+
+Functions can be represented in a variety of ways. We can represent
+functions algebraically, using an equation or formula: ${f(x) = \ln x,}$
+${g = \sqrt{h}}$, or ${F = ma}$. We can represent functions verbally: "For
+every $x$, there is a $y$ such that $y$ is $x$ squared." We can represent
+functions with tables, where one column lists the values of $x$, and
+another lists their corresponding $y$ values. Finally, we can represent
+functions with graphs, using a coordinate system. Regardless of the way we
+represent them, functions all express the same idea: a relationship where
+one mathematical object maps to exactly one mathematical object, according
+to a rule.
+
+A more formal definition:
+
+> __definition__. Let $A$ and $B$ be nonempty sets. A __function__ from $A$
+> to $B$ is a _rule of correspondence_ that assigns, or maps, to each
+> element in $A$ _exactly one_ element in ${B.}$
+
+Consider the following relations:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1654218453/math/functions_or_not_dc6jh8.svg"
+	}
+	caption={"Various relations"}
+	width={"30"}
+	imwidth={"252"}
+	imheight={"472"}
+/>
+
+The relation $u$ maps the elements of $A$ to the elements of ${B.}$ The
+relation $v$ maps the elements of $C$ to the elements of ${D.}$ And the
+relation $w$ maps the elements of $E$ to the elements of ${F.}$ The
+relation $u$ is a function, since it maps each element of $A$ to exactly
+one element of $B.$ The same goes for relation $v$ &mdash; each element of
+$C$ is mapped to exactly one element of ${D,}$ even if some elements of $C$
+map to the same element of ${D.}$ The relation ${w,}$ however, is _not_ a
+function, since at least one element of $E$ is mapped to more than one
+element of ${F.}$
+
+We often refer to the inputs of a function with the variable $x$, and the
+outputs of the function with the variable $y$, or $f(x)$. The input, $x$,
+is also called the _independent variable_, and the output, $f(x)$, is
+called the _dependent_ variable.
+
+A function will never give more than one output for one input. There are,
+of course, relationships where on number outputs more than one number.
+Those relationships, however, are not characterized by, or as, functions.
+We will explore those relationships later in due time.
+
+> __definition__ Given two sets $A$ and $B$, the set Cartesian product
+> $A \times B$ the set of all ordered pairs $(a,b)$, where $a \in A$ and
+> $b \in B$. A subset of $A \times B$ is called a __relation__.
+
+A __function__ is a special kind of relation. It is a pairing of elements
+in $A$ with elements in $B$, where each eleemnt in $A$ is paired with
+exactly one element in $B$. Thus, a function $f$ from $A$ to $B$ is a rule
+or relation between $A$ and $B$ that _assigns_, or _maps_, each element
+$a \in A$ to _one_ element in $b \in B$.
+
+If a function is a subset of $A \times B$, then $A$ is the __domain__ of
+the function, and $B$ is the __range__ of the function.
+
+Every function has a __natural domain__ (also called the _implied domain_).
+The natural domain of a function is the set of all elements for which the
+function is defined. Whenever we analyze or discuss a function, we set a
+natural domain. That natural domain acts as the boundary of our analysis.
+For example, when we discuss the function $f(x) = \sqrt{x}$, we may specify
+that the natural domain of $f$ is $\mathbb{R}$. Because the natural domain
+of $f$ is $\mathbb{R}$, the domain of $f$ cannot include negative real
+numbers, since $\sqrt{x}$ is undefined for $\mathbb{R}^{-}$. Because of
+this fact, we specify the domain of $f$ as:
+
+$$
+	dom(f) = \{ x \in \mathbb{R} \mid x \geq 0 \}
+$$
+
+### Properties of Functions
+
+Functions can be identified by several properties:
+
+1. A set of inputs, called the function's __domain__, denoted ${dom(f),}$
+   e.g., the domain of the function ${f(x) = x^2}$ is
+   ${dom(f) = \mathbb{R}.}$
+2. A set of all _possible_ inputs, called the function's **natural
+   domain**, denoted ${D(f),}$ e.g., the natural domain of the function
+   ${c(d) = \sqrt{d}}$ is ${ D(c) = \mathbb{R}}$, but the domain of the
+   function is ${dom(d) = \{ d \in \mathbb{R} \mid d \geq 0 \}.}$ In set
+   notation, given a function ${f,}$ ${dom(f) \subseteq D(f).}$
+3. A set of outputs, called the function's __range__, or __image__, denoted
+   ${ran(f)}$ or ${Im(f),}$ e.g., the function ${y(w) = \dfrac{1}{w}}$ has
+   the range of ${Im(y) = \mathbb{R}.}$
+4. A set of all _possible_ outputs, called the function's __codomain__, or
+   __target__, denoted ${\text{target}(f),}$ e.g., the function
+   ${h(z) = z + 1}$ has a codomain of ${\text{target}(h) = \mathbb{R},}$
+   but if we restricted ${dom(h) = \{ 1,2 \},}$ then ${Im(h) = \{ 2,3 \},}$
+   but its codomain remains ${\text{target}(h) = \mathbb{R}.}$ In set
+   notation, given a function ${f,}$ ${Im(f) \subseteq \text{target}(f);}$
+5. A name for a typical input, called a __dummy variable__, e.g., the
+   function ${g(p) = \dfrac{1}{p} }$ has the dummy variable $p$.
+6. A name for the function, e.g., the function ${m(j) = \ln j}$ has the
+   name ${m(j).}$
+7. An assignment rule or formula assigning to every element of the domain
+   exactly one element of the __codomain__, e.g., the function
+   ${r(t) = t^2 + 4t + 1}$ has the assignment rule ${t^2 + 4t + 1.}$
+8. Some functions have graphs, denoted ${G(f).}$ (We say "some" because a
+   function need not concern numbers. A relation mapping common fruit names
+   to their respective scientific names is just as much a function as
+   ${s(t) = \sqrt{t - 1}.)}$
+
+### Arrow Notation
+Functions can be represented in arrow notation:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1654218662/math/properties_functions_mapping_but937.svg"
+	}
+	caption={"Function mapping"}
+	width={"50"}
+	imwidth={"231"}
+	imheight={"93"}
+/>
+
+For example, the function ${f(x) = x^2}$, in arrow notation, is
+${f: x \mapsto x^2,}$ and its domain and codomain are represented as
+${\mathbb{R} \mapsto \mathbb{R}.}$ The benefit of arrow notation is that it
+allows us to easily restrict a function's inputs and outputs, which in turn
+allows us to differentiate functions explicitly. This is a particularly
+useful asset when the functions share the same assignment rule:
+
+Suppose the function ${f(x) = x^3 + 3x + 4.}$ The functions below all have
+the same assignment rule as ${f,}$ but they are all different functions:
+
+- ${f: x \mapsto x^3 + 3x + 4;}$ ${f: \mathbb{R} \mapsto \mathbb{R}.}$
+- ${g: x \mapsto x^3 + 3x + 4;}$ ${g: \mathbb{R} \mapsto [0, + \infty).}$
+- ${h: x \mapsto x^3 + 3x + 4;}$ ${h: [0, + \infty) \mapsto \mathbb{R}.}$
+- ${i: x \mapsto x^3 + 3x + 4;}$
+  ${i: [0, + \infty) \mapsto [0, + \infty).}$
+
+The function $f$ is neither injective nor surjective, the function $b$ is
+injective but not surjective, the function $c$ is surjective but not
+injective, and the function $d$ is a bijection.
+
+Note that in the last function, the function name $i$ was used. This is
+generally considered poor writing in mathematics, as the letter $i$ is
+almost always exclusively reserved for the imaginary number $i$ (setting
+aside the unorthodox practices of electrical engineers using $j$).
+
+## Function Graphs
+
+A function with a domain and range of real numbers can be graphed. When
+graphing functions, we use two axes—a horizontal axis for the function's
+domain (i.e., inputs) and vertical axis for function's range (i.e.,
+outputs). We call the input axis the ${\text{x-axis}}$ and the output axis
+the ${\text{y-axis.}}$
+
+> Definition. Given a function ${f,}$ the graph of ${f}$ on the ${x-y}$
+> plane consists of those points ${(x, y)}$ such that ${x}$ is the domain
+> of ${f}$ and ${y = f(x).}$
+
+### The Vertical Line Test
+
+The vertical line test allows us to determine if a particular graph
+represents a function. This is a particularly helpful result when we aren't
+provided any equation for a possible function, or if we are uncertain about
+what sets the function maps to and from.
+
+> A graph in the ${x-y}$ plane represents a function of $x$ iff any
+> vertical line intersects the graph in at most one point.
+
+For example, the graph below is not a function, since the blue vertical
+line passes through the plot at more than one point:
+
+<Plot
+	functions={[
+		{ f: (x) => Math.sqrt(x), color: "var(--red)" },
+		{ f: (x) => -Math.sqrt(x), color: "var(--red)" },
+		{ f: 5, color: "var(--red)", color: "var(--blue)", dash: 6 },
+	]}
+	id="nonfunction"
+/>
+
+### Graphing Transformations
+
+Graphs of functions serve as a bridge between geometry and algebra.
+Crossing from geometry to algebra are the definitions of _reflection_,
+_translation_, and _scaling_. All of these defines are broadly referred to
+as __transformations__—if we reflect, translate, or scale a function's
+graph, we are _transforming_ the function's graph.
+
+### Vertical Translation
+
+When we vertically translate a graph, we either shift the graph up or down
+the y-axis. For example, the following are vertical translations of the
+graph ${f(x) = x^2.}$
+
+<Plot
+	functions={[
+		{ f: (x) => x ** 2, color: "var(--red)" },
+		{ f: (x) => x ** 2 + 1, color: "var(--blue)" },
+		{ f: (x) => x ** 2 + 2, color: "var(--green)" },
+	]}
+	geo={[
+		{
+			type: "label",
+			id: "f(x) = x^2",
+			xy: [2, 0.8],
+			w: 60,
+			fill: "var(--red)",
+		},
+		{
+			type: "label",
+			id: "f(x) = x^2 + 1",
+			xy: [2, 1.8],
+			w: 60,
+			fill: "var(--blue)",
+		},
+		{
+			type: "label",
+			id: "f(x) = x^2 + 2",
+			xy: [2, 2.8],
+			w: 60,
+			fill: "var(--green)",
+		},
+	]}
+	domain={[-5, 5]}
+	range={[-5, 5]}
+	id="vertical_translation"
+/>
+
+Observe that when add a positive constant to the function's expression, we
+shift the graph up the $y$-axis. And when we add a negative constant (i.e.,
+subtraction) to the function's expression, we shift the grown down the
+$y$-axis. This logically follows from the fact that we are essentially
+adding a constant value to each element in the function's _range_. In other
+words, for every output, add or substract some constant—shift the graph up
+or down respectively.
+
+> __definition__. Let ${f(x)}$ be a function and ${c}$ a constant, where
+> ${c \in \reals.}$ Suppose ${y = f(x).}$ Substituting ${y}$ with ${y - c},$ we
+> obtain ${y - c = f(x),}$ which is equivalent to ${y = f(x) + c.}$ This is
+> a _vertical translation_ of ${f(x).}$
+>
+> If ${c \in \reals^{+},}$ then ${f(x)}$ transforms to ${f(x) + c,}$ which
+> shifts ${G(f)}$ by ${c}$ units _up_ the $y$-axis.
+>
+> If ${c \in \reals^{-},}$ then ${f(x)}$ transforms to ${f(x) + c = f(x) - c,}$
+> which shifts ${G(f)}$ by ${c}$ units _down_ the $y$-axis.
+>
+> If ${c = 0,}$ then there is no transformation, and _a fortiori_, no
+> vertical translation.
+
+### Horizontal Translation
+
+When we _horizontally translate_ a graph, we either shift the graph left or
+right along the $x$-axis. In essence, we are are adding or subtracting some
+constant from each element in the function's _domain_: For every input, add
+or substract some constant value. Horizontal translations, however, are a
+common source of error.
+
+Consider again the graph of ${y = x^2.}$ To shift the graph to the right,
+we add some negative constant ${c}$ to every input. Thus, ${y = (x - c)^2}$
+indicates a shift ${c}$ units to the right along the $x$-axis. Why is it a
+shift right? Because to get back to the original function ${y}$, we have to
+add ${c}$ units. It is the same logic behind why scrolling down with a
+mouse wheel moves this page up, or why a gear moving clockwise turns a
+second gear counter-clockwise. For example, given ${y = x^2,}$ the
+parabola's vertex is ${(0,0).}$ However, given ${y = (x-1)^2,}$ the
+parabola's vertex is now ${(1,0);}$ a shift to the right.
+
+In contrast, given ${y = (x + c)^2,}$ we have a horizontal shift to the
+_left_. Again, consider ${y = x^2.}$ The parabola is ${(0, 0).}$ When
+${y = (x + 1)^2,}$ the vertex is now ${(-1, 0);}$ a shift to the left.
+Below are horizontal translations:
+
+<Plot
+	functions={[
+		{ f: (x) => x ** 2, color: "var(--red)" },
+		{ f: (x) => (x - 1) ** 2, color: "var(--blue)" },
+		{ f: (x) => (x + 1) ** 2, color: "var(--green)" },
+	]}
+	geo={[
+		{
+			type: "label",
+			id: "f(x) = x^2",
+			xy: [3.5, 0.8],
+			w: 70,
+			fill: "var(--red)",
+		},
+		{
+			type: "label",
+			id: "f(x) = (x-1)^2",
+			xy: [3.5, 1.8],
+			w: 70,
+			fill: "var(--blue)",
+		},
+		{
+			type: "label",
+			id: "f(x) = (x+1)^2",
+			xy: [3.5, 2.8],
+			w: 70,
+			fill: "var(--green)",
+		},
+	]}
+	domain={[-5, 5]}
+	range={[-5, 5]}
+	id="horizontal_translation"
+/>
+
+In sum: If we subtract a constant, we shift right; add a constant, we shift
+left.
+
+> Definition. Let ${f(x)}$ be a function and ${c}$ a constant, where
+> ${c \in \reals.}$ Suppose ${y = f(x).}$ Substituting ${x}$ with ${x - c},$ we
+> obtain ${y = f(x - c).}$ This is a _horizontal translation_ of ${f(x).}$
+>
+> If ${c \in \reals^{+},}$ then ${f(x)}$ transforms to ${f(x - c),}$ which
+> shifts ${G(f)}$ by ${c}$ units to the _right_ along the $y$-axis.
+>
+> If ${c \in \reals^{-},}$ then ${f(x)}$ transforms to ${f(x + c)}$ which
+> shifts ${G(f)}$ by ${c}$ units to the _left_ along the $y$-axis.
+>
+> If ${c = 0,}$ then there is no transformation, and _a fortiori_, no
+> horizontal translation.
+
+## Slope
+
+The graph of an equation is the set of all points with coordinates
+satisfying the equation. For example, suppose we had the equation
+${y = x^2 + 1}$. Does the point ${(3,10)}$ lie on the equation's graph?
+Yes. Plugging ${(3,10)}$ into the equation ${y = x^2 + 1}$, we get
+${10 = (3)^2 + 1 = 9 + 10}$, which is true. Thus, the point ${3,10}$ does
+indeed lie on the graph.
+
+At very small intervals, graphs can be viewed as lines. Lines can either
+slant or remain straight, but in both cases, the line has a __slope__
+&mdash; a number that measures the line's direction.
+
+> Definition. Given two points, ${(x_1, y_1)}$ and ${(x_2, y_2)}$, the
+> slope of the line passing through the two points is the number $m$:
+
+$$
+	m = \dfrac{y_2 - y_1}{x_2 - x_1}
+$$
+
+For example, suppose we had two points, ${(-2,-1)}$ and ${(3,5)}$. On the
+Cartesian plane, these two points appear as:
+
+<Plot
+	geo={[
+		{ type: "point", xy: [-2, 1] },
+		{ type: "label", xy: [-4, 2], id: "(-2,1)" },
+		{ type: "point", xy: [3, 5] },
+		{ type: "label", xy: [3, 5], id: "(3,5)" },
+		{ type: "line", start: [-2, 1], end: [3, 5] },
+	]}
+	id="2pointPlot"
+/>
+
+The line between these two points is:
+
+$$
+	m = \dfrac{5-1}{3-(-2)} = \dfrac{4}{5}
+$$
+
+Thus, the line between ${(-2,1)}$ and ${(3,5)}$ has a slope of
+${\frac{4}{5}}$. The slope equation can also be written as:
+
+$$
+	m = \dfrac{\Delta y}{\Delta x}
+$$
+
+The variable $\Delta y$ represents the change in $y$-coordinates
+(${y_2 - y_1}$), and the variable $\Delta x$ represents the change in
+$x$-coordinates (${x_2 - x_1}$).
+
+### Comparing Slopes
+
+The slope $m$ of a line is a real number (${m \in \mathbb{R}}$). Thus, $m$
+can be a member of only one of three subsets:
+
+1. ${m \in \mathbb{R}^-}$
+2. ${m = 0}$
+3. ${m \in \mathbb{R}^+}$
+
+If $m$ is a negative real number &mdash; ${m \in \mathbb{R}^-}$ &mdash;
+then the line slants downwards to the right. If $m$ is a positive real
+number &mdash; ${m \in \mathbb{R}^+}$ &mdash; then the line slants upwards
+to the right. If ${m = 0}$, then the line is a perfectly straight
+_horizontal_ line.
+
+Given the Cartesian plane, one might wonder, aren't there two cases for
+straight lines: (a) a vertical straight line or (b) a horizontal straight
+line? Yes, there are indeed two cases, straight horizontal lines and
+straight vertical lines. But, the slope is not defined for a vertical line.
+If the two points share the same ordinate (the ${y \text{-coordinate}}$),
+then the line is a horizontal line (e.g., ${(a,b), (c,b)}$). If, however,
+the two points share the same abscissa (the ${x \text{-coordinate}}$), then
+the line is a vertical line (e.g., ${(a,b), (a,c)}$), but the slope is not
+defined. This is because calculating the slope for such a line would lead
+to an undefined result:
+
+$$
+	m = \dfrac{b - c}{a - a} = \dfrac{b - c}{0}
+$$
+
+Does the magnitude, or size, of $m$ yield any inferences? Yes.
+${\lvert m \rvert }$ represents the "steepness" of the line. The larger
+${\lvert m \rvert }$ is, the steeper the line slants (i.e., tending towards
+a straight vertical line), and the smaller ${\lvert m \rvert }$ is, the
+less the line's steepness (i.e., tending towards a straight horizontal
+line).
+
+### The Point-Slope Formula
+
+The slope formula can be rearranged in another form, yielding the
+__point-slope formula__.
+
+> _Formula_. Given a point $P_1{(x_1, y_1)}$, the equation of the line
+> passing through ${P_1}$ is given by the equation:
+>
+> $$
+> 	y - y_1 = m(x - x_1)
+> $$
+
+Because of the point-slope formula, it follows that the equation of a
+horizontal line is simply the ordinate of ${P_1}$. For example, suppose
+${P_1 = (4, -2)}$. A horizontal line is a line where ${m = 0}$, so it
+follows that the line's equation is:
+
+$$
+	\begin{aligned}
+		y - (-2) &= 0(x - 4)
+		y &= -2
+	\end{aligned}
+$$
+
+We know that a horizontal line will always have a slope of ${m = 0}$. For
+vertical lines, only the $y$-coordinate varies, and the $x$-coordinate
+remains the same. Thus, we can state more general rules for horizontal and
+vertical lines:
+
+> _Rule_. Given a point ${P_1(a,b)}$, the equation of a line passing
+> through ${P_1}$ is ${y = b}$.
+
+> _Rule_. Given a point ${P_2(a,b)}$, the equation of a line passing
+> through ${P_2}$ is ${x = a}$.
+
+### Slope-Intercept Formula
+
+If we know that a line passes through the point ${(0,b)}$, then we can
+derive yet another equation for a line: the __slope-intercept form__. Since
+the line passes through ${(0,b)}$ (i.e., the line crosses the $y$-axis),
+using the _point-slope formula_, we can conclude that ${y - b = m(x-0)}$.
+Simplifying and adding $b$ to both sides of the equation, we obtain the
+following rule.
+
+> _Formula_. Given a line with slope $m$ and a $y$-intercept $b$, the
+> equation of the line is given by the equation:
+>
+> $$
+> 	y = mx + b
+> $$
+
+If we know that a point satisfies this equation, then it must be the case
+that it lies on the line with the equation. Furthermore, whenever we see an
+equation of this form, we should be immediately aware that the equation
+graphically represents a line.
+
+### Parallel and Perpendicular Lines
+
+In geometry, we can easily notice that parallel lines slant in the same
+direction (i.e., they have the same "steepness" to their slant):
+
+<Plot
+	functions={[
+		{ f: (x) => 2 * x, color: "var(--red)" },
+		{ f: (x) => 2 * x + 2, color: "var(--blue)" },
+		{ f: (x) => 2 * x - 2, color: "var(--green)" },
+	]}
+	id="parallel_lines"
+/>
+
+Because perpendicular lines have the same slant, in algebraic terms, the
+lines have the same slope. Thus, given line ${\overleftrightarrow{\rm AB}}$
+(where $A$ and $B$ are two arbitrary points on the line) with the slope
+$m_1$ and the line ${\overleftrightarrow{\rm CD}}$ (where $C$ and $D$ are
+two arbitary points on the line) with the slope $m_2$, the lines
+${\overleftrightarrow{\rm AB}}$ and ${\overleftrightarrow{\rm CD}}$ are
+parallel if, and only if, ${m_1 = m_2}$. In other words, two lines are
+parallel, if and only if, they have the same slope.
+
+In contrast, perpendicular lines slant in the exact opposite direction,
+forming 90 degree angles:
+
+<Plot
+	functions={[
+		{ f: (x) => 2 * x + 3, color: "var(--red)" },
+		{ f: (x) => -0.5 * x - 3, color: "var(--blue)" },
+	]}
+	id="perpendicular_lines"
+/>
+
+Given that two lines are perpendicular if and only if they form 90 degree
+angles, it follows that for a line to be parallel to another line, the
+line's slope must be the negative reciprocal of the other line. Thus, given
+a line ${\overleftrightarrow{\rm EF}}$ (where $E$ and $F$ are arbitrary
+points on the line) with the slope $m_1$ and a line
+${\overleftrightarrow{\rm GH}}$ (where $G$ and $H$ are arbirary points on
+the line) with the slope $m_2$, lines ${\overleftrightarrow{\rm EF}}$ and
+${\overleftrightarrow{\rm GH}}$ are perpendicular if, and only if,
+${m_1 = - \dfrac{1}{m_2}}$.
+
+To see why a perpendicular line's slope must be the negative reciprocal of
+the other line, consider the following: First, suppose we have three lines,
+$\ell_1$, $\ell_2$, and the vertical line ${x = 1}$. Now suppose that
+${\ell_1 \perp \ell_2}$, ${\ell_1}$ has a slope ${m_1}$, and ${\ell_2}$ has
+a slope ${m_2}$. Finally, suppose that ${\ell_1}$ and ${\ell_2}$ intersect
+at the origin, ${(0,0)}$. The lines can be visually represented as:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1654218228/math/proof_perpendicular_lines_w4tk4l.svg"
+	}
+	caption={"Perpendicular lines"}
+	width={"50"}
+	imwidth={"441"}
+	imheight={"455"}
+/>
+
+Since ${\ell_1 \perp \ell_2}$, we know that that the vertical line
+${x = 1}$ intersects ${\ell_1}$ at ${(1, m_1)}$ and ${\ell_2}$ at
+${(1,m_2).}$ This is because both lines have a ${\Delta x = 1.}$
+
+Where ${\ell_1}$ and ${\ell_2}$ intersect, a right angle, ${\angle ABC}$,
+is formed, since perpendicular lines form right angles. Thus, it follows
+that there is a right triangle ${\triangle ABC,}$ since the resulting
+triangle from ${\angle ABC}$ forms a right triangle.
+
+Now, consider the distance between the origin, ${B(0,0)}$, and the point
+${A(1,m_1)}$. From the distance formula, the length of
+${\overline{\rm BA}}$ (the distance between $B$ and $A$) is
+${\overline{\rm BA} = \sqrt{1 + {m_1}^2}.}$ Similarly,
+${\overline{\rm BC} = \sqrt{1 + {m_2}^2}.}$ Thus,
+${\overline{\rm AC} = \sqrt{(1-1)^2 + (m_1-m_2)^2} = m_1 - m_2.}$
+
+From this analysis, we now know all of the lengths of the sides of
+${\triangle ABC}$:
+
+1. ${\overline{\rm BA} = \sqrt{1+{m_1}^2}}$
+2. ${\overline{\rm BC} = \sqrt{1+{m_2}^2}}$
+3. ${\overline{\rm AC} = m_1 - m_2}$
+
+Because we know the lengths for all of the sides of ${\triangle ABC,}$ we
+can express ${\triangle ABC}$ as an equation with the Pythagorean Theorem:
+
+$$
+	(\sqrt{1+{m_1}^2})^2 + (\sqrt{1+{m_2}^2})^2 = (m_1 - m_2)^2
+$$
+
+With this form, we can isolate ${m_1}$ and ${m_2}$ to separate sides of the
+equation:
+
+$$
+	\begin{aligned}
+		1 + {m_1}^2 + 1 + {m_2}^2 &= (m_1 - m_2)^2 \\
+		2 + {m_1}^2 + {m_2}^2 &= {m_1}^2 - 2{m_1}{m_2} + {m_2}^2 \\
+		2 &= -2{m_1}{m_2} \\
+		-1 &= {m_1}{m_2} \\
+		m_1 &= - \dfrac{1}{m_2} \\
+	\end{aligned}
+$$
+
+The analysis above applies regardless of where the point of intersection
+is, since perpendicular lines will always form right triangles.
+Accordingly, it follows that given a line ${\ell_1}$ with the slope ${m_1}$
+and a line ${\ell_2}$ with the slope ${m_2}$, for ${\ell_1 \perp \ell_2}$
+to be true, it must be the case that ${m_1 = - \dfrac{1}{m_2}}$.

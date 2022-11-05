@@ -1,6 +1,6 @@
 # Header Files in C++
 
-Enapsulation. The idea of **eancapsulation** is that user defined types
+Enapsulation. The idea of __eancapsulation__ is that user defined types
 have two layers: (1) an _interface_ and (2) an _implementation_. The
 interface is how the world accesses the type, and the implementation is how
 the type operates or works. These two layers are defined in separate files.
@@ -33,7 +33,7 @@ be used once during compilation. We include this line because our code
 might have a header file that relies on another header file that relies on
 another header file. This raises the danger of a possibly never-ending loop
 of searching for header files. `#pragma once` ensures that loop terminates.
-We call statements like `#pragma once` **include guards**.
+We call statements like `#pragma once` __include guards__.
 
 Because these materials assume some knowledge of object-oriented
 programming, we address `public` and `private` in brief. The symbols
@@ -78,9 +78,9 @@ double Cube::getVolume() {
 }
 ```
 
-Notice the `::`. This is called the **scope resolution operator**. This
+Notice the `::`. This is called the __scope resolution operator__. This
 operator says, place `Cube` in front of `getVolume()`. Because
-`getVolume()` is a _member function_ &mdash; i.e., a **method** &mdash; we
+`getVolume()` is a _member function_ &mdash; i.e., a __method__ &mdash; we
 must inform the compiler what class `getVolume()` belongs to. This is done
 with the scope resolution operator, `::`(two colons).
 

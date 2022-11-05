@@ -1,6 +1,6 @@
+import { scaleBand, select } from "d3";
 import React, { useRef, useEffect } from "react";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import {
 	className,
 	translate,
@@ -43,14 +43,13 @@ export const Stack = ({
 	const _svg = svg(width, height, margins);
 	const _data = formatData(data);
 	const frameCount = _data.length;
-	const _scale = d3
-		.scaleBand()
+	const _scale = scaleBand()
 		.domain(_data)
 		.range([0, frameCount * 25]);
 
 	useEffect(() => {
 		// set up group
-		const canvas = d3.select(stackFigure.current).select("g.svgElement");
+		const canvas = select(stackFigure.current).select("g.svgElement");
 		const frameGroup = canvas
 			.selectAll("g.frame")
 			.data(_data)

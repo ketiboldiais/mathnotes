@@ -41,8 +41,8 @@ this volume.
 
 In all of the languages we've seen thus far, there are rules as to what we
 can and cannot do with particular pieces of data. These are called the
-language's **syntax**. A language's syntax stems directly from the
-language's **data model** &mdash; a set of rules, or a standard, dictating
+language's __syntax__. A language's syntax stems directly from the
+language's __data model__ &mdash; a set of rules, or a standard, dictating
 how data is organized, how they relate to one another, and how the data
 relates to the real-world entities. Every programming language has a data
 model, and data models vary across languages.
@@ -50,11 +50,11 @@ model, and data models vary across languages.
 Every data model answers two questions: (1) What values can a given object
 assume in the language? (2) What operations can be performed on a given
 object? The data model's answer to the first question embodies the
-**static** aspect of the language. It tells us what values a particular
+__static__ aspect of the language. It tells us what values a particular
 object can have. This static aspect is called the language's **type
 system**.
 
-The answer to the second question is embodies the **dynamic** aspect of the
+The answer to the second question is embodies the __dynamic__ aspect of the
 language. It provides the ways in which we can change and create new values
 in the language.
 
@@ -111,8 +111,8 @@ since the first commercial release: C++98 in 1998, C++03 in 2003, C++11 in
 2011, C++14 in 2014, C++17 in 2017, and C++20 in 2020. The most drastic
 changes made to the language were C++11, C++14, C++17, and C++20. Modern
 C++ is based almost entirely on these standards, and they are the standards
-we will apply. We call all the standards before C++11 **classical C++**,
-and everything from C++11 onwards **modern C++**. The changes are so
+we will apply. We call all the standards before C++11 __classical C++__,
+and everything from C++11 onwards __modern C++__. The changes are so
 drastic that Bjarne Stroustrup has described modern C++ as effectively an
 entirely new language.
 
@@ -121,15 +121,15 @@ entirely new language.
 As mentioned, C++ is a compiled language. Our source code goes into a
 `.cpp` file. To run the source code in that `.cpp` file, we must compile
 the source code. On compilation, the `.cpp` file is transformed into an
-**object file**, with the extension `.o` or `.obj`. If our program requires
+__object file__, with the extension `.o` or `.obj`. If our program requires
 multiple `.cpp` files, those files are all compiled separately. This
 results in multiple object files, which must all be linked together for the
-program to execute. That linking is done by the **linker**. We can think of
+program to execute. That linking is done by the __linker__. We can think of
 the linker as gluing, or stitching all of the separate `.o` files together.
 
-The denouement: an **executable**. Of note, in contrast to Java programs
+The denouement: an __executable__. Of note, in contrast to Java programs
 &mdash; which compile to a `.class` file &mdash; C++ objects and
-executables are **platform-dependent**. This means that the files will not
+executables are __platform-dependent__. This means that the files will not
 run on an operating system other than the operating system we compiled
 in.[^osnote]
 
@@ -175,7 +175,7 @@ instruments, but there is one thing that keeps them all together and in
 sync.
 
 The `#include <iostream>` is an _include statement_. It is more generally
-called a **preprocessor**. In other languages like Python, it is referred
+called a __preprocessor__. In other languages like Python, it is referred
 to as an _import statement_. In other words, the `#include` is a way of
 including source code in files other than the file containing `main()`.
 Before C++ executes our program it "copies-and-pastes" the code inside
@@ -238,10 +238,10 @@ int main() {
 `main()` is a function, and the brunt of our source code is placed inside
 the function `main()` because `main()` is what the operating system calls
 when it executes a C++ program. Given this role, `main()` is called our
-program's **entry point**. The `int` prefacing `main()` is the function's
-**return type**, `main` is the function's **name**, the `()` enclose the
-function's **parameters**, and everything inside the curly braces `{}` is
-the **function body**. By convention, we will `return 0` to indicate the
+program's __entry point__. The `int` prefacing `main()` is the function's
+__return type__, `main` is the function's __name__, the `()` enclose the
+function's __parameters__, and everything inside the curly braces `{}` is
+the __function body__. By convention, we will `return 0` to indicate the
 program ran successfully. For example:
 
 ```cpp
@@ -309,12 +309,12 @@ C++ is a superset of C.
 
 From these facts, all of our C++ source code must be _compiled_ and
 _linked_ before it _executes_. The processes of compiling and linking are
-collectively called **building** &mdash; our code must first _build_ before
+collectively called __building__ &mdash; our code must first _build_ before
 it is _executed_.
 
 We raise this point because the programs in the following sections are all
 compiled via the command line. Accordingly, we must always be sure we
-perform a **clean build** with our C++ programs. Useful C++ programs tend
+perform a __clean build__ with our C++ programs. Useful C++ programs tend
 to contain many `.cpp` and `.h` files. And when we compile a program, we
 are compiling just that program. Most IDEs either build cleanly by default
 or provide an option to clean before compiling. This is not the case with
@@ -371,7 +371,7 @@ console is placed on a new line. This allows multiple console outputs to
 display on different lines.
 
 Notice further the use of semicolons after each statement. Like `Java` and
-C, C++ is a **semicolon-delimited** language, meaning statements are
+C, C++ is a __semicolon-delimited__ language, meaning statements are
 indicated as complete with semicolons. Of course, not all all languages are
 semicolon-delimited, or delimited. `Prolog` is a _full-stop delimited_
 language (periods mark the end of statements), and `Python` depends only on
@@ -379,13 +379,13 @@ tabbing.
 
 ## Compilers v. Interpreters
 
-Some programming languages are **interpreted languages**, others are
-**compiled languages**, and yet others are somewhere in the middle, a sort
+Some programming languages are __interpreted languages__, others are
+__compiled languages__, and yet others are somewhere in the middle, a sort
 of hybrid. What is the difference between an interpreted language and a
 compiled language?
 
 The most obvious difference is that a compiled language employs a
-**compiler**, while an interpreted language employs an **interpreter**.
+__compiler__, while an interpreted language employs an __interpreter__.
 Both interpreters and compilers are computer programs. The most common task
 for these programs is to check for errors. What errors a compiler or
 interpreter checks depends on its implementation. Some will only check for

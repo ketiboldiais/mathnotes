@@ -1,0 +1,229 @@
+import { Plot } from "../../../components/hago";
+
+<Head>
+	<title>Differentiability</title>
+	<meta name={`description`} content={`Notes on differentiability.`}/>
+</Head>
+
+# Differentiability
+> __~definition~.__ Let ${f}$ be a function with a domain ${D}$ where ${x \in D,}$ containing an open interval about ${x = a.}$ We say that ${f}$ is _differentiable_ at ${x = a}$ if, and only if, the following limit exists:
+> 
+> $$
+> 	L = \ll{h}{0} \dfrac{f(a+h)-f(a)}{h}.
+> $$
+> 
+> If ${L}$ exists, we denote it by writing, ${f'(a).}$ That is,
+> 
+> $$
+> 	f'(a) = L = \ll{h}{0} \dfrac{f(a+h)-f(a)}{h},
+> $$
+> 
+> and say that ${f'(a)}$ is the _derivative_ of ${f}$ at ${x = a.}$ If ${f}$ is differentiable at ${a}$ for every ${a \in D,}$ we say that ${f}$ is a _differentiable function_.
+
+Let's parse this definition carefully. First, the symbol ${f'(a)}$ is some element of a range. Specifically, it's the ordinate, in the tuple:
+
+$$
+	\ax{
+		f': a \in \dom{f} \longmapsto \ar{a,~~{\small \ll{h}{0}\dfrac{f(a+h)-f(a)}{h}}}. \\[1em]
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\uparrow \\
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{f'(a)} \\
+	}
+$$
+
+We call the ordinate of the tuple above the _derivative_ of ${f}$ at some value of ${x.}$ The process of finding the derivative is called _differentiation_, and the branch of calculus associated with this process is called _differential calculus_. The symbol ${f'}$ denotes the set of all such tuples, and we call it the _derivative function_ of ${f.}$ The process of finding the derivative function of ${f}$ is called _derivation_.
+
+$$
+	f' = {\small\lset{\ax{
+		\ar{a_1,~~{\small \ll{h}{0}\dfrac{f(a_1+h)-f(a_1)}{h}}},
+		\ar{a_2,~~{\small \ll{h}{0}\dfrac{f(a_2+h)-f(a_2)}{h}}}, \\[1em]
+		\ar{a_3,~~{\small \ll{h}{0}\dfrac{f(a_3+h)-f(a_3)}{h}}},
+		\ar{a_4,~~{\small \ll{h}{0}\dfrac{f(a_4+h)-f(a_4)}{h}}}, \\[1em]
+		\ar{a_5,~~{\small \ll{h}{0}\dfrac{f(a_5+h)-f(a_5)}{h}}},
+		\ar{a_6,~~{\small \ll{h}{0}\dfrac{f(a_6+h)-f(a_6)}{h}}}, \\[1em]
+		\vdots \\[1em]
+		\ar{a_{n-1},~~{\small \ll{h}{0}\dfrac{f(a_{n-1}+h)-f(a_{n-1})}{h}}},
+		\ar{a_{n},~~{\small \ll{h}{0}\dfrac{f(a_{n}+h)-f(a_{n})}{h}}},
+	}}}
+$$
+
+Hence, the symbol ${f'}$ is a function, whose procedure involves a limit: ${f'(a)=\ll{h}{0}\frac{f(a+h)-f(a)}{h}.}$ Notice that because ${f'}$ is defined as a function whose body is a limit, it doesn't work if ${f}$ is _discontinuous_ at ${x = a.}$ It also doesn't work entirely if ${f}$ _diverges_ at ${x = a.}$ However, if ${f}$ is differentiable, then we know for a fact that it is continuous.
+
+> __~theorem~.__ If ${f: D \to \reals}$ is differentiable at ${x = a,}$ then ${f}$ is continuous at ${x = a.}$
+
+~proof~. The proof is a straightforward application of the limit laws.
+
+$$
+	\eqs{
+		\ll{h}{0}f(a+h)-f(a) &= \ll{h}{0}\dfrac{f(a+h)-f(a)}{h} \by h. \\
+		&= \ll{h}{0}\dfrac{f(a+h)-f(a)}{h} \by \ll{h}{0} h. \\
+		&= {f'(a)} \by 0. \\
+		&= 0.
+	}
+$$
+
+We therefore have ${\ll{h}{0}f(a+h)=f(a).}$ Let ${x = a + h.}$ Since ${h}$ positive or negative, ${\ll{h}{0}f(a+h)=f(a)}$ is equivalent to ${\ll{x}{a}f(x)=f(a).}$ Hence, ${f}$ is continuous at ${x = a.}$ It's critical to keep in mind that the theorem's conditional only goes one way. That is, the converse isn't true. The fact that ${f}$ is continuous at ${x = a}$ does not imply that ${f}$ is differentiable at ${x = a.}$ There are, in fact, functions that are _continous everywhere_ and _differentiable nowhere_. We call such functions __pathological functions__. The classic example is the _Weierstrass function_.
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1666320796/math/WeierstrassFunction_cpphi6.png"}
+	imwidth={"775"}
+	imheight={"499"}
+	caption={"weierstrass"}
+	width={"50"}
+/>
+
+### Geometric Interpretation
+Consider the following graphs, read from left to right, top to bottom. At each iterate, we're making the distance between ${x_0}$ and ${x_1}$ smaller and smaller, by bringing ${x_1}$ closer and closer to ${x_0.}$ At first, we start with a _secant line_, but as we increasingly reduce the distance between ${x_1}$ and ${x_0,}$ we get increasingly closer to something that looks like a _tangent line_.
+
+<Grid cols={2}>
+
+<Plot data={[{f:(x)=>((x**2)-2*(x+3)),secant:{x0:2,x1:6},renderPoints:true}]} domain={[-2,8]} range={[-10, 35]}/>
+
+<Plot data={[{f:(x)=>((x**2)-2*(x+3)),secant:{x0:2,x1:5},renderPoints:true}]} domain={[-2,8]} range={[-10, 35]}/>
+
+$$
+	x_0 = 2, ~~ x_1 = 6
+$$
+
+$$
+	x_0 = 2, ~~ x_1 = 5
+$$
+
+<Plot data={[{f:(x)=>((x**2)-2*(x+3)),secant:{x0:2,x1:4},renderPoints:true}]} domain={[-2,8]} range={[-10, 35]}/>
+
+<Plot data={[{f:(x)=>((x**2)-2*(x+3)),secant:{x0:2,x1:3},renderPoints:true}]} domain={[-2,8]} range={[-10, 35]}/>
+
+$$
+	x_0 = 2, ~~ x_1 = 4
+$$
+
+$$
+	x_0 = 2, ~~ x_1 = 3
+$$
+
+</Grid>
+
+The geometric interpretation lends itself to a geometric defintion of the derivative:
+
+> __~geometric definition of derivative~.__ Let ${f}$ be a function with a domain ${D}$ where ${x \in D.}$ We denote the derivative of ${f}$ as ${f',}$ and define it as
+> 
+> $$
+> 	f'(x) = \ll{x_1}{x_0} \dfrac{f(x_1)-f(x_0)}{x_1 - x_0}.
+> $$
+
+This is merely a rephrase of the algebraic definition that reflects the geometric picture. Recall that the algebraic form is:
+
+$$
+	f'(x) = \ll{h}{0}\dfrac{f(x+h)-f(x)}{h}
+$$
+
+Let ${x=x_0,}$ and let ${x_1 = x_0 + h.}$ This yields ${h = x_1-x_0.}$ Putting it all together, we get:
+
+$$
+	f'(x) = \ll{h}{0}\dfrac{f(x+h)-f(x)}{h} = \ll{x_1}{x_0} \dfrac{f(x_1)-f(x_0)}{x_1-x_0}.
+$$
+
+While geometric notions don't often appear in formal proofs, they're arguably the most common starting point among proof writers. On this point, the author can't help but point out classical geometry's peculiar nature. It's a common subject in U.S. high schools, and many students feel it isn't all that useful as they enter courses like real analysis (this author was one such student). However, as we get higher up the rungs of abstract mathematics, the utility of classical geometry increases rapidly. As it turns out, a significant amount of problems in high-rung mathematics leave room for "geometric scaffolding" — thinking of particular relationships in terms of angles, products as slices of some shape, etc. These scaffolds allow us to steadily construct increasingly abstract and sophisticated solutions. The geometric definition above is just one such scaffold.
+
+### Physical Interpretation
+The derivative can also be interpreted physically — it's a _measure_ of how much one variable changes in response to a change in another variable.
+By physical, we are referring to an interpretation of the derivative in terms of applied mathematics. Under the physical interpretation, we think of the derivative as a _rate of change_.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655346504/math/average_rate_of_change_dtsdtj.svg"
+	}
+	caption={"Rate of change"}
+	width={"40"}
+	imwidth={"328"}
+	imheight={"312"}
+/>
+
+Referencing the diagram above, ${\dfrac{\Delta x}{\Delta y}}$ represents the average rate of change. The derivative ${\dfrac{dy}{dx},}$ however, represents the _instantaneous rate of change_. The concept of instantaneous rate of change underlies numerous fields, the most obvis of which are in physics:
+
+- Where ${q}$ is a charge and ${t}$ is time, ${\dfrac{dq}{dt}}$ represents
+  current.
+- Where ${s}$ is a distance ${t}$ is time, ${\dfrac{ds}{dt}}$ represents
+  speed.
+
+For example, suppose that we drop a large block from a building 80 meters
+high. Using the acceleration due to gravity (9.807 ${m/s^2}$), we have the
+following formula:
+
+$$
+	h = 80 - 5t^2
+$$
+
+where ${h}$ is the height and ${t}$ is time.
+
+Thus, at ${t = 0,}$ we are at the very top of the building.
+${h = 80 - 0 = 80.}$ At ${t = 4,}$ we are at the bottom
+${h = 80 - 5(4)^2 = 80 - 80 = 0.}$ The average speed of the block falling
+is the change in ${h}$ divided by the change in ${t:}$
+
+$$
+\begin{aligned}
+	\dfrac{\Delta h}{\Delta t} &= \dfrac{h_f - h_0}{t_f - t_0}  \\
+	&= \dfrac{0 - 80}{4 - 0}  \\
+	&= -20 m/s
+\end{aligned}
+$$
+
+Thus, the average speed of the block falling is ${20 m/s.}$ What is the
+speed of the block the moment it hits the pavement? To answer this
+question, we need to compute the instantaneous speed:
+
+$$
+	\begin{aligned}
+	&h = 80 - 5t^2 \\
+	&\dfrac{d}{dt} h = 0 - 10t \\
+	&= -10t
+	\end{aligned}
+$$
+
+Thus, at the point of impact, we have ${t = 4,}$ so ${h' = -40 m/s.}$ Thus,
+the speed of the block at the moment of impact is ${40 m/s.}$ Physically
+interpreting the derivative is not just limited to physics. In meteorology,
+we use derivatives to compute temperature gradients, which are what cause
+airflows (which in turn are what cause winds and storm systems).
+
+### Derivative Notation
+There are several notations for derivatives. All of the notations below mean the same thing as ${f'(x).}$
+
+| ~lagrange's notation~ | ~leibniz's notation~       | ~euler's notation~ | ~newton's notation~ |
+| --------------------- | -------------------------- | ------------------ | ------------------- |
+| ${f'(x)}$             | ${\dfrac{\d y}{\d x}}$     | ${(Df)(x)}$        | ${\.{y}}$           |
+| ${y'}$                | ${\dfrac{\d}{\d x}[y]}$    | ${D_xf}$           |                     |
+|                       | ${\dfrac{\d f}{\d x}}$     |                    |                     |
+|                       | ${\dfrac{\d}{\d x}[f(x)]}$ |                    |                     |
+
+Each notation has its costs and benefits. Leibniz's notation explicitly provides which variable is dependent and which variable is independent. When we see ${\frac{\d y}{\d x},}$ the ${y}$ atop the veniculum is the _dependent variable_ or _outcome_, and the ${x}$ below the veniculum is the _independent variable_ or _argument_.  That is, ${x}$ is what's changing, and ${y}$ is what's resulting. The notation ${\frac{\d f}{\d x}}$ tells us the _derivative of ${f}$_ given the argument ${x.}$
+
+Lagrange's notation was actually invented by Euler, but popularized by Lagrange. It's also often mistakenly called Newton's notation. Both Lagrange and Newton's notation are the most concise notations. However, this comes at the cost of hiding the independent variable. As such, the notation is generally avoided when it comes to functions of several variables.
+
+We won't see Euler's notation until a much later section. The notation is useful for expressing linear differential equations. To denote evaluation of a derivative at a specified ${x=a,}$ we write:
+
+$$
+	f'(a) = \eval{\di{y}{x}}{x=a}=\eval{\di{}{x}f(x)}{x=a}
+$$
+
+We read the notation above as "The derivative of ${f}$ evaluated at ${x=a.}$"
+
+### Left- and Right-hand Derivatives
+Given that the derivative is defined as a particular limit, we state another definition of the derivative to address functions defined with separate procedures for separate intervals.
+
+> __~notation~.__ Given a function ${f:D\subseteq \reals \to \reals,}$ we define the _left-hand derivative_ of ${f}$ at ${x = a}$ as
+> 
+> $$
+> 	f'_{-}(a) = \ll{h}{0^-} \dfrac{f(a+h)-f(a)}{h},
+> $$
+> 
+> and the _right-hand derivative_ of ${f}$ at ${x=a}$ as
+> 
+> $$
+> 	f'_{+}(a) = \ll{h}{0^+} \dfrac{f(a+h)-f(a)}{h}.
+> $$
+
+> __~definition~.__ Given ${f: D \subseteq \reals \to \reals,}$ we say that ${f}$ is differentiable at ${x=a,~~a \in D}$ if and only if 1. ${f}$ is [continuous](#continuous-functions) at ${x=a,}$ and 2. ${f'_{-}(a)}$ and ${f'_{+}(a)}$ both exist, with ${f'_{-}(a) = f'_{+}(a).}$
+
+### Differentiable on an Interval
+> __~definition~.__ Given ${f: D \subseteq \reals \to \reals,}$ let ${I_o}$ be the open interval ${\oio{a}{b} \in D,}$ and let ${I_c}$ be a closed interval ${\cic{a}{b} \in D.}$ If ${f}$ is [differentiable](#differentiable-functions) at ${x=c}$ for all ${c \in \oio{a}{b},}$ then we say that ${f}$ is _differentiable on an open interval_ ${\oio{a}{b}.}$ If ${f}$ is differentiable on an open interval ${\oio{a}{b}}$ and ${f'_{+}(a)}$ and ${f'_{-}(a)}$ both exist, then we say that ${f}$ is _differentiable on a closed interval_ ${\cic{a}{b}.}$

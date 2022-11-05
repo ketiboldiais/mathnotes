@@ -1,13 +1,8 @@
 import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
 
-<head>
-	<title>CPU</title>
-	<description>Notes on CPUs.</description>
-</head>
-
 # The CPU
 
-The notes in these materials cover the **Central Processing Unit**, or CPU.
+The notes in these materials cover the __Central Processing Unit__, or CPU.
 Recall the overall computer architecture:
 
 <Fig
@@ -53,7 +48,7 @@ and an A-register. An A-instruction leading to the Mux16 might look like:
 
 ]} scale={70} />
 
-In the bitstream above, the first bit is called the **op-code**. The rest
+In the bitstream above, the first bit is called the __op-code__. The rest
 of the bits is a 15-bit instruction, some numeric value. This value then
 makes its way to the A-register.
 
@@ -83,7 +78,7 @@ How about C-instructions? Well, these take the form:
 
 Like the A-instruction, the first bit tells the CPU that the instruction is
 a C-instruction. The blue bits are the ALU control bits. The green bits are
-the **destination load bits**. And the red bits are the **jump bits**.
+the __destination load bits__. And the red bits are the __jump bits__.
 
 Now that we've the instructions, let's take a closer look at what happens
 in the ALU.
@@ -127,14 +122,14 @@ send the data towards data memory.
 ## CPU Control
 
 Revisiting the diagram, we see that there are control bits coming out of
-the ALU. These are **ALU control outputs**. These control outputs are used
+the ALU. These are __ALU control outputs__. These control outputs are used
 for the ALU's control logic.
 
 Generally, the control outputs map to either a negative value or a zero
 value. To understand why these bits are needed, let's segue briefly to the
 program counter.
 
-Examining the program counter, we see a bit called the **reset bit** headed
+Examining the program counter, we see a bit called the __reset bit__ headed
 towards the chip. This bit begins travelling towards the chip when we hit
 the reset or power button on a computer. On all modern computers, there are
 several preloaded programs. When we push the power or reset button on the

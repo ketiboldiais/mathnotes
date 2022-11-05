@@ -1,10 +1,5 @@
 import { Mem, StaticArray } from "../../../components/hago";
 
-<head>
-	<title>Pointers</title>
-	<description>Notes on pointers.</description>
-</head>
-
 # Pointers
 
 <div className="outline">
@@ -135,7 +130,7 @@ purposes from the computer's perspective:
    address mapped to the variable — the array of memory blocks to get all
    of the necessary bits for the value.
 
-We distinguish between the two possibilities with **pointers**. Simply put,
+We distinguish between the two possibilities with __pointers__. Simply put,
 a pointer is a variable that stores the address of a location in memory. We
 expand this definition with a few additional terms and propositions:
 
@@ -147,11 +142,11 @@ expand this definition with a few additional terms and propositions:
    1. The _address of_ a pointer, and
    2. The _address in_ a pointer.
 3. In text, we will refer to the _address of_ a pointer as the pointer's
-   **addof**, and the _address in_ a pointer as the pointer's **addin**.
-4. The the address a pointer stores is called the pointer's **pointee**.
+   __addof__, and the _address in_ a pointer as the pointer's __addin__.
+4. The the address a pointer stores is called the pointer's __pointee__.
 5. Because the pointee is a memory address, it contains data, whether it's
    our program's data or garbage. In text, we will refer to this data as
-   the pointer's **valat** ("_value at_").
+   the pointer's __valat__ ("_value at_").
 
 ## Pointer Declaration: \*ptr = &var
 
@@ -223,7 +218,7 @@ declaration:
    variable, or
 2. `int *𝑝 = null`.
 
-If we just write `int *𝑝`, 𝑝 is effectively a **wild pointer**. The
+If we just write `int *𝑝`, 𝑝 is effectively a __wild pointer__. The
 descriptor _wild_ is fitting: 𝑝 points to _anywhere_ in memory. We never
 want a pointer that stores some random address. With a sufficiently complex
 program, it's all too easy to forget that we neglected to initialize the
@@ -403,7 +398,7 @@ After indirect transfer:
 
 Crucially, notice that the addresses haven't changed, but the values stored
 in those addresses have. This is a common pattern in C code called
-**indirect transferring**.
+__indirect transferring__.
 
 ## Aliases: ptr1 = ptr2
 
@@ -437,7 +432,7 @@ After aliasing:
 When we wrote `p1 = p2`, the `p1`'s `addin` becomes the same as `p2`'s
 addin. In effect, both `p1` and `p2` point to the same location in memory —
 the location marked as `b`. Because of this result, we say that `p1` and
-`p2` are **aliases** of the variable `b`.
+`p2` are __aliases__ of the variable `b`.
 
 ## Warning: \*ptr1 = ptr2
 
@@ -487,7 +482,7 @@ We can, however, also allocate data from _heap memory_. In C, we can do so
 with the _memory-allocate_ function:
 
 $$
-	\mm{malloc(𝑁)} \implies *𝑝
+	\texttt{malloc(𝑁)} \nc *𝑝
 $$
 
 where 𝑁 is the number of bytes we want, and \*𝑝 is the returned value, a
@@ -498,7 +493,7 @@ Because we often do not know how many bytes are needed to store a
 particular value, a common pattern in C is to use the `sizeof` operator:
 
 $$
-	\mm{sizeof(𝑇)}
+	\texttt{sizeof(𝑇)}
 $$
 
 where 𝑇 is a type. A critical fact applies whenever we allocate memory with
@@ -513,7 +508,7 @@ program will have less available memory for usage. To free the allocated
 memory, we use the `free` operator. The syntax:
 
 $$
-	\mm{free}(𝑝)
+	\texttt{free}(𝑝)
 $$
 
 where 𝑝 is the pointer returned by `malloc()`. To illustrate:
@@ -537,7 +532,7 @@ of the first byte". When we then write `*p = 57`, we are storing the value
 There's one thing we should keep in mind with `free` operator. After we
 write `free(𝑝)`, the pointer `𝑝` actually still stores its addin, say some
 address `0x2231`. When `𝑝` is in this state, we say that `𝑝` is a
-**dangling pointer**.
+__dangling pointer__.
 
 Dangling pointers exist because the `free` operator doesn't actually
 "delete" or "clear" anything. Instead, it just tells the system: "I'm no
@@ -562,7 +557,7 @@ free(p);
 free(p);
 ```
 
-This bug is so common that it's often called the **double free**. Is it
+This bug is so common that it's often called the __double free__. Is it
 that easy to forget that we've freed a pointer? In some sense, yes.
 However, a more common scenario of the double free is the following:
 
@@ -802,7 +797,7 @@ addresses, and (2) the changes we make to `b` are independent of the
 changes we make to `a`, and vice versa.
 
 The difference between these two constructs leads to a distinction between
-**pass by reference** and **pass by value**. To illustrate, look at the
+__pass by reference__ and __pass by value__. To illustrate, look at the
 output of these two functions:
 
 <Grid cols={2} rows={2}>
@@ -1009,7 +1004,7 @@ requiring us to trace to earlier functions, or (3) both.
 ### Pass-by-object-reference
 
 As an aside, some languages use another form of indirection called
-**pass-by-object**. Consider the following code's output:
+__pass-by-object__. Consider the following code's output:
 
 ```c
 struct Point {

@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from "react"; import { Base } from
-"../base/Base"; import * as d3 from "d3"; import { renderAngle, renderArea,
+"../base/Base"; import { renderAngle, renderArea,
 renderAxes, renderRectangle, renderCircle, renderRay, renderLabel, renderLine,
 renderPoint, renderLineSegment, renderBracket, } from "./renderers"; import {
 svg, getPropertyValues, canvasHelper } from "../utils"; import {
 generateFunctionData } from "./generateFunctionData/generateFunctionData";
 import { computePath } from "./computePath/computePath";
+import { axisBottom, axisLeft, scaleLinear, select } from "d3";
 
 export const Plot = ({
 	id = `plot-${Date.now()}`,
@@ -33,10 +34,10 @@ export const Plot = ({
 	axesColor = "var(--text-color)",
 	plotLineColor = "firebrick",
 	strokeWidth = 1,
-	marginTop = 20,
-	marginRight = 20,
-	marginBottom = 20,
-	marginLeft = 20,
+	marginTop = 10,
+	marginRight = 10,
+	marginBottom = 10,
+	marginLeft = 10,
 	margins = [marginTop, marginRight, marginBottom, marginLeft],
 	helpers = false,
 }) => {
@@ -46,25 +47,23 @@ export const Plot = ({
 	const _domainUpperBound = domain[1];
 	const _rangeLowerBound = range[0];
 	const _rangeUpperBound = range[1];
-	const xScale = d3.scaleLinear(
+	const xScale = scaleLinear(
 		[_domainLowerBound, _domainUpperBound],
 		[0, _svg.width],
 	);
-	const scaleDimensionX = d3.scaleLinear(
+	const scaleDimensionX = scaleLinear(
 		[0, _domainUpperBound * 2],
 		[0, _svg.width],
 	);
-	const yScale = d3.scaleLinear(
+	const yScale = scaleLinear(
 		[_rangeLowerBound, _rangeUpperBound],
 		[_svg.height, 0],
 	);
-	const xAxis = d3
-		.axisBottom(xScale)
+	const xAxis = axisBottom(xScale)
 		.tickSizeInner(3)
 		.tickSizeOuter(0)
 		.ticks(xTickCount);
-	const yAxis = d3
-		.axisLeft(yScale)
+	const yAxis = axisLeft(yScale)
 		.tickSizeInner(3)
 		.tickSizeOuter(0)
 		.ticks(yTickCount);
@@ -139,7 +138,7 @@ export const Plot = ({
 	};
 	useEffect(() => {
 		if (_plotREF.current) {
-			const canvas = d3.select(_plotREF.current).select("g.svgElement");
+			const canvas = select(_plotREF.current).select("g.svgElement");
 			const plot = canvas.append("g").attr("class", "plot");
 			if (!noAxes)
 				{renderAxes(plot,axesColor,renderXAxis,renderYAxis,_svg,

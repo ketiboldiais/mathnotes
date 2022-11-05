@@ -1,0 +1,155 @@
+import { Sequence } from "../../../components/hago";
+
+<Head>
+	<title>Sorting Algorithms</title>
+	<meta name={`description`} content={`Notes on sorting algorithms.`}/>
+</Head>
+
+# Sorting Algorithms
+_This note presents an overview of sorting algorithms_.
+
+## Definitions
+> __~sorting algorithm~.__ Let ${\Ss}$ be a set of pairs ${T=\set{(k_1, d_1),\ldots,(k_n, d_n)}}$ where each ${k_{i \le n}}$ is called a _key_ and each ${d_{i \le n}}$ is an object. A _sorting algorithm_ ${f}$ is a bijection ${f:\set{1,\ldots,n} \bij \set{f(1),\ldots,f(n)},}$ such that, for all ${a,b,c \in \set{1,\ldots,n},}$ it follows that ${k_{f(a)} \le k_{f(b)} \le k_{f(c)}.}$ That is, ${f}$ returns a permutation ${P}$ of ${\set{1,\ldots,n}}$ such that ${P}$ is the loset ${(P,\le).}$ We call the set ${T}$ the _sort domain_ and ${P}$ the _sorted image_.
+
+In plain English: A sorting algorithm takes a set of ${n}$ objects, where each object has a key ${k.}$ The algorithm's output is a permutation of each ${k,}$ which is really a mapping from the natural numbers to each key ${k.}$ For example, suppose the set were ${\set{(2,\tx{liam}),(1,\tx{kate}),(3,\tx{pete})}.}$ One permutation is ${(1,2,3),}$ which would yield ${(\tx{kate},\tx{liam},\tx{pete}).}$ Another permutation is ${(3,1,2),}$ which would yield ${(\tx{pete}, \tx{kate},\tx{liam}).}$
+
+> __~stable sorting algorithm~.__ Given the keys ${k_i}$ and ${k_j,}$ we say that a sorting algorithm ${f}$ is _stable_ if and only if ${f(i) \lt f(j)}$ whenever ${k_{f(i)} = k_{f(j)}}$ and ${i \lt j.}$ Otherwise, we say that ${f}$ is _unstable_.
+
+Plain english: We say that a sorting algorithm is _stable_ if, in the event that the unsorted sequence contains duplicates, their relative orders are maintained.
+
+Sorting algorithms are further classified as _internal sorting algorithms_ and _external sorting algorithms_. With internal sorting algorithms, the sort domain lies in memory (RAM) during every state of the sorting algorithm (allowing the algorithm quick access). With external sorting algorithms, either the entirety or parts of the sort domain lie in disk memory, requiring the algorithm to either retrieve the data or work only with what it's been given.
+
+## Bubble Sort
+Bubble sort is perhaps the best introduction to sorting algorithms because of how intuitive it is. The idea is simple: We loop through the array, comparing adjacent elements. If the current element is greater than the next element, we swap the two elements. Otherwise, we leave them as is. Continue looping and performing this process until all elements are sorted.
+
+<Algo>
+
+__~bubble sort~.__ Let ${A}$ be an array of ${n}$ records ${\ix{(k_0,d_0), \ldots (k_{n-1}, d_{n-1})}}$ where each ${k_{i \lt n}}$ is a number, and each ${d_{i \lt n}}$ is a data object. Furthermore, let ${\preceq}$ denote an order relation (e.g., ${\le,}$ or ${\ge}$). Given ${A,}$ the function ${\df{bubble}}$ sorts the elements of ${A}$ such that every element satisfies ${\preceq.}$ That is, the poset ${(A,\preceq).}$
+
+- __Argument__: ${A,}$ an array of ${n}$ records, and ${\prec,}$ an order relation.
+- __Image__: ${(A, \preceq).}$
+
+1. __function__ ${\df{bubble}(A,\preceq)}$
+	1. __for let__ ${\let{i}{0}, ~ ~ ~ i \lt \len{A} - 1, ~ ~ ~ i\texttt{++}}$
+		1. __for let__ ${\let{j}{0}, ~ ~ ~ j \lt \len{A} - i - 1, ~ ~ ~ j\texttt{++}}$
+			1. __if__ ${A\ix{j+1} \preceq A\ix{j}}$ __then__ ${\df{swap}\px{A\ix{j+1},A\ix{j}}}$
+	4. __return__ ${A}$
+
+</Algo>
+
+Below is a visualization of the sort. The yellow cells indicate a swap took
+place, and the green cells indicate the considered elements are already in
+correct order, so no swap occurs.
+
+| ${i}$ | ${j}$ | ${\textbf{state}_{n-1}}$                       | ~swap~            | ${\textbf{state}_{n}}$                         |
+| ----- | ----- | ---------------------------------------------- | ----------------- | ---------------------------------------------- |
+| 0     | 0     | ${\wd{9}\sd{1}\sd{0}\sd{4}\sd{3}\sd{7}\sd{8}}$ | ${9 \gt 1 \tf 1}$ | ${\yd{1}\yd{9}\sd{0}\sd{4}\sd{3}\sd{7}\sd{8}}$ |
+|       | 1     | ${\sd{1}\wd{9}\sd{0}\sd{4}\sd{3}\sd{7}\sd{8}}$ | ${9 \gt 0 \tf 1}$ | ${\sd{1}\yd{0}\yd{9}\sd{4}\sd{3}\sd{7}\sd{8}}$ |
+|       | 2     | ${\sd{1}\sd{0}\wd{9}\sd{4}\sd{3}\sd{7}\sd{8}}$ | ${9 \gt 4 \tf 1}$ | ${\sd{1}\sd{0}\yd{4}\yd{9}\sd{3}\sd{7}\sd{8}}$ |
+|       | 3     | ${\sd{1}\sd{0}\sd{4}\wd{9}\sd{3}\sd{7}\sd{8}}$ | ${9 \gt 3 \tf 1}$ | ${\sd{1}\sd{0}\sd{4}\yd{3}\yd{9}\sd{7}\sd{8}}$ |
+|       | 4     | ${\sd{1}\sd{0}\sd{4}\sd{3}\wd{9}\sd{7}\sd{8}}$ | ${9 \gt 7 \tf 1}$ | ${\sd{1}\sd{0}\sd{4}\sd{3}\yd{7}\yd{9}\sd{8}}$ |
+|       | 5     | ${\sd{1}\sd{0}\sd{4}\sd{3}\sd{7}\wd{9}\sd{8}}$ | ${9 \gt 8 \tf 1}$ | ${\sd{1}\sd{0}\sd{4}\sd{3}\sd{7}\yd{8}\yd{9}}$ |
+| 1     | 0     | ${\wd{1}\sd{0}\sd{4}\sd{3}\sd{7}\sd{8}\gd{9}}$ | ${1 \gt 0 \tf 1}$ | ${\yd{0}\yd{1}\sd{4}\sd{3}\sd{7}\sd{8}\gd{9}}$ |
+|       | 1     | ${\sd{0}\wd{1}\sd{4}\sd{3}\sd{7}\sd{8}\gd{9}}$ | ${1 \gt 0 \tf 0}$ | ${\sd{0}\gd{1}\gd{4}\sd{3}\sd{7}\sd{8}\gd{9}}$ |
+|       | 2     | ${\sd{0}\sd{1}\wd{4}\sd{3}\sd{7}\sd{8}\gd{9}}$ | ${4 \gt 3 \tf 1}$ | ${\sd{0}\sd{1}\yd{3}\yd{4}\sd{7}\sd{8}\gd{9}}$ |
+|       | 3     | ${\sd{0}\sd{1}\sd{3}\wd{4}\sd{7}\sd{8}\gd{9}}$ | ${4 \gt 7 \tf 0}$ | ${\sd{0}\sd{1}\sd{3}\gd{4}\gd{7}\sd{8}\gd{9}}$ |
+|       | 4     | ${\sd{0}\sd{1}\sd{3}\sd{4}\wd{7}\sd{8}\gd{9}}$ | ${7 \gt 8 \tf 0}$ | ${\sd{0}\sd{1}\sd{3}\sd{4}\gd{7}\gd{8}\gd{9}}$ |
+| 2     | 0     | ${\wd{0}\sd{1}\sd{3}\sd{4}\sd{7}\gd{8}\gd{9}}$ | ${0 \gt 1 \tf 0}$ | ${\gd{0}\gd{1}\sd{3}\sd{4}\sd{7}\gd{8}\gd{9}}$ |
+|       | 1     | ${\sd{0}\wd{1}\sd{3}\sd{4}\sd{7}\gd{8}\gd{9}}$ | ${1 \gt 3 \tf 0}$ | ${\sd{0}\gd{1}\gd{3}\sd{4}\sd{7}\gd{8}\gd{9}}$ |
+|       | 2     | ${\sd{0}\sd{1}\wd{3}\sd{4}\sd{7}\gd{8}\gd{9}}$ | ${3 \gt 4 \tf 0}$ | ${\sd{0}\sd{1}\gd{3}\gd{4}\sd{7}\gd{8}\gd{9}}$ |
+|       | 3     | ${\sd{0}\sd{1}\sd{3}\wd{4}\sd{7}\gd{8}\gd{9}}$ | ${4 \gt 7 \tf 0}$ | ${\sd{0}\sd{1}\sd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ |
+| 3     | 0     | ${\wd{0}\sd{1}\sd{3}\sd{4}\gd{7}\gd{8}\gd{9}}$ | ${0 \gt 1 \tf 0}$ | ${\gd{0}\gd{1}\sd{3}\sd{4}\gd{7}\gd{8}\gd{9}}$ |
+|       | 1     | ${\sd{0}\wd{1}\sd{3}\sd{4}\gd{7}\gd{8}\gd{9}}$ | ${1 \gt 3 \tf 0}$ | ${\sd{0}\gd{1}\gd{3}\sd{4}\gd{7}\gd{8}\gd{9}}$ |
+|       | 2     | ${\sd{0}\sd{1}\wd{3}\sd{4}\gd{7}\gd{8}\gd{9}}$ | ${3 \gt 4 \tf 0}$ | ${\sd{0}\sd{1}\gd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ |
+| 4     | 0     | ${\wd{0}\sd{1}\sd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ | ${0 \gt 1 \tf 0}$ | ${\gd{0}\gd{1}\sd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ |
+|       | 1     | ${\sd{0}\wd{1}\sd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ | ${1 \gt 3 \tf 0}$ | ${\sd{0}\gd{1}\gd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ |
+| 5     | 0     | ${\wd{0}\gd{1}\gd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ | ${0 \gt 1 \tf 0}$ | ${\gd{0}\gd{1}\gd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ |
+| 6     | 0     | ${\wd{0}\gd{1}\gd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ | ${0 \gt 1 \tf 0}$ | ${\gd{0}\gd{1}\gd{3}\gd{4}\gd{7}\gd{8}\gd{9}}$ |
+
+Needless to say, bubble sort, as implemented above, is inefficient. The entire
+collection is sorted by ${(i,j)=(1,4),}$ yet we continue performing checks. We
+can fix this by introducing a toggle ${\Delta}$ that indicates if a
+swap occurred. If a swap did occur, then ${\Delta = \tx{true},}$ otherwise, ${\Delta=\tx{false}.}$
+
+<Algo>
+
+__~revised bubble sort~__
+
+- __Argument__: ${A,}$ an array of ${n}$ records, and ${\prec,}$ an order relation.
+- __Image__: ${(A, \preceq).}$
+
+1. __function__ ${\df{bubble}(A,\preceq)}$
+	1. __for let__ ${\let{i}{0}, ~ ~ ~ i \lt \len{A} - 1, ~ ~ ~ i\texttt{++}}$
+		1. ${\let{\Delta}{\tx{true}}}$
+		2. __for let__ ${\let{j}{0}, ~ ~ ~ j \lt \len{A} - i - 1, ~ ~ ~ j\texttt{++}}$
+			1. __if__ ${A\ix{j+1} \preceq A\ix{j}}$ __then__
+				1. ${\df{swap}\px{A\ix{j+1},A\ix{j}}}$
+				2. ${\let{\Delta}{\tx{false}}}$
+		3. __if__ ${\Delta}$ __then__ ${\df{break}}$
+	2. __return__ ${A}$
+
+</Algo>
+
+Now the algorithm breaks out of the ${i}$-loop at ${i=2,}$ resulting in 7 less executions. Nevertheless, the worst possible scenario for this algorithm is where the elements are completely reveresed, in which case we wade into the order ${\bigO{n^2}.}$
+
+<Sequence data={[{f:(n)=>n**2}]} renderLolly={false} r={4} scale={50}/>
+
+## Selection Sort
+A cousin of bubble sort, the selection sort algorithm also swaps keys repeatedly, but with different swap targets. We iterate over the array, and at each current element, we search for the minimum key. Once we've find the minimum, we swap it with the current element.
+
+<Algo>
+
+__~selection sort~.__ Let ${A}$ be an array of ${n}$ records ${\ix{(k_0,d_0), \ldots (k_{n-1}, d_{n-1})}}$ where each ${k_{i \lt n}}$ is a number, and each ${d_{i \lt n}}$ is a data object. Furthermore, let ${\preceq}$ denote an order relation (e.g., ${\le,}$ or ${\ge}$). Given ${A,}$ the function ${\df{selection}}$ sorts the elements of ${A}$ such that every element satisfies ${\preceq.}$ That is, the poset ${(A,\preceq).}$
+
+- __Argument__: ${A,}$ an array of ${n}$ records, and ${\prec,}$ an order relation.
+- __Image__: ${(A, \preceq).}$
+
+1. __function__ ${\df{selection}(A,\preceq)}$
+	1. __for let__ ${{\let{i}{0}},~ ~ ~ i \lt \len{A}-1,~ ~ ~ i\texttt{++}}$
+		1. ${\let{min}{i}}$ _index of minimum_
+		2. __for let__ ${{\let{j}{i+1}}, ~ ~ ~ j \lt \len{A}, ~ ~ ~ j\texttt{--}}$
+			1. __if__ ${A\ix{j} \preceq A\ix{min}}$ __then__
+				1. ${\let{min}{j}}$
+		3. ${\df{swap}\px{A\ix{min},A\ix{i}}}$
+	2. __return__ ${A}$
+
+</Algo>
+
+Below is a trace of the sort.
+
+| ${\ith{i}}$ ~element~                          | ~compare~: ${\min}$ ~and~ ${\ith{j}}$ ~element~       | ${\min}$              |
+| ---------------------------------------------- | ----------------------------------------------------- | --------------------- |
+| ${\wd{9}\sd{1}\sd{3}\sd{2}\sd{5}\sd{8}\sd{7}}$ |                                                       | 9                     |
+|                                                | ${\bd{9}\bd{1}\sd{3}\sd{2}\sd{5}\sd{8}\sd{7}}$        | ${1 \lt 9 \nc 1}$     |
+|                                                | ${\sd{9}\wd{1}\wd{3}\sd{2}\sd{5}\sd{8}\sd{7}}$        | ${3 \not\lt 1 \nc 1}$ |
+|                                                | ${\sd{9}\wd{1}\sd{3}\wd{2}\sd{5}\sd{8}\sd{7}}$        | ${2 \not\lt 1 \nc 1}$ |
+|                                                | ${\sd{9}\wd{1}\sd{3}\sd{2}\wd{5}\sd{8}\sd{7}}$        | ${5 \not\lt 1 \nc 1}$ |
+|                                                | ${\sd{9}\wd{1}\sd{3}\sd{2}\sd{5}\wd{8}\sd{7}}$        | ${8 \not\lt 1 \nc 1}$ |
+|                                                | ${\sd{9}\wd{1}\sd{3}\sd{2}\sd{5}\sd{8}\wd{7}}$        | ${7 \not\lt 1 \nc 1}$ |
+|                                                | ~swap~ ${\yd{1}\yd{9}\sd{3}\sd{2}\sd{5}\sd{8}\sd{7}}$ |                       |
+| ${\yd{1}\wd{9}\sd{3}\sd{2}\sd{5}\sd{8}\sd{7}}$ |                                                       | 9                     |
+|                                                | ${\yd{1}\bd{9}\bd{3}\sd{2}\sd{5}\sd{8}\sd{7}}$        | ${3 \lt 9 \nc 3}$     |
+|                                                | ${\yd{1}\sd{9}\bd{3}\bd{2}\sd{5}\sd{8}\sd{7}}$        | ${2 \lt 3 \nc 2}$     |
+|                                                | ${\yd{1}\sd{9}\sd{3}\wd{2}\wd{5}\sd{8}\sd{7}}$        | ${2 \not\lt 3 \nc 2}$ |
+|                                                | ${\yd{1}\sd{9}\sd{3}\wd{2}\sd{5}\wd{8}\sd{7}}$        | ${2 \not\lt 8 \nc 2}$ |
+|                                                | ${\yd{1}\sd{9}\sd{3}\wd{2}\sd{5}\sd{8}\wd{7}}$        | ${2 \not\lt 7 \nc 2}$ |
+|                                                | ~swap~ ${\yd{1}\gd{2}\sd{3}\gd{9}\sd{5}\sd{8}\sd{7}}$ |                       |
+| ${\yd{1}\yd{2}\wd{3}\sd{9}\sd{5}\sd{8}\sd{7}}$ |                                                       | 3                     |
+|                                                | ${\yd{1}\yd{2}\wd{3}\wd{9}\sd{5}\sd{8}\sd{7}}$        | ${3 \not\lt 9 \nc 3}$ |
+|                                                | ${\yd{1}\yd{2}\wd{3}\sd{9}\wd{5}\sd{8}\sd{7}}$        | ${3 \not\lt 5 \nc 3}$ |
+|                                                | ${\yd{1}\yd{2}\wd{3}\sd{9}\sd{5}\wd{8}\sd{7}}$        | ${3 \not\lt 8 \nc 3}$ |
+|                                                | ${\yd{1}\yd{2}\wd{3}\sd{9}\sd{5}\sd{8}\wd{7}}$        | ${3 \not\lt 7 \nc 3}$ |
+|                                                | ~swap~ ${\yd{1}\yd{2}\yd{3}\sd{9}\sd{5}\sd{8}\sd{7}}$ |                       |
+| ${\yd{1}\yd{2}\yd{3}\wd{9}\sd{5}\sd{8}\sd{7}}$ |                                                       | 9                     |
+|                                                | ${\yd{1}\yd{2}\yd{3}\bd{9}\bd{5}\sd{8}\sd{7}}$        | ${5 \lt 9 \nc 5}$     |
+|                                                | ${\yd{1}\yd{2}\yd{3}\sd{9}\wd{5}\wd{8}\sd{7}}$        | ${5 \not\lt 8 \nc 5}$ |
+|                                                | ${\yd{1}\yd{2}\yd{3}\sd{9}\wd{5}\sd{8}\wd{7}}$        | ${5 \not\lt 7 \nc 5}$ |
+|                                                | ~swap~ ${\yd{1}\yd{2}\yd{3}\gd{5}\gd{9}\sd{8}\sd{7}}$ |                       |
+| ${\yd{1}\yd{2}\yd{3}\yd{5}\sd{9}\sd{8}\sd{7}}$ |                                                       | 9                     |
+|                                                | ${\yd{1}\yd{2}\yd{3}\yd{5}\bd{9}\bd{8}\sd{7}}$        | ${8 \lt 9 \nc 8}$     |
+|                                                | ${\yd{1}\yd{2}\yd{3}\yd{5}\sd{9}\bd{8}\bd{7}}$        | ${7 \lt 8 \nc 7}$     |
+|                                                | ~swap~ ${\yd{1}\yd{2}\yd{3}\yd{5}\gd{7}\sd{8}\gd{9}}$ |                       |
+| ${\yd{1}\yd{2}\yd{3}\yd{5}\yd{7}\sd{8}\sd{9}}$ |                                                       | 8                     |
+|                                                | ${\yd{1}\yd{2}\yd{3}\yd{5}\yd{7}\wd{8}\wd{9}}$        | ${8 \lt 9 \nc 8}$     |
+|                                                | ~swap~ ${\yd{1}\yd{2}\yd{3}\yd{5}\yd{7}\yd{8}\yd{9}}$ |                       |
+

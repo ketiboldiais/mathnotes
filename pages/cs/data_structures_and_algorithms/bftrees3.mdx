@@ -1,0 +1,88 @@
+import {Tree} from "../../../components/illus/components/Tree/Tree";
+
+<Grid cols={2} rows={3}>
+	<Tree
+		data={[
+			{ child: "a", parent: "", label: "none" },
+			{ child: "b", parent: "a", label: "none" },
+			{ child: "1", parent: "a", display: "none" },
+			{ child: "c", parent: "b", label: "none" },
+			{ child: "2", parent: "b", display: "none" },
+		]}
+		edgeLength={80}
+		markBalanceFactor={true}
+		margins={[20,1,20,1]}
+		scale={100}
+		width={150}
+		height={80}
+		label="Tree 1"
+		id={`cc4`}
+	/>
+	<Tree
+		data={[
+			{ child: "a", parent: "", label: "none" },
+			{ child: "1", parent: "a", display: "none" },
+			{ child: "b", parent: "a", label: "none" },
+			{ child: "2", parent: "b", display: "none" },
+			{ child: "c", parent: "b", label: "none" },
+		]}
+		edgeLength={80}
+		markBalanceFactor={true}
+		margins={[20,1,20,1]}
+		scale={100}
+		width={150}
+		height={80}
+		label="Tree 2"
+		id={`cc3`}
+	/>
+	<Tree
+		data={[
+			{ child: "a", parent: "", label: "none" },
+			{ child: "1", parent: "a", display: "none" },
+			{ child: "b", parent: "a", label: "none" },
+			{ child: "c", parent: "b", label: "none" },
+			{ child: "2", parent: "b", display: "none" },
+		]}
+		edgeLength={80}
+		markBalanceFactor={true}
+		margins={[20,1,20,1]}
+		scale={100}
+		width={150}
+		height={80}
+		label="Tree 3"
+		labelOffsetX={20}
+		id={`cc2`}
+	/>
+	<Tree
+		data={[
+			{ child: "a", parent: "", label: "none" },
+			{ child: "b", parent: "a", label: "none" },
+			{ child: "1", parent: "a", display: "none" },
+			{ child: "2", parent: "b", display: "none" },
+			{ child: "c", parent: "b", label: "none" },
+		]}
+		edgeLength={80}
+		markBalanceFactor={true}
+		margins={[20,1,20,1]}
+		scale={100}
+		width={150}
+		height={80}
+		label="Tree 4"
+		labelOffsetX={-20}
+		id={`cc1`}
+	/>
+	<Tree
+		data={[
+			{ child: "a", parent: "", label: "none" },
+			{ child: "b", parent: "a", label: "none" },
+			{ child: "c", parent: "a", label: "none" },
+		]}
+		id={`cc0`}
+		markBalanceFactor={true}
+		margins={[20,10,20,10]}
+		width={150}
+		height={80}
+		scale={100}
+		label="Tree 5"
+	/>
+</Grid>

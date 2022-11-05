@@ -359,9 +359,9 @@ Variables in C are akin to the minor characters of the Herculean saga. They
 hold information, and that information can be one of two things: (1) A
 literal value, or (2) an address. The C programmer, however, is much more
 powerful than Hercules &mdash; she can create these lesser characters at
-her bidding. This is done through **variable declaration** and
-**assignment**, which can both be done simultaneously in a process called
-**variable initialization**:
+her bidding. This is done through __variable declaration__ and
+__assignment__, which can both be done simultaneously in a process called
+__variable initialization__:
 
 ```c
 #include <stdio.h>
@@ -396,8 +396,8 @@ vs. 64b compiler).
 Examining the table below, it's helpful recall the units of computer
 memory. One byte (denoted ${1~\text{B}}$) is made of eight bits (denoted
 ${8~\text{b}}$). And a single bit is one of two values: ${0}$ or ${1.}$ An
-**unsigned 8-bit variable** is a variable that can take on values between
-${0}$ and ${2^8 - 1 = 255.}$ A **signed 8-bit variable** can take on values
+__unsigned 8-bit variable__ is a variable that can take on values between
+${0}$ and ${2^8 - 1 = 255.}$ A __signed 8-bit variable__ can take on values
 between ${\texttt{-}127}$ and ${\texttt{+}127.}$ Thus, when a variable is
 _signed_, half of its total range is spread below zero, the other half
 above zero.
@@ -516,7 +516,7 @@ for representation:
 
 <figure>$$ \{ 0,1 \} $$</figure>
 
-For computers, each binary place is called a **bit**. There are ${8}$ bits
+For computers, each binary place is called a __bit__. There are ${8}$ bits
 in a byte. Although standard C does not define binary constants, GNU C,
 clang, and other popular compilers allow us to denote binary numbers with
 the modern `0b` or `0B` prefixes:
@@ -595,7 +595,7 @@ We would expect the value of `result` to be ${1.5.}$ But notice the output:
 In C, operations performed on arguments of the same type ${t}$ will output
 a return of type ${t.}$ An `int` times an `int` is an `int`, a `float`
 divided by a `float` is a `float`. However, if we assign a value of type
-`double` to a variable of type `int`, we will **implicitly cast** the
+`double` to a variable of type `int`, we will __implicitly cast__ the
 `double` value to an `int`. This is what we're seeing above. To get back
 ${1.5,}$ we must ensure `result` is of type `double`:
 
@@ -685,7 +685,7 @@ age sum = 399
 ```
 
 The problem, however, is that the code isn't very readable. Why 12? Why 30?
-To make it more readable, we want to use **symbolic constants**:
+To make it more readable, we want to use __symbolic constants__:
 
 ```c
 #include <stdio.h>
@@ -714,7 +714,7 @@ and `OLDEST_AGE` is replaced with 30.
 
 ## Streams
 
-C provides constructs for **streams**. Such streams include, for example,
+C provides constructs for __streams__. Such streams include, for example,
 user and file I/O. Each construct is presented.
 
 ### User Input

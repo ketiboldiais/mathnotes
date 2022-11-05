@@ -1,0 +1,30 @@
+# Caches
+
+The following are a few notes on cache-like data structures.
+
+## LRU Cache
+
+The _Least Recently Used (LRU) cache_ is a dynamic data structure designed to remove elements when full, discarding the least recently used items first. As an example, suppose we used some sequential structure:
+
+$$
+	\mx{
+		\nil & \nil & \nil & \nil
+	}.
+$$
+
+Initially, the cache is empty, with a fixed-size of four. Each time we use a value we want cached, the value is pushed onto the array. Say we used 1: 
+
+$$
+	\mx{
+		1 & \nil & \nil & \nil
+	}.
+$$
+
+Continuing the usage, at some point, we end up with a full cache:
+
+$$
+	\mx{
+		1 & 2 & 3 & 4
+	}.
+$$
+

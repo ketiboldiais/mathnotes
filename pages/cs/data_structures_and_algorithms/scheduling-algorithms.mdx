@@ -1,0 +1,276 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+
+# Scheduling
+_This is a note on scheduling algorithms._
+
+1. [Scheduling Theory](#scheduling-theory)
+2. [Critical Path](#critical-path)
+	1. [Longest Path Algorithm on Adjacency Lists](#longest-path-algorithm-on-adjacency-lists)
+3. [Concurrent Tour Problem](#concurrent-tour-problem)
+
+## Scheduling Theory
+Graph theory plays a significant role in _scheduling theory_.
+
+> __~definition: task.~__ A _task_ is a quadruple ${T=(O,t,\Delta T,\omega T),}$ where ${O}$ is an operation, ${t}$ is an interval ${\ix{\df{start}(T), \df{end}(T)} \subset \pint,}$ and ${w}$ is a positive integer. We call the integer ${\df{start}(T)}$ the _start_ of ${T,}$ the integer ${\df{end}(T)}$ the _completion_ of ${T,}$ the integer ${\Delta T = \df{end}(T) - \df{start}(T)}$ the _processing time_ of ${T,}$ and ${\omega T}$ the _weight_ of ${T.}$
+
+> __~definition: job~.__ A job is a set of ${n}$ tasks: ${\Jj = \set{T_1, T_2, \ldots, T_n}.}$ Unless otherwise specified, ${\abs{\Jj} = n,}$ and for each task ${T_i \in \Jj,}$ it follows that ${\omega T_i = 1.}$ Given a set of ${n}$ jobs ${\Jj,}$ we denote the _processing time_ of ${\Jj}$ as ${\Delta \Jj,}$ defined as:
+
+$$
+	\Delta \Jj = \dsum{i=1}{n} \Delta T_i = \Delta T_1 + \Delta T_2 + \ldots + \Delta T_n.
+$$
+
+> __~definition: sequential job~.__ A _sequential job_ is a sequence of ${n}$ tasks ${\Jj = (T_1, T_2, \ldots, T_n),}$ such that the first task ${T_1}$ is completed first, the last task ${T_n}$ is completed last, and for each ${T_{1 \lt i \lt n}}$ in ${\Jj,}$ the task ${T_{i-1}}$ is completed before the task ${T_i.}$ We define ${\df{start}(\Jj)=\df{start}(T_1),}$ and ${\df{end}(\Jj)=\df{end}(T_n).}$
+
+> __~definition: timed job~.__ A _timed job_ is a sequential job such that ${\df{start}(\Jj) = a}$ and ${\df{end}(\Jj) = b}$ where ${a}$ and ${b}$ are constant positive integers with ${a \lt b.}$ We call the integer ${a}$ the _commencement_ of ${\Jj,}$ and the integer ${b}$ the _deadline_ of ${\Jj.}$
+
+> __~definition: weighted job~.__ A _weighted job_ is a sequential job such that, for any two tasks ${T_a}$ and ${T_b,}$ it follows that either ${\omega T_a \neq \omega T_b,}$ ${\df{start}(T_a) \lt \df{start}(T_b),}$ or ${\df{start}(T_b) \lt \df{start}(T_a).}$ If ${\df{start}(T_a) = \df{start}(T_b),}$ then ${T_a}$ is completed before ${T_b}$ iff ${\omega T_a \lt \omega T_b,}$ and ${T_b}$ is completed before ${T_a}$ iff ${\omega T_b \lt \omega T_a.}$
+
+> __~definition: schedule~.__ A _schedule_ is a mapping ${S:\Mm \to \Jj,}$ where ${\Jj}$ is a job or sequential job, and ${\Mm}$ is a set of objects that will perform the jobs.
+
+## Critical Path
+> __~definition: critical path~.__ Given a graph ${G}$ with vertices ${v}$ and ${w,}$ we call the longest path from ${v}$ to ${w}$ the _critical path_ from ${v}$ to ${w.}$
+
+Examining the definition of _critical path_, we can likely see where graph theory plays a critical role. Consider the following graph of a project:
+
+
+<Graph data={[
+	{link: [{id:'start',dx:-23},'a'], class: 'red'},
+	{link: ['a',{id:'end', dx:-22}]},
+	{link: ['start',{id:'b', dy: -15}]},
+	{link: ['b','end']},
+	{link: ['a','d'], class: 'red'},
+	{link: ['d','end'], class: 'red'},
+]}
+collisionRadius={10}
+edgeLength={40}
+straightEdges={true}
+isDirected={true}
+width={400}
+height={100}
+/>
+
+Each of the vertices is a job, and each edge denotes the performance of that job. If we assume that each edge counts as 1 month, the longest path (the path comprising the red edges), tells us that the minimum amount of time needed to complete the project is 3 months (the 3 red edges). This is an enormously valuable piece of information when we consider just how complex projects can get — one where there are potentially thousands of jobs depending on the completion of thousands of others.
+
+
+### Longest Path Algorithm on Adjacency Lists
+Suppose we're given the directed acyclic graph below, represented by an adjacency list. The notion of a longest path only exists in the context of directed acyclic graphs (DAGs); otherwise, we could generate the longest path by simply traversing edges in an infinite loop.
+
+<Grid cols={2}>
+$$
+	G \gets \lset{\ax{
+		a &\mapsto& \ix{b} \\
+		b &\mapsto& \ix{~} \\
+		c &\mapsto& \ix{e} \\
+		d &\mapsto& \ix{c,e} \\
+		e &\mapsto& \ix{~} \\
+		f &\mapsto& \ix{g} \\
+		g &\mapsto& \ix{c}
+	}}
+$$
+<Graph data={[
+	{link:['a',{id:'b',class:'red'}]},
+	{link:['c',{id:'e',class:'red'}],class:'red'},
+	{link:['d','c']},
+	{link:['d','e']},
+	{link:['f','g'],class:'red'},
+	{link:['g','c'],class:'red'},
+]}
+straightEdges={true}
+isDirected={true}
+height={120}
+width={250}
+fontSize={0.5}
+tx={-15}
+id={'longpath1'}
+/>
+</Grid>
+
+We've marked the longest path with red edges. Because DAGs are directed and acyclic, they will always have at least one _sink_. That is, a vertex with no outgoing edges. For the example graph above, the two sinks are ${b}$ and ${e.}$ With adjacency lists, sinks are easily-identified: They're the hashmap keys whose values are empty arrays. Because DAGs always have at least one sink, we rely on this fact as a base case.
+
+The general idea: We mark all the sinks first. Then, we traverse the entire graph ${G.}$ For each vertex we visit, we assign a ${\d \in \nat,}$ corresponding to how far the vertex is from a terminal vertex. This is done by successively incrementing the ${\d}$ value of the neighboring vertex furthest from the sink.
+
+
+<Graph data={[
+	{link:[{id:'a \\to 1',dy:-15},{id:'b \\to 0',class:'red',dx:10}]},
+	{link:[{id:'c\\to 1',dx:10},{id:'e\\to 0',class:'red',dx:10}],class:'red'},
+	{link:[{id:'d\\to 2'},'c\\to 1']},
+	{link:['d\\to 2','e\\to 0']},
+	{link:[{id:'f \\to 3',dy:5},{id:'g\\to 2',dx:9,dy:1}],class:'red'},
+	{link:['g\\to 2','c\\to 1'],class:'red'},
+]}
+straightEdges={true}
+isDirected={true}
+height={120}
+width={500}
+fontSize={0.5}
+tx={-15}
+id={'longpath2'}
+/>
+
+The longest path, then, is the maximum ${\d}$ assigned. A special case is the vertex ${d,}$ which has two outgoing edges, ${d-e}$ and ${d-c.}$ The edge ${d-e}$ is a straight path from a source to a sink, so that cannot be the longest path. On the other hand, ${d-c}$ is a path from a source to a juncture (a vertex that is neither source nor sink). When determining the longest path, we want to return the length of the path towards a juncture whenever possible. Accordingly, we increment the neighbor distance of ${c,}$ which yields 2, and assign 2 to ${d.}$
+
+<Algo>
+
+
+__~longest path: adjacency list~.__ Let ${G}$ be a directed acyclic graph, represented by an adjacency list. The function ${\df{lpathal}}$ returns the longest path in ${G.}$
+
+1. __function__ ${\df{lpathal}(G):}$
+	1. ${\let{distances}{\df{new hashmap}}}$
+	2. ${\let{P_{\max}}{-\infty}}$ _longest path variable_
+	3. __for each__ ${key \in G}$ __do__ _identify terminal vertices_
+		1.  __if__ ${G\ix{key} \mapsto \ix{~}}$ __then__ ${\let{distances\ix{key}}{0}}$
+	4. __function__ ${\df{dft}(v):}$
+		1. __if__ ${v \in distances}$ __return__ ${distances\ix{v}}$
+		2. ${\let{L}{0}}$
+		3. __for__ ${\let{i}{0},~i \lt \len{G\ix{v}},~i\texttt{++}}$
+			1. ${\let{\ell}{\df{dft}(G\ix{v}\ix{i})}}$
+			2. __if__ ${\ell \gt L}$ __then__ ${\let{L}{\ell}}$
+		4. ${\let{distances\ix{v}}{1 + L}}$
+		5. ${\let{P_{\max}}{{distances\ix{v} \gt P_{\max}~ ~?~ ~distances\ix{v}~:~P_{\max}}}}$
+		6. __return__ ${distances\ix{v}}$
+	5. __for each__ ${V \in G}$ __do__
+		1. ${\df{dft}(V)}$
+	7. __return__ ${P_{\max}}$
+
+</Algo>
+
+## Concurrent Tour Problem
+Suppose we're given a graph, represented with an edge list. Each each vertex ${v}$ corresponds to the states of some procedure, and each edge ${(a,b)}$ corresponds to the relation: ${a}$ must be visited before ${b}$ is visited. We call ${a}$ a _prerequisite_ of ${b.}$ Suppose further that each vertex takes 1 unit of time to complete, and that multiple vertices may be visited simultaneously, so long as their prerequisites, if any, have been visited. Let ${T}$ denote the sum of all units of time to visit every vertex. The problem: Construct an algorithm that returns ${\min{T}.}$ That is, the minimum ${T}$ needed to visit every vertex under assumption.
+
+<table className={'trace'}>
+<tbody>
+<thead>
+<tr>
+<th colSpan={2}>
+~example~
+</th>
+</tr>	
+</thead>
+<tr>
+<td width={'50%'}>
+Let ${G}$ be the following graph, represented by an edge list. We maintain a counter to track ${T.}$
+
+$$
+	T=1
+$$
+
+$$
+	\ix{(6,2),(6,5),(1,4),(0,5),(5,2),(3,2)}
+$$
+</td>
+<td>
+<Graph data={[
+	{link: [3,0]},
+	{link: [0,5]},
+	{link: [5,2]},
+	{link: [6,5]},
+	{link: [1,4]},
+]} height={150} width={300} straightEdges={true} isDirected={true}
+fontSize={0.4} tx={-13} ty={2} id={'11-1-1'}/>
+</td>
+</tr>
+<tr>
+<td width={'50%'}>
+We begin by visiting vertices ${\set{1,3,6}}$ since these vertices do not have prerequisites. All other courses, however, have prerequisites, so these are the only vertices we can visit at this time.
+
+$$
+	T=2
+$$
+
+</td>
+<td>
+<Graph data={[
+	{link: [{id:3,class:'on'},0]},
+	{link: [0,5]},
+	{link: [5,2]},
+	{link: [{id:6,class:'on'},5]},
+	{link: [{id:1,class:'on'},4]},
+]} height={150} width={300} straightEdges={true} isDirected={true}
+fontSize={0.4} tx={-13} ty={2} id={'11-1-2'}/>
+</td>
+</tr>
+<tr>
+<td width={'50%'}>
+The next vertices we can visit are ${\set{0,4,5}}$ since their prerequisites have completed. These are the only vertices we may visit at this time.
+
+$$
+	T=3
+$$
+
+</td>
+<td>
+<Graph data={[
+	{link: [{id:3,class:'off'},{id:0,class:'on'}]},
+	{link: [0,{id:5,class:'on'}]},
+	{link: [5,2]},
+	{link: [{id:6,class:'off'},5]},
+	{link: [{id:1,class:'off'},{id:4,class:'on'}]},
+]} height={150} width={300} straightEdges={true} isDirected={true}
+fontSize={0.4} tx={-13} ty={2} id={'11-1-3'}/>
+</td>
+</tr>
+<tr>
+<td width={'50%'}>
+The remaining vertex to visit is ${2.}$ We may visit this node, as its prerequisite has completed.
+
+$$
+	T = 4
+$$
+
+</td>
+<td>
+<Graph data={[
+	{link: [{id:3,class:'off'},{id:0,class:'off'}]},
+	{link: [0,{id:5,class:'off'}]},
+	{link: [5,{id:2,class:'on'}]},
+	{link: [{id:6,class:'off'},5]},
+	{link: [{id:1,class:'off'},{id:4,class:'off'}]},
+]} height={150} width={300} straightEdges={true} isDirected={true}
+fontSize={0.4} tx={-13} ty={2} id={'11-1-4'}/>
+</td>
+</tr>
+</tbody>
+</table>
+
+As it turns out, the minimum ${T}$ necessary to visit every vertex is the _order of the longest path_. That is, the number of vertices comprising the longest path.
+
+<Algo>
+
+- __Argument__: ${E,}$ a list of edges, and ${N,}$ the number of vertices.
+- __Image__: ${M,}$ the order of the longest path.
+
+1. __function__ ${\df{orderlp}(E,N)}$
+	1. ${\let{G}{\df{new hashmap}}}$
+	2. __for__ ${\let{i}{0},~ i \lt N, ~ i\texttt{++}}$
+		1. ${\let{{G}\ix{i}}{\df{new array}}}$
+	3. __for__ ${\let{i}{0},~i \lt N-1,~i\texttt{++}}$
+		1. ${\let{a}{E\ix{i}\ix{0}}}$
+		2. ${\let{b}{E\ix{i}\ix{1}}}$
+		3. ${\let{G\ix{a}}{\df{push}~b}}$
+	4. ${\let{distances}{\df{new hashmap}}}$
+	5. __for__ ${\let{j}{0},~k \lt N,~k\texttt{++}}$
+		1. __if__ ${G\ix{k}=\nil}$ __then__ ${\let{distances\ix{i}}{1}}$
+	6. __function__ ${\df{dft}(n)}$
+		1. __if__ ${n \in distances}$ __return__ ${distances\ix{n}}$
+		2. ${\let{\delta}{0}}$
+		3. __for__ ${\let{i}{0},~i\lt\len{G\ix{n}},~i\texttt{++}}$
+			1. ${\let{\varepsilon}{\df{dft}(G\ix{n}\ix{i})}}$
+			2. __if__ ${\varepsilon \gt \delta}$ __then__ ${\let{\delta}{\varepsilon}}$
+		4. ${\let{distances\ix{n}}{\delta + 1}}$
+		5. __return__ ${{distances}\ix{n}}$
+	7. __for__ ${\let{k}{0},~k \lt N,~k\texttt{++}}$
+		1. ${\df{dft}(k)}$
+	8. __return__ ${\max\set{distances\ix{k}}}$
+
+</Algo>
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1667338054/algodiagrams/order-longest-path_vq0t2w.svg"}
+	imwidth={"816"}
+	imheight={"750"}
+	caption={"order-longest-path"}
+	width={"90"}
+	marginTop={`4%`}
+	marginBottom={`4%`}
+/>
+

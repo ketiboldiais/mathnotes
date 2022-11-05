@@ -1,0 +1,3318 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+import { Plot as Plot2 } from "../../../components/illus/components/Plot/Plot";
+import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
+import { Plot } from "../../../components/hago/";
+
+
+# Networks  
+
+This chapter provides an overview of computer networks. We open with a question:
+What's the difference between a communication and a network?
+
+One answer: We can think of _communications_ as the plumbing of all the
+connections between computers. _Networks_ are what actually go through the
+plumbing. Under this answer, we can think of communications as
+akin to the actual, physical roads in a road system. In that sense,
+communications experts are like civil engineers; they answer questions like:
+What materials should the roads be made of? Under what temperatures do the
+materials expand and contract? How much weight can the materials support?  In
+computer networking, the civil engineer in this example is the electrical
+engineer's analog. Examining the questions, we can surmise that the electrical
+engineer's questions pertain primarily to hardware.
+
+The network experts, in contrast, are like urban planners. They answer such
+questions as: Should this particular road be a one- or two-way? How many
+lanes should this particular road have? What should the speed limit for
+this road be? Where should I place this traffic light? How long should the
+red traffic light remain on? Here, the urban planner is an analog of the
+network engineer, whose questions are primarily related to software.
+
+Another answer: A communication is the transfer of information from a
+system ${A}$ to a system ${C.}$ If the transfer must be
+given to some intermediate system—e.g., system ${B}$—in order to
+reach system ${C,}$ then we have a _network_. Otherwise, it's just
+a communication.
+
+<div className={"outline"}>
+
+1. [A Brief History](#a-brief-history)
+2. [The Internet](#the-internet)
+	1. [Network Layers](#network-layers)
+	2. [Protocols](#protocols)
+3. [Terminology](#terminology)
+	1. [Network Edges](#network-edges)
+	2. [Network Edge Protocols](#network-edge-protocols)
+	3. [Access Networks & Physical Links](#access-networks--physical-links)
+	4. [Local Area Networks (LAN)](#local-area-networks-lan)
+4. [Data Flows](#data-flows)
+5. [Introduction to Protocols](#introduction-to-protocols)
+6. [Network Components](#network-components)
+	1. [Nodes](#nodes)
+	2. [Links](#links)
+		1. [Wired Links](#wired-links)
+			1. [Ethernet](#ethernet)
+			2. [Fiber Optic Cables](#fiber-optic-cables)
+			3. [Coaxial Cable](#coaxial-cable)
+			4. [USB Cable](#usb-cable)
+		2. [Wireless Links](#wireless-links)
+	3. [Services](#services)
+	4. [Connection-oriented Services](#connection-oriented-services)
+	5. [Connectionless Services](#connectionless-services)
+7. [Network Architectures](#network-architectures)
+8. [Classifying Networks](#classifying-networks)
+	1. [Local Area Networks (LAN)](#local-area-networks-lan-1)
+	2. [Metropolitan Area Networks (MAN)](#metropolitan-area-networks-man)
+	3. [Wide Area Network (WAN)](#wide-area-network-wan)
+	4. [The Internet](#the-internet-1)
+9. [Network Topology](#network-topology)
+	1. [Bus Topology](#bus-topology)
+	2. [Ring Topology](#ring-topology)
+	3. [Star Topology](#star-topology)
+	4. [Mesh Topology](#mesh-topology)
+	5. [Hybrid Topology](#hybrid-topology)
+10. [IP Addressing](#ip-addressing)
+	1. [IPv4](#ipv4)
+		1. [IPv4 Format](#ipv4-format)
+11. [MAC Addressing](#mac-addressing)
+12. [Port Addressing](#port-addressing)
+13. [Network Switching](#network-switching)
+	1. [Circuit Switching](#circuit-switching)
+		1. [Bandwidth Allocation](#bandwidth-allocation)
+			1. [Frequency Division Multiplexing](#frequency-division-multiplexing)
+			2. [Time Division Multiplexing](#time-division-multiplexing)
+		2. [Throughput & Latency](#throughput--latency)
+	2. [Message Switching](#message-switching)
+	3. [Packet Switching](#packet-switching)
+		1. [Datagram Switching](#datagram-switching)
+		2. [Virtual Circuit Switching](#virtual-circuit-switching)
+	4. [Costs to Packet Switching](#costs-to-packet-switching)
+		1. [Packet Loss](#packet-loss)
+		2. [Packet Delay](#packet-delay)
+			1. [Nodal Processing Delays](#nodal-processing-delays)
+			2. [Queueing Delays](#queueing-delays)
+			3. [Transmission Delays](#transmission-delays)
+			4. [Propogation Delay](#propogation-delay)
+			5. [Nodal Delay](#nodal-delay)
+			6. [The Traceroute Command](#the-traceroute-command)
+14. [OSI Reference Model](#osi-reference-model)
+	1. [Layer 1: Application Layer](#layer-1-application-layer)
+	2. [Layer 2: Presentation](#layer-2-presentation)
+	3. [Layer 3: Session](#layer-3-session)
+	4. [Layer 4: Transport](#layer-4-transport)
+	5. [Layer 5: Network](#layer-5-network)
+	6. [Layer 6: Data Link](#layer-6-data-link)
+	7. [Layer 7: Physical](#layer-7-physical)
+15. [Routers](#routers)
+16. [Layers & Protocols](#layers--protocols)
+	1. [The TCP/IP Model](#the-tcpip-model)
+		1. [Protocol Data Unit (PDU)](#protocol-data-unit-pdu)
+17. [Basic Networking Commands](#basic-networking-commands)
+	1. [Domain Name Service](#domain-name-service)
+	2. [Pinging](#pinging)
+	3. [Path Tracing](#path-tracing)
+18. [Link Systems](#link-systems)
+	1. [Network Adapter](#network-adapter)
+	2. [Hubs](#hubs)
+	3. [Switches](#switches)
+	4. [Routers](#routers-1)
+	5. [Repeaters](#repeaters)
+	6. [Bridges](#bridges)
+	7. [Multilayer Switches](#multilayer-switches)
+	8. [Brouter](#brouter)
+	9. [Modem](#modem)
+	10. [Firewall](#firewall)
+19. [Transmission](#transmission)
+	1. [Wired Links](#wired-links-1)
+		1. [Copper Cables](#copper-cables)
+		2. [Fiber Optic Cables](#fiber-optic-cables-1)
+	2. [Wireless Links](#wireless-links-1)
+		1. [Bluetooth](#bluetooth)
+		2. [WiFi](#wifi)
+		3. [WiMAX](#wimax)
+		4. [Limitations of Wireless](#limitations-of-wireless)
+			1. [Bandwidth](#bandwidth)
+		5. [Caveats to Speed Tests](#caveats-to-speed-tests)
+20. [Bitrates](#bitrates)
+21. [Signals & Bandwidths](#signals--bandwidths)
+22. [Line Configurations](#line-configurations)
+	1. [Point-to-Point Connections](#point-to-point-connections)
+	2. [Multipoint Connections](#multipoint-connections)
+
+</div>
+
+
+
+## A Brief History
+
+Arguably, the key event that started everything off was the 1961
+publication of Leonard Kleinrock's paper on packet switching. Before
+Kleinrock's ideas, networks were circuit switched. If Susan called Boram,
+Susan's call would be routed to a switchboard operator, who would respond
+by asking "Good evening madame, whom shall I connect you to?" To which
+Susan would respond, "Good evening. Please connect me to Boram Seymour."
+The operator would then take a jack and plug it into a particular port,
+creating a physical, wired connection between Susan and Boram. Once
+connected, Susan and Boram can speak to one another, just as we would
+today. When Boram says, "Oh by the way," the sound waves generated by her
+voice box travel down the wired connection, reaching Susan's receiver.
+
+Kleinrock looked at all of these processes and came up with a different
+approach: Instead of having some operator manually plugging in these
+cables, why don't we do this. Take the signal, chop it up into tiny,
+discrete pieces (a process called _sampling_), assign those pieces numbers.
+For example, for the word `hi`, `h` might map to ${104,}$ `i` to ${105.}$
+Then, we'll represent ${104}$ with this particular voltage, and ${105}$
+with this other voltage. A bundle of those voltages is called a __packet__,
+and that's what will travel along the connections.
+
+## The Internet
+
+An internetwork is a set of millions of endpoints—you, me, Susan, Boram,
+Susan's Apple watch and Boram's refrigerator—connected over a network. Some
+of these endpoints are addressed by numbers, others behind a _virtual
+endpoint._ Because an internetwork is itself a node, we can connect one
+internetwork to another with a network. The network of all these
+internetworks is __the Internet__.
+
+<div id="network_components_1"></div>
+
+Say we entered the TARDIS and jump back to the 1950s, emerging into the
+sight of a tall, brooding figure—Eisenhower. Unsurprisingly astute,
+Eisenhower capitalizes on the situation: Give me a complete architecture of
+the Internet by Monday, 0900. Tall order. Where should we start?
+
+A good starting point is to be clear about what the most important
+objectives are. For the Internet, some of the most critical objectives
+include:
+
+1. _Reliability._ We want to ensure that when packets are sent from point
+  ${A}$ under the instruction to go to point ${B,}$ we want to ensure that
+  they will in fact arrive at point ${B.}$
+
+2. _Speed._ We want the packets to get to go from ${A}$ to ${B}$ as fast as
+  possible, without sacrificing the other objectives.
+
+3. _Security._ If a packet is sent from ${A}$ to only ${B,}$ the packet
+  should arrive at ${B}$ and only ${B.}$
+
+
+### Network Layers
+
+While the Internet has a rough hierarchy, it's more Pollock-meets-Picasso
+than M.C. Escher. There are outlines here and there, but much of it is a
+smorgasbord of dizzying components: hosts, routers, applications, antennas,
+satellites, cables, hardware, software, and so on. All of these components
+have unique, dedicated tasks, so how do we ensure that one component
+doesn't go off ruining things for everyone else?
+
+One way to solve this problem is to shift the way we think about the
+Internet. Instead of thinking of the Internet as some physical
+connection—as we did in the previous section—we want to think of it as a
+__service__. For example, we could think of air travel in terms of its
+physical components. There are airplanes, airports, security gates,
+travelers, flight attendants, pilots, airport restaurants, etc. And just
+like the Internet, we have regional airlines, national airlines, and
+international airlines. How does air travel not collapse because of all
+these different components and self-interests? Through **layers of
+services__ and __protocols** (i.e., laws). We'll discuss the protocol
+aspect later, but for now, let's focus on the layers of services.
+
+Suppose our friend Allen buys a ticket from Jacksonville, North Carolina,
+to LA, California. This is a fairly long flightpath. Allen goes to Albert
+J. Ellis Airport (OAJ)—a small regional airport—and boards a Southwest
+Airlines flight to LAX, a large international airport. To get to LA, Allen
+has his baggage checked in at OAJ, then gets to the gates, and eventually
+takes off. When Allen gets to LAX, he goes through the same layers of services and
+points, from bottom to top:
+
+We see the same idea at work with the Internet. Suppose we're waiting at
+O'Hare airport and we visit `CNN.com`. Entering the URL, we go through
+several layers. First, the __application layer__, our browser. By entering
+the URL into our address bar and hitting enter, we're telling the browser
+to communicate with the CNN application, stored on some server in, say,
+Atlanta. For this communication to occur, the application layer then
+creates a packet, attaches a message to it, and sends it to the **transport
+layer**, which also exists on our laptop.
+
+The transport layer receives this packet, and recognizes that it must
+deliver this packet to the _transport layer_ of the server in Atlanta. This
+is akin to how a baggage tag from the Jacksonville airport's baggage
+check-in area is only understood by the baggage handlers at the LAX baggage
+claim area. To ensure the CNN server's transportation layer understands
+what to do when it receives the transport layer's communication, the
+transport layer provides what we can think of as a barcode—some kind of
+information that allows the CNN server's transport layer to determine which
+application layer the message it receives belongs to. This information also
+ensures that the packet doesn't get lost, and in the event it does, not in
+the wrong hands. So, it adds this additional information—called a
+__segment__—to the packet.
+
+
+The transport layer then sends this packet to the __network layer__. The
+network layer's job is to determine the fastest possible route to Atlanta.
+Should it go to St. Louis then Atlanta? Indianapolis? Washington D.C.? The
+transport layer is only focused on efficiency; it doesn't worry about
+security, or whether there's anything wrong with the message. It just
+focuses on efficiency. Once the transport layer figures out the best
+possible routes to take, it adds its determinations—called a
+__datagram__—to the packet.
+
+
+The transport layer then sends the packet to the __link layer__. The link
+layer's job is to define the start (through information called the _frame
+header_) and end of the packet (the _frame footer_), as well as information
+that allows the next device's physical layer to interpret the packet:
+
+
+Once the link layer is done, it sends the packet to the **physical
+layer**—perhaps a physical cable (e.g., Ethernet or a phone line) or, in
+the modern era, a radio signal (WiFi). Let's say it's a WiFi signal. The
+physical layer—a WiFi card—receives the packet, looks at the link
+information, and tells our laptop's WiFi antenna to vibrate at particular
+frequencies (essentially, the physical form of the packet).
+
+This radio waves (the packet) is received by a __switch__, a device that
+routes packets elsewhere (in our case, a WiFi router). The WiFi router's
+physical layer—another radio antenna—receives these radio waves, and using
+the frame information, samples the signal into bits. These bits are then
+sent to the WiFi router's _link layer_.
+
+The WiFi router's link layer then looks at the datagram, and only the
+datagram (remember, each layer only understands its corresponding layer
+from the sending device). Part of the datagram contains our device's **MAC
+(Media Access Control) address**, which we can think of as our device's
+unique ID. Seeing our MAC address, the WiFi router is programmed to forward
+the packet elsewhere. To ensure the packet is sent to the next router, the
+WiFi router removes the previous frames, and adds new ones.
+
+This is because the previous frames only included information providing
+that the packet gets to the WiFi router. It's the same idea behind the
+physical baggage tag numbers for multiple flights. If a bag is supposed to
+go from JFK to ORD to LAX, the baggage handlers at JFK must include
+information providing that the bag's headed to ORD. When it gets to ORD,
+the baggage handlers there have to remove the information "To ORD",
+replacing it instead, with, "To LAX."[^wifi_note]
+
+[^wifi_note]:
+    Importantly, the WiFi router only has a physical layer and a link
+    layer. It does not have a network layer. As such, it cannot touch the
+    network, transport, and application layers' provided information.
+
+The WiFi router then sends this to a __router__, a larger device that
+directs network traffic. That router might be located in St. Louis. The
+packet goes to the router's physical layer, which samples the packet into
+bits, and sends those bits to the link layer.
+
+The link layer looks at these bits, and sees that it came from our WiFi
+router. Recognizing this fact, the link layer removes the frames, and
+passes it to the router's network layer. The network layer looks at the
+datagram, and sees that's it's supposed to go to Atlanta. So, it removes
+the old datagram and adds a new one: The new datagram provides that the
+packet should go to Atlanta, but the next hub should be Washington D.C.
+
+The network layer then hands the modified packet to the link layer. The
+link layer then adds new frames, this time including the Washington D.C.
+router's hardware address.
+
+This process continues, going from router to router, until it finally
+reaches the server in Atlanta. Once there, it passes through layers, just
+as we've discussed at length. The packet gets to the server's physical
+layer, which samples the signal into bits. The bits are sent to the link
+layer, which then sees that the packet is supposed to go to the hardware
+address of the CNN server in Atlanta. That's me!" Knowing this fact, the
+link layer removes the frames, and sends the packet up to the network
+layer.
+
+The network layer looks at the datagram, and sees that the packet is
+supposed to go to the CNN server in Atlanta. "That's me!" The network layer
+removes the datagram, and sends it up to the transport layer.
+
+The transport layer looks at the segment, which looks at the packet's
+number. Suppose that number is `195`. The transport layer asks, "What was
+previous packet's number?" It determines that it was `194` and concludes
+that the packet was received in order. So, the transport layer sends the
+packet up to the application layer.
+
+The application layer—some backend framework, perhaps Node.js—looks at the
+_message_, and sees that it's a `GET` request for `CNN.com`. So, the
+application layer creates a new packet, and in that packet's message, it
+places `CNN.com`'s `index.html` file, and sends that packet on its way. The
+process continues.
+
+### Protocols
+
+The Internet is also held together by __protocols__—rules defining the
+format of messages, the order they're sent and received among network
+entities, and the actions those entities must take upon message
+transmission and receipt.
+
+Protocols ensure that we don't have situations where messages crash into
+one another, entities talking to each other at the same time, or waiting
+too long to respond or speak.
+
+Designing these protocols is tricky. We have to balance both fairness and
+efficiency. To illustrate, consider the problem of a Zoom meeting.
+Undoubtedly, we've all witnessed the situation where attendees speak over
+one another. How might we avoid this problem? Well, we could write a
+protocol instructing attendees to be cautious: Have something to say? Wait
+for ${5}$ seconds and if no one else has spoken, speak.
+
+But does this actually solve the problem? Not really. Some of us have also
+seen situations where the Zoom speaker asks, "Any questions?" ${5}$ seconds
+pass and suddenly there are two attendees asking questions at the same
+time. A few "No please go ahead" are exchanged. ${2}$ seconds pass and
+again the two attendees speak over one another. Of course, the probability
+of a collision is lowered with the protocol, but the problem nevertheless
+remains.
+
+How about this: Attendees each have a designated ${5}$ minutes to interrupt
+and ask questions. Outside of those ${5}$ minutes, the attendee may not
+speak. This is called a __fixed scheduling__ approach, and it certainly
+avoids collisions. But what's the problem? Efficiency. Given five
+attendees, we could have a situation where the first four attendees have
+nothing to ask but the fifth attendee has plenty to ask. In which case the
+fifth attendee must not only wait for ${20}$ minutes, but could have used
+some of the unused ${20}$ minutes. This is both inefficient and unfair.
+
+The same kind of problem exists in networks. When we examine protocols in
+closer detail later, we'll find that we want to maximize the amount of
+time, but also need to be fair.
+
+## Terminology
+
+Still continuing in our broad overview, let's define a few pieces of
+terminology to help us better understand ideas in later sections.
+
+### Network Edges
+
+__Network edges__ are _internet leaves_. These are the _applications_
+(e.g., browsers, the Facebook app, Instagram, mail clients) and _hosts_
+(also called _end systems_) (web servers, file storage systems, etc).
+
+Network edges are structured in one of two approaches: the **client-server
+model__ or the __peer-to-peer model**. In the client-server model, the
+client host (e.g., a web browser) sends requests to a server that's always
+on and listening to requests, and the server responds.
+
+In the peer-to-peer model, there is no dedicated server, but every
+machine—laptop, desktop, phone, smart watch, smart refrigerator, smart
+${x}$—behaves as both a client and a server. This is the architecture
+behind Skype, Blockchain, BitTorrent, and many others. If ${x}$ and ${y}$
+are devices—called _peers_—in a peer-to-peer network, as long as both ${x}$
+and ${y}$ are on and protocols are satisfied, ${x}$ and ${y}$ can connect
+and exchange data.[^seeding_note]
+
+[^seeding_note]:
+    This is where the _seeding_ comes from in torrent services. When we
+    torrent a file, we are downloading data from some other peer on the
+    network. But, for us to download that data, the device containing that
+    data must be "turned on" in the network. The device is turned on when
+    its owner allows the torrent client to _seed_ the file. In the
+    torrenting community, network peers that torrent files but do not seed
+    are called _leechers_.
+
+### Network Edge Protocols
+
+With network edges, the primary goal is to transfer data between end
+systems. To help achieve that goal, we use protocols. For example, one
+protocol is the __Transmission Control Protocol (TCP)__. This is a protocol
+aimed at achieving three objectives:
+
+__Reliability.__ TCP-compliant devices guarantee that packets are
+transferred as a stream of bytes, called a _byte stream_. They further that
+the packets are transferred in order. That is, packet ${4}$ will never come
+before packet ${3,}$ and packet ${3}$ will always come after packet ${2.}$
+This ensures that we don't see Sammy Sosa running all the bases and then
+cut to him hitting the homerun, or Gordon Ramsay scrambling eggs followed
+by him cracking the eggs.
+
+Importantly, reliability doesn't mean we will always get the data. We've
+all seen the live Super Bowl stream where we suddenly cut to a touchdown.
+TCP's reliability objective is that it will always notify clients when it
+fails. If data is lost, or if an objective is not met, TCP will acknowledge
+its failure and retransmit.
+
+__Flow control.__ TCP-compliant _senders_ guarantee that they will inform
+TCP-compliant _receivers_ how much data they will send. This gives
+receivers notice, allowing them to prepare, decline, or inform the senders
+that they can no longer receive data. In turn, this prevents receivers from
+being overwhelmed.
+
+__Congestion control.__ Given two TCP-complaint end-hosts—e.g., our phone
+and the YouTube server—if routers between the two end-hosts become
+congested, then the server will slow down the rate at which it transmits
+packets.
+
+This congestion control ensures routers—the intermediaries between the
+YouTube server and our phone—aren't overwhelmed. Routers are devices too,
+and they have a finite amount of memory. If they run out of that memory,
+all of the packets comprising that Vine compilation we were watching are lost,
+and the stops.  We will examine these protocols in later sections, but here are
+a few brief descriptions for some of these protocols:
+
+1. __User Datagram Protocol (UDP)__ is non-TCP protocol. It's a
+   connectionless, unreliable data transfer protocol. Unlike TCP, there are
+   no flow control or congestion control guarantees. UDP, however, leads to
+   extremely fast connections. UDP is used for media streaming,
+   teleconferencing, DNS, and Internet telephony. UDP is an ideal protocol
+   for packet transfers where it would do more harm than good to retransfer
+   information, as TCP does. For example, a common UDP protocol is **Domain
+   Name Server (DNS)**. When we visit `bing.com`, our browser sends a
+   request to a domain name server. That server is essentially an address
+   book that matches names like `bing.com` to a specific numeric address
+   called an _IP address_, which is the address of the server hosting
+   `bing.com`. We can see this IP address by running the command
+   `ping ⟨www.website_address.extension⟩`. At the time of this writing,
+   it's `204.79.197.200`. This is a request for a very small amount of
+   data, so it makes more sense to use a UDP protocol, namely, DNS.
+
+2. __Hypertext Transfer Protocol (HTTP)__ is an application layer TCP
+   protocol for establishing connections between different websites. It's
+   what clients use to request data, and what servers use to respond with
+   data. HTTP is fastest when the data transfers consist of many small
+   files. This is the protocol used by the most of the websites we visit.
+   When we go to `espn.com` on our laptop, our browser sends an HTTP
+   request to the `espn.com` server, which then sends an HTTP response
+   containing the data comprising the `espn.com` page that's supposed to be
+   returned.
+
+3. __File Transfer Protocol (FTP)__ is another application layer TCP
+   protocol, used for file transfers. It's faster for single, large file
+   transfers. Applications that use FTP include FileZilla, Transmit,
+   WinSCP, and WS_FTP—all applications used for uploading, downloading, and
+   managing files on a server.
+
+4. __Telnet__ is a TCP protocol for remote logins.
+
+5. __Simple Main Transfer Protocol (SMTP)__ is a TCP protocol for sending
+   and receiving email.
+
+6. __Voice over Internet Protocol (VoIP)__ is a UDP protocol for making voice
+calls over an Internet connection instead of a regular (analog) phone line.
+Applications that use VoIP include Skype, Whatsapp, and Google Voice.
+
+### Access Networks & Physical Links
+
+As we know, routers are the large devices that connect large parts of the
+Internet to other large parts. For example, networks in Japan to networks
+in the United States. These routers are connected with large, thick,
+fiber-optic cables.
+
+Connected to these routers are smaller, regional networks. These
+connections are established through smaller, thinner cables, usually either
+fiber optic or copper.
+
+Connected to these smaller, regional networks are _end
+networks_—residential access networks (e.g., the networks provided by
+smaller ISPs like iTV and Xfinity), institutional access networks (networks
+at school or a company), and mobile access networks (networks provided by
+cell towers). These networks are connected to the smaller regional networks
+either by cable or wirelessly.
+
+Finally, connected to these end networks are our laptops, phones, tables,
+servers, and so on. These networks are connected to the smaller networks
+wirelessly (e.g., using LTE on our phone when we're travelling or our
+house's WiFi network) or by cable (e.g., an ethernet cable at work or a
+phone line).
+
+All of these connections are __links__, and they have a __bandwidth__—how
+many bits are transferred per second. More specficially, a link's bandwidth
+is the amount of frequency we have available for transferring packets. If a
+link has ${1~000~000 \text{Hz}}$ of frequency, it has ${1 \text{MHz}}$
+of bandwidth. The larger this bandwidth, the higher the rate at which we
+can transfer bits, called the __bit rate__, measured in bits per second.
+This is given by _Shannon's Theorem_:
+
+$$
+ \text{bitrate} = \text{bandwidth} \times \lg \left(1 + \dfrac{\text{P}_R}{\text{N}_R}\right)
+$$
+
+where ${\text{P}_R}$ is the power received by the receiver, and
+${\text{N}_R}$ is the noise received by the receiver. The links between
+routers—fiber optic cables—have an extremely large bandwidth. This is why
+they have bit rates of hundreds of gigabytes per second.
+
+As we get closer to the edge networks, the bandwidths get smaller. Links in
+these networks are simply physically smaller or are
+wireless.[^wireless_link_note] In the days of dial-up, physical links at
+the residential access level were shared with the phone line. This led to
+top speeds of ${56 \text{bps}}$ (far, far slower compared to today's
+speeds). It also meant we couldn't use the phone and surf the Internet at
+the same time.
+
+[^wireless_link_note]:
+    As an aside, a wireless link can never be faster than the fastest wired
+    link. This is a direct result of _Shannon's Theorem_. The term
+    that ultimately determines a bit rate is the power received by the
+    receiver. This is because the bandwidth term is independent of whether
+    a link if wired or wireless (if the only available frequencies were
+    ${2.1 \text{Hz}}$ to ${2.9 \text{Hz}}$ and we used all of them,
+    we'd have the police knocking on our door informing us our connections
+    were causing interferences).
+
+    Because the power received by the receive is what ultimately impacts
+    bit rate, wireless links can never be faster than the fastest wired
+    link. Wireless transmitters send power in all directions radially, so
+    only a fraction of the transmitted power is received by a receiver.
+    Contrast this with a wired link, where _all_ of the transmitted power
+    is directed at the receiver.
+
+Eventually, the asymmetric digital subscriber line (ADSL)[^dsl_note]
+replaced dial-up, and users started seeing upload bit rates of
+${1 \text{Mbps}}$ and download bit rates ${8 \text{Mbps}.}$ Why was
+uploading slower than downloading? Because of the way the ISPs divided the
+bandwidth: A small fraction of the bandwidth for upstreams, and most of the
+bandwidth for downstreams. Why this division? Because this was before the
+era of cloud-based services and social media—users downloaded data more
+than they uploaded.
+
+[^dsl_note]: Or _DSL_ for short.
+
+After ADSL came __cable modems__, the prevailing standard today. These
+wires were a mixture of cable and fiber, connecting homes directly to a
+local ISP's router through a shared bus. Cable modems had much bigger
+bandwidths, allowing downstream bit rates of up ${30 \text{Mbps}}$ and
+upload bit rates of ${2 \text{Mbps}.}$ The cost, however, was that
+residents had to share the connections. If everyone used the connection at
+the same time, everyone would get a fraction of the available bandwidth.
+
+The ISP companies, however, were quick to rebut the concerns, arguing that
+the probability of everyone using the connection at the same time were
+negligible. Pre-pandemic, this may have been true (although, there are
+clearly peak traffic times; e.g., people getting home at ${6}$ and
+streaming Netflix while they eat dinner). But it certainly wouldn't have
+been the case during Covid times.
+
+Nevertheless, plenty of people bought the argument, and the ISPs eventually
+generated enough income to increase their cable bandwidths, to the point
+where they are now the standard for physical links at the residential
+access level.[^isp_note]
+
+[^isp_note]:
+    Of note, some ISPs today engage in suspicious marketing endeavors,
+    advertising "point-to-point" connections, where the connection bus
+    splits in different directions, with each resident having their own
+    access point. As much as the ISPs advertise these connections as
+    "personal" or "private," they're still shared connections.
+
+### Local Area Networks (LAN)
+
+A __local area network (LAN)__ is a group of computers or other devies that
+share a wired or wireless link to a nearby edge router. For example, an
+apartment might provide free WiFi, in which case all of the apartment's
+residents share the link. Other examples include the computers in a
+hospital, a university lab, or corporate office. A LAN could have as few as
+two or three devices (e.g., a resident's WiFi network), or as many as
+several thousands (a large corporate office).
+
+A common technology associated with LAN is ethernet. For example, some
+hotels provide an ethernet cable for guests to use. That cable ultimately
+leads to some router in the hotel, which then leads to an edge router
+elsewhere. Ethernet connections today support bitrates ranging from
+${10 \text{Mbps}}$ to ${1 \text{Gbps}.}$
+
+Wireless LANs are what we're likely most familar with. Wireless LANs are
+informally called _WiFi networks_, and more formally called _802.11b/g
+networks_. When WiFi was first released to the public (1999), users saw
+bitrates of about ${2 \text{Mbps}.}$ Today, we get anywhere from ${100}$
+to ${200 \text{Mbps}.}$
+
+
+
+
+## Data Flows
+
+On a computer network, bits flow from one node to another. Those bits constitute
+data, and they are what enable _communication_ — the exchange of information
+from one entity to another.
+
+1. __Simplex.__ The flow of bits is always in one direction — one device
+   sends the bits, the other receives. Examples include wired headphones,
+   traditional monitors, keyboards, the thermostat in a room, etc.
+
+  $$
+  \A \to \B
+  $$
+
+2. __Half duplex.__ The flow of bits is in both directions, _intermitently_. One
+   device sends and receives, the other also sends and receives, _but not at the
+   same time_. One device must wait for the other to finish. If one device is
+   sending bits, the other must receive. The classic example of this data flow:
+   walkie-talkies.
+
+  $$
+  \A \leftrightarrow \B
+  $$
+
+3. __Full duplex.__ The flow of bits is in both directions, _simultaneously._
+   Here, both devices can send and receive _at the same time_. The most obvious
+   example: A telephone line.
+
+  $$
+  \A \rightleftarrows \B
+  $$
+
+## Introduction to Protocols
+
+_Protocols_ are sets of rules, agreed to by nodes on a network, that govern data
+flows. Much like how there are different areas of law (e.g., patent law,
+trademark law, contract law, etc.), protocols vary widely. All protocols,
+however, are intended to answer the following questions:
+
+1. Who sends data?
+2. Who receives data?
+3. What path should data transmissions take?
+4. How should transmitted data be formatted?
+5. When should data be sent?
+6. When should data be received?
+
+Why do we need protocols? Because without them, the communication between two
+entities is, at best, nonsensical. Node ${\A}$ speaks in some language ${a,}$
+but node ${\B}$ only understands ${b.}$ Node ${\B}$ talks at ${2\times}$ speed,
+but node ${\A}$ can only listen to speech as fast as ${1.5\times.}$ This
+comparison falsely implies similarities between human and computer communication
+— computer communications are plagued with far more issues.
+
+With computers, we must also specify: message encoding, message formatting,
+message timing, message size, and message delivery methods. Why? Because there's
+a third piece to the puzzle: the _link_ itself. We can think of a link as a
+tunnel. If the tunnel only has a radius of 5 feet, there's no way we can fit a
+semitruck without breaking the tunnel. The same idea extends to links. If a link
+can only accomodate a message size of 4 bits, there's no way we can send a whole
+byte in one go.
+
+__Message Encoding.__ For a node ${\A}$ to send a message to node ${\B,}$ ${\A}$
+must first _encode_ its message. Why? Because ${\A}$ and ${\B}$ might be
+connected through many different types of links. The link could be a Bluetooth,
+Ethernet, WiFi, etc. For the message to travel along that link, it must be
+translated into a form that can actual travel along that link. If ${\A}$ and
+${\B}$ are connected by wire, ${\A}$ sends its message to a
+device or software (called an _encoder_) that can translate its message into
+_signals_. If ${\A}$ and ${\B}$ are connected wirelessly, ${\A}$ sends its
+message to an encoder that can translate its message into _waves_.
+
+Once the encoder's finished translating, it sends the signals/waves to a
+_transmitter_ — a device/software that can place the signals/waves on the
+transmission medium. After entering the transmission medium, the signals/waves
+travel to ${\B}$'s _receiver_. This device/software takes the signals/waves and
+transfers them to a _decoder_. The decoder then takes signals/waves and
+translates them into a form that ${\B}$ can understand.
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662464185/cs/message_encoding_qr1zat.svg"}
+ imwidth={"451"}
+ imheight={"252"}
+ caption={"message encoding"}
+ width={"70"}
+/>
+
+__Message Formatting.__ Both ${\A}$ and ${\B}$ must agree on how messages are
+formatted. At a bare minimum, the message must identify both the sender and the
+receiver. To ensure that agreement occurs, we use a protocol.
+
+__Message size.__ Protocols also specify how large or small a message can be. In
+a typical writing class (at least for English), we're taught to break long
+sentences into shorter ones. While this author doesn't follow that rule too
+closely, computers don't have that liberty. If a protocol sets a ceiling on how
+large a message can be, messages that exceed that ceiling must be broken down
+into smaller sizes. Likewise, if a protocol sets a floor on how small a message
+can be, tiny messages must be either gathered or padded to achieve the minimum
+size.
+
+__Message Timing.__ Protocols further specify deadlines for when a message
+should be sent or received. These rules ensure that (1) network traffic is
+controlled, and (2) that nodes whoe "talk too fast" don't overwhelm nodes who
+"listen too slow." If a node fails to respond to a message within an ${x}$
+amount of time, the protocol specifies what the sender or receiver should do
+next (e.g., a _response timeout_).
+
+__Message Delivery Method.__ Finally, protocols dictate how messages are
+delivered. There are three common methods. In the __unicast__ method, the
+sending node's message goes to exactly one other node on the network.
+  
+ <Fig
+  link={"https://res.cloudinary.com/sublimis/image/upload/v1662465879/cs/unicast_exk2hz.svg"}
+  imwidth={"321"}
+  imheight={"281"}
+  caption={"unicast"}
+  width={"25"}
+ />
+
+In the __multicast__ method, the sending node's message goes to a
+subset of the other network nodes.
+  
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662465874/cs/multicast_sujm59.svg"}
+ imwidth={"321"}
+ imheight={"281"}
+ caption={"multicast"}
+ width={"25"}
+/>
+  
+In the __broadcast__ method, the sending node's message goes to
+all the other network nodes.
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662465885/cs/broadcast_elp0zm.svg"}
+imwidth={"321"}
+imheight={"281"}
+caption={"broadcast"}
+width={"25"}
+/>
+
+The classic example of a broadcast network is FM radio. If we tune into a
+particular frequency, we can receive all messages transferred over that network.
+
+To put all of this together, consider the following network:
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662473846/cs/big_network_rgwazu.svg"}
+ imwidth={"681"}
+ imheight={"428"}
+ caption={"large network"}
+ width={"70"}
+/>
+
+In the diagram above, each circle represents a node on the network, a diamond
+indicates a network connected to the network, a solid line indicates a wired
+connection, and a dashed line indicates a wireless connection.
+
+Each node on the network is identified by an _IP (Internet Protocol) address_.
+We'll discuss IP addresses at length in a separate section, but for now, we can
+think of it as the node's unique identifier (i.e., the labels for each node).
+For example, suppose node ${A}$ wants to read an article from CNN. That article
+is stored at server ${\A.}$ To read that article, ${A}$ must send a _request_
+to server ${\A.}$ For that request to get to server ${\A,}$ it must provide an
+IP address.
+
+The moment node ${A}$ sends the request, a timer is initiated. Server ${\A}$
+must send back an _acknowledgement_ (i.e., a "read receipt") to node ${A}$
+before the timer ends. If node ${A}$ doesn't get the acknowledgement back before
+the timer ends, it concludes that the request never made it to server ${\A,}$
+and sends another request.
+
+Next, say node ${C}$ wants to download an operating system hosted at server
+${\C.}$ This requires transferring a message to the tune of several
+gigabytes. Because of how large this message is, it must be broken down into
+smaller messages. But, much like the metaphysical problems of teleportation, if
+we break something down into smaller pieces, it must be reassembled back
+correctly. Otherwise, node ${C}$'s downloaded data would be corrupt. To ensure
+these small pieces are reassembled correctly, each of the pieces are assigned
+numbers according to the protocol's _numbering scheme_. The numbering scheme
+also provides a way for node ${C}$ to determine what pieces are missing.
+
+The network above is an example of a __client-server network__ — a network
+governed by the client-sever model: Networks are designed according to the
+premise that there's always a client (some node sending a request) and a server
+(a node that responds to the request). All the nodes are connected to a hub
+which processes their requests, but the responses to those requests are done by
+a server. This ensures scalability, but presents the problem of _server
+overload_. If too many requests are sent to the server, it can run out of memory
+and crash.
+
+There are, however, other types of networks. In a __peer-to-peer network__, all
+peers are equal, and there is no centralized administration. A simple example is
+a group of computers connected to a single hub by wire. Each computer has the
+same sending and receiving rights as the others. Peer-to-peer networks are
+useful for small applications, but they are not scalable. If the hub only has 8
+ports, then only 8 computers can participate in the network at any given time.
+
+## Network Components
+
+A computer network can be broken down into several components:
+
+1. nodes
+2. links
+3. services
+
+### Nodes
+
+A node is a network participant that can send, receive, or both send and receive
+data. There are two types of nodes: (1) _end nodes_ and (2) _intermediary
+nodes_. End nodes are the participants that start and end the communication.
+This includes devices like laptops, smartphones, tablets, printers, VoIP phones,
+security cameras, wireless debit/credit card reads, barcode scanners, PDAs, fax
+machines, and so on.
+
+Intermediary nodes are nodes that only forward data from one node to another.
+Common examples: Switches, bridges, wireless access points, hubs, routers,
+repeaters, security entities (e.g., Firewalls), cell towers, satellites, and
+many others.
+
+### Links
+
+Also called a _medium_ (plural _media_), a _link_ is a connection between nodes.
+There are two types of links: (1) _wired links_ and (2) _wireless links_. Wired
+links are said to be _guided_ because they're physically restricted in space.
+Wireless links, however, are said to be _unguided_, as they have no such
+restriction.
+
+#### Wired Links
+
+The most common examples of wired links include: Ethernet cables, fiber optic
+cables, coaxial cables, and USB cables. We examine each of these links in turn.
+
+##### Ethernet
+
+Ethernet cables come in two forms: _ethernet straight-through cables_ and
+_ethernet crossover cables_. To connect nodes of different types (e.g., a laptop
+and a router), we use an ethernet straight-through cables. To connect nodes of
+the same type (e.g., a router and a router), we use an _ethernet crossover
+cable_. On an Ethernet link, data is transferred as a sequence of electrical
+signals.
+
+##### Fiber Optic Cables
+
+In a fiber optic cable, data is tansferred in the form of light waves. Because
+light travels at the fastest possible speed — the speed of light — fiber optic
+cables provide the fastest wired link for data transfer. This also means they
+are the most expensive wired link.
+
+##### Coaxial Cable
+
+Coaxial cables are copper wires, commonly found behind a TV box. Like Ethernet
+cables, coaxial cables transfer data in the form of electrical signals. The
+primary difference between Ethernet and coax: Coaxial cables are primarily used
+to transfer data over long distances because they're heavily shielded and
+robust. This is in contrast to Ethernet cables, which are, usually, a pair of
+lightly-shielded, twisted, metal wires that transfer data over short distances.
+
+##### USB Cable
+
+USB cables are the thinnest and slowest wired links. We use them for light data
+transfers, such as transferring data from a smart phone to a laptop.
+
+#### Wireless Links
+
+Wireless links come in four types: (1) _infrared links_, (2) _radio links_, (3)
+_microwave links_, and (4) _satellite links_. Some examples:
+
+| Link       | Example                         |
+| ---------- | ------------------------------- |
+| infrared   | short-range emitters; TV remote |
+| radio      | Bluetooth, WiFi                 |
+| microwaves | cellular service                |
+| satellite  | long-range emitters; GPS        |
+
+### Services
+
+The final component of a network is its _services_ — the functionalities that
+the network can provide. The fact that one network provides a particular service
+doesn't imply that another network will also provide it. For example, a small
+peer-to-peer network might provide file sharing services, but not online gaming.
+The network's services component determines what we can and cannot do on the
+network.
+
+The overarching service provided by a network is _communication
+infrastructure_. It provides a way to transfer data from one system to another,
+across both time and space.  And with the ability to transfer data spatially and
+temporally, we get _distributed applications_ — web browsing, email, online
+gaming, e-commerce, file sharing, etc.
+
+Generally, there are two types services in networking: (1)
+_connectionless-unreliable services (CUs)_ and (2)
+_connection-oriented-reliable services (CORs)_. CUs are services where the
+participants do not coordinate their communications before engaging in
+communication. These services are analogous to paying a bill via USPS's airmail.
+If ${A}$ wants to pay electric company ${B}$ via mail, ${A}$ merely places the
+payment in an envelope, stamps it, and drops the letter off at the post office
+or in a nearby collection box. ${B}$ has no idea that there's money headed their
+way, but they'll eventually receive it, or they may not.
+
+In contrast, CORs are analogous to paying the bill via Fedex. ${A}$ can set a
+deadline for when the letter should get to ${B}$ by, and ${A}$ can also receive
+notice when ${B}$ signs for the letter as received.
+
+Both CUs and CORs have their use cases, much like USPS and Fedex. If we're on
+vacation in Paris and want to send a postcard to a friend, we likely don't need
+to go through the hassle of sending it via Fedex. We don't really care when the
+postcard gets to our friend; in fact we might not care if it gets to them at
+all. On the other hand, if we were trying to send them a block of _Comté_, we'd
+probably want that sent via Fedex.
+
+
+
+Both CUs and CORs can only work if we have protocols — ways of responding to
+some event involving entities, that the entities have agreed to ahead of time.
+Some protocols are _independent_, in the sense that the response does not depend
+on the other entities' responses. For example, exiting a building during a fire
+drill. There's a route established ahead of time and those involved simply
+follow the route. Other protocols are _dependent_; a participant's response
+depends on the responses of other individuals. For example, crossing a busy
+a four-way stop. In the U.S., the rule is that the vehicle furthest right moves
+first. But if that rule isn't followed, the other drivers must yield. Sometimes,
+the protocol doesn't converge, and we see both drivers pull forward, stop, pull
+forward, stop, pull foward, stop.
+
+All protocols juggle two fundamental tradeoffs: _efficiency_ and _fairness_.
+This problem is best understood via analogy. Suppose we're running a Zoom
+lecture. What might be the best protocol for asking questions? 
+
+One approach is for students to wait, and if no questions are answered, they can
+proceed to asking. The problem with this approach: On occassion, we'll get
+students asking questions at the same time. Granted, the probability of a
+collision might be fairly low.
+
+Another approach is to assign each student a time slot for asking questions.
+Jill asks questions at 4:00, Tom at 4:05, Kento at 4:10, etc. The problem:
+Efficiency. Jill and Tom might not have any questions, but Kento has a question
+that will take more than 5 minutes to ask and respond to. Not only must Kento
+waste time waiting, he will likely also have break his question down into
+smaller subquestions and spread them across the lecture's duration.
+
+We might solve this problem by imposing an alternative protocol: If you don't
+use your time, someone else will use it. The problem with this approach: Now
+it's no longer fair. Someone might not have used their time because they lost
+connection, or because the lecturer mistakenly gave way to another student.
+
+### Connection-oriented Services
+
+The key characteristic of a COR is that the participants (the sender and
+receiver) prepare for data transfer ahead of time. To accomplish this, both
+participants agree to follow a protocol based on COR. One such protocol is
+_TCP_. Broadly, TCP imposes the following rules:
+
+1. Data transfers must be reliable.
+2. Data must be transmitted as a bytestream, in order.
+3. The sender must slow down its sending rate if the receiver isn't fast enough
+   to process all the data it receives.
+4. The sender must slow down its sending rate if the network is too congested.
+
+For rule 1, the word _reliable_ has a particular meaning. It does not mean that
+_all_ of the data from a sender must get to the recipient. TCP does not require
+its adherents to make that guarantee. No system can ever make that guarantee.
+Lightning can strike at the wrong time, an anchor can fall on a fiber optic
+cable, or an engineer in some database might pull the wrong plug. Instead, the
+word reliable means: "If I fail to send all of the necessary data, or if I don't
+get all of the necessary data, I will let you know." This is what TCP
+guarantees.
+
+Under rule 2, TCP guarantees that the data will arrive in the proper order. If
+we watch the Blackhawks playing against the Capitals, we won't see the Capitals
+scoring a goal followed suddenly by Patrick Kane kissing the Stanley Cup.
+
+With rule 3, TCP ensures that recipient systems with smaller amounts of memory
+or processing power don't get overwhelmed by the amount of data they receive.
+We can see the effects of this problem when we visit sites that cause our
+browsers to freeze up or run more slowly.
+
+Finally, under rule 4, TCP guarantees that the link the sender and the recipient
+are on doesn't get too congested. This ensures that the servers forwarding data
+between the sender and the recipient aren't overwhelmed. Without this rule, a
+YouTube server might continuously transmit those cat video bytes to a stressed
+server, to the point where it crashes. Then, not only has our cat video stopped
+halfway, but so too has the online lecture and potentially hundreds of other
+applications elsewhere.
+
+Examples of TCP services include web browsing, file transfer, remote login, and
+email.
+
+### Connectionless Services
+
+In contrast to CORs, CUs are characterized by the lack of any communication
+coordination by two nodes. The most common protocol for CUs is _UDP (User
+Datagram Protocol)_. This protocol imposes no requirements about reliability,
+flow control, or congestion control. Examples of UDP services include
+live-stream media, teleconferencing, DNS, and internet telephony.
+
+If we think carefully about the services that use connectionless protocols like
+UDP, we might see why we don't want to use a connection-oriented protocol. For
+example, consider internet telephony (calling someone via the Internet). Under a
+connection-oriented like TCP, if a byte of data goes missing, the sender might
+attempt to resend that byte. Thus, when a speaker says: "Hello, is this Dan?"
+and the sender determines that the "Hello" never made it to the receiver, the
+sender will attempt a retransmit: "Hello, is this Dan? Hello".
+
+For the other services, a common characteristic is time sensitivity. COR
+protocols, because of their requirements, have a time overhead for coordination.
+CUs have no such time overhead — just send and receive data. This level of speed
+is critical for services like DNS, which must reduce website URLs to IP
+addresses.
+
+## Network Architectures
+
+A _network architecture_ is the way network nodes are organized and governed to
+provide the network's services. Broadly, there aer two types of network
+architectures: (1) the _client-server model_, and (2) _peer-to-peer model_.
+
+Under the client-server model, nodes on the network (called _clients_) receive
+and send data by (1) sending requests to a specified node (called the _server_),
+and (2) the server responds to the request with the requested data. Examples of
+services from this architecture include web browsing and email.
+
+Under the peer-to-peer model, nodes simply send requests to and from one
+another freely (i.e., without a "middle man"). Examples of services based on
+this architecture include Skype, BitTorrent, and formerly, Limewire.
+
+## Classifying Networks
+
+Networks can be generally placed in three categories: (1) _local area networks
+(LAN)_, (2) _metropolitan area networks (MAN)_, and (3) _wide area networks
+(WAN)_.
+
+### Local Area Networks (LAN)
+
+A LAN is a computer network that interconnects nodes over a limited area. For
+example, a computer network for a house, hotel, hospital, university building,
+lab, apartment, or office building.
+
+There are two ways to implement a LAN: A _wired LAN_ or a _wireless LAN_. With a
+wired LAN, all nodes are connected to a single switch via some wired link, most
+commonly an Ethernet cable. For wireless lans, the nodes are all connected to a
+single switch via a wireless link, e.g., WiFi.
+
+### Metropolitan Area Networks (MAN)
+
+A MAN is a computer network that interconnects nodes over a geographic area,
+usually by connecting LANs, and whose area is usually the size of a city. This
+network is formed by interconnecting LANs. For a node ${A}$ in Brooklyn, New
+York, to communicate with a node ${B}$ in Manhattan, then either ${A}$ and ${B}$
+are on the same MAN.
+
+### Wide Area Network (WAN)
+
+A WAN is a computer network that extends over a geographic region, usually by
+connecting MANs; and whose area usually covers large swathes of a country (e.g.,
+the East Coast and the West Coast). For example, a node in Los Angeles,
+California seeking to communicate with a node in Miami, Florida would do so over
+a WAN.
+
+### The Internet
+
+The Internet is a computer network that extends globally, connecting WANs across
+international borders. For a node in San Francisco, California to communicate
+with a node in Suva, Fiji, the two nodes must do so over the Internet.
+
+The internet itself is roughly a hierarchical structure. Its primary nodes are
+the _tier-1 ISPs (Internet Service Providers)_. These are communication
+companies whose networks stretch across multiple countries (think _MCI_,
+_Sprint_, _AT&T_, etc.), much like major airlines that fly internationally.
+Some of these tier-1 ISPs — for example, AT&T — are also the same companies that
+invest in laying the copper and fiber optic cables connecting countries.
+
+_Tier-2 ISPs_ are network providers that purchase _transit_ — the
+service of moving packets from their network to another — from tier-1 ISPs.
+Tier-2 ISPs include Comcast (purchases transit from Tata Communications,
+an India tier-1 ISP), France Telecom (purchases transit from Sprint), Korea
+Telecom (purchases transit from U.S.-based Cogent, Sweden-based Telia, and
+Italy-based Sparkle).
+
+Below tier-2 ISPs are _tier-3 ISPs_ (also called _local ISPs_). These are ISPs
+that purchase transit from tier-2 ISPs. Examples include Time Warner, Earthlink,
+Spectrum, etc. These ISPs are often found providing network access to small
+neighborhoods or sections of a town/city.
+
+A few things to note about these divisions. First, most ISPs provide
+customer-facing products. That is, tier-1 ISPs aren't purely in the business of
+selling transit to tier-2 ISPs, and tier-2 ISPs aren't purely in the business of
+selling transit to tier-3 ISPs. AT&T, for example, is a tier-1 ISP, but also
+provides network access to end-users via AT&T Wireless and AT&T Internet.
+Comcast provides network access to end-users both directly and through Xfinity.
+
+Second, both tier-1 and tier-2 ISPs engage in a practice called _peering_: a
+tier-1 ISP will transmit another tier-1 ISP's packets free of charge, and a
+tier-2 ISP will transmit another tier-2 ISP's packets free of charge. This is
+not the case for tier-3 ISPs.
+
+## Network Topology
+
+A _network topology_ is an arrangement of nodes on a computer network. Whenever
+we talk about network topology, we want to be clear about what kind of network
+topology we're talking about. If we're talking about how nodes are actually
+placed in space, then we're referring to the network's _physical topology_. If,
+however, we're talking about how data flows between the nodes, then we're
+referring to the network's _logical topology_. In this section, we'll focus
+specifically on logical topology.
+
+Generally, there are three common network topologies: _bus_, _ring_, _star_,
+_mesh_, and _hybrid_.
+
+### Bus Topology
+
+A bus topology looks like:
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662483245/cs/bus_topology_mgaaiz.svg"}
+ imwidth={"382"}
+ imheight={"308"}
+ caption={"bus topology"}
+ width={"55"}
+/>
+
+To transmit data, nodes on a bus topology send the data to single link called
+the _bus_ or _common transmission medium_ which the sending node and all others
+are connected to. Because of this property, all other nodes on the bus topology
+also have access to the data sent. The nodes ${\T_1}$ and ${\T_2}$ are called
+_terminators_, and they determine the endpoints of the network.
+
+Bus topologies have costs and benefits:
+
+| Benefits                                                           | Costs                                                                                       |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| cheap to implement: there's only one link connecting all nodes     | not fault tolerant: if the bus breaks, the nodes can no longer communicate with one another |
+| well-suited for temporary networks                                 | limited cable length                                                                        |
+| low dependency: the failure of one node does not impact the others | no security                                                                                 |
+
+Of note, bus topologies do not handle traffic well. Because all of the traffic
+gathers on a single link, data transfer rates can quickly slow to a halt.
+
+### Ring Topology
+
+A ring topology appears as follows:
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662484258/cs/ring_topology_fot2ga.svg"}
+ imwidth={"323"}
+ imheight={"299"}
+ caption={"ring topology"}
+ width={"55"}
+/>
+
+Here, the nodes are connected through a closed loop. As we can likely tell, this
+is a _peer-to-peer network_. Moreover, each node has two links: One to each of
+its nearest neighbors. The data flow is also _unidirectional_. If node ${H}$
+wants to send data to node ${C,}$ that data must pass through nodes ${A}$ and
+${B.}$
+
+Because the data flow is unidirectional, ring topologies must provide a way of
+ensuring that nodes aren't "talking over one another." That is, if a node is
+receiving data, it can't also be sending data. One way to ensure compliance isi
+by implementing a variant of the ring topology called the _token ring topology_.
+In this variant, there exists a single token that's passed around the nodes.
+Think of it like a "talking stick." When the node receives the token, only that
+node has the right to send data. All other nodes must either (1) wait for the
+stick to get to them, or (2) transfer data if called upon. The token moves
+around the loop, going to each node one by one.
+
+Comparing the costs and benefits:
+
+| Benefits                                                           | Costs                                                                              |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| better performance that bus topology                               | high-dependency: the failure of one node causes all other nodes to lose connection |
+| all nodes have equal access (ensures fairness)                     | the weakest link can cause a bottleneck                                            |
+| easy to identify which nodes have failed                           | large messages cause decreases in performance                                      |
+| unidirectional linking lowers the likelihood of a packet collision | no security                                                                        |
+
+For the ring topology, if we have ${n}$ nodes, we require ${n}$ cables, 2 ports
+per node, resulting in a network with ${2n}$ access points. We can see this is
+the case by just sampling a few nodes:
+
+| Node Count | Cable Count | Ports/device | Ports/network |
+| ---------- | ----------- | ------------ | ------------- |
+| 2          | 2           | 2            | 4             |
+| 3          | 3           | 2            | 6             |
+| 4          | 4           | 2            | 8             |
+| ${\vdots}$ | ${\vdots}$  | ${\vdots}$   | ${\vdots}$    |
+| ${n}$      | ${n}$       | 2            | ${2n}$        |
+
+Like the bus topology, star topologies do not handle traffic well. Because of
+their unidirectional nature, a node has no choice but to wait for whatever is in
+front of it to move along before it can get to the next node.
+
+### Star Topology
+
+The star topology looks like:
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662485559/cs/star_topology_xe7nw6.svg"}
+ imwidth={"262"}
+ imheight={"228"}
+ caption={"star topology"}
+ width={"40"}
+/>
+
+Here, every node is connected to a central node called a _hub_ or _switch_,
+through which all data transfers must pass. This provides a means of centralized
+management. For example, if node ${E}$ wants to send data to node ${D,}$ it
+sends the data to ${\S_1,}$ which then forwards that data to ${D.}$
+
+The costs and benefits:
+
+| Benefits                                            | Costs                                                        |
+| --------------------------------------------------- | ------------------------------------------------------------ |
+| easy to design and implement                        | high-dependency: if the hub fails, all nodes lose connection |
+| centralized administration means easier maintenance | overloaded hub can cause bottlenecks                         |
+| high scalability                                    | increased monetary cost because of the hub                   |
+
+For the star topology, each node, other than the hub, has one port. The hub,
+however, has a port for each of the nodes. Accordingly, for the star topology,
+given ${n}$ nodes: ${n}$ cables are needed, yielding a network with ${2n}$
+access points.
+
+A key cost to star topologies is traffic handling. Because all of the
+requests are sent towards a hub or switch, there's always the risk of
+congestion. With large enough traffic, the hub or switch runs out of available
+memory, culminating in network failure. That said, compared to the other
+topologies, star topologies are somewhat better in terms of traffic, since they
+provide a single point — the hub or switch — for optimizing traffic handling.
+
+### Mesh Topology
+
+The mesh topology looks like:
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662486457/cs/mesh_topology_tkpfwz.svg"}
+ imwidth={"262"}
+ imheight={"228"}
+ caption={"mesh topology"}
+ width={"40"}
+/>
+
+Here, each node is directly connected to every other node in the network.
+Because of this arrangement, every node has a means of communicating with
+another node independently.
+
+| Benefits                                             | Costs                                             |
+| ---------------------------------------------------- | ------------------------------------------------- |
+| low-dependency, high fault tolerance and reliability | difficult to implement and maintain               |
+| high security                                        | very expensive and impractical for large networks |
+
+Mesh topologies are the best at handling traffic. Because each node is connected
+to every other node, a sending node doesn't have to rely on another node to
+transfer data.
+
+### Hybrid Topology
+
+A hybrid topology is some combination of two or three of the previous
+topologies. The Internet, for example, is a hybrid topology network.
+
+## IP Addressing
+
+An __IP (Internet Protocol) Address__ is a unique string that identifies a node
+in a computer network. These addresses often look like:
+
+```bash
+172.17.151.1
+178.27.151.2
+159.13.151.3
+192.168.101.2
+```
+
+Viewing a device's IP address depends on the system:
+
+| System    | Shell Command                                 |
+| --------- | --------------------------------------------- |
+| Mac/Linux | Wireless IP address: `ipconfig getifaddr en0` |
+|           | Wired IP address: `ipconfig getifaddr en0`    |
+| Windows   | `ipconfig`                                    |
+
+There are two variations of IP addresses: __IPv4 (IP version 4)__ and __IPv6 (IP
+version 6)__. We'll start with IPv4.
+
+### IPv4
+
+As we said earlier, IP addresses serve as unique identifiers for a node's
+location. Importantly, IP addresses can change depending on the physical
+location of the node. For example, say we're at a hotel in Chicago and connect
+to the WiFi to check our email. When we join the hotel's WiFi network, we're
+assigned an IP address, perhaps something that looks like:
+
+```bash
+119.14.102.8
+```
+
+The next day, we head to O'Hare to board our flight. We join the airport's WiFi
+to again check our email. If we checked our IP address, we'd see that it's
+changed, perhaps to something like:
+
+```bash
+149.27.189.5
+```
+
+Because this address can change based on the node's location, IP addresses are
+sometimes described as a node's _logical address_. IP addresses can be assigned
+both manually and dynamically.
+
+#### IPv4 Format
+
+IPv4 addresses use a format called _dot-decimal notation_:
+
+$$
+ {A}.{B}.{C}.{D}
+$$
+
+where ${0 \lte A,B,C,D \lte 255.}$ These four numbers — ${A, B, C}$ and ${D}$ —
+are called _octets_, and they each take up 1 byte (hence the ceiling 255;
+${2^8=256,}$ minus 1 for the zero). Thus, the smallest possible IPv4 address is:
+
+$$
+ 0.0.0.0
+$$
+
+and the largest IPv4 address is:
+
+$$
+ 255.255.255.255
+$$
+
+All together, a node's IP address takes 4 bytes of memory. Because of this
+property, we say that IPv4 addresses take up a _32-bit address space._
+
+## MAC Addressing
+
+A __MAC (Media Access Control) address__ is a node's unique identifier on a LAN.
+They generally look like:
+
+```bash
+MAC:70-20-81-00-E0-FC
+```
+
+To view a device's MAC address:
+
+| System    | Shell Command                        |
+| --------- | ------------------------------------ |
+| Mac/Linux | `networksetup -listallhardwareports` |
+| Windows   | `ipconfig/all`                       |
+
+The MAC address is different from the node's IP address, in that it identifies
+something else about a node. Where the IP address can be thought of as
+identifying a node's _location_, the MAC address can be though of as the node's
+_name_. As we saw earlier, IP addresses can change when the node joins a new
+network, or when the node rejoins a network after momentarily leaving. The
+node's MAC address, however, does not change.
+
+Both IP and MAC addresses are needed for computer networks. The MAC address
+allows a LAN switch to assign IP addresses, and the IP address allows routers to
+determine which LAN a message should go to. Every LAN switch maintains a _MAC
+Address Table_ that enables it to determine which node the message should be
+forwarded to.
+
+MAC addresses cannot be changed, as they are assigned by the manufacture.
+Because of this property, they're sometimes called _hardware addresses_. Unlike
+IP addresses, MAC addresses are represented in hexadecimal, and separated by
+hyphens, dots, and colons. Which separator is used depends on the manufacturer.
+Moreover, MAC addresses occupy a 48-bit address space.
+
+Briefly comparing the IP and MAC addresses:
+
+| IP Addresses                      | MAC Address                        |
+| --------------------------------- | ---------------------------------- |
+| necessary for communication       | necessary for communication        |
+| 32-bit address space              | 48-bit address space               |
+| represented in decimal            | represented in hexadecimal         |
+| Needed by routers to forward data | Needed by switches to forward data |
+| Example: 10.09.25.182             | Example: 80-21-00-84-ED-FA         |
+
+## Port Addressing
+
+The final address needed to forward a message is the _port address_. The port
+address is an identifier for a particular process on the node. To understand
+what this means, let's pause and think about how we interact with a computer
+network on, say, a laptop. The most common way is through a browser. We enter a
+URL, and a request is sent. But this isn't the only way. We also have desktop
+applications that update themselves. That's done through a computer network.
+Likewise, a desktop email client or music streaming service sends requests over
+a computer network. All of these are separate processes, and the data received
+must be sent to the right one.
+
+We can analogize this to mailing a package. The IP address is the broadest
+address, indicating which country, state, and city the package should go to. The
+MAC address narrows it down further — which apartment the package should go to.
+And the port address narrows it down even further — which unit in the apartment
+the package should go to.
+
+To view port numbers:
+
+| System    | Method                                  |
+| --------- | --------------------------------------- |
+| Mac/Linux | `lsof -Pn -i4`                          |
+| Windows   | open the `Resource Monitor` application |
+
+Port addresses are also called _communication endpoints_, as they are the start
+and end for a communication. There are two types of port addresses: _fixed port
+numbers_ and _dynamic port numbers_. We will address these two types in greater
+detail at a later juncture. For now, it's sufficient to know that whenever we
+start a new process (e.g., opening Chrome or Firefox), the operating system
+assigns a dynamic port number to the process. Generally, both fixed and dynamic
+port numbers range from 0 to 65535.
+
+## Network Switching
+
+The term __switching__ refers to the procedure a network uses in deciding the
+best route a data transmission should take, given multiple paths in a larger
+network. The term "best" depends on the transmitter's priorities: Do we want the
+shortest path? Do we want the most secure path? Do we want the most reliable
+path? Do we want the path that ensures some combination of these three? For
+example, suppose we had a network that looked like:
+
+<Graph
+ data={[
+  { link: ["a", "b"] },
+  { link: ["b", "c"] },
+  { link: ["c", "d"] },
+  { link: ["d", "a"] },
+  { link: ["d", "e"] },
+  { link: ["e", "f"] },
+  { link: ["e", "g"] },
+  { link: ["h", "g"] },
+  { link: ["i", "g"] },
+  { link: ["j", "h"] },
+  { link: ["j", "f"] },
+  { link: ["f", "b"] },
+  { link: ["k", "j"] },
+  { link: ["l", "j"] },
+  { link: ["m", "j"] },
+ ]}
+ id={"intro1"}
+ collisionRadius={40}
+ straightEdges={true}
+ edgeLength={40}
+ scale={45}
+ width={320}
+ height={320}
+/>
+
+The node ${m}$ wants to send a message to ${b.}$ We can likely tell that the
+fastest way there is through ${j,}$ then through ${f.}$ But the fastest way
+there may not be the most secure or the most reliable. _Switching techniques_
+are the various procedures that networks use to satisfy the different priorities
+network participants might have.
+
+In general, the techniques are classified as follows:
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662494985/cs/switching_techs_rgredz.svg"}
+ imwidth={"537"}
+ imheight={"241"}
+ caption={"Switching techniques"}
+ width={"90"}
+/>
+
+### Circuit Switching
+
+In _circuit switching_, a dedicated path is created between the sender and
+receiver before data transfer. That is, before a data transfer ever
+occurs, the dedicated path is established first. The classic example is a
+telephone network. With phone calls, we cannot speak to the node on the other
+end unless they answer.
+
+Circuit switches are generalized through a 3-phase process:
+
+1. path establishment,
+2. data transfer, and
+3. path disconnection
+
+Let's examine circuit switching under the client-server model. Suppose node
+${A}$ is the client, and the server is ${B.}$ Node ${A}$ wants to read a file
+hosted at ${B.}$ So, it begins by making an _end-to-end call_. This is a small
+message that travels from ${A}$ all the way to ${B.}$ We can think of this
+message as containing: "Hi, my name is ${A,}$ could you be a node for a path
+from me to ${B}$?" This message goes from intermediary node to intermediary
+node, each saying yes or no.
+
+If a node has enough resources to handle the traffic between ${A}$ and ${B,}$ it
+agrees. Otherwise, it says no. Regardless of whether the node says yes or no, it
+forwards the message to the next node it thinks will agree. Eventually, the node
+reaches ${B,}$ and the predetermined path is established. From then on, that
+path between ${A}$ and ${B}$ is reserved exclusively for ${A}$ and ${B}$ (hence
+why some nodes will say no).
+
+The benefit to circuit switching: We can make strong guarantees about data
+departures and arrivals. And if we can make these strong guarantees, data
+transmissions are not only safer, but faster as well.
+
+Of course, this comes at the cost of efficient resource usage. As long as ${A}$
+and ${B}$ maintain a connection, no other data can travel along the path. Even
+if ${A}$ and ${B}$ aren't sending any data.
+
+#### Bandwidth Allocation
+
+Note that with circuit switching, it's only the path between ${A}$ and ${B}$
+that's exclusive, not the nodes. The nodes might form a separate, unique path
+between ${C}$ and ${D,}$ exclusive to ${C}$ and ${D.}$ This can only be done if
+the nodes along the path (the _routers_) allocate bandwidth between ${A,}$
+${B,}$ ${C,}$ and ${D.}$
+
+The two most common allocation methods are _frequency division multiplexing_ and
+_time division multiplexing_.
+
+##### Frequency Division Multiplexing
+
+In _frequency division multiplexing (FDM)_, the bandwidth is divided according
+to frequency:
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662763558/cs/fdm_ma94j2.svg"}
+imwidth={"462"} imheight={"192"} caption={"fdm"} width={"90"} />
+
+In the diagram above, each color corresponds to a user. The benefit to FDM:
+Nodes always have a connection. The cost: They only have a fraction of the
+bandwidth. FDM is the ideal method for applications that:
+
+1. need constant connection, and
+2. do not need to transfer large amounts of data at a time
+
+In the context of modern network services, one such application is _internet
+telephony_. Voice signals are tiny — just a little less than ${10\text{kHz}.}$
+That's not even a megahertz. On the other hand, we want those voice signals
+transmitted continuously, rather than intermittently.
+
+##### Time Division Multiplexing
+
+In _time division multiplexing (TDM)_, the bandwidth is divided with according
+to time:
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662763558/cs/tdm_rrvhyu.svg"}
+imwidth={"481"} imheight={"191"} caption={"tdm"} width={"90"} />
+
+The benefit to TDM: Connected nodes have access to the full bandwidth and get
+the fastest possible bitrates. The cost: They only have access at certain times.
+TDM is ideal for applications that must transfer a large amount of data in a
+short amount of time.
+
+For modern network services, an example application is viewing a webpage. A
+typical webpage today hovers around ${2\text{MB}}$ (and they're getting bigger).
+This requires much more bandwidth to transfer than voice signal. That said,
+capitalizing on TDM benefits is a balancing act. If the data transferred is too
+large (say, an entire operating system), if only some of the data is downloaded
+before the node's time is up, the node must wait until its next turn to get the
+remaining data. If we add that additional waiting time, the sum time spent
+downloading via TDM could very well be greater than the time the node would
+have spent on FDM. This challenge introduces us to two key concepts in
+networking: _throughput_ and _latency_.
+
+#### Throughput & Latency
+
+_Throughput_ is the total number of bits successfully transferred from a source
+to destination within a specified unit of time. _Latency_ is the time it takes
+for a specified number of bits to be successfully transferred from one system to
+another. Note the different notions these terms describe. One measures bits per
+unit of time, the other measures time per unit of bits. It's imperative to
+distinguish these two concepts, as they answer two very different questions:
+
+| Throughput                                                                 | Latency                                                      |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Given a time window from ${t_0}$ to ${t_1,}$ how many bits can I transfer? | Given ${n}$ bits, how long will it take me to transfer them? |
+
+To illustrate, consider the following example:
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662777545/cs/throuput_v_latency_ekjjng.svg"}
+imwidth={"511"} imheight={"438"} caption={"throughput vs. latency"}
+width={"100"} />
+
+Above, node ${A}$ wants to send 4 bits to node ${B,}$ starting at time ${t_0}$
+and ending at time ${t_1}$ (this is the time window). To provide some numeric
+sense, we'll say the time window is 16 seconds total. ${A}$ has two options to
+send these bits:
+
+1. Send the four bits via method ${a,}$ such that the bits arrive at ${b}$ in
+   equally-spaced intervals, spread across ${t_0}$ to ${t_1.}$ This method is
+   indicated by the red arrows.
+2. Send the four bits via method ${b,}$ where the bits arrive at ${b}$ almost all at once —
+   sort of like a spurt — close to ${t_1}$ (the close of the time window).
+
+Which method should ${A}$ use? Let's compare the two methods. Both of these
+methods have the same _average throughput_ — 4 bits. The two methods, however, have
+different _average latencies_:
+
+$$
+	\left.
+	\begin{aligned}
+		\text{method}~a  \\[1em]
+		\dfrac{4+8+12+16}{4}&=\dfrac{40}{4} \\[1em]
+		&=10
+	\end{aligned}
+	~ ~ ~ ~  \right\vert ~ ~ ~ ~
+	\begin{aligned}
+		\text{method}~b  \\[1em]
+		\dfrac{11.5+11+10.5+10}{4}&=\dfrac{43}{4} \\[1em]
+		&=10.75
+	\end{aligned}
+$$
+
+Note that this is the worst-case scenario for method ${b.}$ If all the bits are
+sent upfront for ${b}$ instead (i.e., ${t(b_1)=0,}$ ${t(b_2)=0.5,}$ ${t(b_3)=1,}$ and
+${t(b_4)=1.5}$), then method ${a}$ would have the higher latency.
+
+This analysis reveals a critical insight: A link's bitrate is insufficient if
+we want an accurate cost-benefit analysis for different linking options. We can
+have the fastest possible link, but the true value of that link depends on what
+we're trying to achieve. If we're just offering a file transfer service and all our link
+options have the same throughput (perhaps because of rate limiting or network
+traffic), there's little reason to opt for the more expensive link, since the
+number of bits transferred per unit of time is the same across all links. If,
+however, we're offering a service that constantly transmits data (e.g., a game
+like _Counter-Strike_), then we should be focusing on latency.
+
+
+### Message Switching
+
+In _message switching_, data is transferred as a whole unit, moving from node to
+node, one transfer at a time. For example, given the network:
+
+<Graph
+ data={[
+  { link: ["a", "b"] },
+  { link: ["b", "c"] },
+  { link: ["b", "d"] },
+  { link: ["d", "a"] },
+  { link: ["d", "e"] },
+  { link: ["e", "f"] },
+ ]}
+ id={"message switching"}
+ collisionRadius={40}
+ straightEdges={true}
+ edgeLength={30}
+ scale={45}
+ width={320}
+ height={320}
+/>
+
+if ${f}$ wants to send a message to ${c,}$ ${f}$ first transfers its data to
+${e.}$ ${e}$ then forwards the data to ${d.}$ ${d}$ then sends the data to
+${b,}$ which then sends the data to ${c.}$ As we can likely tell, message
+switching is not suitable for real-time applications like media streaming and
+online gaming.
+
+### Packet Switching
+
+_Packet switching_ is the switching technique used by the Internet. In packet
+switching, a message is broken down into small chunks called _packets_, each
+sent individually. These packets are labeled with several pieces of information,
+alongside the actual data transferred:
+
+1. the source IP address,
+2. the destination IP address, and
+3. a sequence number
+
+We've gone over IP addresses, so what's that sequence number? The sequence
+number is what allows the receiver to (1) reorder the packets during reassembly,
+(2) detect missing packets if any, and (3) send acknowledgments.
+
+Packet switching eschews the approach taken by circuit switching: Instead of
+allocating bandwidth, the router will set up a queue, and all nodes that want to
+have their packets forwarded must place their packets in the queue. To forward
+the packets, the router merely dequeues the packets (first in, first out). 
+
+The downside to packet switching: There's a great deal of variance. Services
+like streaming, live online gaming, video conferencing, and internet telephony
+are inappropriate for packet switching. Their data could get stuck in a long
+queue somewhere along the path. On the other hand, services like email and web
+browsing are conducive to packet switching — communications can still be useful
+even if it isn't perfect.
+
+Packet switching is an instance of _statistical multiplexing_. The technique is
+similar to how major airlines sell tickets. Given a flight with 400 seats, the
+airline might sell 410 tickets. Why? Because the airline bets on the fact that
+not everyone shows up. Routers along a packet-switched network make a similar
+bet: That no more than ${x}$ nodes will send data towards it. In light of most
+web applications, this is a safe bet. However, like the airlines, there are
+times where everyone _does_ show up. It's during these times that the routers
+get overwhelmed and packet switching fails spectacularly. Fortunately, those
+times are fairly rare. 
+
+There's another question: What about the path? How is that established? This
+question leads to the two approaches in packet switching: (1) the _datagram
+approach_, and (2) the _virtual circuit switching_ approach.
+
+#### Datagram Switching
+
+In the _datagram packet switching_, the intermediary nodes make the decisions
+for which route the packet should go to next. For example, perhaps a shortest
+path, atp least physically, runs from ${C}$ to ${E}$ to ${F.}$ An intermediary
+node, however, might determine that the route is far too congested, so it sends
+the packet elsewhere.
+
+The term _datagram_ is what packets are called in the datagram approach. The
+term is used because packets sent through the datagram approach are slightly
+different from regular packets: There's no guarantee that the packet will get to
+the recipient, nor is there any guarantee that the sender will be notified that
+the delivery failed. Because the intermediary nodes decide which route the
+packet should go to next, there are always two risks: (1) a packet constantly
+hopping between intermediary nodes, and (2) packets received incomplete.
+
+#### Virtual Circuit Switching
+
+In _virtual circuit switching_, a preplanned route is established before
+messages are sent. When the sender seeks to send a message, it "calls" the
+recipient. This calling is done by the sender transmitting a _call request
+packet_, and the recipient responding with a _call accept packet_. The exchange
+of these two packets establishes the route between the two nodes, which all
+intermediary nodes in the network will look to when determining where the
+actual, substantive packets should be forwarded to. Once the communication has
+finished, the connection terminates, much like a circuit switch.
+
+Virtual circuit switching can be analogized to running in a marathon. As the
+packet runs from the sender to the recipient, nodes along the path direct the
+packet to turn this way and that, much like how marathon 
+
+### Costs to Packet Switching
+
+The benefits of packet switching come with a two-fold price tag: _packet loss
+risk_ and _packet delay risk_. We examine these two costs below.
+
+#### Packet Loss
+
+When packets arrive at a router, they're placed in a queue called the _router
+buffer_, and when to depart the router, they must be dequeued. This leads to two
+transmission rates at play: (1) the _enqueue rate_ ${R_e}$ (the rate at which
+the packets), and (2) the _dequeue rate_ ${R_d.}$ When ${R_e \gtn R_d}$ —
+packets arrive faster than they depart — the router's queue experiences
+_backlog_. With enough backlog, the router runs out of memory. 
+
+Say the router runs out of memory at precisely the time ${t_n.}$ What happens to
+the packet that arrives just a fraction after ${t_n}$? The router can't tell the
+packet "go back to the node from whence you came," because the voltages
+comprising the packet can't be "reversed." Nor can the router store the voltages
+elsewhere momentarily; there's no more memory. So what now? The router _drops_
+them. The voltages arrive, but the router doesn't sample them. Instead, the
+router simply ignores them.
+
+#### Packet Delay
+
+Even if a packet manages to arrive, there's still the risk of _delay_ — the
+packet failing to arrive or depart within a specified time window.
+
+##### Nodal Processing Delays
+
+Packet switching requires intermediary nodes to
+forward packets to the next intermediary node. That requires some computation on
+the intermediary node's part, which takes time. Generally, this is a tiny amount
+of delay, typically a few microseconds or less.
+
+##### Queueing Delays
+
+Because packets are placed in a queue, they're dequeued on
+a first-come-first-serve basis. If the network provider's routers use some
+notion of priority (i.e., the router uses a priority queue rather than a simple
+queue), it's first-priority-first-serve. Chances are, when a packet arrives at
+router, there are already packets ahead of it waiting. That's time spent again.
+
+The amount of this delay depends heavily on _congestion_ — the intensity of
+traffic to the destination. Traffic intensity, or congestion, is defined as
+follows:
+
+<dfn>
+
+__congestion formula.__ Let:
+
+$$
+	\eqs{
+		&\B_r &:= &~~\text{link data rate}~~(\text{bits/s}) \\
+		&\L &:= &~~\text{packet length}~~(\text{bits}) \\
+		&\A_{\text{avg}} &:= &~~ \text{average packet arrival rate}~~(\text{bits $\times$ packets/s})
+	}
+$$
+
+then a router's traffic intensity, called _congestion_ and denoted
+${\I_{\text{traf}},}$ is given by the formula:
+
+$$
+	\I_{\text{traf}} = \dfrac{\L \cdot \A_{\text{avg}}}{ \B_r }
+$$
+
+</dfn>
+
+The relationship between average queuing delay and the traffic intensity can be
+visualized with the following model:
+
+<Plot data={[
+	{f: (x) => x ** 2}
+]}
+domain={[0,1]}
+range={[0,1]}
+scale={60}
+/>
+
+Above, the ${x}$-axis corresponds to the traffic intensity
+${\I_{\text{traf}},}$ and the ${y}$-axis corresponds to the average queueing
+delay. Based on the model, we can infer the following: 
+
+1. When ${\I_{\text{traf}} \gtrsim 0,}$ the average queueing delay is small.
+2. When ${\I_{\text{traf}} \lesssim 1,}$ the average queueing delay is large.
+3. When ${\I_{\text{traf}} \gtn 1,}$ the average delay is infinite.
+
+
+
+
+##### Transmission Delays
+
+Packets are composed of bits. Those bits must be
+transformed into signals and then placed on a wire. It takes time to place all
+of those signals on the physical media. This is called the _transmission delay_
+— the time it takes to place all of a packet's bits on a physical medium. In
+fact, this delay is significant enough to merit a formula.
+
+<dfn>
+
+__transmission delay formula.__ Given a bitrate ${\B_r,}$ measured in
+bits per second (bps) and a packet of length ${\L}$ (measured in bits), the
+time it takes to place all ${\L}$ bits onto the link, denoted ${\text{TD}}$ is
+defined as:
+
+$$
+	\text{TD} = \dfrac{\L}{\B_r}
+$$
+
+</dfn>
+
+Transmission delay is significant for low-speed links such as cheap nickel or
+copper links.
+
+##### Propogation Delay 
+
+Packets must travel from one end of a link to another. The time taken to do so
+is called _propogation delay_. Like transmission delay, we can quantify this
+with the following formula:
+
+<dfn>
+
+__propogation delay formula.__ Given a physical link of length ${\D}$ (measured
+in meters) and the link's propogation speed ${\s,}$ the time it takes for a bit
+to travel from one end of the link to the other, denoted ${\text{PD},}$ is given
+by the formula:
+
+$$
+	\text{PD} = \dfrac{\D}{\s}
+$$
+
+</dfn>
+
+##### Nodal Delay
+
+Question: Is the total transmit time to send a packet the sum of the propogation
+delay of the first bit, the transmission delay, and the propogation delay of the
+last bit? No. The sum must either only account for the propogation delay of the
+first bit, or the propogation delay of the last bit. Why? Because bits are
+prepared and sent via pipelining. During the propogation delay of the ${n-2}$th
+bit, the ${n-1}$th bit is already getting loaded and sent. Additionally, the sum
+assumes that propogation delay is fixed for all bits. This is a reasonable
+assumption because the small differences are negligible, but there may be
+situations where they aren't (e.g., a link prone to overheating or
+interference).
+
+The total delay time it takes for a packet to travel from a node to a subsequent
+node is called the _nodal delay_.
+
+<dfn>
+
+__nodal delay.__ Let:
+
+$$
+	\eqs{
+		& \d_{\text{proc}} & := &~~\text{processing delay} \\
+		& \d_{\text{queue}} & := &~~\text{queueing delay} \\
+		& \d_{\text{trans}} & := &~~\text{transmission delay} \\
+		& \d_{\text{prop}} & := &~~\text{transmission delay} \\
+		& \h & := &~~\text{number of hops} \\
+	}
+$$
+
+then the total delay it takes for a packet to travel from one node to a
+subsequent node, denoted ${\d_{\text{nodal}},}$ is defined as:
+
+$$
+	\d_{\text{nodal}} = 
+		\h \cdot (\d_{\text{proc}} + 
+		\d_{\text{queue}} +
+		\d_{\text{trans}} +
+		\d_{\text{prop}})
+$$
+
+</dfn>
+
+##### The Traceroute Command
+
+We can get an idea for what the delay is on a link by running the `traceroute`
+program on a terminal. For example:
+
+```bash
+$ traceroute google.com
+traceroute to google.com (142.251.32.14), 64 hops max, 52 byte packets
+ 1  10.165.15.254 (10.165.15.254)  3.816 ms  3.920 ms  2.951 ms
+ 2  162.218.1.57 (162.218.1.57)  3.233 ms  3.519 ms  3.254 ms
+ 3  198.27.60.164 (198.27.60.164)  3.324 ms  3.975 ms  3.190 ms
+ 4  xe-2-0-0.cr1.excelsior.as4150.net (66.170.0.72)  4.838 ms  3.732 ms
+    xe-0-1-0.cr1.33emain.as4150.net (66.170.0.115)  3.342 ms
+ 5  ae0-1504.cr1.mngw.as4150.net (66.170.7.105)  8.649 ms
+    xe-1-0-0.cr2.excelsior.as4150.net (66.170.9.69)  4.826 ms
+    ae0-1504.cr1.mngw.as4150.net (66.170.7.105)  8.785 ms
+ 6  xe-0-0-1.cr1.cermak.as4150.net (66.170.7.43)  8.924 ms  9.900 ms  9.843 ms
+ 7  eqix-ch-200g-1.google.com (208.115.136.21)  35.548 ms  9.495 ms  10.692 ms
+ 8  108.170.243.174 (108.170.243.174)  12.031 ms  299.152 ms
+    108.170.243.193 (108.170.243.193)  12.442 ms
+ 9  142.251.60.23 (142.251.60.23)  15.343 ms
+    142.251.60.21 (142.251.60.21)  13.120 ms  15.157 ms
+10  ord38s33-in-f14.1e100.net (142.251.32.14)  16.928 ms  20.718 ms  16.791 ms
+```
+
+The `traceroute` program works by sending three packets to the destination. Each
+time the packet arrives at a router, the router _echoes_ (sends back) a packet
+back to our system. The `traceroute` program notes the sent and reply times, and
+returns the difference between the two.
+
+The output of `traceroute` provides several pieces of information. First, each
+number corresponds to an intermediary node. Above, the first intermediary node
+is system with the IP address `10.165.254`. We then get three values: 3.816 ms,
+3.920 ms, and 2.951 ms. These are the delay times for each packet. Notice that
+as we get deep into the network core (node number 8), one of the packets gets a
+delay of 299.152 ms. Notice further that at node 8 the packets are sent in
+different directions. Two towards some system `108.170.243.174`, and one towards
+`108.170.243.193`.
+
+Here's another traceroute, to a website outside the United States (where this
+author lives): 
+
+## OSI Reference Model
+
+As we can likely tell, implementing a computer network is complicated business.
+The nodes consist of thousands of different types of hardware, software,
+processes, and priorities. To keep all of this complexity in control, networks
+are implemented modularly. In networking terms, these modules are described as
+_layers_ of a network.
+
+Layering is simply an application of modularization. The _OSI (Open System
+Interconnection) Reference Model_ a set of guidelines for carrying out layering.
+Having these guidelines is critical, as they provide a basic outline for network
+implementations to follow.
+
+The core guideline in the OSI model is achieving _interoperability_ — ensuring
+that entirely different and distinct systems can work together without issues.
+More importantly, OSI requires networks achieve interoperability without
+requiring changes to the a system's underlying hardware and software.
+
+OSI's premise: Given two entirely different systems, if they can agree to
+communicate under the same guidelines, then they can communicate despite their
+differences. Evidence supporting this premise is apparent when we examine how
+the OSI model works.
+
+Suppose node ${A}$ seeks to send data to node ${B}$ through an
+OSI-compliant network. The data that ${A}$ sends goes through a sequence of
+layers (or modules):
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662499278/cs/osi_cacyyh.svg"}
+ imwidth={"121"}
+ imheight={"160"}
+ caption={"osi reference model"}
+ width={"25"}
+/>
+
+The sequence appears as follows:
+
+1. A process at the sender ${S}$ executes some prodecure that transmits
+   data ${d}$ to a recipient ${R.}$
+2. ${d}$ is sent to the presentation layer.
+3. The presentation layer reformats ${d}$ into ${d',}$ where ${d'}$ is data
+   understood by both ${S}$ and ${R.}$
+4. The presentation layer sends ${d'}$ to the session layer.
+5. The session layer sends ${d'}$ to the transport layer.
+6. The transport layer breaks ${d'}$ down into packets ${p_1, p_2, p_3, \ldots,
+   p_n}$ and sends them to the network layer.
+7. The network layer sends the packets ${p_i}$ (where ${i = 1,2,3,\ldots,n}$) to
+   the data link layer.
+8. The data link layer sends ${p_i}$ to the physical layer.
+9. The physical layer sends ${p_i}$ in some medium ${m_i}$ (e.g., electrical
+   signals for wires, light waves for fiber optic cables, radio waves for
+   wireless links).
+10. ${m_i}$ travels along the intermediary nodes until it reaches ${R}$'s
+   physical layer. There, it's translated back into the bits ${p_i.}$
+11. ${p_i}$ is sent up to the data link layer, where it's checked for errors.
+12. Assuming there are no errors, the data link layer sends ${p_i}$ up to the
+    network layer.
+13. The network layer sends ${p_i}$ to the transport layer, where it's
+    reassembled into ${d'.}$
+14. Once reassembled, ${d'}$ is sent to the session layer.
+15. The session layer sends ${d'}$ to the presentation layer.
+16. The presentation layer reformats ${d'}$ back into ${d}$ and sends it to the
+    application layer.
+17. The application layer reads ${d,}$ and, if needed, sends a response — the
+    process repeats, starting at step 1.
+
+Importantly, each of these layers has a particular responsibility. Those
+responsibilities are achieved through _services_ — procedures that achieve some
+network functionality. We can of all these layers as akin to how air travel
+flows:
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1662730838/cs/airport_routing_jj99az.svg"}
+	imwidth={"656"}
+	imheight={"116"}
+	caption={"air travel"}
+	width={"100"}
+/>
+
+Like air travel, each layer has a specific responsibility. When the application
+layer wants to send data, it operates under the premise that it's sending data
+to the recipient's application layer. When the presentation layer receives data
+from the application layer, it operates under the premise that it's sending data
+to the recipient's presentation layer. The same goes for the session layer,
+transport layer, and so on.
+
+As the layer goes down from layer to layer on the sender side, more and more
+data is added. Likewise, on the recipient's side, each piece of data added by
+the sender's corresponding layer is processed.
+
+### Layer 1: Application Layer
+
+The data originates in the _application layer_. This
+layer is where the user accesses network resources, and it's where the network's
+user-facing services are found: File transfer and access managment (FTAM),
+email, VoiceIP, director services, cloud storage upload/download, media
+streaming, and so on.
+
+### Layer 2: Presentation
+
+The _presentation layer_'s purpose is to translate
+${n}$ into a format that both ${A}$ and ${B}$ can understand. The new format
+should allow ${B}$ to answer questions like: What does this bit mean? What does
+this section of bits mean?
+
+To fullfill that purpose, it provides three services: (1) translation, (2)
+encryption, and (3) compression. The translation service is a set of modules
+that convert the data into formats that ${A}$ and ${B}$ can understand. The
+encryption service is a set of modules that encrypts the data, protecting it
+from third party access. Finally, the compression service is a set of modules
+that reduces the number of bits consumed by the data.
+
+### Layer 3: Session
+
+${n}$ is then sent to the _session layer_. The session
+layer's job is to coordinate all the different data that must be sent to and
+from the transport layer (recall that there are potentially many different
+processes).
+
+The session layer offers two key services: (1) dialog control, and (2)
+synchronization. Dialog control is a set of modules that ensures the
+communication is between the correct processes on ${A}$ and ${B.}$ For example,
+if the process in ${A}$ is Snapchat sending a message, the session layer ensures
+that the message is sent to the Snapchat app on ${B}$ and not some other app.
+
+The synchronization service is a set of modules that ensures the communication
+is either simplex, half-duplex, or full-duplex. If the communication is simplex,
+then ${A}$ and ${B}$ can't talk at the same time. If it's half-duplex, then
+they must take turns talking. And if it's full-duplex, then they're free to talk
+over each other. Establishing this fact is a critical piece of information for
+other parts of the systems and the network, as it determines _timing_ and
+_acknowledgment_.
+
+### Layer 4: Transport
+
+At this point, we know enough to introduce a nuance:
+When we say that a node on the network communicates with another node, what we
+really mean is: A process on the network is communicating with another process.
+As such, we need a layer that can ensure data moves from process to process,
+rather the more general notion of a "node to node." This is where the transport
+layer comes in.
+
+The transport layer ensures process-to-process transport of data through several
+services: (1) _segmentation_, (2) _port addressing_, (3) _connection control_,
+(4) _end-to-end flow control_, (5) _error control_, and (6) _reassembly._
+
+The segmentation service is what breaks the data down into the packets we
+discussed earlier. To ensure those packets get to the right process, the port
+addressing services attaches to each packet two key pieces of information:
+
+1. the _source port number_ (the port number of the sending process), and
+2. the _destination port number_ (the port number of the receiving process)
+
+Moreover, because the recipient may receive the packets at different times, not
+necessarily in order, the segmentation service also attaches ordinal numbers
+(i.e., sequence numbers) to each packet, indicating the order in which the
+packets should be reassembled to construct the original data. That reassembly is
+done by the reassembly service.
+
+If the link between process ${A}$ and process ${B}$ is connection-oriented, the
+connection control service performs the _call request_ and _call accept_ methods
+(mentioned in the [packet switching section](#packet-switching)).
+
+If the sender transmits data faster than the recipient can receive, the
+end-to-end flow control service establishes an agreement between the two nodes
+on transmission speed.
+
+Finally, the error control service establishes what constitutes an error or
+corrupt packet in the transmitted data. This service ensures that the process
+does not send or receive corrupt or non-network-compliant data. Once thel
+transport layer has finished its responsibilities, it sends the packets to
+the network layer.
+
+### Layer 5: Network
+
+The _network layer_'s purpose is to ensure that the data from the sending node
+gets delivered to the _destination network_. Note the emphasis. This layer
+doesn't concern itself with a particular process, or a particular node. It's
+concerned with delivering the data to the network the node is on.  This is done
+through two services: (1) _logical addressing_ and (2) _routing_.
+
+The logical addressing services attaches to each packet two pieces of
+information:
+
+1. the _source IP address_ (the IP address of the system where the sending
+   process resides), and
+2. the _destination IP address_ (the IP address of _the next intermediary node_)
+
+The routing service determines the best possible route for transmitting each
+packet. With the IP addresses inserted and the next receiving node determined,
+each packet is sent to the data link layer.
+
+### Layer 6: Data Link
+
+The _data link layer_'s purpose is to move the packets from one node to the
+next. This done through five services: (1) _framing_, (2) _physical addressing_,
+(3) _flow control_, (4) _error control_, and (5) _access control_.
+
+The framing service takes each packet and organizes the data into _frames_. The
+framing services also attaches two pieces of information:
+
+1. the _source MAC address_ (the MAC address of the system where the sending
+   process resides),
+2. the _destination MAC address_ (the MAC address of the _next intermediary
+   node_), and
+3. the _gateway node's IP address_ (the IP address of the _next intermediary
+   node_).
+
+The flow control service enforces the agreement established by the end-to-end
+flow control service in the transport layer. It ensures that only a certain
+amount frames are sent to avoid overwhelming the receiver.
+
+The error control service detects and corrects data frames as they're sent anda
+received, as dictated by the transport layer. For example, if the transport
+layer said that it should receive 7 frames total, the data link layer detects
+whether 7 frames were, in fact, received.
+
+The access control service regulates traffic to a link at a given time. For
+example, a system with only one WiFi antenna means that processes on the system
+must take turns using that antenna. The access control service provides a
+scheduling mechanism for sending and receiving frames through that antenna. Once
+its a particular process's turn, it sends that process's frames to the physical
+layer.
+
+### Layer 7: Physical
+
+The _physical layer_ is charged with (1) translating the packets into raw bits
+(0s and 1s) and (2) placing the raw bits on the correct transmission link, or
+_channel_.  If the link is a metal wire, the physical layer sends the bits as
+electrical signals. If the link is a fiber optic cable, the bits are sent as
+light waves. And if the ink is wireless, the bits are sent as radio waves.
+
+## Routers
+
+Now that we've seen the OSI reference model, let's revisit addressing. Suppose
+node ${A,}$ situated somewhere in Oregon, wants to send some data ${d}$ to a
+node ${B,}$ situated somewhere in South Carolina. The data will travel through
+various intermediary nodes along a LAN (call it ${L_1}$), until it reaches a
+_router_.
+
+The router is a special intermediary node that connects different networks. The
+typicalm router might connect hundreds of different networks, but for now, let's
+say it connects just two LANs: ${L_1}$ and ${L_2.}$ The router's connection to
+${L_1}$ has its own IP and MAC addresses. Similarly, the router's connection tow
+${L_2}$ will have its own IP and MAC addresses.
+
+To illustrate, let's say the path appears as follows:
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662581844/cs/lan_path_vz0tnl.svg"}
+ imwidth={"192"}
+ imheight={"251"}
+ caption={"LAN path"}
+ width={"60"}
+/>
+
+In the diagram, each blue box corresponds to an IP address, and each red box
+corresponds to a MAC address. Notice that the routers have multiple pairs ofa
+IP-MAC addresses. This is because each link to the router leads to a network,
+and that network uses the specified IP-MAC address pair when it sends packets
+to that router.
+
+More importantly, when the node ${A}$ sends its packets, it _does not_ use
+${B}$'s MAC address. Instead, it provides ${L_1}$'s default _default gateway_
+MAC and IP addresses. In the diagram above, those addresses are the IP and MAC
+addresses of ${R_1}$: ${c}$ and ${d.}$ The packets will still hold ${B}$'s IP
+address, but it will only hold the gateway's MAC address.
+
+When ${R_1}$ receives the packets, it looks at network layer information and
+identifies the the source and destination IP addresses, ${a}$ and ${q.}$ Then,
+it sees that the destination IP address is ${q,}$ which doesn't match its own IP
+address, ${c.}$ So, ${R_1}$ determines that the packet must be sent elsewhere.f
+So, ${R_1}$ replaces the data link layer information, replacing it with the next
+gateway's IP and MAC address. In the diagram, this ${R_2}$'s IP and MAC
+addresses: ${i}$ and ${j.}$ This process continues, making its way to ${B.}$
+
+This discussion evidences a further phenomenon when data is transmitted along a
+network: All packets, upon arriving at an intermediary node, must be processed
+by the intermediary node's physical, data link, and network layers.
+
+## Layers & Protocols
+
+Now that we've seen the different OSI layers, we can now examine the connection
+between protocols and layers:
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662584433/cs/layer_protocols_hrx20n.svg"}
+ imwidth={"332"}
+ imheight={"330"}
+ caption={"layer protocols"}
+ width={"60"}
+/>
+
+First, notice that each protocol pertains to a particular layer. Recall what we
+said about protocols: They're sets of agreed-upon rules. With the diagram above,
+we're adding a little more nuance: They're sets of agreed-upon rules for what
+the services of a particular layer should do.
+
+Second, notice that there's a third column called the _TCP/IP model_. This was
+the reference model guiding network implementations _before_ the OSI model.
+Thus, while there isn't a perfect one-to-one mapping, the OSI model can be
+viewed as a further partitioning of the TCP/IP model. That said, to truly
+understand network protocols, we must discuss the TCP/IP model's layers.
+
+### The TCP/IP Model
+
+The TCP/IP model consists of four layers: (1) the _application layer_, (2) the
+_transport layer_, (3) the _internet layer_, and (4) the _network access layer_.
+We examine each in turn.
+
+__Application__. The application layer consists of the data presented to the
+user, and includes both encoding and dialog control modules.
+
+__Transport.__ The transport layer comprises modules that enable communication
+between difference devices across different networks.
+
+__Internet.__ The internet layer comprises modules that determine the best path
+through a network.
+
+__Network Access.__ The network access layer comprises modules that control
+hardware devices and media that make up the network.
+
+All of the protocols mapped to a TCP/IP layer collectively form the __TCP/IP
+protocol suite.__ The TCP/IP protocol suite introduces us to some new
+terminology.
+
+#### Protocol Data Unit (PDU)
+
+In earlier discussions, we used the term "packet" broadly to refer to chunks of
+data travelling along a network. This is not incorrect, but in TCP/IP, a
+_packet_ is a specific instance of a _protocol data unit (PDU)_. Simply put, the
+term PDU refers to the data generated at each layer of the TCP/IP model.
+
+Data generated at the application layer is simply called _data_. The data
+generated at the transport layer — we'll start using the term _PDU_ after this —
+is called a _segment_. The PDU at the network layer is called a _packet_. In the
+OSI model, the packet gets a _header_ and a _trailer_ (the TCP/IP model doesn't
+use these terms, but we state it here to solidify the connection between the two
+models). After the header and frame are added to the packet, data from the data
+link layer is added. In TCP/IP terms, this PDU is called a _frame_. The physical
+layer converts the frames into 0s and 1s — PDUs called _bits_.
+
+Putting all of this together:
+
+| Layer       | PDU     |
+| ----------- | ------- |
+| application | data    |
+| transport   | segment |
+| network     | packet  |
+| data link   | frame   |
+| physical    | bits    |
+
+We can make these abstractions a bit more concrete by delving into basic
+networking commands.
+
+## Basic Networking Commands
+
+To see a system's IP address, we can run the command:
+
+```bash
+ipconfig getifaddr en0
+
+10.165.15.24
+```
+
+To get the default gateway for the LAN we're connected to, we can run the
+command:
+
+```bash
+route -n get default
+
+10.165.15.254
+```
+
+Notice the similarities between the IP address and the default gateway address.
+This isn't a coincidence. The default gateway address is the address of the
+first router we'll hit when we send data, and that router is usually within our
+vicinity.
+
+To see the system's physical address, we can run the command:
+
+```bash
+ifconfig
+```
+
+This will output a large amount of text, but the relevant portion is the `ether`
+field in the output below:
+
+```bash
+en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+ options=400<CHANNEL_IO>
+ ether 08:6d:41:d0:a2:6e
+ inet6 fe80::109e:c3b0:86a8:4b90%en0 prefixlen 64 secured scopeid 0x4
+ inet 10.165.15.24 netmask 0xfffff000 broadcast 10.165.15.255
+ nd6 options=201<PERFORMNUD,DAD>
+ media: autoselect
+ status: active
+```
+
+### Domain Name Service
+
+When we visit a website, we usually enter the site's URL (e.g.,
+www.google.com). But, as we know, that request needs an IP address. That's where
+the _Domain Name Service (DNS)_ comes in. DNS is a service that resolves the
+human-readable name www.google.com into an IP address.
+
+We can see a particular site's IP address with the `nslookup` command:
+
+```bash
+nslookup
+> www.google.com
+Server:  8.8.8.8
+Address: 8.8.8.8#53
+
+Non-authoritative answer:
+Name: www.google.com
+Address: 142.250.191.132
+```
+
+The `nslookup` command simply sends a request to the DNS server and asks, "Hey,
+what's this site's IP address?"
+
+### Pinging
+
+Often, we want to know whether a particular site is reachable from our system.
+We can do so by _pinging_ the site's IP address:
+
+```bash
+ping 142.250.191.132
+
+64 bytes from 142.250.191.132: icmp_seq=0 ttl=117 time=8.909 ms
+64 bytes from 142.250.191.132: icmp_seq=1 ttl=117 time=8.877 ms
+64 bytes from 142.250.191.132: icmp_seq=2 ttl=117 time=8.989 ms
+64 bytes from 142.250.191.132: icmp_seq=3 ttl=117 time=9.004 ms
+64 bytes from 142.250.191.132: icmp_seq=4 ttl=117 time=8.912 ms
+64 bytes from 142.250.191.132: icmp_seq=5 ttl=117 time=9.723 ms
+
+--- 142.250.191.132 ping statistics ---
+6 packets transmitted, 6 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 8.877/9.069/9.723/0.296 ms
+```
+
+We may have noticed the replies steadily coming in one at a time. The `ping`
+command basically sends packets to the system whose IP address is
+`142.250.191.132`. The pinged system then responds with acknowledgements. In
+the example above, we sent 6 packets, and got 6 reply packets back.
+
+If we put some junk IP address:
+
+```bash
+ping 10.20.34.5
+
+PING 10.20.34.5 (10.20.34.5): 56 data bytes
+Request timeout for icmp_seq 0
+Request timeout for icmp_seq 1
+Request timeout for icmp_seq 2
+Request timeout for icmp_seq 3
+
+--- 10.20.34.5 ping statistics ---
+5 packets transmitted, 0 packets received, 100.0% packet loss
+```
+
+we see the expected result: No acknowledgements, 100% packet loss.  Just to
+demystify things, remember that all of this comes back to links between
+computers. Suppose we took two computers ${C_1}$ and ${C_2}$ with Ethernet
+ports, and connected them with an ethernet cable. If we manually set ${C_1}$'s
+IP address to `15.15.15.1` (purely arbitrary) and did the same for ${C_2}$ with
+`15.15.15.2`, then, on ${C_1,}$ ran the command `ping 15.15.15.2`, we'd see the
+same output above.
+
+### Path Tracing
+
+We can see the path our packets take with the `traceroute` command. Below, we
+run `traceroute` with Google's IP address:
+
+```bash
+traceroute 142.250.191.132
+
+traceroute to 142.250.191.132 (142.250.191.132), 64 hops max, 52 byte packets
+ 1  10.165.15.254 (10.165.15.254)  3.528 ms  4.592 ms  4.402 ms
+ 2  162.218.1.57 (162.218.1.57)  3.322 ms  3.068 ms  3.109 ms
+ 3  198.27.60.164 (198.27.60.164)  3.287 ms  4.153 ms  6.255 ms
+ 4  xe-0-1-0.cr1.33emain.as4150.net (66.170.0.115)  3.907 ms  6.366 ms
+    xe-2-0-0.cr1.excelsior.as4150.net (66.170.0.72)  3.703 ms
+ 5  ae0-1504.cr1.mngw.as4150.net (66.170.7.105)  10.355 ms
+    xe-1-0-0.cr2.excelsior.as4150.net (66.170.9.69)  6.212 ms  4.865 ms
+ 6  162.218.2.51 (162.218.2.51)  18.474 ms  9.085 ms
+    xe-0-0-1.cr1.cermak.as4150.net (66.170.7.43)  12.316 ms
+ 7  * * eqix-ch-200g-1.google.com (208.115.136.21)  9.184 ms
+ 8  108.170.243.193 (108.170.243.193)  9.780 ms
+    108.170.243.174 (108.170.243.174)  10.122 ms  10.445 ms
+ 9  142.251.60.7 (142.251.60.7)  13.131 ms  15.554 ms  12.976 ms
+10  ord38s29-in-f4.1e100.net (142.250.191.132)  8.935 ms  9.267 ms  9.654 ms
+```
+
+On this system, we see that the packet takes 10 hops to get to Google, with a
+max of 64 hops.
+
+## Link Systems
+
+We now turn our attention to linking systems. A _link system_ (hereinafter
+"system") is a device and its accompanying software that provides a means of
+connecting different systems. The systems connected by a link system include:
+end nodes (e.g., phones, laptops, tablets, ...), and link systems themselves.
+The primary link systems: hubs, switches, and routers. We examine each in turn.
+
+### Network Adapter
+
+The network adapter is a chip on system that provides functionalities for
+connecting with outside systems. We'll take a closer look at the network adapter
+in a separate section.
+
+### Hubs
+
+_Hubs_ (also called _network hubs_, _ethernet hubs_, _active hubs_, or
+_repeater_) are devices at the physical layer of the OSI model. Hubs provide a
+way to establish a LAN. Most commonly, hubs are used to create star topologies.
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662596567/cs/network_hub_rkokox.png"}
+ imwidth={"2737"}
+ imheight={"1590"}
+ caption={"network hub"}
+ width={"80"}
+ marginTop={"3%"}
+ marginBottom={"3%"}
+/>
+<figcaption>_Hub diagram, U.S. Patent No. 7,457,857 A1 (issued May 26, 1991)._</figcaption>
+
+Each of the hub's slots is a port, to which different nodes on the network can
+connect. If there are more computers than slots, we can connect another hub to
+the hub to accomodate the additions.
+
+When a packet arrives at any one of the ports, the packet is copied to all other
+ports (hence the hub's classification as a _repeater_). This means that all the
+other nodes connected to the hub can see the packet. This presents a security
+risk. Modern hubs mitigate this issue by enforcing protocols where connected
+nodes are prohibited from viewing messages not labeled with their IP addresses.
+This approach, however, comes at the cost of easy broadcasting (when a node
+_actually_ wants all of the others to receive a message).
+
+Additionally, hubs have no memory, since it merely distributes all of the data
+it receives across its ports. The lack of memory, however, makes hubs fairly
+cheap devices. For smaller networks, the downsides could very well be offset by
+the monetary savings.
+
+### Switches
+
+Switches are the alternative, and more common device (at the time of this
+writing) for implementing LANs. The most significant difference between hubs and
+switches: Switches have memory, and hubs do not.
+
+<Fig
+ link={"https://res.cloudinary.com/sublimis/image/upload/v1662625633/cs/US07411948-20080812-D00001_fexoso.png"}
+ imwidth={"2130"}
+ imheight={"1447"}
+ caption={"switch"}
+ width={"60"}
+/>
+<figcaption>_Network Switch, U.S. Patent No. 7,411,948, B2 (issued August 12, 2008)_.</figcaption>
+
+Switches use this memory to store a _MAC address table_. On a cheap switch, this
+is usually a hash table with MAC address entries, and on high-end switches,
+specialized content-addressable memory (CAM).[^CAM] Suppose nodes ${A}$ and
+${B}$ are connected to a particular switch. ${A}$ is connected to port ${P_1,}$
+and ${B}$ is connected to port ${P_7.}$ ${A}$ wants to send a message to
+${B,}$ so it sends packets to the switch. After receiving the packets, the
+switch sees that the packet should be sent to ${B,}$ so it sends the packets
+_only to_ ${P_7,}$ the port ${B}$ is connected to.
+
+Comparing the hub and the switch:
+
+| Hub                                 | Switch                                 |
+| ----------------------------------- | -------------------------------------- |
+| layer 1 device                      | layer 2 device                         |
+| operates at the physical layer      | operates at the data link layer        |
+| has no memory                       | has memory, stores a MAC address table |
+| unintelligent                       | intelligent                            |
+| floods the network via broadcasting | can unicast, multicast, and broadcast  |
+| high security risks                 | low security risks                     |
+| half duplex                         | full duplex                            |
+
+[^CAM]:We can think think of CAM as RAM flipped upside down. With RAM, we know
+the location of data, but want the data stored there. With CAM, we know the data
+but want its location. It's somewhat similar to ideal hashing — memory cell
+indices are _data_ rather than natural numbers: `MAC[006:1f:ea:dc]` instead of
+`MAC[17]`. As we can likely tell, this is an outrageously expensive approach
+financially, and all but the most time-critical switches will use some form of a
+hash function to implement this functionality.
+
+### Routers
+
+Hubs and switches are what we use to establish LANs. But they aren't designed to
+link systems across long distances. Moreover, there's a limit to how many
+systems we can link to a hub or switch before we see efficiency losses. If we
+want systems in Los Angeles to communicate with systems in Seattle, we must use
+a _router_ — a device that forwards data packets between different LANs, or
+different WANs, to an ISP network.
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1662641624/cs/router_yhmzla.jpg"}
+	imwidth={"1440"}
+	imheight={"1440"}
+	caption={"router"}
+	width={"60"}
+/>
+<figcaption>_Router, U.S. Patent No. D757,697 S (issued May 31, 2016). Note that this device is much larger than the hubs and switches presented previously._</figcaption>
+
+
+Routers are layer 3 devices — they operate at the network layer. This is in
+contrast to hubs and switches, which operate at layer 1 and layer 2
+respectively. Like a switch, routers have memory. They use this memory to store
+a _routing table_.
+
+As we know, LANs are created with either hubs or switches. WANs are created with
+routers. These devices will have their own MAC and IP addresses. When they
+connect to a router, the router keeps track of their MAC and IP addresses. Thus,
+we can think of the network created by a hub, switch, or router as having a MAC
+and IP address.[^router1] Suppose we have a router ${R_1}$ which connects two
+LANs, ${L_1}$ and ${L_2.}$ Suppose further that the LANs have the following MACI
+and IP addresses:
+
+|         | IP Address | MAC Address   |
+| ------- | ---------- | ------------- |
+| ${L_1}$ | 10.0.0.0   | 192.168.1.0   |
+| ${L_2}$ | 255.0.0.0  | 255.255.255.0 |
+
+Let's say a node ${A}$ in ${L_1}$ wants to send a message to node ${B}$ in
+${L_2.}$ That message is first sent to ${L_1}$'s switch (or hub). ${L_1}$
+receives the message, and sends it to the ${R_1.}$ ${R_1}$ sees the message, and
+copies it over to its port that ${L_2}$'s router is connected to. ${L_2}$
+receives the message, and sends it towards ${B.}$
+
+Comparing switches and routers:
+
+| Switch                                            | Router                                       |
+| ------------------------------------------------- | -------------------------------------------- |
+| layer 2 system                                    | layer 3 system                               |
+| connects devices                                  | connects networks                            |
+| operates at the data link layer                   | operates at the network layer                |
+| has memory, stores a MAC address table            | has memory, stores a routing table           |
+| intelligent; branching based on the MAC addresses | intelligent; branching based on IP addresses |
+| half/full duplex                                  | only full duplex                             |
+| establishes LANs                                  | can establish LANs, MANs, and WANs           |
+
+[^router1]: In reality, the hub, switch, or router will likely have many MAC and
+    IP addresses. For simplicity, we assume they have a single MAC/IP address.
+
+### Repeaters 
+
+Recall that packets travel from node to node in some medium. The most common
+media being electrical signals, light waves, or radio waves. Because of
+thermodynamics, these media weaken or become corrupted as they travel long
+distances. This is analogous to listening to a lecture in a large lecture hall.
+Without amplifiers, listeners closer to the lecturer hear clearer than those
+further.
+
+_Repeaters_ are layer 1 (the physical layer) devices that help alleviate the
+problems of deterioration. These devices regenerate signals as they travel along
+the same network. Note the word "regenerate." Unlike amplifiers, repeaters do
+not amplify signals. Instead, they take signals and reproduce them.
+
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1662645919/cs/repeater_gu74ye.png"}
+	imwidth={"1950"}
+	imheight={"2289"}
+	caption={"repeater"}
+	width={"40"}
+/>
+<figcaption>_Repeater, U.S. Patent No. 2004/0110469 A1 (issued June 10, 2004)_</figcaption>
+
+For example, suppose node ${A}$ wants to send signals to node ${B,}$ a node far
+way in terms of geographic distance. To ensure the signals get to ${B}$ without
+substantial deterioration, we place a repeater ${r}$ between the two nodes.
+${r}$ has two ports: ${r_1,}$ which ${A}$ connects to, and ${r_2,}$ which ${B}$
+connects to.  When ${r}$ receives ${A}$'s signals through ${r_1,}$ it takes the
+signals, and _repeats_ them through port ${r_2.}$ We can think of the repeater
+as a small lighthouse with a tiny person inside, an attendant. When the
+attendant sees a signal heading towards it on ${r_1}$ (say, flashing lights
+on-off-on-on-off-on), it pulls out its giant light and repeats the sequence on
+${r_2}$ (on-off-on-on-off-on).
+
+### Bridges
+
+A special type of repeater is the _bridge_. Bridges are repeaters with two
+particular characteristics: (1) they connect two LANs on the same protocol, and
+(2) they can read MAC addresses. The networks connected to the bridge are called
+_stations_. Like general repeaters, bridges only have two ports. Generally,
+there are two types of bridges: (i) _transparent bridges_ and (ii) _source
+routing bridges._ 
+
+Transparent bridges are bridges whose stations are unaware of the bridge's
+existence. That is, the connected networks have no way to determine whether
+they're connected to the bridge. Transparent bridges have the benefit of not
+requiring the station's managers from doing anything to connect to the bridge.
+The networks are simply connected; there's no need to establish the network's
+default gateway as the bridge.
+
+Source routing bridges require the station managers to specify the default gate
+way. To send packets to the bridge, the station must specify the route in the
+packet frames.
+
+### Multilayer Switches
+
+_Multilayer switches_, or _layer 3 switches_, are link systems that provide the
+functionalities of a switch, as well as some functionalities of a router. These
+are fairly recent devices.
+
+### Brouter
+
+_Brouters_ are devices that provide functionalities of a bridge as well as the
+functionalities of a router. Like multilayer switches, these are also fairly
+recent devices. Brouters have an additional benefit: They can connect different
+LANs with different protocols, a functionality that traditional bridges don't
+provide.
+
+### Modem
+
+A _modem_ (combination of _modulator_ and _demodulator_) are devices that
+(1) transform bits into analog signals, and (2) transform analog signals into
+bits. The classic example is a a dial-up modem. This device takes bits and
+outputs acoustic waves that (a) can be decoded by another dial-up modem back
+into bits, and (b) can travel along a telephone line. 
+
+### Firewall
+
+The term _firewall_ refers to both software and hardware firewalls. Hardware
+firewalls are physical devices that filter traffic, often situated between
+networks. These devices maintain an _access control list_, a table containing
+what do for certain requests or IP addresses (e.g., whether th carry out or deny
+a request, or whether to permit or prevent a packet from proceeding).
+
+## Transmission
+
+Now that we have an idea of the various network devices, let's turn our
+attention to transmission — how data actually moves from device to device.
+
+For data to move along a link, they must be transformed into _electromagnetic
+signals_. Before we define what an electromagnetic signal is, let's first define
+the broader notion of a signal. 
+
+<dfn>
+
+__definition.__ A _signal_ is a mathematical function that maps points in time
+to a physical quantity.
+
+</dfn>
+
+
+For example, consider the following plot:
+
+<Plot data={[
+	{p: [1,78]},
+	{p: [2,79]},
+	{p: [3,80]},
+	{p: [4,81]},
+	{p: [5,82]},
+	{p: [6,80]},
+	{p: [7,80.2]},
+	{p: [8,78]},
+	{p: [9,77]},
+]}
+domain={[0, 10]}
+range={[0, 85]}
+axesLabels={[`hour`, `temp`]}
+margins={[50,50,50,50]}
+scale={80}
+/>
+
+This plot visualizes variations in temperatures across time. If place a best-fit
+line through each of the points and define that line as the graph of the
+function ${\T(t),}$ the function ${\T(t)}$ can be called a _signal_.
+
+There are two types of signals: (1) _analog signals_ and (2) _digital signals_.
+Both these signals have specific definitions.
+
+<dfn>
+
+__definition.__ An analog signal is a signal whose domain members can map to
+_any_ member of the signal's codomain.
+
+</dfn>
+
+
+<dfn>
+
+__definition.__ A digital signal is a signal whose domain members can map to
+only a subset of the signal's codomain.
+
+</dfn>
+
+We can think of this distinction visually:
+
+<Grid cols={2}>
+
+<Plot data={[{ f: (x) => Math.sin(x) }]}
+	axesLabels={["t", "f(t)"]}
+/>
+
+<Plot
+	data={[
+		{
+			f: (x) =>
+				Math.sin(Math.PI * x) / (2 * Math.abs(Math.sin(Math.PI * x))) +
+				0.5,
+			color: "green",
+		},
+	]}
+	domain={[-5, 5]}
+	range={[-5, 5]}
+	axesLabels={["t", "f(t)"]}
+/>
+
+</Grid>
+
+Above, the graph to the left corresponds to an analog signal. There are
+infinitely many points to which the time ${t}$ can map. The graph to the right,
+however, is a digital signal. The time ${t}$ maps to only ${0}$ and ${1.}$
+
+With this basic notion of a signal, we can now define electromagnetic signals:
+
+<dfn>
+
+__definition.__ An _electromagnetic signal_ is a function that maps points in
+time to states of an electric or magnetic field.
+
+</dfn>
+
+Let's tie this definition back to our discussion of transmission: For data
+travel through a link, it must must be transformed into a electromagnetic
+signals because the physical components that make up the link can only process
+${\S:}$
+
+| Link              | Physical Components                                                                                                                               | Signal ${\S}$          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| copper cable      | UTP (unshielded twisted pair cable), STP (shielded twisted pair cable), coaxial, connectors, wired NIC (network interface card), ports/interfaces | electrical signals     |
+| fiber optic cable | single-mode fiber, multimode fiber, connectors, wired NIC, lasers, LEDs                                                                           | infrared light signals |
+| wireless media    | access points, wireless NIC, radio, antennae                                                                                                      | radio signals          |
+
+Let's explore the two link categories: wired and wireless links.
+
+### Wired Links
+
+Wired links are implemented in various ways:
+
+1. Copper cable (Ethernet cables)
+2. Coaxial cables
+3. Fiber optic cables 
+
+#### Copper Cables
+
+Copper cables come in the form of Ethernet cables and coaxial cables. We won't
+say much about coaxial cables, as they aren't as common today as Ethernet
+cables. That said, they are still used for direct TV, audio, and video connections.
+
+Ethernet cables come in two forms: _unshielded twisted pair (UTP) cables_ or
+_shielded twisted pair (STP) cables_. Because Ethernet cables rely on electrical
+signals, they are prone to electromagnetic interference. This interference might
+be caused by radio waves travelling nearby, adjacent copper cables, or devices
+emitting electromagnetic radiation in proximity. With enough interference, the
+travelling data becomes _crosstalk_ — data corruption caused by electromagnetic
+interference. STP cables mitigate this interference by wrapping each twisted
+pair of cables with metallic foil. While STPs are the ideal copper cable, they
+are also more expensive because of the metallic shielding. 
+
+Of note, shielding isn't the only way to prevent crosstalk. We won't go into the
+physics, but the negative effects of crosstalk can be reduced by varying the
+number of twists for each wire pair.
+
+#### Fiber Optic Cables
+
+Fiber optic cables rely on infrared light signals. Because these signals travel
+at the speed of light, fiber optic cables are the fastest link. This also makes
+fiber optic cables far more expensive than other wired links, by a long shot.
+
+Comparing fiber optic cables to copper cables:
+
+| Property            | Copper Cable              | Fiber Optic Cable            |
+| ------------------- | ------------------------- | ---------------------------- |
+| bandwidth           | 10Mbps - 10Gbps           | 10Mbps - 100Gbps             |
+| range               | short ${(\approx 100\m)}$ | long ${(\approx 100~000\m)}$ |
+| immunity to EMI/RFI | low                       | high (completely immune)     |
+| installation costs  | lowest                    | highest                      |
+| maintenance costs   | lowest                    | highest                      |
+
+### Wireless Links
+
+Wireless links are implemented in numerous ways. The most popular
+implementations of wireless links:
+
+1. Bluetooth
+2. Wifi
+3. WiMAX
+3. Cellular
+4. Satellite
+
+For all wireless links, there are three primary areas of concern: _coverage_
+(how far can two linked nodes be separated before the link becomes useless),
+_interference_ (how well can the link handle eletromagnetic interference), and
+_security_ (how easy is it for an unauthorized third party to access
+communications). We'll use these areas to differentiate between the different
+implementations.
+
+#### Bluetooth
+
+Bluetooth is a technology that implements the IEEE 802.15 standard. Of all
+wireless links, Bluetooth has the smallest coverage, ranging from ${1}$ to
+${100\m,}$ and speeds cap at about ${3 \text{Mbps.}}$ Bluetooth's primary
+advantages are (1) the technology is cheap to support from a manufacturer
+perspective, (2) ease of use, and (3) fast connection establishment.
+
+The third point has led to some innovative uses of Bluetooth. In particular,
+using Bluetooth as a "node finder" rather than as a link. This is the idea
+behind Apple's Airdrop technology. The sending node uses Bluetooth to locate the
+desired recipient node (something Bluetooth is highly efficient at because of its short
+range), then uses its WiFi radio to establish a peer-to-peer network with the
+recipient for the actual data transmission.
+
+#### WiFi
+
+_Wireless Fidelity (WiFi)_ is a broad term for many different technologies that
+implement the IEEE 801.11 standard. Because of how many technologies there are,
+comparing WiFi against other wireless links requires specifying what WiFi
+technology we're talking about. In general, the most common technologies are:
+
+| Technology | Top Speed | Base Frequency         |
+| ---------- | --------- | ---------------------- |
+| 802.11a    | 54 Mbps   | 5 GHz                  |
+| 802.11b    | 11 Mbps   | 2.4 GHz                |
+| 802.11g    | 54 Mbps   | 2.4 GHz                |
+| 802.11n    | 600 Mbps  | 2.4 - 5 GHz            |
+| 802.11ac   | 1 Gbps    | 5 GHz                  |
+| 802.11ad   | 7 Gbps    | 2.4 GHz, 5 GHz, 60 GHz |
+
+#### WiMAX
+
+Like WiFi, WiMAX refers to various technologies that implement the IEEE 802.16
+standard. WiMAX is fairly recent, and provides speeds of up to 1 Gbps, and
+operates at base frequencies of 2.3, 2.5, and 3.5 GHz.
+
+#### Limitations of Wireless
+
+The Internet, as a whole, uses wired physical links. This ensures high
+reliability and a low _bit error rate (BER)_ — the percentage of corrupt bits
+in a data transmission relative to the total number of bits.
+
+Why isn't wireless the predominant medium? Coverage. Wireless operates by
+emitting waves from a particular point throughout its surrounding area. These
+waves go out in all directions. As such, only a fraction of the total emitted
+waves reaches its intended destination. Moreover, the further that destination
+is, the more the wave deteriorates before it reaches the recipient. 
+
+We could, of course, use repeaters to reproduce these waves, ensuring that they
+can travel across distances. But then we'd need a significant amount of
+repeaters to cover the geographic area covered by the Internet, and repeaters
+are expensive. Furthermore, even if we did use repeaters, fundamentally, we
+would never obtain the same data transfer speeds that a physical link would
+provide. To understand why, we have turn to the notion of _bandwidth_.
+
+##### Bandwidth
+
+From calculus, we know that we can break down a signal into whatever frequency
+we want (slow, fairly slow, fast, very fast, ...) through a Fourier transform.
+For example, a signal that looks like:
+
+<Plot data={[
+	{f: (x) => Math.sin((2 * Math.PI * x)/3) + Math.sin((2 * Math.PI * x)/8) + Math.sin((2 * Math.PI * x)/9)}
+]}
+scale={50}
+/>
+
+can be transformed into frequencies ${f_0, f_1, f_2, \ldots, f_n}$ that range
+from very slow to very fast:
+
+<Grid cols={4}>
+	
+<Plot data={[{f: (x) => Math.sin(0.5 * x)}]} />
+
+<Plot data={[{f: (x) => Math.sin(x)}]} />
+
+<Plot data={[{f: (x) => Math.sin(3 * x)}]} />
+
+<Plot data={[{f: (x) => Math.sin(10 * x)}]} />
+	
+</Grid>
+
+This interval of frequencies is collectively called a _band_: 
+$$
+	\set{f_0, f_1, f_2, \ldots, f_n}
+$$
+
+and the notion of _bandwidth_ is its length.
+
+From this definition, we can infer that bandwidth is the length of the
+interval of possible frequencies that a signal can be transformed into without
+amplitude or phase change in the original signal. Or, put in networking terms,
+the range of possible frequencies that a signal can be transformed into without
+distortion. We can compute this length with the formula:
+
+$$
+	\B = f_2 - f_1
+$$
+
+where ${f_2}$ is the upper cutoff frequency and ${f_1}$ is the lower cutoff
+frequency.  Because this interval consists of fequencies in the context of
+electromagnetic signals, we measure this length in either _megahertz (MHz)_ or
+_gigahertz (GHz)_. For example: GPS has a bandwidth of roughly 2MHz, WiFi
+roughly 20MHz, and 5G roughly 500MHz (loosely; we're ignoring the details about
+technology differences as they aren't relevant to this discussion). Larger
+bandwidths indicate a larger set of possible frequencies that the signal can be
+transformed into.
+
+Now, suppose ${A}$ sends bits to ${B.}$ The closer ${B}$ is to ${A,}$ the
+stronger the signal, and the further the weaker. _Shannon's Theorem_ tells us
+that the speed at which those bits travel, called the _data rate_ ${\C,}$ is
+given by the equation:
+
+$$
+	\C = \B \cdot \lg \ar{1 + \dfrac{\P}{\text{N}}}
+$$
+
+where ${\B}$ is the bandwidth, ${\P}$ is the average signal power, and
+${\text{N}}$ is the average noise power. The term ${\P / \text{N}}$ is often called
+the _signal-to-noise ratio_, and is measured in decibels (dB). This term can be
+expressed with the formula:
+
+$$
+	10 \cdot \log_{10}(\P/\text{N})
+$$
+
+
+For example, a telephone line with ${\P/\text{N} = 30\text{dB}}$ and an audio
+bandwidth of ${3\text{kHz}}$ has a maximum data rate of: of:
+
+$$
+	\C = 3000 \cdot \lg{1001} \approx 30 \text{kbps}
+$$
+
+which is a little over what we'd see for a dial-up connection on a very good
+day. So, how might we increase the data rate? The most obvious term to increase
+is ${\B,}$ the bandwidth. Unfortunately, there are real-world limits to
+increasing ${\B:}$ there are only so many frequencies to go around. If
+we make a link that operates at 8MHz and it turns out that the police radios are
+also using 8MHz, we can expect some knocks at the door. This is putting the
+matter lightly — in the United States, agencies like the _Federal Communications
+Commission_ and the _Federal Aviation Administration (FAA)_ strictly enforce
+bandwidth usage regulations through penalties, and in some cases, imprisonment
+(we probably shouldn't interfere with air traffic control).
+
+So, there isn't much we can do about bandwidth. Moreover, there isn't a whole
+lot we can do about noise — the ${\text{N}}$ term — aside from shielding our
+physical media or buying out competitors. This leaves ${\P,}$ the average
+signal power. As we alluded to earlier, wired links will always beat
+wireless links when it comes to signal power: On a wire, a signal sent from
+${A}$ to ${B}$ travels directly to ${B,}$ rather than only a fraction of it in
+the case of wireless.
+
+We can see Shannon's Theorem at work by comparing Ethernet and WiFi connections.
+If a building offers both WiFi and an Ethernet connection and we compared the
+data transfer speeds for both media, we'd find that the Ethernet connection is
+much faster.
+
+#### Caveats to Speed Tests
+
+If we did make the comparison described in the previous paragraph, we'd have to
+account for any _rate limiting_ by the network provider. Many communications
+companies today — Comcast in particular — place caps on how fast a particular
+connection can be. Thus, speeds we see on a speed test website (or on our
+terminal) may not be representative of the link quality. The network providers
+could very well place rate limits on their physical media.
+
+## Bitrates
+
+Having discussed bandwidth, let's turn our attention to the way we quantify
+properties in networking. As we saw, bandwidth is a characteristic of the
+physical media used to link nodes, and we measure it in terms of herz.
+
+The speed at which bits travel from node to node is called the _data rate_ or
+_bitrate_, and we quantify it in terms of bits per second (${\text{bps}}$). This
+leads to the following units:
+
+| Unit            | Meaning                       |
+| --------------- | ----------------------------- |
+| ${1~\text{bps}}$  | ${1}$ bit per second          |
+| ${1~\text{kbps}}$ | ${1~000}$ bits per second     |
+| ${1~\text{Mbps}}$ | ${1~000}$ kilobits per second |
+| ${1~\text{Gbps}}$ | ${1~000}$ megabits per second |
+| ${1~\text{Tbps}}$ | ${1~000}$ gigabits per second |
+
+Alternatively, we can also measure bitrates in terms of bytes:
+
+| Unit            | Meaning                                                                                                                                                                                   |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ${1~\text{Bps}}$  | ${8}$ bits per second                                                                                                                                                                     |
+| ${1~\text{KBps}}$ | ${8~000}$ bits per second, ${1~000}$ bytes per second                                                                                                                                     |
+| ${1~\text{MBps}}$ | ${8~000~000}$ bits per second, ${1~000~000}$ bytes per second, ${1~000}$ kilobytes per second                                                                                             |
+| ${1~\text{GBps}}$ | ${8~000~000~000}$ bits per second, ${1~000~000~000}$ bytes per second, ${1~000~000}$ kilobytes per second, ${1~000}$ megabytes per second                                                 |
+| ${1~\text{TBps}}$ | ${8~000~000~000~000}$ bits per second, ${1~000~000~000~000}$ bytes per second, ${1~000~000~000}$ kilobytes per second, ${1~000~000}$ megabytes per second, ${1~000}$ gigabytes per second |
+
+Whenever we talk about bitrates, we want to differentiate between _upstream
+bitrates_ (colliquially called _upload speeds_) and _downstream bitrates_
+(_download speeds_). This is because the two bitrates are not always the same
+(in fact, the downstream bitrate is usually greater than the upstream bitrate).
+For example, historically, ADSL links (the physical media that largely replaced
+dial-up), have a lower upstream bitrate (roughly 256 kbps), and a higher
+downstream bitrate (roughly 1Mbps). With the rise of Instagram, Snapchat,
+Tiktok, and other forms of active online participation (users uploading, rather
+than merely viewing, content), physical links today have reduced this disparity.
+
+## Signals & Bandwidths
+
+Suppose some device broadcasts a signal to some receiver. That signal
+consists of potentially thousands of different frequences. The greatest
+frequency within that broadcast, denoted ${f_{max},}$ is called the
+signal's __bandwidth__.
+
+Every communication uses some amount of bandwidth. WiFi, for example, has a
+bandwidth of roughly 20MHz (in the graph below, the rectangle colored red).
+On the other hand, some GPS device might broadcast at a bandwidth of 1MHz
+(the rectangle colored yellow). A police radio might operate at a bandwidth
+of 3MHz (the rectangle colored purple).
+
+<Plot2
+	geo={[
+		{
+			type: "rectangle",
+			xy: [0, 2.5],
+			w: 20,
+			h: 5,
+			name: "wifi",
+			stroke: "firebrick",
+			fill: "red",
+		},
+		{
+			type: "rectangle",
+			xy: [0, 1.5],
+			w: 5,
+			h: 3,
+			name: "radio",
+			stroke: "teal",
+			fill: "teal",
+		},
+		{
+			type: "rectangle",
+			xy: [0, 5],
+			w: 2,
+			h: 10,
+			name: "gps",
+			stroke: "goldenrod",
+			fill: "yellow",
+		},
+		{ type: "label", id: "\\text{wifi}", xy: [10.5, 5] },
+		{ type: "label", id: "\\text{gps}", xy: [1.2, 10.1] },
+		{ type: "label", id: "\\text{police radio}", xy: [3, 3] },
+	]}
+	xLabel={"GHz"}
+	yLabel={"samples"}
+	xLabelWidth={80}
+	yLabelWidth={40}
+	domain={[-20, 20]}
+	range={[-20, 20]}
+	tickCount={10}
+	id={"collisions1"}
+/>
+
+Examining the graph above, we can see overlaps in the frequencies. This
+presents a problem. If we turned on a receiver to catch the signals, we'd
+get all of them. Moreover, the frequencies we'd get would likely be
+gobbledygook — the frequencies collide and interfere with one another.
+
+So how do we prevent these devices' frequences from colliding? Well, if we
+look at the graph above, all the rectangles are centered at ${(0,0).}$ For
+each device, this point is called the __center frequency__. We can avoid
+the overlaps by changing this center frequency:
+
+<Plot2
+	geo={[
+		{
+			type: "rectangle",
+			xy: [30, 2.5],
+			w: 20,
+			h: 5,
+			stroke: "firebrick",
+			fill: "red",
+		},
+		{
+			type: "rectangle",
+			xy: [4, 1.5],
+			w: 5,
+			h: 3,
+			stroke: "teal",
+			fill: "teal",
+		},
+		{
+			type: "rectangle",
+			xy: [10, 5],
+			w: 2,
+			h: 10,
+			stroke: "goldenrod",
+			fill: "yellow",
+		},
+		{ type: "label", id: "\\text{wifi}", xy: [40.5, 5] },
+		{ type: "label", id: "\\text{gps}", xy: [10, 15] },
+		{ type: "label", id: "\\text{police radio}", xy: [-10.5, 7] },
+	]}
+	xLabel={"GHz"}
+	yLabel={"samples"}
+	xLabelWidth={80}
+	yLabelWidth={40}
+	domain={[-50, 50]}
+	range={[-50, 50]}
+	tickCount={10}
+	id={"collisions2"}
+/>
+
+How do device manufacturers know where to shift their central frequency?
+They pick a central frequency, and pay millions of dollars to the federal
+government to hold on to that frequency. Once they've paid for that
+frequency, the government prevents all others from using that frequency
+through the judicial system. In the United States, the Federal
+Communications Commission (FCC) maintains a list of all the purchased
+frequency spectrums, and device manufacturers must respect that list if
+they want their products to stay on the market.[^fcc_note]
+
+[^fcc_note]:
+    Radio spectrum allocations can be found on the
+    [FCC website](https://www.fcc.gov/engineering-technology/policy-and-rules-division/general/radio-spectrum-allocation).
+    Frequency spectrums are an extremely valuable commodity, and market
+    players — telecommunications and broadcasting companies like Comcast,
+    Verizon Wireless, Dish Network and Walt Disney — fight tooth and nail
+    to get a hold of the spectrums. Mobile phone providers like AT&T and
+    Sprint are especially ferocious in this area, given that demand for
+    mobile data has, and continues to grow, exponentially. _See_ Arash
+    Maskooki, Gabriele Sabatino, & Nathalie Mitton, _Analysis & Performance
+    Evaluation of the Next Generation Wireless Networks_, ~Modeling &
+    Simulation of Computer Networks & Systems~ 601 (2015).
+
+The trouble is, by shifting these frequences, we now have an issue on the
+receiver's end. When we open our laptop and connect to a WiFi access point,
+the laptop's WiFi antenna receives the WiFi signals at the center
+frequency. Let's say that center frequency is 2.4GHz. At that center
+frequency, our laptop can't process that signal in its raw form.
+
+However, the signal the antenna receives has a particular shape or outline
+— the shape of the data the transmitter is attempting to send. That shape
+is a signal itself, and it propogates at 20MHz — WiFi's broadband. Our
+laptop's antenna can receive this signal, and once it receives this signal,
+it shifts the signal back to the unshifted center frequency. In our graph
+above, this point was ${(0,0).}$ This process is called bringing the signal
+back to __baseband__.
+
+By bringing the signal back to baseband, the original signal at 2.4GHz (the
+__carrier signal__) is stripped away, leaving just its outline. That
+outline is what our computer can work with, and it begins decoding that
+signal into the data our system needs.
+
+Question: Is there any advantage to placing a central frequency at a higher
+frequency? The intuitive answer is yes. The closer we are to 0, the more
+congested the purchased frequencies are. At higher frequencies, however,
+things start looking more sparse:
+
+<Plot2
+	geo={[
+		{
+			type: "rectangle",
+			xy: [13, 2.5],
+			w: 2,
+			h: 5,
+			stroke: "firebrick",
+			fill: "red",
+		},
+		{
+			type: "rectangle",
+			xy: [4, 1.5],
+			w: 5,
+			h: 3,
+			stroke: "teal",
+			fill: "teal",
+		},
+		{
+			type: "rectangle",
+			xy: [10, 5],
+			w: 2,
+			h: 10,
+			stroke: "goldenrod",
+			fill: "yellow",
+		},
+		{
+			type: "rectangle",
+			xy: [30, 5],
+			w: 4,
+			h: 10,
+			stroke: "purple",
+			fill: "purple",
+		},
+		{
+			type: "rectangle",
+			xy: [43, 4],
+			w: 2,
+			h: 8,
+			stroke: "grey",
+			fill: "grey",
+		},
+	]}
+	xLabel={"GHz"}
+	yLabel={"samples"}
+	xLabelWidth={80}
+	yLabelWidth={40}
+	domain={[-50, 50]}
+	range={[-50, 50]}
+	tickCount={10}
+	id={"sparse"}
+/>
+
+And with so much more available frequencies, we could potentially some
+device using massive bandwidths, which in turn means faster download and
+upload speeds. Indeed, this is what technologies like 5G advertise — their
+central frequencies live at higher frequences, allowing them to provide
+bandwidths to the tune of not MHz, but GHz.
+
+Sadly, as with most things in life, there's no free lunch. The greater a
+signal's central frequency, the shorter the signal's range. And the shorter
+the signal's range, the more towers we need to receive and emit the signal.
+Put simply, technologies with higher central frequencies like 5G are great
+for small, densely populated areas. Scaling these technologies to reach
+millions of devices across hundreds of thousands of square miles is a
+different story. Providers would have to install potentially thousands of
+towers to achieve the same range as technologies with smaller central
+frequencies.
+
+## Line Configurations
+
+For a node ${A}$ and a node ${B}$ to communicate with another, they must be on
+the link _at the same time_. The methods for ensuring that ${A}$ and ${B}$ are
+on the link simultaneously are called _line configurations_.
+
+Broadly, there are two types of line configurations: (1) _point-to-point
+connections_ and (2) _multipoint connections_. Let's go over these types.
+
+### Point-to-Point Connections
+
+In point-to-point connection, ${A}$ and ${B}$ are guaranteed to be on the same
+link because (1) there exists a dedicated link between ${A}$ and ${B,}$ and (2)
+the entire capacity of that link is reserved for data transmission between ${A}$
+and ${B.}$
+
+### Multipoint Connections
+
+In the multipoint connection approach, ${A}$ and ${B}$ are guaranteed to be on
+the same link because (1) both ${A}$ and ${B}$ are on a single, common link
+(shared by other nodes). Unlike the point-to-point connection, in a multipoint
+connection, the link's capacity is shared by ${A,}$ ${B,}$ and all other nodes
+connected to the link.
+
+Broadly, there are two types of multipoint connections: (a) _spatial multipoint
+connections_ and (b) _temporal multipoint connections_. In a spatial multipoint
+connection, the sharing is done physically. Nodes can join so long as there's an
+open port to join the link. In a temporal multipoint connection, sharing is done
+across time. Nodes can only use the link when it's their turn. Otherwise, they
+do not have a connection.
+

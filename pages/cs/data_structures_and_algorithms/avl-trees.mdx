@@ -1,0 +1,127 @@
+import {Tree} from "../../../components/illus/components/Tree/Tree";
+import Bftable from "./bftable.mdx";
+import Bftrees1 from "./bftrees1.mdx";
+import Bftrees2 from "./bftrees2.mdx";
+import Bftrees3 from "./bftrees3.mdx";
+import LeftRotateFig1 from "./avl-left-rotate-fig-1.mdx"
+import LeftRotateTrace from "./avl-left-rotate-trace.mdx"
+
+<Head>
+	<title>AVL Trees</title>
+	<meta name={`description`} content={`Notes on AVL trees.`}/>
+</Head>
+
+# AVL Trees
+
+_This note presents an overview of AVL trees._
+
+
+In this section, we examine _Adelson-Velsky & Landis trees_, commonly known as _AVL-trees_.[^avlnote] AVL-trees are _height-balanced binary search trees._ 
+
+[^avlnote]:
+    AVL-trees were invented in 1962, and named after their inventors, Soviet mathematicians Georgy Adelson-Velsky (8 January 1922&ndash;26 April 2014) and Evgenii Mikhailovich Landis (6 October 1921&ndash;12 December 1997). Born in Samara, Russia, Adelson-Velsky is known for introducing _bitboards_, a bit array data structure now widely used to represent game positions in computer chess. Adelson-Velsky's chess program participated and won the first chess match between computer programs in 1966. The AVL-tree, in particular, was borne out of Adelson-Velsky's work in artificial intelligence. His colleague, Evgenii Landis, was equally accomplished. Born in Kharkiv, Ukraine, Landis fought in Finland as a lieutenant in the Red Army, where he was wounded, frost-bitten, and severely shell-shocked. The traumas of war impaired his ability to hear high-pitched tones, to which Landis lamented his inability to hear violin flageolets. Despite these difficulties, Landis made numerous contributions to the field of partial differential equations, alongside his collaboration with Adelson-Velsky in inventing the AVL-tree.
+
+Recall the definitions of the term _height_ as it relates to trees:
+
+> __~height of a node i~__. Let ${n}$ be a node of a binary tree. The height of ${n,}$ denoted ${h(n),}$ is the number of nodes, including the starting and end nodes, along the longest strictly downward path from ${n}$ to a leaf.
+
+Note that there are two different definitions for the height of a node. An
+alternative definition is:
+
+> __~height of a node ii~__. Let ${x}$ be a node of a binary tree ${T.}$ The height of ${x,}$ denoted ${h(x),}$ is the number of edges along the longest strictly-downward path from ${x}$ to a leaf.
+
+We use definition ~i~ for this note.
+
+> __~height of a tree~__. Let ${T}$ be some rooted tree. The height of ${T,}$ denoted ${h(T),}$ is the height of its root.
+
+> __~height balance factor~__. Let ${n}$ be a node of a binary tree ${t.}$ The _height balance factor_ of ${n,}$ denoted ${\tx{Bf},}$ is an integer defined by the formula
+> 
+> $$
+> 	\tx{Bf}(n) = h(n_0) - h(n_1),
+> $$
+> 
+> where ${h(n_l)}$ is the height of the _left-child node_ of ${n}$ and ${h(n_r)}$ is the height of the _right-child node_ of ${n.}$
+
+> __~avl tree~.__ Let ${T}$ be a binary tree, and let ${N\set{T}}$ denote the set of all nodes of ${N.}$ We say that ${T}$ is an AVL tree if, and only if, for every node ${n \in N\set{T},}$ it follows that ${\tx{Bf}(n) \in \set{-1,0,1}.}$ That is, every node of ${T}$ has a balance factor of ${-1,}$ ${0,}$ or ${1.}$ Or, more concisely, ${\abs{\tx{Bf}(n)} \le 1.}$
+
+Following the definition above, if the absolute value of the ${\tx{Bf}}$ of some node ${x}$ is greater than or equal to ${1,}$ we say that the node ${x}$ is _height-imbalanced._ Thus, to determine if a particular tree ${T}$ is an AVL-tree, we must calculate the ${\tx{Bf}}$ for each node of ${T.}$ If a node ${n}$ of ${T}$ has a ${\tx{Bf}(n) \notin \set{-1,0,1},}$ then we say that ${n}$ is imbalanced. If a single node ${n}$ of ${T}$ is imbalanced, we say that ${T}$ is _imbalanced_. If the tree is imbalanced, we can attempt to balance the tree by performing _rotations_. We examine rotations shortly.
+
+~example~. Below are some binary trees with their heights indicated.
+
+<Bftrees1/>
+
+Examining each tree, we have the following tables of balance factors:
+
+<Bftable/>
+
+Their corresponding trees:
+
+<Bftrees2/>
+
+## Rotations
+There are really only four situations where a binary tree is height-imbalanced. Why? Because to have a height-imbalanced binary tree, we need, at a minimum, three nodes. This follows from the definition of a height-balanced binary tree—to determine if a binary tree is height-balanced, we must compare the left- and right-subtrees of the root. And to reach the conclusion that a binary tree is height-imbalanced, the root must have a right- and left-child to begin with; three nodes total. From the _Catalan number formula_, given three nodes, there are five possible binary trees:
+
+<Bftrees3/>
+
+Of the possibilities above, only Tree 5 is balanced. Given that all subtrees of a binary tree are binary trees, it follows that there are only four possible cases for height-imbalanced trees: Tree 1, tree 2, tree 3, and tree 4. This leads to the four methods of balancing imbalanced trees. We call these methods _rotations_: _right rotation_, _left rotation_, _right-left rotation_, and _left-right rotation_.
+
+~remark~: Learning resources on AVL tree rotations overcomplicate the procedures far, far too much. Ironically, none of these complexities are due to the algorithms themselves; the rotations are fairly straightforward. Instead, much of the (unnecessary) complexity stems from (a) having the rotations perform additional operations other than rotations, (b) dealing with language quirks, or (c) presenting the algorithms as methods of some elaborate AVL Tree class. _None of these complexities have anything to do with the algorithms_. We present the algorithms in pseudocode with the bare minimum necessities, and leave it to the reader to optimize and implement as they see fit.
+
+### Left-rotations
+The base case for when we need a right-rotation is a left-skewed tree (pictured left). The objective is to mutate the tree into the form pictured right.
+
+<LeftRotateFig1/>
+
+Below is the left-rotation procedure.
+
+<Algo>
+
+> __~left-rotation~.__ Let ${a,}$ ${b,}$ and ${c}$ be nodes of a binary tree ${T,}$ where ${c}$ is the root of ${T,}$ ${b}$ is the left-child of ${c,}$ and ${a}$ is the left-child of ${b.}$ The function ${\df{lrot}}$ returns ${T}$ such that ${b}$ is the root, ${c}$ is the left-child of ${b,}$ and ${a}$ is the right-child of ${b.}$
+
+
+1. __function__ ${\df{lrot}(node)}$
+	1. ${\let{temp}{\rw{node}{left}}}$
+	2. ${\let{\rw{node}{left}}{\rw{temp}{right}}}$
+	3. ${\let{\rw{temp}{right}}{node}}$
+	4. __return__ ${temp}$
+
+</Algo>
+
+Here is a brief trace:
+
+<LeftRotateTrace/>
+
+The right-rotation operation works regardless of how many nodes there are.
+For example, suppose we have the following tree.
+
+<Tree
+	data={[
+		{ child: "a", parent: "" },
+		{ child: "b", parent: "a" },
+		{ child: "d", parent: "a", noCircle: true },
+		{ child: "c", parent: "b" },
+		{ child: "e", parent: "b", noCircle: true },
+		{ child: "f", parent: "c", noCircle: true },
+		{ child: "g", parent: "c", noCircle: true },
+	]}
+	edgeLength={100}
+	scale={50}
+/>
+
+In the diagram above, the nodes without circles indicate that there are
+further subtrees. Importantly, the fact that the pivot,
+${\texttt{node(b)},}$ has a balance factor of ${1}$ indicates that this
+tree is left-heavy. Accordingly, we have a right-rotation:
+
+<Tree
+	data={[
+		{ child: "b", parent: "" },
+		{ child: "c", parent: "b" },
+		{ child: "a", parent: "b" },
+		{ child: "e", parent: "a", noCircle: true },
+		{ child: "d", parent: "a", noCircle: true },
+		{ child: "f", parent: "c", noCircle: true },
+		{ child: "g", parent: "c", noCircle: true },
+	]}
+	scale={50}
+/>

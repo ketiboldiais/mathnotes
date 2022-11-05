@@ -11,34 +11,35 @@ import { generateEdges } from "./generateEdges/generateEdges";
 import { nodeContainsLoop } from "./nodeContainsLoop";
 import { generateNodes } from "./generateNodes/generateNodes";
 import { graphPathGenerator } from "./graphPathGenerator";
-import * as d3 from "d3";
+import { forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY, select } from "d3";
 
 export const Graph = ({
 	data = [[]],
-	width = 500,
-	height = 500,
+	wh=[500,500],
+	width=wh[0],
+	height=wh[1],
 	scale = 100,
 	containerWidth = scale,
-	fontSize = 1,
+	fontSize = 0.4,
 	containerHeight,
-	repulsion = 0.01,
-	edgeLength = 50,
-	collisionRadius = 10,
-	margin = 50,
+	repulsion = 0.1,
+	edgeLength = 30,
+	collisionRadius = 20,
+	margin = 0,
 	marginTop = margin,
 	marginRight = margin,
 	marginBottom = margin,
 	marginLeft = margin,
 	margins = [marginTop, marginRight, marginBottom, marginLeft],
-	nodeRadius = 5,
+	nodeRadius = 4,
 	edgeColor = "#00b2e8",
 	nodeFillColor = "#e3f7ca",
 	nodeStrokeColor = edgeColor,
-	nodeTextOffsetY = 7,
-	nodeTextOffsetX = -7,
+	ty = -7,
+	tx = -10,
 	dimensionsHelper = false,
-	isDirected = false,
-	straightEdges = false,
+	isDirected=false,
+	straightEdges=true,
 	className = "Graph",
 	noNodeLabels = false,
 	id = `${Date.now()}`,
@@ -48,25 +49,23 @@ export const Graph = ({
 	const _svg = svg(width, height, margins);
 	const edges = generateEdges(data);
 	const nodes = Object.values(generateNodes(data, edges));
-	const networkCenter = d3
-		.forceCenter()
+	const networkCenter = forceCenter()
 		.x(_svg.width / 2)
 		.y(_svg.height / 2);
-	const manyBody = d3.forceManyBody().strength(-150).distanceMax(100);
-	const forceX = d3.forceX(_svg.width / 2).strength(repulsion);
-	const forceY = d3.forceY(_svg.height / 2).strength(repulsion);
-	const force = d3
-		.forceSimulation(nodes)
+	const manyBody = forceManyBody().strength(-150).distanceMax(100);
+	const xForce = forceX(_svg.width / 2).strength(repulsion);
+	const yForce = forceY(_svg.height / 2).strength(repulsion);
+	const force = forceSimulation(nodes)
 		.force("charge", manyBody)
-		.force("link", d3.forceLink(edges).distance(edgeLength).iterations(1))
+		.force("link", forceLink(edges).distance(edgeLength).iterations(1))
 		.force("center", networkCenter)
-		.force("x", forceX)
-		.force("y", forceY)
-		.force("collision", d3.forceCollide().radius(collisionRadius))
+		.force("x", xForce)
+		.force("y", yForce)
+		.force("collision", forceCollide().radius(collisionRadius))
 	const renderGraph = () => {
-		const canvas = d3.select(_graphREF.current).select("g.svgElement");
+		const canvas = select(_graphREF.current).select("g.svgElement");
 		if (dimensionsHelper) {
-			d3.select(_graphREF.current).style("border", "solid thin red");
+			select(_graphREF.current).style("border", "solid thin red");
 			canvas
 				.append("rect")
 				.attr("width", _svg.width)
@@ -91,12 +90,12 @@ export const Graph = ({
 			insertArrowDefinitions(
 				graph,
 				`ArrowHead${id}`,
-				19,
+				14,
 				0,
-				5,
-				5,
+				6,
+				6,
 				"auto",
-				"inherit",
+				"rgb(161, 206, 200)",
 				className,
 			);
 		} else {
@@ -104,12 +103,12 @@ export const Graph = ({
 			insertArrowDefinitions(
 				graph,
 				`ArrowHead${id}`,
-				19,
-				-2,
-				5,
-				5,
+				14,
+				0,
+				6,
+				6,
 				"auto",
-				"inherit",
+				"rgb(161, 206, 200)",
 				className,
 			);
 		}
@@ -134,7 +133,7 @@ export const Graph = ({
 		// the node circles
 		nodeEnter
 			.append("circle")
-			.attr("r", (d) => (d.r ? d.r : nodeRadius));
+			.attr("r", (d) => (d.r || d.r===0 ? d.r : nodeRadius));
 
 		// if the node is radial, append an additional circle
 		// yields a "radar" effect
@@ -156,19 +155,19 @@ export const Graph = ({
 			nodeEnter
 				.append("g")
 				.attr("transform", (d) => {
-					const x = d.dx ? d.dx : nodeTextOffsetX;
-					const y = d.dy ? d.dy : nodeTextOffsetY;
+					const x = d.dx ? d.dx : tx;
+					const y = d.dy ? d.dy : ty;
 					return translate(x, y);
 				})
 				.each(function (d, i) {
 					const graphId = Trim(id, [/ /]);
-					let sel = d3.select(this);
+					let sel = select(this);
 					MathText(
 						sel,
 						d.id,
-						fontSize,
-						10,
-						10,
+						d.fs?d.fs:fontSize,
+						50,
+						50,
 						`${graphId}-${d.id}-${i}`,
 						"black",
 					);
@@ -196,18 +195,9 @@ export const Graph = ({
 			.attr("class", "edgeLabel")
 			.each(function (d, i) {
 				const graphId = Trim(id, [/ /]);
-				let sel = d3.select(this);
-				MathText(
-					sel,
-					d.id,
-					fontSize - 0.3,
-					10,
-					10,
-					`${graphId}-${d.id}-${i}`,
-					"black",
-				);
+				let sel = select(this);
+				MathText( sel, d.id, fontSize - 0.3, 10, 10, `${graphId}-${d.id}-${i}`, "black",);
 			});
-
 		force.on("tick", function () {
 			let edgeSelection;
 			if (straightEdges) {
@@ -231,7 +221,6 @@ export const Graph = ({
 			});
 		});
 	};
-
 	useEffect(() => {
 		renderGraph();
 	});

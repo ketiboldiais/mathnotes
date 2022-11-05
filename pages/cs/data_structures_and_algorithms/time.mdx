@@ -73,7 +73,7 @@ There are two possible meanings.
 1. If we count ${x}$ as ${\text{date}_0:}$
 
    $$
-   	\tt{date}_0, \tt{date}_1, \cancel{\tt{date}_2}
+   	\text{date}_0, \text{date}_1, \cancel{\text{date}_2}
    $$
 
    meaning, 𝐴 is due on ${x + 1.}$ This is the day after ${x.}$
@@ -81,7 +81,7 @@ There are two possible meanings.
 2. If, however, we don't count ${x:}$
 
    $$
-   	\cancel{\tt{date}_0}, \tt{date}_1, \tt{date}_2
+   	\cancel{\text{date}_0}, \text{date}_1, \text{date}_2
    $$
 
    meaning, 𝐴 is due on ${x + 2.}$ This is two days after ${x.}$ $$
@@ -97,7 +97,7 @@ Suppose that we're told the above on date ${y.}$
 1. If we count ${y:}$
 
    $$
-   	\tt{date}_0, \tt{date}_1, \cancel{\tt{date}_2}
+   	\text{date}_0, \text{date}_1, \cancel{\text{date}_2}
    $$
 
    meaning, 𝐴 is due on ${y + 1.}$ This is the day after ${y.}$
@@ -105,7 +105,7 @@ Suppose that we're told the above on date ${y.}$
 2. If we don't count ${y:}$
 
    $$
-   	\cancel{\tt{date}_0}, \tt{date}_1, \tt{date}_2
+   	\cancel{\text{date}_0}, \text{date}_1, \text{date}_2
    $$
 
    meaning, 𝐴 is due on ${y + 2.}$ This is two days after ${x.}$ $$
@@ -118,7 +118,7 @@ meaning is through specification.
 A common operation in time algorithms is modular arithmetic. Accordingly,
 it's imperative that we have a strong understanding of the operation.
 
-First, **modular arithmetic** is a system of arithmetic for the _integers_.
+First, __modular arithmetic__ is a system of arithmetic for the _integers_.
 The arithmetic we're taught in elementary school is a system of arithmetic
 for the _reals_ (or, at least a subset of the reals — it's unlikely that
 we're having children add gargantuan numbers). In real arithmetic, the
@@ -126,7 +126,7 @@ result of an operation could be _any_ real number: either 0, negative, or
 positive.
 
 In modular arithmetic, the result of an operation will "wrap around" a
-certain value once it reaches a particular integer called the **modulus**.
+certain value once it reaches a particular integer called the __modulus__.
 Let's illustrate with the classic example, the wall clock.
 
 A wall clock displays 12 hours:
@@ -182,7 +182,7 @@ In another 3 hours, (11+3), we land at 2:
 
 Thus, we have: ${8 + 6 = 2.}$ This is what we mean by modular arithmetic.
 For the wall clock, the modulus is ${12.}$ Moreover, we say that this is
-**mod-12 arithmetic**, or **arithmetic mod-12**: For all arithmetic
+__mod-12 arithmetic__, or __arithmetic mod-12__: For all arithmetic
 operations, once a result's value hits ${12,}$ its value starts back at the
 initial value.
 
@@ -192,7 +192,7 @@ Having seen the basic example, let's add a little more detail.
 
 Consider the following problem:
 
-> **problem.** Today is Tuesday. What day will it be in 17 days?
+> __problem.__ Today is Tuesday. What day will it be in 17 days?
 
 Let's start by assigning each day of the week an index, starting at 0:
 
@@ -211,20 +211,20 @@ corresponds to the array's length:
 />
 
 $$
-	\mm{L} = 7
+	\texttt{L} = 7
 $$
 
 To determine the weekday 17 days from Tuesday, we first determine Tuesday's
 index. Here, it's 2.
 
 $$
-	\mm{i} = 2
+	\texttt{i} = 2
 $$
 
 Then, we add the 17 days to 2:
 
 $$
-	\mm{i} + 17 = 19
+	\texttt{i} + 17 = 19
 $$
 
 Next, we divide this result by the modulus (the array's length) and obtain
@@ -232,8 +232,8 @@ the remainder:
 
 $$
 \begin{aligned}
-	\dfrac{\mm{i} + 17}{\mm{L}} &= \dfrac{19}{7} \\[1em]
-	&= 2 \mm{rem} 5
+	\dfrac{\texttt{i} + 17}{\texttt{L}} &= \dfrac{19}{7} \\[1em]
+	&= 2 \texttt{rem} 5
 \end{aligned}
 $$
 
@@ -276,7 +276,7 @@ Examining this function, it should be apparent why the `%` operator in
 programming languages is so useful. The `%` operator, in mathematical
 terms, is the _natural number remainder operation_:
 
-> **definition**. Where ${a}$ and ${b}$ are natural numbers, the operation:
+> __definition__. Where ${a}$ and ${b}$ are natural numbers, the operation:
 >
 > $$
 > 	a \tmod b
@@ -300,24 +300,24 @@ In logic terms:
 $$
 	a \div b =
 	\begin{cases}
-		\exists \mm{rem} \\
-		\nexists \mm{rem}
+		\exists \texttt{rem} \\
+		\nexists \texttt{rem}
 	\end{cases}
 $$
 
-where ${\mm{rem}}$ is a remainder. For example, 4 can be divided into 2
+where ${\texttt{rem}}$ is a remainder. For example, 4 can be divided into 2
 evenly. 120 can be divided into 40 evenly. 2, however, cannot be divided
 into 3 evenly, nor can 3 be divided into 2 evenly.
 
 #### Quotient
 
-**Euclidean division** is a mathematical operation based on this idea.
+__Euclidean division__ is a mathematical operation based on this idea.
 First, we introduce two operations:
 
-> **quotient**. Let ${a \in \ZZ}$ and ${b \in \ZZ^+.}$ Then:
+> __quotient__. Let ${a \in \uint}$ and ${b \in \pint.}$ Then:
 >
 > $$
-> 	a \tt{div} b = \floor{\dfrac{a}{b}}
+> 	a \text{div} b = \floor{\dfrac{a}{b}}
 > $$
 
 The quotient operation works as follows: First, suppose our friend Billy is
@@ -335,7 +335,7 @@ The race is won by whoever crosses ${b}$ the most times. Unfortunately,
 Billy has been running in other races and he's pretty tired. He tells us
 that he only has enough energy to cover ${a}$ total segments. The quotient
 tells us that, if Billy can run past ${a}$ segments, he can cross ${b}$ a
-total of ${a \tt{div} b}$ times.
+total of ${a \text{div} b}$ times.
 
 For example, suppose the track is ${3}$ segments long. If Billy only has
 enough energy to cover ${5}$ segments, then we have ${a = 5}$ and
@@ -349,7 +349,7 @@ ${b = 3.}$ Thus, starting at the segument numbered 0:
 5. Billy passes segment1. Bill collapses at segment2.
 
 Billy only crossed ${b}$ once. The entire drama is expressed by writing:
-${5 \tt{div} 3 = 1.}$
+${5 \text{div} 3 = 1.}$
 
 Let's be clear that this is _not_ division operation. This is the
 _quotient_ operation. It is a different operation. In fact, it's so
@@ -360,7 +360,7 @@ ${a}$ and ${b.}$ This is standard mathematical terminology in group theory.
 To see why this verb is necessary, here is the definition of real number
 division:
 
-> **division**. Let ${a, b \in \RR,}$ where ${b \neq 0.}$ Then:
+> __division__. Let ${a, b \in \reals,}$ where ${b \neq 0.}$ Then:
 >
 > $$
 >   a \div b = a \cdot \dfrac{1}{b}
@@ -414,12 +414,12 @@ along the track, he completes ${-2}$ runs along the track:
 
 The third operation we introduce is the _remainder_ operation:
 
-> **remainder**. Let ${a \in \ZZ}$ and ${b \in \ZZ^+.}$ Then:
+> __remainder__. Let ${a \in \uint}$ and ${b \in \pint.}$ Then:
 >
 > $$
 > \begin{aligned}
->   a~\tt{rem}~b &= a - b(a~\tt{div}~b) \\[1em]
->   &= a - b\paren{\floor{\dfrac{a}{b}}}
+>   a~\text{rem}~b &= a - b(a~\text{div}~b) \\[1em]
+>   &= a - b\ar{\floor{\dfrac{a}{b}}}
 > \end{aligned}
 > $$
 
@@ -434,23 +434,23 @@ From personal experience, this is a very bad idea. As we'll see later, this
 notation looks too similar to the modular arithmetic notation, and can very
 easily lead to confusion. Accordingly, we will not use this notation, nor
 will we call it the _modulo_ operator. It's the remainder operator, written
-as ${a \tt{rem} b.}$
+as ${a \text{rem} b.}$
 
-Next, many programming languages provide the ${\tt{rem}}$ operator as `%`.
-That is, ${a \tmod b}$ is equivalent to ${a \tt{rem} b.}$ It is not,
+Next, many programming languages provide the ${\text{rem}}$ operator as `%`.
+That is, ${a \tmod b}$ is equivalent to ${a \text{rem} b.}$ It is not,
 however, equivalent. Some programming languages will compute
 ${a - b(\ceil{a/b})}$ rather than ${a - b(\floor{a/b})}$ when ${a < 0.}$
 That is, they use the ceiling function for negatives. This is not inline
 with the mathematical definition. Some languages even allow ${b \leq 0,}$
 when again, such a definition does not make much sense from a mathematical
-standpoint. For the ${\tt{rem}}$ operation, ${b}$ is always positive.
+standpoint. For the ${\text{rem}}$ operation, ${b}$ is always positive.
 
 #### Euclidean Division
 
 At this point, we can now introduction Euclidean division:
 
-> **euclidean division.** Let ${a \in \ZZ}$ and ${b \in \ZZ^+.}$ Then there
-> exists two unique integers, ${q \in \ZZ}$ and ${r \in \ZZ^+,}$ such that:
+> __euclidean division.__ Let ${a \in \uint}$ and ${b \in \pint.}$ Then there
+> exists two unique integers, ${q \in \uint}$ and ${r \in \pint,}$ such that:
 >
 > $$
 > 	a = bq + r~~~\text{and}~~~0 \leq r < b
@@ -462,8 +462,8 @@ integer ${b,}$ ${q}$ and ${r}$ are given by:
 
 $$
 	\begin{aligned}
-		q &= a \tt{div} b \\
-		r &= a \tt{rem} b
+		q &= a \text{div} b \\
+		r &= a \text{rem} b
 	\end{aligned}
 $$
 
@@ -473,12 +473,12 @@ The Euclidean algorithm introduces us to the notion of divisibility.
 
 Divisibility is defined as follows:
 
-> **divisibility**. Let ${a,b \in \ZZ,}$ where ${b \neq 0.}$ If there exists
-> a ${q \in \ZZ}$ such that ${a = bq,}$ then we say that ${b}$ _divides_ >
+> __divisibility__. Let ${a,b \in \uint,}$ where ${b \neq 0.}$ If there exists
+> a ${q \in \uint}$ such that ${a = bq,}$ then we say that ${b}$ _divides_ >
 > ${a}$ and write:
 >
 > $$
-> 	b \divs a
+> 	b \dv a
 > $$
 >
 > Else, we say that ${b}$ does not divide ${a,}$ and write:
@@ -489,46 +489,46 @@ Divisibility is defined as follows:
 
 Casting this definition in Euclidean division terms:
 
-> **lemma**. Let ${a,b \in \ZZ}$ and ${b \neq 0.}$ ${b}$ divides ${a}$ iff:
+> __lemma__. Let ${a,b \in \uint}$ and ${b \neq 0.}$ ${b}$ divides ${a}$ iff:
 >
 > $$
-> 	a \tt{rem} |b| = 0
+> 	a \text{rem} |b| = 0
 > $$
 
 Note the use of the absolute value. Remember that the remainder operator is
-defined only for ${b \in \ZZ^+.}$ Alternatively, we can also write:
+defined only for ${b \in \pint.}$ Alternatively, we can also write:
 
-> Let ${a,b \in \ZZ}$ and ${b \neq 0.}$ ${b}$ divides ${a}$ iff:
+> Let ${a,b \in \uint}$ and ${b \neq 0.}$ ${b}$ divides ${a}$ iff:
 >
 > $$
-> 	\dfrac{a}{b} \in \ZZ
+> 	\dfrac{a}{b} \in \uint
 > $$
 
 From the definition of divisibility, we have the notion of a _multiple_:
 
-> **definition.** Let ${a,b \in \ZZ.}$ Then ${a}$ is a _multiple_ of ${b}$
+> __definition.__ Let ${a,b \in \uint.}$ Then ${a}$ is a _multiple_ of ${b}$
 > iff ${b \mid a.}$
 
 As well as the notion of a factor:
 
-> **definition.** Let ${a,b \in \ZZ.}$ Then ${b}$ is a _factor_ of ${b}$ iff
+> __definition.__ Let ${a,b \in \uint.}$ Then ${b}$ is a _factor_ of ${b}$ iff
 > ${b \mid a.}$
 
 There are several useful properties of divisibility to keep in mind:
 
-> **properties.** Let ${a, b, c \in \ZZ}$ where ${a \neq 0.}$ Then:
+> __properties.__ Let ${a, b, c \in \uint}$ where ${a \neq 0.}$ Then:
 >
 > 1.  If:
->     - ${(a \divs b)}$
->     - ${\implies}$ ${(a \divs bc)}$ for _any_ integer ${c.}$
+>     - ${(a \dv b)}$
+>     - ${\nc}$ ${(a \dv bc)}$ for _any_ integer ${c.}$
 > 2.  If:
->     - ${(a \divs b)}$ and
->     - ${(a \divs c)}$
->     - ${\implies}$ ${(a \divs b + c)}$
+>     - ${(a \dv b)}$ and
+>     - ${(a \dv c)}$
+>     - ${\nc}$ ${(a \dv b + c)}$
 > 3.  If:
->     - ${(a \divs b)}$ and
->     - ${(b \divs c)}$
->     - ${\implies}$ ${(a \divs c).}$
+>     - ${(a \dv b)}$ and
+>     - ${(b \dv c)}$
+>     - ${\nc}$ ${(a \dv c).}$
 
 ### Modular Arithmetic
 
@@ -536,10 +536,10 @@ Now that we have the basic constructs of divisibility, we can now examine a
 more formal treatment of modular arithmetic. First, we begin with a
 definition:
 
-> **definition.** Let ${a, b \in \ZZ}$ and ${m \in \ZZ^+.}$ If:
+> __definition.__ Let ${a, b \in \uint}$ and ${m \in \pint.}$ If:
 >
 > $$
-> 	m \divs (a - b)
+> 	m \dv (a - b)
 > $$
 >
 > then ${a}$ is congruent to ${b}$ modulo ${m,}$ and we write:
@@ -550,7 +550,7 @@ definition:
 
 Put differently:
 
-> Let ${a,b,m \in \ZZ}$ and ${0 < m.}$ If there exists a ${q \in Z}$ such
+> Let ${a,b,m \in \uint}$ and ${0 < m.}$ If there exists a ${q \in Z}$ such
 > that:
 >
 > $$
@@ -565,10 +565,10 @@ Put differently:
 
 Or, alternatively:
 
-> Let ${a,b,m \in \ZZ}$ and ${0 < m.}$ Iff:
+> Let ${a,b,m \in \uint}$ and ${0 < m.}$ Iff:
 >
 > $$
-> 	\dfrac{a-b}{m} \in \ZZ
+> 	\dfrac{a-b}{m} \in \uint
 > $$
 >
 > then:

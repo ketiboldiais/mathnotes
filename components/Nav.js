@@ -1,7 +1,7 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import navStyles from "../styles/Nav.module.css";
 import Routes from "./routes";
-import Tree from "./TreeList";
+import { Tree } from "./TreeList";
 
 export const NavBody = ({ className }) => {
 	const ref = useRef();

@@ -1,18 +1,13 @@
 import { Plot } from "../../../components/illus/components/Plot/Plot";
 import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
 
-<head>
-	<title>Trigonometry</title>
-	<description>Notes on trigonometry.</description>
-</head>
-
 # Trigonometry
 
 This chapter provides notes on trigonometry.
 
 ## Angles
 
-If two rays originate from the same point, they form an **angle**.
+If two rays originate from the same point, they form an __angle__.
 
 <Plot
 	geo={[
@@ -30,9 +25,9 @@ If two rays originate from the same point, they form an **angle**.
 	scale={60}
 />
 
-The ray lying along the 𝑥-axis is called the **initial side**. The ray that
-"sweeps out" is called the **terminal side**. The distance between these
-two rays is an **angle**. When terminal side sweeps out
+The ray lying along the 𝑥-axis is called the __initial side__. The ray that
+"sweeps out" is called the __terminal side__. The distance between these
+two rays is an __angle__. When terminal side sweeps out
 _counter-clockwise_, we have a positive angle measure. And when it sweeps
 out _clockwise_, we have a negative angle measure:
 
@@ -167,7 +162,7 @@ opposite the angle to the length of the hypotenuse.
 <Grid cols={2}>
 
 $$
-	\sin \theta = \dfrac{\tt{opposite}}{\tt{hypotenuse}} = \dfrac{a}{h}
+	\sin \theta = \dfrac{\text{opposite}}{\text{hypotenuse}} = \dfrac{a}{h}
 $$
 
 <Fig
@@ -191,7 +186,7 @@ side adjacent to the angle to the length of the hypotenuse.
 <Grid cols={2}>
 
 $$
-	\cos \theta = \dfrac{\tt{adjacent}}{\tt{hypotenuse}} = \dfrac{b}{h}
+	\cos \theta = \dfrac{\text{adjacent}}{\text{hypotenuse}} = \dfrac{b}{h}
 $$
 
 <Fig
@@ -215,7 +210,7 @@ the side opposite to the angle to the length of the side adjacent.
 <Grid cols={2}>
 
 $$
-	\tan \theta = \dfrac{\tt{opposite}}{\tt{adjacent}} = \dfrac{a}{b}
+	\tan \theta = \dfrac{\text{opposite}}{\text{adjacent}} = \dfrac{a}{b}
 $$
 
 <Fig
@@ -239,7 +234,7 @@ the side adjacent to the angle to the length of the side opposite.
 <Grid cols={2}>
 
 $$
-	\cot \theta = \dfrac{\tt{adjacent}}{\tt{opposite}} = \dfrac{b}{a}
+	\cot \theta = \dfrac{\text{adjacent}}{\text{opposite}} = \dfrac{b}{a}
 $$
 
 <Fig
@@ -263,7 +258,7 @@ the hypotenuse to the length of the side adjacent to ${\theta.}$
 <Grid cols={2}>
 
 $$
-	\sec \theta = \dfrac{\tt{hypotenuse}}{\tt{adjacent}} = \dfrac{h}{b}
+	\sec \theta = \dfrac{\text{hypotenuse}}{\text{adjacent}} = \dfrac{h}{b}
 $$
 
 <Fig
@@ -287,7 +282,7 @@ hypotenuse to the angle to the length of the side opposite to ${\theta.}$
 <Grid cols={2}>
 
 $$
-	\csc \theta = \dfrac{\tt{hypotenuse}}{\tt{opposite}} = \dfrac{h}{a}
+	\csc \theta = \dfrac{\text{hypotenuse}}{\text{opposite}} = \dfrac{h}{a}
 $$
 
 <Fig
@@ -302,9 +297,9 @@ For the rest of these materials, we will use the following variables:
 
 $$
 	\eqs{
-		\Oo &= \tt{the side opposite to $\theta$} \\
-		A &= \tt{the side adjacent to $\theta$} \\
-		H &= \tt{the hypotenuse} \\
+		\Oo &= \text{the side opposite to $\theta$} \\
+		A &= \text{the side adjacent to $\theta$} \\
+		H &= \text{the hypotenuse} \\
 	}
 $$
 
@@ -591,15 +586,15 @@ $$
 Remember that cosine and sine are just ratios:
 
 $$
-	\cos \theta = \dfrac{\tt{adjacent}}{\tt{hypotenuse}} ~~~~
-	\sin \theta = \dfrac{\tt{opposite}}{\tt{hypotenuse}}
+	\cos \theta = \dfrac{\text{adjacent}}{\text{hypotenuse}} ~~~~
+	\sin \theta = \dfrac{\text{opposite}}{\text{hypotenuse}}
 $$
 
 And since the radius of the circle is ${1,}$ that hypotenuse is 1:
 
 $$
-	\cos \theta = \dfrac{\tt{adjacent}}{1} ~~~~
-	\sin \theta = \dfrac{\tt{opposite}}{1}
+	\cos \theta = \dfrac{\text{adjacent}}{1} ~~~~
+	\sin \theta = \dfrac{\text{opposite}}{1}
 $$
 
 The side adjacent to the angle can be measured in the amount of steps we take
@@ -712,7 +707,7 @@ Since we've established that ${x = \cos \theta}$ and ${y = \sin \theta,}$ we can
 use simple substitution to rewrite the equation of the unit circle:
 
 $$
-	x^2 + y^2 = 1 \implies (\cos \theta)^2 + (\sin \theta)^2 = 1
+	x^2 + y^2 = 1 \nc (\cos \theta)^2 + (\sin \theta)^2 = 1
 $$
 
 <dfn>
@@ -919,27 +914,27 @@ the ratio identities we saw earlier, we have the following _cofunction
 identities_:
 
 $$
-	\sin \theta = \cos \paren{\dfrac{\pi}{2} - \theta}
+	\sin \theta = \cos \ar{\dfrac{\pi}{2} - \theta}
 $$
 
 $$
-	\sec \theta = \csc \paren{\dfrac{\pi}{2} - \theta}
+	\sec \theta = \csc \ar{\dfrac{\pi}{2} - \theta}
 $$
 
 $$
-	\tan \theta = \cot \paren{\dfrac{\pi}{2} - \theta}
+	\tan \theta = \cot \ar{\dfrac{\pi}{2} - \theta}
 $$
 
 $$
-	\cos \theta = \sin \paren{\dfrac{\pi}{2} - \theta}
+	\cos \theta = \sin \ar{\dfrac{\pi}{2} - \theta}
 $$
 
 $$
-	\csc \theta = \sec \paren{\dfrac{\pi}{2} - \theta}
+	\csc \theta = \sec \ar{\dfrac{\pi}{2} - \theta}
 $$
 
 $$
-	\cot \theta = \tan \paren{\dfrac{\pi}{2} - \theta}
+	\cot \theta = \tan \ar{\dfrac{\pi}{2} - \theta}
 $$
 
 
@@ -1218,19 +1213,19 @@ Using this new formula, let's replace ${\alpha}$ with ${\dfrac{\pi}{2} -
 \alpha.}$ This yields:
 
 $$
-	\cos\paren{\frac{\pi}{2} - \alpha + \beta} =
-	\cos \paren{\frac{\pi}{2} - \alpha} \cos \beta - \sin \paren{\frac{\pi}{2} - \alpha} \sin \beta
+	\cos\ar{\frac{\pi}{2} - \alpha + \beta} =
+	\cos \ar{\frac{\pi}{2} - \alpha} \cos \beta - \sin \ar{\frac{\pi}{2} - \alpha} \sin \beta
 $$
 
 Once again, we can apply identities:
 
 $$
 	\small
-	\tnote{\cos\paren{\frac{\pi}{2} - \alpha + \beta}}{$\sin(\alpha - \beta)$} 
+	\tnote{\cos\ar{\frac{\pi}{2} - \alpha + \beta}}{$\sin(\alpha - \beta)$} 
 	=
-	\tnote{\cos \paren{\frac{\pi}{2} - \alpha}}{$\sin \alpha$}
+	\tnote{\cos \ar{\frac{\pi}{2} - \alpha}}{$\sin \alpha$}
 	\cos \beta
-	- \tnote{\sin \paren{\frac{\pi}{2} - \alpha}}{$\cos \alpha$}
+	- \tnote{\sin \ar{\frac{\pi}{2} - \alpha}}{$\cos \alpha$}
 	\sin \beta
 $$
 
@@ -1453,14 +1448,14 @@ $$
 Let's plug this in to the third double-angle formula:
 
 $$
-	\cos(\theta) = 2 \cos^2\paren{\dfrac{\theta}{2}} - 1
+	\cos(\theta) = 2 \cos^2\ar{\dfrac{\theta}{2}} - 1
 $$
 
 Let's transpose 1:
 
 $$
 	\eqs{
-		1 + \cos(\theta) &= 2 \cos^2\paren{\dfrac{\theta}{2}} - 1 + 1 \\[1em]
+		1 + \cos(\theta) &= 2 \cos^2\ar{\dfrac{\theta}{2}} - 1 + 1 \\[1em]
 		&= 2 \cos^2 \dfrac{\theta}{2} \\
 	}
 $$
@@ -1468,28 +1463,28 @@ $$
 We now have:
 
 $$
-	1 + \cos(\theta) = 2 \cos^2 \paren{ \dfrac{\theta}{2} }
+	1 + \cos(\theta) = 2 \cos^2 \ar{ \dfrac{\theta}{2} }
 $$
 
 Let's flip the equation:
 
 $$
-	2 \cos^2 \paren{ \dfrac{\theta}{2} } = 1 + \cos \theta
+	2 \cos^2 \ar{ \dfrac{\theta}{2} } = 1 + \cos \theta
 $$
 
 Now let's divide by ${2:}$
 
 $$
-	\cos^2 \paren{ \dfrac{\theta}{2} } = \dfrac{1 + \cos \theta}{2}
+	\cos^2 \ar{ \dfrac{\theta}{2} } = \dfrac{1 + \cos \theta}{2}
 $$
 
 Taking the square root of both sides:
 
 $$
 \eqs{
-	\sqrt{\cos^2\paren{\dfrac{\theta}{2}}} &= \pm \sqrt{\dfrac{1 + \cos
+	\sqrt{\cos^2\ar{\dfrac{\theta}{2}}} &= \pm \sqrt{\dfrac{1 + \cos
 	\theta}{2}} \\[1em]
-	\cos \paren{\dfrac{\theta}{2}} &= \pm \sqrt{\dfrac{1 + \cos \theta}{2}}
+	\cos \ar{\dfrac{\theta}{2}} &= \pm \sqrt{\dfrac{1 + \cos \theta}{2}}
 }
 $$
 
@@ -1500,7 +1495,7 @@ This gives us the half-angle formula of cosine:
 __half-angle formula of cosine.__ Let ${\theta}$ be an angle. Then:
 
 $$
-	\cos \paren{\dfrac{\theta}{2}} = \pm \sqrt{\dfrac{1 + \cos \theta}{2}}
+	\cos \ar{\dfrac{\theta}{2}} = \pm \sqrt{\dfrac{1 + \cos \theta}{2}}
 $$
 
 </dfn>
@@ -1518,7 +1513,7 @@ we get the half-angle formula for sine:
 __half-angle formula of sine.__ Let ${\theta}$ be an angle. Then:
 
 $$
-	\sin \paren{\dfrac{\theta}{2}} = \pm \sqrt{\dfrac{1 - \cos \theta}{2}}
+	\sin \ar{\dfrac{\theta}{2}} = \pm \sqrt{\dfrac{1 - \cos \theta}{2}}
 $$
 
 </dfn>

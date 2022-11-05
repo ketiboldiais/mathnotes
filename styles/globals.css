@@ -1,4 +1,10 @@
 /* Font Imports */
+	@font-face {
+		font-family: 'Latin Modern';
+		font-style: italic;
+		font-weight: normal;
+		src: local('Latin Modern Mono 10 Regular'), url('./fonts/lmmono10-regular.otf') format('otf');
+	}
 	/* CMU Serif */
 	@font-face {
 		font-family: 'CMU Serif';
@@ -33,34 +39,36 @@
 		src: url("./fonts/cmunvt.ttf");
 	}
 /* Root Variables */
-:root {
+	:root {
 	--serif: "CMU Serif","Iowan Old Style","Palatino Linotype";
 	--sans_serif: avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	--mono: "Fira Code", Consolas, Monaco, Liberation Mono, "Lucida Console", monospace;
 	/* --dark: rgb(190, 206, 209); */
-	--lightRed: rgb(255, 218, 218);
-	--red: rgb(255, 112, 112);
+	--lightRed: #ffdada;
+	--red: rgb(196, 28, 28);
 	--darkRed: rgb(229, 0, 0);
-	--lightGreen: rgb(227, 255, 227);
+	--lightGreen: #e3ffe3;
 	--green: forestgreen;
-	--paleGreen: rgb(197, 234, 197);
+	--paleGreen: #c5eac5;
 	--darkGreen: rgb(0, 129, 0);
-	--lightBlue: rgb(112, 255, 234);
+	--lightBlue: #91a4ae;
 	--blue: teal;
 	--linkBlue: rgb(1, 75, 161);
 	--teal: rgb(83, 191, 191);
-	--paleBlue: rgb(149, 187, 205);
+	--paleBlue: #95bbcd;
 	--darkBlue: rgb(0, 155, 207);
 	--black: rgb(41, 41, 41);
 	--white: white;
 	--lightGrey: rgb(147, 147, 147);
+	--palegy: #cacaca;
 	--lavender: rgb(216, 142, 216);
 	--purple: purple;
 	--gold: gold;
-	--paleGold: rgb(255, 251, 233);
+	--paleGold: #fffbe9;
 	--darkGold: rgb(125, 77, 0);
 	--orange: rgb(255, 186, 68);
-	--powder: rgb(217, 231, 229);
+	--beigegold: #ffe8c0;
+	--powder: #d9e7e5;
 
 
 	/* Core Colors */
@@ -91,12 +99,11 @@
 	--box-shadow-active: 1px 1px 2px rgb(104, 104, 104);
 	--page-box-shadow: 0px 1px 1px #b5b5b5, 1px 1px 4px #c6c6c6;
 
-/* illus palette */
+/* Color Palette */
 	/* Binary Trees */
 		--binary-tree-edge-color: firebrick;
 		--binary-tree-node-fill-color: tomato;
 		--binary-tree-text-color: white;
-
 	/* Tree */
 		--tree-edge-color: firebrick;
 		--tree-node-fill-color: tomato;
@@ -181,7 +188,7 @@
 	/* Plot */
 		--point-fill-color: var(--darkRed);
 		--point-stroke-color: var(--darkRed);
-		--plot-axes-color: rgb(175, 191, 199);
+		--plot-axes-color: rgb(0, 0, 0);
 	/* Flow */
 		--flow-stroke-color: var(--text-color);
 		--flow-fill-color: var(--background-color);
@@ -190,998 +197,1042 @@
 		--bipartite-node-stroke: #EC994B;
 		--bipartite-text-color: var(--text-color);
 		--bipartite-edge-color: #e97312;
-}
+	}
 /* Global HTML */
-html {
-	scroll-behavior: smooth;
-	background-color: var(--dark);
-	font-family: var(--serif);
-}
-/* Headings */
-h1 {font-size: 1.8rem;}
-h2 { font-size: 1.3rem; }
-h3 { font-size: 1.25rem; }
-h4 { font-size: 1.2rem; }
-h5 { font-size: 1.15rem; }
-h6 { font-size: 1.1rem; }
-h1,h2,h3,h4,h5,h6 {
-	font-weight: bold;
-	margin: 2rem 0 -0.35em 0; 
-}
-h1 {
-	text-align: center;
-	padding: 0.3em;
-	margin: 2em auto;
-	margin-bottom: 5rem;
-}
-main { counter-reset: part; }
-h2 {counter-increment: part;        counter-reset: subpart;}
-h3 {counter-increment: subpart;     counter-reset: chapter;}
-h4 {counter-increment: chapter;     counter-reset: module;}
-h5 {counter-increment: module;      counter-reset: submodule;}
-h6 {counter-increment: submodule;   counter-reset: submodule;}
-h2::after { content: counter(part); float: right; }
-h3::after { content: counter(part) "." counter(subpart); float: right; }
-h4::after { content: counter(part) "." counter(subpart) "." counter(chapter); float: right; }
-h5::after { content: counter(part) "." counter(subpart) "." counter(chapter) "." counter(module); float: right; }
-h6::after { content: counter(part) "." counter(subpart) "." counter(chapter) "." counter(module) "." counter(submodule); float: right; }
-/* KaTeX */
-span.katex {font-size: 0.98em;}
-.Plot span.mord.texttt {
-	font-family: var(--mono) !important;
-	font-size: 0.5em;
-}
-.katex .texttt {
-	font-family: var(--mono) !important;
-	font-size: 0.9em;
-}
-div.math.math-display {
-	overflow-x: auto;
-	overflow-y: hidden;
-}
-.Plot span.mord.text {
-	font-family: var(--serif);
-	font-size: 0.6em;
-}
-/* Table of Contents */
-.outline ol, .outline ul {
-	padding:0 0 0 2em; 
-	margin:0;
-	font-size: 0.85rem;
-}
-.outline {
-	margin: 0 2em;
-	column-count: 2;
-}
-.outline ol li {font-weight: bold;}
-.outline ol li li {font-weight: normal;}
-.outline ol {list-style: decimal;}
-.outline ol ol {list-style: upper-alpha;}
-.outline ol ol ol {list-style: lower-roman;}
-.outline ol ol ol ol {list-style: lower-alpha;}
-.outline ol ol ol ol ol {list-style: decimal;}
-/* KaTeX */
-/* hago table */
-.hagoTable {
-	border: none !important;
-}
-.hagoTable td,
-.hagoTable th {
-	padding: 0;
-	text-align: center;
-	vertical-align: middle;
-	border: none;
-}
-.hagoTable thead tr:nth-child(1) {
-	border-bottom: solid thin var(--text-color);
-}
-.hagoTable td:not(:nth-child(1)) {
-	border-left: solid thin var(--text-color);
-}
-.grid_map_container pre {
-	margin: 2px;
-	height: fit-content;
-}
-.grid_map_container {
-	margin-bottom: -1fr;
-}
-/* Tables */
-table {
-	margin: auto;
-	border-collapse: collapse;
-}
-table ol, table ul {
-	margin: 0 !important;
-	padding: 0 !important;
-	margin-left: 1em !important;
-	padding-left: 2px !important;
-	width: fit-content !important;
-}
-table li::marker { font-size: 0.6em !important; }
-table li {
-	margin: 0 !important;
-	padding: 0 !important;
-}
-table th {font-weight: bold;}
-table th,
-table td {
-	padding: 0.2em;
-	border: none;
-}
-table thead tr {
-	border-bottom: solid thin grey;
-}
-table td {
-	border: thin solid grey; 
-}
-table tr:first-child td,
-table tr:first-child th {
-	border-top: 0;
-}
-table tr td:first-child, 
-table tr th:first-child {
-	border-left: 0;
-}
-table tr:last-child td,
-table tr:last-child th {
-	border-bottom: 0;
-}
-table tr td:last-child,
-table tr th:last-child {
-	border-right: 0;
-}
-.hashtbl table {
-	width: 80%;
-	table-layout: fixed;
-}
-.hashtbl table td, 
-.hashtbl table th {
-	text-align: center;
-}
-.hashtbl table td {
-	border: none;
-	border-left: solid thin grey;
-}
-.numbered table td {
-	border: none;
-	padding: 0.2em 0.6em;
-}
-.numbered table tr {
-	border: none;
-}
-/* def tag */
-dfn strong { font-variant: small-caps; } 
-dfn {
-	display: block;
-	width: 80%;
-	margin: 0 auto;
-}
-/* Links */
-a { color: var(--text-color); }
-a:hover { color: var(--purple); }
-.outline a {text-decoration: none;}
+	html {
+		scroll-behavior: smooth;
+		background-color: rgb(246, 246, 246);
+		font-family: var(--serif);
+	}
+	main { counter-reset: part stat df;}
+	small {
+		font-size: 1em;
+		font-variant: small-caps;
+	}
+/* Paragraphs and Block Quotes */
+	blockquote {
+		margin: 1% auto;
+		padding-left: 1em;
+	}
+	blockquote p:first-child>strong>small:first-child {
+		/* font-weight: normal; */
+		font-size: 0.95em;
+	}
+	blockquote p:first-child>strong>small:first-child::before {
+		content: '0.'counter(part)'.'counter(df)'.';
+		display: inline-block;
+		margin-right: 0.7em;
+		counter-increment: df;
+		font-variant: normal;
+		font-size: 0.8em;
+	}
+	blockquote p:first-child+ol,blockquote p:first-child+ul {
+		margin-top: -0.5em;
+		margin-left: 0.5em;
+	}
 /* List Styles */
-ol {
-	margin: 0;
-	padding: 0;
-	padding-left: 1.5em;
-}
-ol li {
-	margin: 0.4em 0;
-}
-ul {padding-left: 1.5em;}
-ul li::marker {font-size: 0.7em;}
-ul li {margin: 0.7em 0;}
-/* Reference Tiles */
-div.entry {
-	font-family: "serif_main";
-	font-size: 0.75em;
-}
-div.entry ul {
-	margin: 0 !important;
-	padding: 0 0 0 1em !important; 
-}
-div.entry ul li {
-	margin: 0 !important;
-	padding: 0 !important;
-}
-div.entry .katex {
-	font-size: 1em;
-}
-table.bigEntryTable {
-	font-size: 0.9em;
-	margin: 0 !important;
-	width: 100%;
-}
-table.bigEntryTable table {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-}
-div.entry {
-	display: inline-block;
-	margin: 1px;
-	padding: 0.6em;
-	width: 100%;
-	/* box-shadow: var(--box-shadow); */
-	border: solid thin lightgrey;
-	/* border: var(--box-shadow-border); */
-	/* border-radius: 5px; */
-}
-div.entry h3 {
-	font-size: 1em;
-	padding: 0 !important;
-	margin: 0 !important;
-}
-div.entry ol li::marker {
-	font-size: 0.em;
-	font-family: "CMU Serif";
-}
-div.index_fullwidth {
-	margin: 2% 0;
-	padding: 2%;
-	box-shadow: var(--box-shadow);
-	border: var(--box-shadow-border);
-}
-div.index_chapter {
-	margin: 2% 0;
-	column-count: 3; /* colcount */
-	column-gap: 0.2em;
-}
-div.index_chapter2 {
-	margin: 2% 0;
-	column-count: 2; /* colcount */
-	column-gap: 0.2em;
-}
-div.entry table {
-	margin: 3% auto !important;
-	padding: 0 !important;
-}
-div.entry table {
-	border-collapse: collapse;
-}
-div.entry table th,
-div.entry table td {
-	border: none;
-}
-div.entry table thead tr {
-	border-bottom: solid thin rgb(211, 211, 211);
-}
-div.entry table td,
-div.entry table th {
-	border: solid thin rgb(221, 221, 221);
-}
-div.entry table tr:first-child td,
-div.entry table tr:first-child th {
-	border-top: 0;
-}
-div.entry table tr td:first-child, 
-div.entry table tr th:first-child {
-	border-left: 0;
-}
-div.entry table tr:last-child td,
-div.entry table tr:last-child th {
-	border-bottom: 0;
-}
-div.entry table tr td:last-child,
-div.entry table tr th:last-child {
-	border-right: 0;
-}
-div.grid2 {
-	margin: 0;
-	column-count: 2;
-	column-gap: 0;
-}
-div.grid3 {
-	margin: 0;
-	column-count: 3;
-	column-gap: 0;
-}
-div.grid4 {
-	margin: 0;
-	column-count: 4;
-	column-gap: 0;
-}
-div.entry a {
-	color: var(--text-color);
-	text-decoration: underline;
-}
-div.entry blockquote {
-	border: none;
-}
-div.entry ul { padding: 0; margin: 0 0 0 1.1em; }
-div.entry ul li li { list-style: circle; }
-div.entry ul li li li { list-style: square; }
-div.entry ul li li li li { list-style: circle; }
-div.entry ul li li li li li { list-style: disc; }
-/* Figcaption */
-figcaption {
-	display: block;
-	text-align: center;
-	font-size: 0.9em;
-	margin: 0;
-	padding: 0;
-}
-.grid-container {
-	height:fit-content;
-}
-.grid_map_container {
-	height: min-content;
-}
-
-/* Frame */
-table.frame {
-	border: solid thin grey;
-	border-collapse: collapse;
-	font-size: 0.9em;
-}
-table.frame th {
-	font-weight: normal;
-	border-collapse: collapse;
-}
-table.frame td, table.frame th {
-	border-collapse: collapse;
-	padding: 2px;
-	margin: 0 !important;
-	border: solid thin grey;
-	text-align: center;
-}
-table.frame small {
-	font-size: 1.1em;
-}
-table.tr {
-	padding: 0;
-	margin: 0 !important;
-	border: solid thin grey;
-	border-collapse: collapse;
-}
-table.frame table {
-	margin: 0 !important;
-	padding: 0 !important;
-	width: 100%;
-	border: solid thin grey;
-	border-collapse: collapse;
-}
-/* Algorithms */
-div.algo {
-	counter-reset: lineNumber -1;
-	border-top: solid thin lightgrey;
-	border-bottom: solid thin lightgrey;
-	padding: 0.5em 0;
-}
-div.algo small { font-size: inherit; }
-div.algo ul {
-	padding: 0;
-	margin: 0;
-}
-div.algo ul li {
-	margin: 0 0 0 0;
-	padding: 0;
-}
-div.algo>ul>li {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
-div.algo ul li li { list-style:disc; }
-div.algo ul li li li { list-style:circle; }
-div.algo ul li::marker { font-size: 0.8em; }
-div.algo>ul { margin-bottom: 1em; }
-div.algo p {
-	font-size: inherit;
-	padding: 0;
-	margin: 0;
-}
-div.algo ol {
-	padding: 0 0 0 0;
-	margin: 0;
-	list-style: none;
-}
-div.algo ol li {
-	margin: 1px 0;
-	padding: 0;
-	display: block;
-}
-div.algo ol li::before {
-	content: counter(lineNumber);
-	counter-increment: lineNumber;
-	font-family: "CMU Serif";
-	position:relative;
-	display: inline-block;
-	min-width: 15px;
-}
-div.algo ol li { padding-left: 1em; }
-div.algo code {
-	font-family: var(--serif);
-	font-variant: small-caps;
-	font-size: inherit;
-}
-div.algo ol li::before {right: 1em;}
-div.algo ol li li::before { right: 2em; }
-div.algo ol li li li::before { right: 3em; }
-div.algo ol li li li li::before { right: 4em; }
-div.algo ol li li li li li::before { right: 5em; }
-div.lay3 {
-	width: fit-content;
-	margin: 0 auto;
-	display: flex;
-	flex-direction: column;
-}
-/* Flex layout */
-div.lay3 article {
-	display: flex;
-	padding: 0 1%;
-}
-div.lay3 section {
-	flex: 1;
-	margin: 0 1%;
-	border-bottom: solid thin lightgrey;
-}
-div.lay3 article:first-child section {
-	border-top: solid thin lightgray;
-}
-/* Pre */
-code {
-	/* font-family: "CMU Typewriter"; */
-	white-space: pre;
-}
-pre {
-	width: 97%;
-	margin: 2% auto;
-	white-space:pre;
-	overflow-x: scroll;
-	tab-size: 3;
-	overflow: auto;
-	padding: 0.5rem 0.6rem;
-	font-size: 1em;
-	border-top: solid thin grey;
-	border-bottom: solid thin grey;
-}
-pre code {
-	font-family: var(--mono);
-	font-size: 0.8em;
-}
-pre:not(.language-rust) {
-	height: 100%;
-	line-height: 1.3;
-}
-/* Side notes */
-div.note {
-	z-index: 5;
-	position: absolute;
-	display: flex;
-	right: 0;
-	margin: 0 5% 0 0;
-	padding: 0;
-	width: 15%;
-	color: rgb(130, 177, 180);
-}
-div.note sup {
-	display: block;
-	margin-top: 5%;
-}
-div.note div.note-content {
-	font-size: 0.85rem;
-}
-/* Reference page diagrams */
-.cb_ref path {
-	stroke-width: 2;
-	fill: rgb(255, 242, 192);
-	stroke: rgb(178, 140, 34);
-}
-aside { font-size: 11px; }
-aside h2 {font-size: 1.5em}
-/* 2-column-layout - full width */
-div.cols2 article {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-}
-/* Illus */
-.illus, .hago {
-	display: flex;
-	justify-content: center;
-	overflow: visible;
-}
-
-.illusFigure {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	flex: 1;
-}
-.illusFigure figcaption {
-	display: block;
-	margin: 0 auto;
-}
-
-.Sequence .blue rect {
-	fill: var(--teal);
-}
-.Sequence .red rect {
-	fill: var(--red);
-}
-.Sequence .green rect {
-	fill: var(--lightGreen);
-}
-.Sequence .grey rect {
-	fill: var(--lightGrey);
-}
-
-/* .illus line { stroke: var(--text-color); } */
-.illus text,
-.hago text {
-	font-family: "CMU Serif";
-}
-/* Binary Tree Styles */
-.binaryTreeEdgeGroup line {
-	stroke: var(--binary-tree-edge-color);
-}
-.binaryTreeNode circle {
-	fill: var(--binary-tree-node-fill-color);
-	stroke: var(--binary-tree-edge-color);
-}
-.binaryTreeNode.blue circle {
-	fill: rgb(101, 165, 172);
-	stroke: rgb(42, 112, 119);
-}
-.binaryTreeTextGroup text {
-	fill: var(--binary-tree-text-color);
-}
-/* Tree Styles */
-.treeEdges line {
-	stroke: var(--tree-edge-color);
-}
-.treeNodes circle {
-	fill: var(--tree-node-fill-color);
-	stroke: var(--tree-edge-color);
-}
-.treeNodes text {
-	fill: var(--tree-text-color);
-}
-.binaryTree .black circle {
-	fill: rgb(91, 91, 91);
-	stroke: black;
-}
-.treeAnnotations text {
-	fill: var(--tree-annotation-color);
-}
-.treeHeightMark text {fill: var(--tree-height-color);}
-.treeDepthMark text {fill: var(--tree-depth-color);}
-.balanceFactorImbalanced {fill: var(--tree-imbalance-factor-color)}
-.balanceFactorBalanced {fill: var(--tree-balance-factor-color)}
-.treeLabel text {fill: var(--text-color);}
-.treeNodes .mark circle {
-	fill: var(--tree-node-mark-fill);
-	stroke: var(--tree-node-mark-stroke);
-}
-.treeNodes .mark text { fill: var(--tree-node-mark-text); }
-/* MWayTree */
-.MTreeEdges line {
-	stroke: var(--mtree-edge-color);
-}
-.MTreeNode rect {
-	fill: var(--mtree-node-fill-color);
-	stroke: var(--mtree-edge-color);
-}
-.MTreeNode text {
-	fill: var(--mtree-text-color);
-}
-#MTreeArrow {fill: var(--mtree-edge-color)}
-/* Sequence Styles */
-.sequenceElement rect {
-	fill: var(--sequenceElementFill);
-	stroke: var(--sequenceElementStroke);
-}
-.Sequence .red rect {
-	fill: firebrick;
-}
-.Sequence .red text {
-	fill: white;
-}
-.sequenceElementText text {
-	fill: var(--sequenceElementTextColor);
-}
-.sequenceAnnotationText text {
-	fill: var(--sequenceElementTextColor);
-}
-.sequenceIndexText text {
-	fill: var(--sequenceElementIndexColor);
-	font-family: var(--serif);
-}
-.sequencePointers line {
-	stroke: var(--sequenceElementStroke);
-}
-.Sequence marker {
-	fill: var(--sequenceElementStroke);
-}
-.sequencePointers text {
-	fill: var(--sequenceElementStroke);
-}
-
-/* Matrix Styles */
-.matrix { }
-.matrixElement rect {
-	fill: var(--matrixElementFill);
-	stroke: var(--matrixElementStroke);
-}
-.matrixElement text {
-	fill: var(--matrixElementTextColor);
-}
-.matrixIndices text {
-	fill: var(--matrixIndexColor);
-	font-family: var(--serif);
-}
-.matrix .mark rect { fill: var(--matrixFocusFillColor); }
-.matrix .mark text { fill: var(--matrixFocusTextColor); }
-
-/* Linked List Styles */
-.linkedListDataField rect {
-	fill: var(--linkedListDataFieldFill);
-	stroke: var(--text-color);
-}
-.linkedListDataField text { fill: var(--linkedListDataFieldTextColor); }
-.linkedListNextField rect {
-	fill: var(--linkedListNextFieldFill);
-	stroke: var(--text-color);
-}
-.linkedListLink line {stroke: var(--linkedListLinkColor)}
-#linkedListArrow {fill: var(--linkedListLinkColor)}
-.linkedListLink circle {fill: var(--linkedListLinkColor)}
-.linkedListIndex text {
-	fill: var(--linkedListIndexColor);
-	font-family: var(--serif);
-}
-.linkedListAnnotation text {fill: var(--linkedListLinkColor);}
-
-/* Circular List Styles */
-.circularListDataField rect {
-	fill: var(--circularListDataFieldFill);
-	stroke: var(--text-color);
-}
-.circularList text {
-	fill: var(--circularListDataFieldTextColor);
-}
-.circularListIndex text {
-	fill: var(--circularListIndexColor);
-	font-family: var(--serif);
-}
-.circularListNextField rect {
-	fill: var(--circularListNextFieldFill);
-	stroke: var(--text-color);
-}
-.circularListLink line,
-.circularListLink path {
-	stroke: var(--circularListLinkColor);
-}
-.circularListLink circle {
-	fill: var(--circularListLinkColor);
-}
-#circularListArrow {
-	fill: var(--circularListLinkColor);
-}
-
-/* Doubly Linked List Styles */
-.doublyLinkedListDataField rect {
-	fill: var(--doublyLinkedListDataFieldFill);
-	stroke: var(--text-color);
-}
-.doublyLinkedListPrevField rect {
-	fill: var(--doublyLinkedListPrevFieldFill);
-	stroke: var(--text-color);
-}
-.doublyLinkedListNextField rect {
-	fill: var(--doublyLinkedListNextFieldFill);
-	stroke: var(--text-color);
-}
-.doublyLinkedList text {
-	fill: var(--doublyLinkedListTextColor);
-}
-.doublyLinkedListLink line{
-	stroke: var(--doublyLinkedListLinkColor);
-}
-.doublyLinkedListLink circle {
-	fill: var(--doublyLinkedListLinkColor);
-}
-.doublyLinkedListLink path {
-	stroke: var(--doublyLinkedListLinkColor);
-}
-#doublyLinkedListNextArrow {
-	fill: var(--doublyLinkedListLinkColor);
-}
-#doublyLinkedListPrevArrow {
-	fill: var(--doublyLinkedListLinkColor);
-}
-/* Stack Styles */
-.stackFrame rect {
-	fill: var(--stackFrameFill);
-	stroke: var(--text-color);
-}
-.hago_stack_frame text {
-	font-family: var(--mono);
-}
-.stackFrame text {
-	fill: var(--stackFrameText);
-}
-/* Queuer Styles */
-.queuer rect {
-	fill: var(--queuerFill);
-	stroke: var(--text-color);
-}
-.queuer text {
-	fill: var(--queuerTextColor);
-	font-size: 1.2rem;
-}
-.queuerIndex text,
-.queuer.red .queuerIndex text {
-	fill: var(--queuerIndexTextColor);
-}
-.queuerIndex text {
-	font-family: var(--serif);
-}
-.queuer.red text {
-	fill: var(--red);
-}
-.queueAnnotation text {
-	fill: var(--queuerTextColor);
-	font-size: 1.3rem;
-}
-.queuerIndex rect {
-	fill: var(--queuerIndexFill);
-}
-.queuer.red rect {
-	stroke: var(--queuerFocusRedStroke);
-}
-.queuer.red .queuerIndex rect {
-	fill: var(--queuerFocusRedFill);
-}
-/* Circular Queues */
-.circularQueuer path {
-	fill: var(--circularQueuerFill);
-	stroke: var(--circularQueuerStroke);
-}
-.circularQueuer text {
-	fill: var(--circularQueuerTextColor);
-}
-.circularQueuerIndex text {
-	fill: var(--circularQueuerIndexColor);
-	font-family: var(--serif);
-}
-/* ParseTree */
-.parseTreeEdges path {
-	stroke: var(--parseTreeEdgeColor);
-}
-.parseTreeNodes text {
-	fill: var(--parseTreeTextColor);
-}
-
-/* DotPlot */
-.dotPlotBin circle {
-	fill: var(--dotPlotCircleFill);
-	stroke: var(--dotPlotCircleStroke);
-}
-.dotPlotXAxis line,
-.dotPlotXAxis path {
-	stroke: var(--dotPlotAxisColor);
-}
-.dotPlotXAxis text {
-	fill: var(--dotPlotAxisColor);
-	font-family: var(--serif);
-}
-
-/* Plot Styles */
-.plotRectangle path { stroke: var(--text-color); }
-.Plot .redCircle circle {
-	fill: var(--red);
-	stroke: var(--red);
-	fill-opacity: 0.3;
-}
-.Plot .plainCircle circle { fill: var(--background-color); }
-.Plot .blueCircle circle {
-	fill: var(--blue);
-	stroke: var(--blue);
-	fill-opacity: 0.1;
-}
-.Plot .purpleCircle circle {
-	fill: var(--purple);
-	stroke: var(--purple);
-	fill-opacity: 0.1;
-}
-.yellowRectangle path {
-	fill: var(--gold);
-	stroke: var(--orange);
-	fill-opacity: 0.1;
-}
-.plot text,
-.plot3d text { font-family: var(--serif); }
-.plot .plot_point circle {
-	fill: var(--point-fill-color);
-	stroke: var(--point-stroke-color);
-}
-.plot .ex circle { fill: var(--background-color); }
-.plotAxes text, .plot3dAxes text { fill: var(--plot-axes-color) }
-.plotAxes span.katex {color: var(--plot-axes-color)}
-.plotAxes path, .plot3dAxes path { stroke: var(--plot-axes-color) }
-.plotAxes line, .plot3dAxes line { stroke: var(--plot-axes-color) }
-.Plot marker {fill: var(--plot-axes-color)}
-/* Flowchart styles */
-.TableMatrix {
-width: fit-content !important;
-border: none !important;
-}
-.TableMatrix thead tr {
-border-bottom: solid thin grey !important;
-}
-.TableMatrix th, .TableMatrix td {
-border: none !important;
-padding: 0.2em 0.8em !important;
-}
-.TableMatrix tr td:first-child,
-.TableMatrix tr th:first-child {
-border-right: solid thin grey !important;
-}
-
-/* Graphs */
-.Graph .katex { color: var(--text-color); }
-.Graph .green circle { fill: var(--lightGreen); stroke: var(--green); }
-.redGraph circle { fill: var(--lightRed); stroke: var(--darkRed); }
-.redGraph path { stroke: var(--red); }
-.redGraphArrowHead { fill: var(--red); }
-.GraphArrowHead {fill: var(--blue);}
-.Graph .blue circle { fill: var(--lightBlue); stroke: var(--blue); }
-.Graph .graphEdge line { stroke: var(--blue); }
-.Graph .dash line { stroke-dasharray: 3; }
-.Graph .ptr circle {
-	fill: var(--background-color);
-	stroke: var(--text-color);
-}
-/* Flow */
-.Flow .edgePaths path { stroke: var(--flow-stroke-color); }
-.Flow marker { fill: var(--flow-stroke-color); }
-.Flow text { fill: var(--flow-stroke-color); }
-.Flow .nodes rect { fill: var(--flow-fill-color); stroke: var(--flow-stroke-color); }
-
-/* Digraph */
-.Digraph text {fill: var(--text-color)}
-.digraphEdges path {stroke: var(--tree-edge-color)}
-.Digraph marker {fill: var(--tree-edge-color)}
-.digraphNodes circle {stroke: var(--tree-edge-color)}
-.BipartiteNodes circle {
-	fill: var(--bipartite-node-fill);
-	stroke: var(--bipartite-node-stroke);
-}
-.BipartiteEdges path { stroke: var(--bipartite-edge-color); }
-.Bipartite .katex {color: var(--bipartite-text-color);}
-.Bipartite #BipartiteArrowEnd {fill: var(--bipartite-edge-color)}
-.Bipartite #BipartiteArrowStart {fill: var(--bipartite-edge-color)}
-.bipartiteGroup rect { stroke: var(--bipartite-edge-color); }
-
-/* Bar Plot */
-.bar-plot-bar rect {fill: var(--tree-node-fill-color)}
-
-
-/* Hago */
-/* core */
-	.hago text { fill: var(--text-color); }
-/* Plot */
-	.hago .hago_y_axis path {stroke: var(--plot-axes-color)}
-	.hago .hago_y_axis line {stroke: var(--plot-axes-color)}
-	.hago .hago_x_axis path {stroke: var(--plot-axes-color)}
-	.hago .hago_x_axis line {stroke: var(--plot-axes-color)}
-	.hago .riemann_sums line:nth-child(1) {
-		stroke:gold;
-		stroke-opacity: 0.1;
+	ol {
+		margin: 0;
+		padding: 0;
+		padding-left: 1.5em;
 	}
-	.hago .riemann_sums line:nth-child(2) {
-		stroke:gold;
-		stroke-opacity: 0.5;
+	/* p+ol li::marker {font-size: 0.95rem;font-family:'Latin Modern';} */
+	p+ol li { margin:0;list-style:decimal;}
+	p+ol li li {list-style:lower-alpha;}
+	p+ol li li li {list-style:decimal; }
+	p+ol li li li li {list-style:upper-alpha; }
+	p+ol li li li li li {list-style:lower-roman; }
+	ul {padding-left: 1.5em;}
+	ul li::marker {font-size: 0.7em;}
+/* Table */
+	table {
+		margin: 4% auto;
+		font-size: 0.95em;
+		border-collapse: collapse;
 	}
-/* stack */
-	.hago_mem rect { stroke: var(--text-color); }
-	.hago .red .memory_cell_address rect { fill: firebrick; }
-	.hago .green .memory_cell_address rect { fill: rgb(16, 138, 27); }
-	.hago .blue .memory_cell_address rect { fill: teal; }
-	.hago .red .memory_cell_value rect { fill: rgb(255, 198, 188); }
-	.hago .green .memory_cell_value rect { fill: rgb(209, 242, 209); }
-	.hago .blue .memory_cell_value rect { fill: rgb(208, 237, 239); }
-	.hago .red .memory_cell_address text { fill: var(--white); }
-	.hago .green .memory_cell_address text { fill: var(--white); }
-	.hago .blue .memory_cell_address text { fill: var(--white); }
-.hago .hago_graph_edges line { stroke: var(--text-color); }
-.hago .hago_graph_edges path { stroke: var(--text-color); }
-.hago .hago_graph_nodes circle {fill: var(--background-color);}
-/* Cartesian Product */
-	.hago_CartProd td {
+	table td, table th {
+		/* border: none; */
+		padding: 0 0.5em !important;
+		/* width: fit-content; */
+		vertical-align: top;
+		text-align: left;
+		font-weight: normal;
+	}
+	table td {
+		padding-top:1px !important;
+		padding-bottom: 1px;
+		border-bottom: solid thin lightgray;
+	}
+	table tr:last-child td {
+		border-bottom: 0;
+	}
+	table tr td:not(:first-child) {
+		border-left: solid thin lightgray;
+	}
+	table th {
+		border-bottom: solid thin lightgrey;
+		padding-bottom: 0 !important;
+		padding-top: 0 !important;
+	}
+	.numbered.aligned table td {
 		text-align: center;
 	}
-	.hago_CartProd tr {
+	blockquote table {
+		margin: 0 auto;
+	}
+	blockquote table th {
+		padding: 0 0.5em !important;
+	}
+	blockquote table td {
+		padding: 0 0.2em !important;
+	}
+/* Headings */
+	h1 { font-size: 1.5rem;  }
+	h2 { font-size: 1.15rem; }
+	h3 { font-size: 1.1rem;  }
+	h4 { font-size: 1.05rem; }
+	h5 { font-size: 1.05rem; }
+	h6 { font-size: 1rem;    }
+	h2,h3,h4,h5,h6 {
+		font-weight: bold;
+		margin: 0; 
+		padding: 0;
+	}
+	h2+p,h3+p,h4+p,h5+p,h6+p { margin-top:0; }
+	h2+blockquote,h3+blockquote, h4+blockquote,h5+blockquote,h6+blockquote {
+		margin-top: -1% !important;
+	}
+	h1 {
+		text-align: center;
+		border-top: solid thin grey;
+		border-bottom: solid thin grey;
+		margin-bottom: 1rem;
+	}
+	h2 {counter-increment: part;        counter-reset: subpart;}
+	h3 {counter-increment: subpart;     counter-reset: chapter;}
+	h4 {counter-increment: chapter;     counter-reset: module;}
+	h5 {counter-increment: module;      counter-reset: submodule;}
+	h6 {counter-increment: submodule;   counter-reset: submodule;}
+	h2::after { content: counter(part); float: right; }
+	h3::after { content: counter(part) "." counter(subpart); float: right; }
+	h4::after { content: counter(part) "." counter(subpart) "." counter(chapter); float: right; }
+	h5::after { content: counter(part) "." counter(subpart) "." counter(chapter) "." counter(module); float: right; }
+	h6::after { content: counter(part) "." counter(subpart) "." counter(chapter) "." counter(module) "." counter(submodule); float: right; }
+/* Hago Array */
+		.hago_Array {
+			width: fit-content;
+			margin: 1px auto;
+		}
+		table .hago_Array {
+			margin: 3%;
+		}
+/* Lists */
+		div.col2 {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			margin: -2% 0;
+		}
+		ul li p, ol li p {
+			padding: 0 !important;
+			margin: 0 !important;
+		}
+		ul li {
+			padding: 0 !important;
+			margin: 0 !important;
+		}
+		ul {
+			width: fit-content;
+		}
+/* KaTeX */
+	:not(.illus) span.katex {font-size: 0.98em;}
+	/* .illus span.katex {font-size: 0.6em;} */
+	.Plot span.mord.texttt {
+		font-family: var(--mono) !important;
+		/* font-size: 0.5em; */
+	}
+	.katex .mord.text {
+		/* font-size: 1em; */
+	}
+	div.math.math-display {
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+	.Plot span.mord.text {
+		font-family: var(--serif);
+		/* font-size: 0.6em; */
+	}
+/* DIV FLOATS */
+	div.fr {
+		float: right;
+		width: 40%;
+	}
+	div.fr p {
+		text-align: center;
+		font-size: 0.9em;
+		color:rgb(109, 151, 147);
+	}
+/* Table of Contents */
+	h1+p+ol,.outline ol,.outline ul {
+		padding:0 0 0 2em; 
+		margin:0;
+		font-size: 0.85rem;
+	}
+	h1+p+ol a {
+		text-decoration: unset;
+		/* font-family: 'Latin Modern'; */
+	}
+	h1+p+ol,.outline {
+		margin: 1em 0 !important;
+		/* border: solid thin grey; */
+		/* float: right; */
+		/* column-count: 3; */
+	}
+	.outline ol li {font-weight: bold;}
+	.outline ol li li {font-weight: normal;}
+	.outline ol {list-style: decimal;}
+	.outline ol ol {list-style: upper-alpha;}
+	.outline ol ol ol {list-style: lower-roman;}
+	.outline ol ol ol ol {list-style: lower-alpha;}
+	.outline ol ol ol ol ol {list-style: decimal;}
+/* Hago Table */
+	.hagoTable {
+		border: none !important;
+	}
+	.hagoTable td,
+	.hagoTable th {
+		padding: 0;
+		text-align: center;
+		vertical-align: middle;
+		border: none;
+	}
+	.hagoTable thead tr:nth-child(1) {
+		border-bottom: solid thin var(--text-color);
+	}
+	.hagoTable td:not(:nth-child(1)) {
+		border-left: solid thin var(--text-color);
+	}
+	.grid_map_container pre {
+		margin: 2px;
+		height: fit-content;
+	}
+	.grid_map_container {
+		margin-bottom: -1fr;
+	}
+/* Tables */
+	.hashtbl table {
+		font-size: 0.85em;
+		table-layout: fixed;
+	}
+	.hashtbl table td, 
+	.hashtbl table th {
+		text-align: center;
+	}
+	div.two-way-table table {
+		margin: 5% auto;
+	}
+	div.two-way-table table th {
+		height: 5px;
+	}
+	div.two-way-table table th:not(:first-child) {
+		border-left: solid thin var(--text-color);
+	}
+	div.two-way-table table td {
+		padding: 0 0.5em;
+	}
+	
+/* Definitions */
+	dfn strong {
+		font-variant: small-caps;
+		font-size: 1.1em !important;
+		/* text-decoration: underline; */
+		font-weight: normal !important;
+	} 
+	dfn .obj strong {
+		font-variant: normal;
+		font-weight: bold !important;
+		font-size: 0.98em !important;
+	}
+	dfn {
+		display: block;
+		/* font-weight: bold; */
+		margin: 0 1em;
+		font-style: normal;
+		/* border-left: solid 3px rgb(222, 222, 222); */
+		/* padding-left: 0.8em; */
+		/* width: 95%; */
+	}
+	dfn p:last-child::after {
+		font-family: 'Latin Modern';
+		display: inline;
+	}
+	dfn.align {
+		margin: 0 auto;
+	}
+/* Links */
+	a { color: var(--text-color); }
+	a:hover { color: var(--purple); }
+	.outline a {text-decoration: none;}
+/* Figcaption */
+	figcaption {
+		display: block;
+		text-align: center;
+		font-size: 0.9em;
 		margin: 0;
 		padding: 0;
 	}
-/* Sequence Chart */
-	.hago circle {
-		fill: var(--tree-node-fill-color);
-		stroke: var(--tree-node-mark-stroke);
+	.grid-container {
+		height:fit-content;
 	}
-	.hago.hago_sequence line { stroke: rgb(174, 214, 214); }
-#ray_arrow_end { fill: firebrick; }
-/* HTML diagrams */
-/* product */
-table.product {
-	text-align: center;
-	border-collapse: separate;
-	border-spacing: 2px !important;
-	font-size: 0.9em;
-}
-table.product td {
-	border: 0;
-	opacity: 0.3;
-}
-table.product tr:not(:first-child) td:not(:first-child) {
-	border: solid thin lightgray;
-}
-table.product td.in {
-	background-color: var(--powder);
-	opacity: 1;
-}
-table.product td.out {
-	background-color: rgb(245, 193, 190);
-	opacity: 1;
-}
-/* Augmented Matix */
-div.aug table, div.mx table {
-	font-size: 0.95em;
-	table-layout: fixed;
-}
-div.aug table td, div.aug table th, div.aug table tr, 
-div.mx table td, div.mx table th, div.mx table tr {
-	border: 0;
-	text-align: center;
-}
-div.aug th, div.mx th {
-	margin: 0;
-	padding-top: 0;
-}
-div.aug td, div.mx td { padding: 0 0.4em; }
-div.aug table td:last-child, div.aug table th:last-child {
-	border-left: solid thin var(--text-color); 
-}
-div.aug, div.mx {
+	.grid_map_container {
+		height: min-content;
+	}
+/* Frame */
+	table.frame {
+		border: solid thin grey;
+		border-collapse: collapse;
+		font-size: 0.9em;
+	}
+	table.frame th {
+		font-weight: normal;
+		border-collapse: collapse;
+	}
+	table.frame td, table.frame th {
+		border-collapse: collapse;
+		padding: 2px;
+		margin: 0 !important;
+		border: solid thin grey;
+		text-align: center;
+	}
+	table.frame small {
+		font-size: 1.1em;
+	}
+	table.tr {
+		padding: 0;
+		margin: 0 !important;
+		border: solid thin grey;
+		border-collapse: collapse;
+	}
+	table.frame table {
+		margin: 0 !important;
+		padding: 0 !important;
+		width: 100%;
+		border: solid thin grey;
+		border-collapse: collapse;
+	}
+/* Structs */
+	div.obj ul, div.obj ol, div.obj ul li, div.obj ol li {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+	div.obj ol li {
+		margin: 1px 0;
+		padding: 0;
+		display: block;
+	}
+	div.obj {
+		border-top: solid thin lightgrey;
+		border-bottom: solid thin lightgrey;
+		padding: 0 0 0.5em 0;
+		width: 90%;
+		margin: 2% auto;
+	}
+	div.obj>ul>li>ol {
+		border-left: solid thin lightgray;
+	}
+	div.obj ol li::before {
+		content: " ";
+		counter-increment: objlineNumber;
+		font-family: "CMU Serif";
+		position: relative;
+		display: inline-block;
+		/* min-width: 15px; */
+	}
+	div.obj ol li::before {padding-right: 1em;}
+	div.obj ol li li::before { padding-right: 2em; }
+	div.obj ol li li li::before { padding-right: 3em; }
+	div.obj ol li li li li::before { padding-right: 4em; }
+	div.obj ol li li li li li::before { padding-right: 5em; }
+
+/* Algorithms */
+	div.algo {
+		counter-reset: lineNumber -1;
+		border-top: solid thin lightgray;
+		border-bottom: solid thin lightgray;
+		padding: 0 0 1em 0;
+		width: 80%;
+		margin: 1em auto;
+		font-size: 0.9em;
+	}
+	div.algo blockquote {
+		margin: 0;
+		padding: 0;
+		font-size: 1.1em;
+	}
+	/* div.algo small { font-size: 1.1em; } */
+	div.algo p {
+		font-size: inherit;
+		padding: 0;
+		margin: 0;
+	}
+	div.algo ol {
+		padding:0;
+		margin:0;
+		list-style: none;
+	}
+	div.algo ol li {
+		margin: 0;
+		padding: 0;
+		display: block;
+	}
+	div.algo ol li::before {
+		content: counter(lineNumber);
+		counter-increment: lineNumber;
+		font-family: "CMU Serif";
+		position:relative;
+		display: inline-block;
+		min-width: 10px;
+	}
+	div.algo ol ol {border-left: solid thin rgb(226, 226, 226);} 
+	div.algo ol { margin-left: 1em; }
+	div.algo code, div.algo li em {
+		font-family: var(--serif);
+		color: rgb(146, 171, 182);
+		font-style: italic;
+		font-size: inherit;
+		display: inline;
+		text-align: left;
+		width: max-content;
+		margin: 0;
+		padding: 0;
+		float: right;
+	}
+	div.algo ol li::before {right: 1rem;}
+	div.algo ol li li::before { right: 2rem; }
+	div.algo ol li li li::before { right: 3rem; }
+	div.algo ol li li li li::before { right: 4rem; }
+	div.algo ol li li li li li::before { right: 5rem; }
+	div.algo ol li li li li li li::before { right: 6rem; }
+	div.algo>ol {
+		margin-top: 6px;
+		/* margin-left: 1em; */
+	}
+	/* katex override */
+	span.textup {
+		font-family: "CMU Serif";
+		font-weight: 400;
+		font-size: 1.1em;
+		font-variant: small-caps;
+	}
+	div.algo ul {list-style: none;}
+	div.algo ul {padding: 0; margin: 0;}
+	div.algo ul li {padding: 0; margin: 0;}
+	div.algo ul ul {padding: 0 1em; margin: 0; border-left: solid thin lightgrey;}
+	/* div.algo p:first-child span.textup {font-weight: 600;} */
+	/* div.algo p:first-child {font-variant: small-caps;} */
+	div.algo p:first-child {
+		padding: 2px 0;
+		margin-bottom: 5px;
+		border-bottom: solid thin lightgrey;
+		font-size: 1em;
+	}
+	div.algo li>p {
+		display: inline !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		line-height: 0 !important;
+		border: 0 !important;
+	}
+	p {
+		margin: 0.7em 0;
+		padding: 0;
+		line-height: 1.25;
+	}
+	.katex-display + p {
+		margin: 0 !important;
+	}
+	.katex-display {
+		padding: 0 !important;
+		margin: 1px 0 !important;
+	}
+
+
+	div.lay3 {
+		width: fit-content;
 		margin: 0 auto;
 		display: flex;
-		justify-content: center;
-		background-image: linear-gradient(var(--text-color), var(--text-color)),
-											linear-gradient(var(--text-color), var(--text-color)),
-											linear-gradient(var(--text-color), var(--text-color)),
-											linear-gradient(var(--text-color), var(--text-color));
-		background-repeat: no-repeat;
-		background-size: 4px 1px;
-		background-position: left top, right top, left bottom, right bottom;
-		border: solid var(--text-color);
-		border-width: 0px 1px;
-		width: fit-content;
-		height: fit-content;
-		padding: 3px 0;
-}
-/* Equation block */
-div.eq table td, div.eq table tr, div.eq table th {
-	border: 0;
-}
-div.table { table-layout: fixed; }
-div.eq table td { text-align: center; }
-div.eq table td { padding: 0 3px; }
-div.mx table th, div.aug table th, div.eq table th {
-	font-weight: normal;
-}
-/* Media Queries */
-@media (min-width: 1px) and (max-width: 500px) {
-	html {font-size: 12px;}
-	div.index_chapter, 
-	div.index_chapter2,
-	div.index_fullwidth {
-		column-count: 1;
+		flex-direction: column;
 	}
-}
-@media (min-width: 501px) {
-	html {font-size: 13px;}
-}
+/* Flex layout */
+	div.lay3 article {
+		display: flex;
+		padding: 0 1%;
+	}
+	div.lay3 section {
+		flex: 1;
+		margin: 0 1%;
+		border-bottom: solid thin lightgrey;
+	}
+	div.lay3 article:first-child section {
+		border-top: solid thin lightgray;
+	}
+/* Pre Tag (Code Block) */
+	code {
+		font-family: 'Latin Modern';
+		font-size: 1em;
+		white-space: pre;
+	}
+	pre {
+		width: fit-content;
+		margin: 0 auto;
+		white-space:pre;
+		overflow-x: scroll;
+		tab-size: 2;
+		overflow: auto;
+		padding: 0.5rem 0.6rem;
+		font-size: 1em;
+		line-height: 1.2 !important;
+	}
+	pre code {
+		font-family: 'Latin Modern';
+	}
+	pre:not(.language-rust) {
+		height: 100%;
+		line-height: 1.3;
+	}
+/* Side Notes */
+	div.note {
+		z-index: 5;
+		position: absolute;
+		display: flex;
+		right: 0;
+		margin: 0 5% 0 0;
+		padding: 0;
+		width: 15%;
+		color: rgb(130, 177, 180);
+	}
+	div.note sup {
+		display: block;
+		margin-top: 5%;
+	}
+	div.note div.note-content {
+		font-size: 0.85rem;
+	}
+/* Reference page diagrams */
+	.cb_ref path {
+		stroke-width: 2;
+		fill: rgb(255, 242, 192);
+		stroke: rgb(178, 140, 34);
+	}
+	aside { font-size: 11px; }
+	aside h2 {font-size: 1.5em}
+/* Illus */
+	/* General */
+		.illus, .hago {
+			display: flex;
+			justify-content: center;
+			overflow: visible;
+		}
+		.illusFigure {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			flex: 1;
+		}
+		.illusFigure figcaption {
+			display: block;
+			margin: 0 auto;
+		}
+	/* Sequence */
+		.Sequence .blue rect {
+			fill: var(--powder);
+		}
+		.Sequence .red rect {
+			fill: var(--red);
+		}
+		.Sequence .green rect {
+			fill: var(--lightGreen);
+		}
+		.Sequence .grey rect {
+			fill: var(--lightGrey);
+		}
+	/* Text Elements */
+		.illus text,
+		.hago text {
+			font-family: "CMU Serif";
+			/* font-size: 1em; */
+		}
+	/* Sequence Styles */
+		.sequenceElement rect {
+			fill: var(--sequenceElementFill);
+			stroke: var(--sequenceElementStroke);
+		}
+		.Sequence .red rect {
+			fill: firebrick;
+		}
+		.Sequence .red text {
+			fill: white;
+		}
+		.sequenceElementText text {
+			fill: var(--sequenceElementTextColor);
+		}
+		.sequenceAnnotationText text {
+			fill: var(--sequenceElementTextColor);
+		}
+		.sequenceIndexText text {
+			fill: var(--sequenceElementIndexColor);
+			font-family: var(--serif);
+		}
+		.sequencePointers line {
+			stroke: var(--sequenceElementStroke);
+		}
+		.Sequence marker {
+			fill: var(--sequenceElementStroke);
+		}
+		.sequencePointers text {
+			fill: var(--sequenceElementStroke);
+		}
+	/* Matrix Styles */
+		.matrix { }
+		.matrixElement rect {
+			fill: var(--matrixElementFill);
+			stroke: var(--matrixElementStroke);
+		}
+		.matrixElement text {
+			fill: var(--matrixElementTextColor);
+		}
+		.matrixIndices text {
+			fill: var(--matrixIndexColor);
+			font-family: var(--serif);
+		}
+		.matrix .mark rect { fill: var(--matrixFocusFillColor); }
+		.matrix .mark text { fill: var(--matrixFocusTextColor); }
+	/* Linked List Styles */
+		.linkedList text {
+			font-size: 0.7em;
+		}
+		.linkedListDataField rect {
+			fill: var(--linkedListDataFieldFill);
+			stroke: var(--text-color);
+		}
+		.linkedListDataField text { fill: var(--linkedListDataFieldTextColor); }
+		.linkedListNextField rect {
+			fill: var(--linkedListNextFieldFill);
+			stroke: var(--text-color);
+		}
+		.linkedListLink line {stroke: var(--linkedListLinkColor)}
+		#linkedListArrow {fill: var(--linkedListLinkColor)}
+		.linkedListLink circle {fill: var(--linkedListLinkColor)}
+		.linkedListIndex text {
+			fill: var(--linkedListIndexColor);
+			font-family: var(--serif);
+		}
+		.linkedListAnnotation text {fill: var(--linkedListLinkColor);}
+
+	/* Circular List Styles */
+		.circularListDataField rect {
+			fill: var(--circularListDataFieldFill);
+			stroke: var(--text-color);
+		}
+		.circularList text {
+			fill: var(--circularListDataFieldTextColor);
+			font-size: 0.7em;
+		}
+		.circularListIndex text {
+			fill: var(--circularListIndexColor);
+			font-family: var(--serif);
+		}
+		.circularListNextField rect {
+			fill: var(--circularListNextFieldFill);
+			stroke: var(--text-color);
+		}
+		.circularListLink line,
+		.circularListLink path {
+			stroke: var(--circularListLinkColor);
+		}
+		.circularListLink circle {
+			fill: var(--circularListLinkColor);
+		}
+		#circularListArrow {
+			fill: var(--circularListLinkColor);
+		}
+	/* Doubly Linked List Styles */
+		.doublyLinkedListDataField rect {
+			fill: var(--doublyLinkedListDataFieldFill);
+			stroke: var(--text-color);
+		}
+		.doublyLinkedListPrevField rect {
+			fill: var(--doublyLinkedListPrevFieldFill);
+			stroke: var(--text-color);
+		}
+		.doublyLinkedListNextField rect {
+			fill: var(--doublyLinkedListNextFieldFill);
+			stroke: var(--text-color);
+		}
+		.doublyLinkedList text {
+			fill: var(--doublyLinkedListTextColor);
+		}
+		.doublyLinkedListLink line{
+			stroke: var(--doublyLinkedListLinkColor);
+		}
+		.doublyLinkedListLink circle {
+			fill: var(--doublyLinkedListLinkColor);
+		}
+		.doublyLinkedListLink path {
+			stroke: var(--doublyLinkedListLinkColor);
+		}
+		#doublyLinkedListNextArrow {
+			fill: var(--doublyLinkedListLinkColor);
+		}
+		#doublyLinkedListPrevArrow {
+			fill: var(--doublyLinkedListLinkColor);
+		}
+	/* Queuer Styles */
+		.queuer rect {
+			fill: var(--queuerFill);
+			stroke: var(--text-color);
+		}
+		.queuer text {
+			fill: var(--queuerTextColor);
+			font-size: 1.2rem;
+		}
+		.queuerIndex text,
+		.queuer.red .queuerIndex text {
+			fill: var(--queuerIndexTextColor);
+		}
+		.queuerIndex text {
+			font-family: var(--serif);
+		}
+		.queuer.red text {
+			fill: var(--red);
+		}
+		.queueAnnotation text {
+			fill: var(--queuerTextColor);
+			font-size: 1.3rem;
+		}
+		.queuerIndex rect {
+			fill: var(--queuerIndexFill);
+		}
+		.queuer.red rect {
+			stroke: var(--queuerFocusRedStroke);
+		}
+		.queuer.red .queuerIndex rect {
+			fill: var(--queuerFocusRedFill);
+		}
+	/* Circular Queues */
+		.circularQueuer path {
+			fill: var(--circularQueuerFill);
+			stroke: var(--circularQueuerStroke);
+		}
+		.circularQueuer text {
+			fill: var(--circularQueuerTextColor);
+		}
+		.circularQueuerIndex text {
+			fill: var(--circularQueuerIndexColor);
+			font-family: var(--serif);
+		}
+	/* DotPlot */
+		.dotPlotBin circle {
+			fill: var(--dotPlotCircleFill);
+			stroke: var(--dotPlotCircleStroke);
+		}
+		.dotPlotXAxis line,
+		.dotPlotXAxis path {
+			stroke: var(--dotPlotAxisColor);
+		}
+		.dotPlotXAxis text {
+			fill: var(--dotPlotAxisColor);
+			font-family: var(--serif);
+		}
+	/* Plot Styles */
+		.plotRectangle path { stroke: var(--text-color); }
+		.Plot .redCircle circle {
+			fill: var(--red);
+			stroke: var(--red);
+			fill-opacity: 0.3;
+		}
+		.Plot .plainCircle circle { fill: var(--background-color); }
+		.Plot .blueCircle circle {
+			fill: var(--blue);
+			stroke: var(--blue);
+			fill-opacity: 0.1;
+		}
+		.Plot .purpleCircle circle {
+			fill: var(--purple);
+			stroke: var(--purple);
+			fill-opacity: 0.1;
+		}
+		.yellowRectangle path {
+			fill: var(--gold);
+			stroke: var(--orange);
+			fill-opacity: 0.1;
+		}
+		.plot text,
+		.plot3d text { font-family: var(--serif); }
+		.plot .plot_point circle {
+			fill: var(--point-fill-color);
+			stroke: var(--point-stroke-color);
+		}
+		.plot .ex circle { fill: var(--background-color); }
+		.plotAxes text, .plot3dAxes text { fill: var(--plot-axes-color) }
+		.plotAxes span.katex {color: var(--plot-axes-color)}
+		.plotAxes path, .plot3dAxes path { stroke: var(--plot-axes-color) }
+		.plotAxes line, .plot3dAxes line { stroke: var(--plot-axes-color) }
+		.Plot marker {fill: var(--plot-axes-color)}
+	/* Table Matrix */
+		.TableMatrix {
+			width: fit-content !important;
+			border: none !important;
+			margin: 0 auto;
+		}
+		.TableMatrix thead tr {
+		border-bottom: solid thin grey !important;
+		}
+		.TableMatrix th, .TableMatrix td {
+			border: none !important;
+			padding: 0 0.5em !important;
+		}
+		.TableMatrix tr td:first-child,
+		.TableMatrix tr th:first-child {
+		border-right: solid thin grey !important;
+		}
+	/* Trees */
+		.tree line, .tree circle { stroke: rgb(127, 127, 127); }
+		.tree .nil circle {fill: rgb(139, 139, 139); stroke: rgb(21, 21, 21)}
+		.tree .red circle {fill: rgb(255, 213, 129); stroke: rgb(168, 24, 24)}
+		.tree line.red {stroke: firebrick}
+		.tree .out {opacity: 0.2;}
+		.tree line.teal {stroke: rgb(124, 208, 208); stroke-width: 2;}
+	/* Graphs */
+		.Graph circle {fill: var(--background-color); stroke: var(--lightBlue)}
+		.Graph path {stroke: var(--lightBlue);}
+		.Graph .graphEdge {stroke: var(--lightBlue);}
+		.Graph .katex { color: var(--text-color); font-size: 2em;}
+		.Graph .green circle { fill: var(--lightGreen); stroke: var(--green); }
+		.redGraph circle { fill: var(--lightRed); stroke: var(--darkRed); }
+		.redGraph path { stroke: var(--red); }
+		/* .redGraphArrowHead { fill: var(--red); } */
+		.Graph .blue circle { fill: var(--lightBlue); stroke: var(--blue); }
+		.Graph .red circle { fill: rgb(255, 239, 198); stroke:rgb(201, 1, 1); }
+		.Graph .on circle { fill: rgb(222, 245, 164); stroke: var(--text-color); }
+		.Graph .off circle { fill: rgb(177, 177, 177); stroke: var(--text-color); }
+		.Graph .nil circle { fill: rgb(40, 40, 40); stroke: var(--text-color); }
+		.Graph .red line { stroke: rgb(189, 30, 30); stroke-width: 1;}
+		.Graph .dash line { stroke-dasharray: 3; }
+		.Graph .ptr circle {stroke:var(--background-color)}
+	/* Digraph */
+		.Digraph text {fill: var(--text-color)}
+		.digraphEdges path {stroke: var(--tree-edge-color)}
+		.Digraph marker {fill: var(--tree-edge-color)}
+		.digraphNodes circle {stroke: var(--tree-edge-color)}
+		.BipartiteNodes circle {
+			fill: var(--bipartite-node-fill);
+			stroke: var(--bipartite-node-stroke);
+		}
+		.BipartiteEdges path { stroke: var(--bipartite-edge-color); }
+		.Bipartite .katex {color: var(--bipartite-text-color);}
+		.Bipartite #BipartiteArrowEnd {fill: var(--bipartite-edge-color)}
+		.Bipartite #BipartiteArrowStart {fill: var(--bipartite-edge-color)}
+		.bipartiteGroup rect { stroke: var(--bipartite-edge-color); }
+	/* Bar Plot */
+		.bar-plot-bar rect {fill: var(--tree-node-fill-color)}
+	/* Grid Table */
+		table.grid {
+			table-layout: fixed;
+		}
+		table.grid td {
+			border: solid thin var(--text-color) !important;
+			text-align: center;
+			padding: 0;
+			width: 1.4rem;
+			height: 1rem;
+		}
+		table.grid td.red {background-color: var(--lightRed)}
+		table.grid td.blue {background-color: var(--powder)}
+	/* core */
+		.hago text { fill: var(--text-color); }
+	/* Plot */
+		.hago .hago_y_axis path {stroke: var(--plot-axes-color)}
+		.hago .hago_y_axis line {stroke: var(--plot-axes-color)}
+		.hago .hago_x_axis path {stroke: var(--plot-axes-color)}
+		.hago .hago_x_axis line {stroke: var(--plot-axes-color)}
+		.hago .riemann_sums line:nth-child(1) {
+			stroke:gold;
+			stroke-opacity: 0.1;
+		}
+		.hago .riemann_sums line:nth-child(2) {
+			stroke:gold;
+			stroke-opacity: 0.5;
+		}
+	/* stack */
+		.hago_mem rect { stroke: var(--text-color); }
+		.hago .red .memory_cell_address rect { fill: firebrick; }
+		.hago .green .memory_cell_address rect { fill: rgb(16, 138, 27); }
+		.hago .blue .memory_cell_address rect { fill: teal; }
+		.hago .red .memory_cell_value rect { fill: rgb(255, 198, 188); }
+		.hago .green .memory_cell_value rect { fill: rgb(209, 242, 209); }
+		.hago .blue .memory_cell_value rect { fill: rgb(208, 237, 239); }
+		.hago .red .memory_cell_address text { fill: var(--white); }
+		.hago .green .memory_cell_address text { fill: var(--white); }
+		.hago .blue .memory_cell_address text { fill: var(--white); }
+	/* Cartesian Product */
+		.hago_CartProd td {
+			text-align: center;
+		}
+		.hago_CartProd tr {
+			margin: 0;
+			padding: 0;
+		}
+	/* Product */
+		table.product {
+			text-align: center;
+			border-collapse: separate;
+			border-spacing: 2px !important;
+			font-size: 0.9em;
+		}
+		table.product tr:not(:first-child) td:not(:first-child) {
+			border: solid thin lightgray;
+		}
+		table.product td.in {
+			background-color: var(--powder);
+			opacity: 1;
+		}
+		table.product td.out {
+			background-color: rgb(245, 193, 190);
+			opacity: 1;
+		}
+	/* Augmented Matix */
+		div.aug table, div.mx table {
+			font-size: 0.95em;
+			table-layout: fixed;
+		}
+		div.aug table td, div.aug table th, div.aug table tr, 
+		div.mx table td, div.mx table th, div.mx table tr {
+			border: 0;
+			text-align: center;
+		}
+		div.aug th, div.mx th {
+			margin: 0;
+			padding-top: 0;
+		}
+		div.aug td, div.mx td { padding: 0 0.4em; }
+		div.aug table td:last-child, div.aug table th:last-child {
+			border-left: solid thin var(--text-color); 
+		}
+		div.aug, div.mx {
+				margin: 0 auto;
+				display: flex;
+				justify-content: center;
+				background-image: linear-gradient(var(--text-color), var(--text-color)),
+													linear-gradient(var(--text-color), var(--text-color)),
+													linear-gradient(var(--text-color), var(--text-color)),
+													linear-gradient(var(--text-color), var(--text-color));
+				background-repeat: no-repeat;
+				background-size: 4px 1px;
+				background-position: left top, right top, left bottom, right bottom;
+				border: solid var(--text-color);
+				border-width: 0px 1px;
+				width: fit-content;
+				height: fit-content;
+				padding: 3px 0;
+		}
+	/* Equation block */
+		div.eq table td, div.eq table tr, div.eq table th {
+			border: 0;
+		}
+		div.table { table-layout: fixed; }
+		div.eq table td { text-align: center; }
+		div.eq table td { padding: 0 3px; }
+		div.mx table th, div.aug table th, div.eq table th {
+			font-weight: normal;
+		}
+/* Array */
+	div.table-array table th {
+		font-weight: normal;
+	}
+	div.table-array table {
+		margin: 0 auto;
+		table-layout: fixed;
+		border-collapse: collapse;
+		font-size: 0.85em;
+	}
+	div.table-array table th, 
+	div.table-array table td {
+		padding:0;
+		border-collapse: collapse;
+		text-align: center;
+	}
+	div.table-array table th {
+		color: lightgray;
+	}
+/* Hago Graph */
+	.hago_graph text {font-family: 'CMU Serif';}
+	.hago_graph_nodes circle {
+		fill: var(--background-color);
+		stroke: var(--text-color);
+	} 
+/* Float Right Container */
+	div.float-right {
+		float: right;
+		width: 60%;
+	}
+/* Number Line */
+	div.number-line {
+		margin: 5% 0; 
+	}
+	div.number-line table tr {
+		border-color: lightgrey;
+	}
+	div.number-line table td {
+		position: relative;
+		text-align: center;
+		padding: 0 5px;
+		left: 8px;
+		top: 15px;
+		border-color: lightgrey;
+	}
+	div.number-line table tr:not(:first-child) td {
+		border: none;
+	}
+/* List Table */
+	div.list table td, div.list table th {
+		border: 0 !important;
+		padding: 0 1px !important;
+		margin: 0 !important;
+	}
+/* Trace Article */
+	table.trace {
+		width: 100%;
+		margin: 0 !important;
+		border-collapse: separate;
+		border-spacing: 5px;
+		font-size: 1em;
+	}
+
+	table.trace td {
+		border: 0 !important;
+	}
+	table.trace tr:last-child td {
+		/* border-bottom: 0; */
+	}
+/* Media Queries */
+	@media (min-width:501px) {
+		html {font-size: 12px;}
+	}
+	@media (max-width: 500px) {
+		html {font-size: 11px;}
+		div.algo {width:95%}
+		div.ltb table {
+			width: 100%;
+		}
+		div.ltb table thead {display: none;}
+		div.ltb table td { border:0; }
+		div.ltb table tr td:nth-child(2) { padding-left:5px !important; }
+		div.ltb table tr {
+			display: flex;
+			flex-direction: column;
+		}
+	}
+	

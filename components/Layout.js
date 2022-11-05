@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "../styles/Layout.module.css";
 import { NavBody } from "./Nav";
 

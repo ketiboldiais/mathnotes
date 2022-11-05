@@ -1,10 +1,5 @@
 import { Graph } from "../../../components/illus/components/Graph/Graph";
 
-<head>
-	<title>Relations</title>
-	<description>Notes on relations.</description>
-</head>
-
 # Relations
 
 
@@ -35,6 +30,7 @@ This chapter is covers notes on relations.
 	15. [Right Euclidean Relation](#right-euclidean-relation)
 	16. [Left Euclidean Relation](#left-euclidean-relation)
 	17. [Equivalence Relations](#equivalence-relations)
+		1. [Equivalence Class](#equivalence-class)
 	18. [Partial Orders](#partial-orders)
 	19. [Weak Partial Orders](#weak-partial-orders)
 	20. [Strong Partial Orders](#strong-partial-orders)
@@ -50,21 +46,6 @@ This chapter is covers notes on relations.
 	7. [Left-unique Relations](#left-unique-relations)
 	8. [Right-unique Relations](#right-unique-relations)
 6. [Maps](#maps)
-	1. [Functions](#functions)
-		1. [Restrictions and Extensions](#restrictions-and-extensions)
-		2. [Partial Orders of Functions](#partial-orders-of-functions)
-		3. [Surjections](#surjections)
-		4. [Injections](#injections)
-		5. [Bijections](#bijections)
-		6. [The Surjection Rule](#the-surjection-rule)
-		7. [The Injection Rule](#the-injection-rule)
-		8. [The Bijection Rule](#the-bijection-rule)
-7. [Families](#families)
-8. [Natural Numbers](#natural-numbers)
-	1. [The Axiom of Infinity](#the-axiom-of-infinity)
-	2. [Peano Axioms](#peano-axioms)
-9. [Sequences](#sequences)
-10. [Equivalence Class](#equivalence-class)
 
 </div>
 
@@ -311,7 +292,10 @@ $$
 
 ### Reflexive Relations
 
-In the diagram below, the colored cells are members of a relation ${R_r.}$
+The _is equal to_ relation on the set of real numbers is an example of a
+reflexive relation — every real number _is equal to_ to itself. Let's see a
+visual example. In the diagram below, the colored cells are members of a
+relation ${R_r.}$
 
 <table className={`product`}>
 	<tbody>
@@ -350,7 +334,7 @@ containing all the pairs resulting from pairing each domain element with itself.
 __reflexive relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
 a _reflexive relation_ if, and only if:
 
-> ${\forall a \in \DD \Seq{(a,a) \in R}.}$
+> ${\forall a \in \DD \ix{(a,a) \in R}.}$
 
 Or, equivalently:
 
@@ -606,7 +590,7 @@ identity pair."
 __irreflexive relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
 an _irreflexive relation_ if, and only if:
 
-> ${\forall a \in \DD \Seq{(a,a) \notin R}.}$
+> ${\forall a \in \DD \ix{(a,a) \notin R}.}$
 
 Or, equivalently,
 
@@ -730,7 +714,7 @@ quasi-reflexive relations. Left-quasi-reflexive relations:
 __left-quasi-reflexive relation.__ A relation ${R}$ on a domain of discourse
 ${\DD}$ is _left-quasi-reflexive_ if, and only if:
 
-> ${\forall a,b \in \DD \Seq{(a,b) \in R \implies (a,a) \in R}.}$
+> ${\forall a,b \in \DD \ix{(a,b) \in R \nc (a,a) \in R}.}$
 
 Or, equivalently,
 
@@ -746,7 +730,7 @@ and right-quasi-reflexive relations:
 __right-quasi-reflexive relation.__ A relation ${R}$ on a domain of discourse
 ${\DD}$ is _right-quasi-reflexive_ if, and only if:
 
-> ${\forall a,b \in \DD \Seq{(a,b) \in R \implies (b,b) \in R}.}$
+> ${\forall a,b \in \DD \ix{(a,b) \in R \nc (b,b) \in R}.}$
 
 Or, equivalently,
 
@@ -806,7 +790,7 @@ Here's one definition:
 
 __symmetric relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is symmetric if, and only if:
 
-> ${\forall a,b \in \DD \Seq{(a,b) \in R \implies (b,a) \in R}}$
+> ${\forall a,b \in \DD \ix{(a,b) \in R \nc (b,a) \in R}}$
 
 Or, equivalently,
 
@@ -869,7 +853,7 @@ Here's an explicit definition:
 __antisymmetric relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
 _antisymmetric_ if, and only if:
 
-> ${\forall a,b \in \DD \Seq{((a,b) \in R \land a \neq b) \implies (b,a) \notin R}}$
+> ${\forall a,b \in \DD \ix{((a,b) \in R \land a \neq b) \nc (b,a) \notin R}}$
 
 Or, equivalently,
 
@@ -877,7 +861,7 @@ Or, equivalently,
 
 Alternatively:
 
-> ${\forall a,b \in \DD \Seq{((a,b) \in R \land (b,a) \in R) \implies a = b}.}$
+> ${\forall a,b \in \DD \ix{((a,b) \in R \land (b,a) \in R) \nc a = b}.}$
 >
 > For all ${a,b \in \DD,}$ if ${a \rel b}$ and ${b \rel a,}$ then ${a = b.}$
 
@@ -893,7 +877,7 @@ relation_.
 
 __asymmetric relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is _asymmetric_ if, and only if:
 
-> ${\forall a,b \in \DD \Seq{(a,b) \notin R \lor (b,a) \notin R}}$
+> ${\forall a,b \in \DD \ix{(a,b) \notin R \lor (b,a) \notin R}}$
 
 Or, equivalently,
 
@@ -926,7 +910,7 @@ then we can deduce that ${R}$ is a transitive relation.
 __transitivite relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
 _transitive_ if, and only if:
 
-> ${\forall a,b,c \in \DD \Seq{((a,b) \in R \land (b,c) \in R) \implies (a,c) \in R}}$ 
+> ${\forall a,b,c \in \DD \ix{((a,b) \in R \land (b,c) \in R) \nc (a,c) \in R}}$ 
 
 Or, equivalently,
 
@@ -943,7 +927,7 @@ Relations that are not transitive are called _intransitive relations_.
 
 __intransitive relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is _intransitive_ if, and only if:
 
-> ${\forall a,b,c \in \DD \Seq{(~(a,b) \in R \land (b,c) \in R~) \implies (a,c) \notin R}.}$
+> ${\forall a,b,c \in \DD \ix{(~(a,b) \in R \land (b,c) \in R~) \nc (a,c) \notin R}.}$
 
 Or, equivalently,
 
@@ -960,7 +944,7 @@ A _left-total relation_ is defined as follows:
 __left-total relation.__ Let ${X}$ and ${Y}$ be sets, and ${R}$ a relation from
 ${X}$ to ${Y.}$ Then ${R}$ is a _left-total relation_ if, and only if,
 
-> ${\forall x \in X \Seq{\exists y \in Y : (x,y) \in R}.}$
+> ${\forall x \in X \ix{\exists y \in Y : (x,y) \in R}.}$
 
 That is,
 
@@ -977,7 +961,7 @@ A _right-total relation_ is defined as follows:
 __right-total relation.__ Let ${X}$ and ${Y}$ be sets, and ${R}$ a relation from
 ${X}$ to ${Y.}$ Then ${R}$ is a _right-total relation_ if, and only if,
 
-> ${\forall y \in Y \Seq{\exists x \in X : (x,y) \in R}.}$
+> ${\forall y \in Y \ix{\exists x \in X : (x,y) \in R}.}$
 
 That is,
 
@@ -995,7 +979,7 @@ _comparabe relation_ or a _strongly-connected relation_.
 __comparable relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is
 _comparable_ if, and only if:
 
-> ${\forall a,b \in \DD \Seq{(a,b) \in R \lor (b,a) \in R}}$
+> ${\forall a,b \in \DD \ix{(a,b) \in R \lor (b,a) \in R}}$
 
 Or, equivalently,
 
@@ -1011,7 +995,7 @@ If a relation ${R}$ has the _connex property_, we say that ${R}$ is a _connected
 
 __connex.__ A relation ${R}$ on a domain of discourse ${\DD}$ is a _connex relation_ if, and only if:
 
-> ${\forall a,b \in \DD \Seq{(a \neq b) \implies (a,b) \in R \lor (b,a) \in R}.}$
+> ${\forall a,b \in \DD \ix{(a \neq b) \nc (a,b) \in R \lor (b,a) \in R}.}$
 
 Or, equivalently,
 
@@ -1029,7 +1013,7 @@ _incomparable_.
 
 __incomparability relation.__ A relation ${R}$ on a domain of discourse ${\DD}$ is _incomparable_ if, and only if:
 
-> ${\forall a,b \in \DD \Seq{(a,b) \notin R \land (b,a) \notin R}}$
+> ${\forall a,b \in \DD \ix{(a,b) \notin R \land (b,a) \notin R}}$
 
 Or, equivalently,
 
@@ -1046,7 +1030,7 @@ A _right Euclidean relation_ is defined as follows:
 __right euclidean relation.__ A relation ${R}$ on a domain of discourse ${\DD}$
 is _right Euclidean_ if, and only if,
 
-> ${\forall a,b,c \in \DD \Seq{ (a,b), (a,c) \in R \implies (b,c) \in R }}$
+> ${\forall a,b,c \in \DD \ix{ (a,b), (a,c) \in R \nc (b,c) \in R }}$
 
 Or, equivalently,
 
@@ -1063,7 +1047,7 @@ A _left Euclidean relation_ is defined as follows:
 __left euclidean relation.__ A relation ${R}$ on a domain of discourse ${\DD}$
 is _left Euclidean_ if, and only if,
 
-> ${\forall a,b,c \in \DD \Seq{ (b,a), (c,a) \in R \implies (b,c) \in R }}$
+> ${\forall a,b,c \in \DD \ix{ (b,a), (c,a) \in R \nc (b,c) \in R }}$
 
 Or, equivalently,
 
@@ -1143,9 +1127,37 @@ is an _equivalence relation_ if, and only if:
 
 1. ${a \equiv a}$ [reflexivity](#reflexive-relations),
 2. ${a \equiv b}$ implies ${b \equiv a}$ [symmetry](#symmetric-relations), _and_
-3. ${a \equiv b}$ and ${\equiv c}$ implies ${a \equiv c}$ [transitivity](#transitive-relations).
+3. ${a \equiv b}$ and ${b \equiv c}$ implies ${a \equiv c}$ [transitivity](#transitive-relations).
 
 </dfn>
+
+Equivalence relations are a formalization of "sameness." Former U.S. presidents are all different people, but they're all equivalent (i.e., "the same") in terms of _being former U.S. presidents_. The equivalence relation between all of them is _former U.S. president_. Apples and oranges are the same in terms of being fruits.
+
+#### Equivalence Class 
+
+If a object ${x}$ is related to an object ${y}$ by an equivalence relation, we
+say that ${x}$ and ${y}$ are _equivalent_, and write ${x \equiv y.}$ We say this
+earlier in our discussion of [equivalence relations](#equivalence-relations).
+Often, it's helpful to gather all the objects equivalent to some object ${x}$
+into a single set. We call this set the _equivalence class_ of ${x.}$
+
+<dfn>
+
+__equivalence class.__ Let ${\equiv}$ be an equivalence relation on the domain
+of discourse ${\DD,}$ and ${a \in \DD.}$ Then the _equivalence class_ of ${a}$
+is defined as the set:
+
+$$
+	\class{a}_{\equiv}~~:=~~\set{b \in \DD : b \equiv a}
+$$
+
+</dfn>
+
+Given an element ${c \in \class{a}_{\equiv},}$ ${c}$ is called a
+_representative_ of the equivalence class. Note that some authors denote the
+equivalence class with the notation ${\ix{a}.}$ Because we use this notation in
+another area of mathematics — combinatorics — we instead use the notation
+${\class{a}_{\equiv}.}$
 
 ### Partial Orders
 
@@ -1158,21 +1170,21 @@ comparisons between objects that aren't necessarily numbers. For example, if we
 define the tuple
 
 $$
-	(\tt{George I}, \tt{George II}, \tt{George III})
+	(\text{George I}, \text{George II}, \text{George III})
 $$
 
 as the partial order of British kings by reign, then we may denote the relation
 as:
 
 $$
-	\tt{George I} \prec \tt{George II} \prec \tt{George III}.
+	\text{George I} \prec \text{George II} \prec \text{George III}.
 $$
 
 Such a relation would be read as, "George I immediately precedes George II, and
 George II immediately precess George III." We could, of course, write:
 
 $$
-	\tt{George I} \lt \tt{George II} \lt \tt{George III}
+	\text{George I} \lt \text{George II} \lt \text{George III}
 $$
 
 but it looks a bit awkward, given that the ${\lt}$ is commonly associated with
@@ -1275,22 +1287,22 @@ it is extremely common in mathematics to define objects as tuples:
 <Grid cols={3}>
 
 $$
-	(\tt{set}, \tt{relation})
+	(\text{set}, \text{relation})
 $$
 $$
-	(\tt{set}, \tt{function})
+	(\text{set}, \text{function})
 $$
 $$
-	(\tt{set}, \tt{operation})
+	(\text{set}, \text{operation})
 $$
 $$
-	(\tt{set}, \tt{functions})
+	(\text{set}, \text{functions})
 $$
 $$
-	(\tt{set}, \tt{set}, \tt{functions})
+	(\text{set}, \text{set}, \text{functions})
 $$
 $$
-	(\tt{set}, \tt{operations})
+	(\text{set}, \text{operations})
 $$
 
 </Grid>
@@ -1322,7 +1334,7 @@ $$
 	\dom{\preceq}
 $$
 
-When it comes to notation in mathematics, however, ${\tt{tradition} \preceq \tt{reason}.}$
+When it comes to notation in mathematics, however, ${\text{tradition} \preceq \text{reason}.}$
 
 ### Minimal and Maximal Elements
 
@@ -1341,7 +1353,7 @@ __maximal element.__ Let ${(A, \preceq)}$ be a poset. Then an element ${b \in A}
 If the above condition is satisfied, we write:
 
 $$
-	\tt{maximal}{(A)} = b
+	\text{maximal}{(A)} = b
 $$
 
 </dfn>
@@ -1357,7 +1369,7 @@ __minimal element.__ Let ${(A,\preceq)}$ be a poset. Then an element ${b \in A}$
 If the above condition is satisfied, we write:
 
 $$
-	\tt{minimal}{(A)} = b
+	\text{minimal}{(A)} = b
 $$
 
 </dfn>
@@ -1431,13 +1443,13 @@ infimum:
 
 __infimum.__ Let ${(P,\preceq),}$ be a poset and ${S \subseteq P.}$ If:
 
-1. there exists an element ${\mm{i} \in S^{\ell},}$ _and_
-2. for all ${s \in S^{\ell},}$ ${\mm{i} \preceq s,}$
+1. there exists an element ${\texttt{i} \in S^{\ell},}$ _and_
+2. for all ${s \in S^{\ell},}$ ${\texttt{i} \preceq s,}$
 
-then we say the element ${\mm{i} \in S}$ is the _infimum_ of ${S.}$ To denote the infimum ${\mm{i},}$ we may use any of the following notations:
+then we say the element ${\texttt{i} \in S}$ is the _infimum_ of ${S.}$ To denote the infimum ${\texttt{i},}$ we may use any of the following notations:
 
 $$
-	\inf(S) = \bigwedge\limits_{\mm{i} \in S} \mm{i} = \mm{i}
+	\inf(S) = \bigwedge\limits_{\texttt{i} \in S} \texttt{i} = \texttt{i}
 $$
 
 </dfn>
@@ -1446,7 +1458,7 @@ The symbol ${\bigwedge}$ is often called "big wedge" after its LaTeX command,
 `\bigwedge`. The benefit to using this notation is that it falls in line with
 the using the notation ${x \land y,}$ which returns the infimum of ${(x,y).}$
 Those familiar with symbolic logic might recognize this as the _and operator_.
-Indeed, when ${x,y \in \set{0 \def \string{false},1 \def \string{true}},}$ it
+Indeed, when ${x,y \in \set{0 := \string{false},1 := \string{true}},}$ it
 becomes apparent why ${\land}$ is an attractive notation. Given ${0 \land 1,}$
 we get ${0,}$ or ${\string{false}.}$
 
@@ -1457,14 +1469,13 @@ supremum.
 
 __supremum.__ Let ${(P,\preceq)}$ be a poset and ${S \subseteq P.}$ If:
 
-1. there exists an element ${\mm{b} \in S^{u}}$ _and_
-2. for all ${s \in S^{u},}$ ${s \preceq \mm{b},}$
+1. there exists an element ${\texttt{b} \in S^{u}}$ _and_
+2. for all ${s \in S^{u},}$ ${s \preceq \texttt{b},}$
 
-then we say the element ${\mm{b} \in S}$ is the _supremum_ of ${S.}$ To denote
-the supremum ${\mm{b},}$ we may use any of the following notations:
+then we say the element ${\texttt{b} \in S}$ is the _supremum_ of ${S.}$ To denote the supremum ${\texttt{b},}$ we may use any of the following notations:
 
 $$
-	\sup(S) = \bigvee\limits_{\mm{b} \in S} \mm{b} = \mm{b}
+	\sup(S) = \bigvee\limits_{\texttt{b} \in S} \texttt{b} = \texttt{b}
 $$
 
 </dfn>
@@ -1530,7 +1541,7 @@ A _left-unique relation_ is defined as follows:
 __left-unique relation.__ Let ${X}$ and ${Y}$ be sets, and ${R}$ a relation from
 ${X}$ to ${Y.}$ Then ${R}$ is _left-unique_ if, and only if,
 
-> ${(\forall x,z \in X \land \forall y \in Y)\Seq{ ((x,y) \in R \land (z,y) \in R) \implies x = z }.}$
+> ${(\forall x,z \in X \land \forall y \in Y)\ix{ ((x,y) \in R \land (z,y) \in R) \nc x = z }.}$
 
 That is,
 
@@ -1548,7 +1559,7 @@ follows:
 __right-unique relation.__ Let ${X}$ and ${Y}$ be sets, and ${R}$ a relation
 from ${X}$ to ${Y.}$ Then ${R}$ is _right-unique_ if, and only if,
 
-> ${(\forall x,z \in X \land \forall y \in Y)\Seq{ ((x,y) \in R \land (z,y) \in R) \implies y = z }.}$
+> ${(\forall x,z \in X \land \forall y \in Y)\ix{ ((x,y) \in R \land (z,y) \in R) \nc y = z }.}$
 
 That is,
 
@@ -1678,784 +1689,3 @@ But the following are not:
   id={"nf3"}
  />
 </div>
-
-### Functions
-
-In these materials, functions are a particular type of map.  A function ${f: X
-\to Y}$ is a relation from ${X}$ to ${Y,}$ where _every_ element of ${X}$ is
-paired with _exactly one_ element of ${Y.}$ We say that ${X}$ is the _domain_ of
-${f,}$ and ${Y}$ is the _range_ of ${f.}$ Here's the working definition we'll
-use:
-
-<dfn>
-
-__function.__ Let ${X}$ and ${Y}$ be sets, and ${\Gamma \subseteq X \times Y}$ a
-relation. A function ${f}$ is a triple ${(X,Y,\Gamma),}$ where ${\Gamma}$ is
-[right-unique](#right-unique-relations). That is, for each ${x \in X,}$ there is
-a unique element ${y \in Y}$ with ${(x,y) \in \Gamma.}$ We call ${X}$ the
-_domain_ of ${f,}$ denoted ${\dom{f} = X;}$ ${Y}$ the range of ${f,}$ denoted
-${\ran{f} = Y;}$ and ${\Gamma}$ the _graph_ of ${f,}$ denoted ${\Gamma(f).}$ We
-may also denote a function ${f}$ with the expression:
-
-$$
-	f: X \to Y
-$$
-
-which we read as "${f}$ is a function from ${X}$ to ${Y.}$" Alternatively, we
-may also write:
-
-$$
-	f(x) = y
-$$
-
-</dfn>
-
-A few more bits of terminology associated with functions: The element ${y \in
-Y}$ is called the _value_ that the ${f}$ _assumes_ at the _argument_ ${x.}$
-Given an argument ${x,}$ we say that ${f}$ _sends_ or _maps_ or _transforms_
-${x}$ onto ${y.}$
-
-While some authors treat _image_ and _range_ synonymously, we distinguish the
-two terms. From the definition of a function, it's clear that we can have
-function ${f : X \to Y}$ where ${X = Y.}$ In this case, we say that ${f}$ maps
-${X}$ _onto_ ${Y,}$ and we call ${X}$ the domain and ${Y}$ the range, using the
-usual syntax:
-
-$$
-	\dom{f} = X \\
-	\ran{f} = Y
-$$
-
-If, however, it turns out that ${Y \subset X,}$ we say that ${Y}$ is the _image_
-of ${f,}$ and use the following syntax:
-
-$$
-	\dom{f} = X \\
-	\image{(f)} = Y
-$$
-
-We use this different notation and wording to make it clear that the codomain
-${Y}$ is a subset of the domain ${X}$ (in later sections, we'll see that for
-some situations, a function's range is often more important than the function
-itself). If it turns out that ${X \subset Y,}$ we say that ${f}$ is an
-_embedding_ of ${X}$ into ${Y.}$ For this case, we simply use the notation
-${\dom{f} = X}$ and ${\ran{f} = Y.}$
-
-#### Restrictions and Extensions
-
-In the case where ${f: X \to X,}$ we call ${f}$ the _identity map_. The identity
-map introduces us to a special kind of relation called the _restriction_.
-
-<dfn>
-
-__restriction.__ Let ${f: X \to Y}$ be a function from ${X}$ to ${Y,}$ and the
-set ${A}$ be a subset of ${X}$ (i.e., ${A \subset X}$). Where ${x \in X}$ and ${y \in Y,}$ the function:
-
-$$
-	f(x) = y ~~~(\tt{for}~~ x \in A)
-$$
-
-is called the _restriction of ${f}$ to ${A}$_. We may denote such a function
-with:
-
-$$
-	\eval{f}{A}: A \to X
-$$
-
-</dfn>
-
-Informally, restrictions are simply a more convenient way of defining functions
-for a common scenario. Suppose we have the function:
-
-$$
-	f: B \to C
-$$
-
-We want to define a function ${g: A \to C,}$ but ${A \subset C.}$ That is, we
-want to communicat that there's a relationship between the members of ${A}$ and
-the members of ${C,}$ that doesn't include the members of ${B.}$ The identity map allows us to say that:
-
-$$
-	g(x) = f(x)
-$$
-
-where ${x \in A.}$ The function ${g(x)}$ is called the _restriction_ of ${f}$ to
-${X,}$ and the function ${f(x)}$ is called the _extension_ of ${g}$ to ${B.}$
-
-#### Partial Orders of Functions 
-
-Now that we've defined the concepts of restriction and extension, one
-interesting consequence is examining them as they relate to partial orders.
-Suppose ${X,}$ ${Y,}$ and ${F}$ are sets, where ${F}$ is the set of all
-functions whose domain is included in ${F}$ and whose range is included in
-${Y.}$ Now suppose we have the relation:
-
-$$
-	f \rel g \iff \dom{f} \subset \dom{g} \land \forall x \in \dom{f}\Seq{f(x) = g(x)}
-$$
-
-That is, ${f}$ is a restriction of ${g}$ (or, equivalently, ${g}$ is an extension
-of ${f}$). Given that all the functions in ${F}$ are just subsets of the
-Cartesian product ${X \times Y,}$ it follows that the relation:
-
-$$
-	f \rel g \equiv f \subset g
-$$
-
-
-#### Surjections
-
-A function ${f: X \to Y}$ is called _surjective_ if every element of ${Y}$
-is mapped to _at least once_.
-
-<dfn>
-
-__surjection.__ Let ${f}$ be a map from the set ${X}$ to the set ${Y.}$ If, for
-each ${y}$ in ${Y,}$ there exists an ${x \in X,}$ such that:
-
-$$
-	f(x) = y
-$$
-
-
-then ${f}$ is a _surjection_, and we write:
-
-$$
-	f: X \surj Y.
-$$
-
-</dfn>
-
-In other words, every element of ${Y}$ gets at least one of ${X.}$ They
-can get many of ${x,}$ but they must at least have one. For example, this
-is a surjective function:
-
-<div className="grid2">
- <Bipartite
-  data={[
-   { link: ["a", "1"] },
-   { link: ["b", "2"] },
-   { link: ["c", "3"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"s1"}
- />
- <Bipartite
-  data={[
-   { link: ["a", "1"] },
-   { link: ["b", "2"] },
-   { link: ["c", "3"] },
-   { link: ["d", "3"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"s2"}
- />
-</div>
-
-But these are not:
-
-<div className="grid2">
- <Bipartite
-  data={[
-   { link: ["a", "1"] },
-   { link: ["2"] },
-   { link: ["b", "3"] },
-   { link: ["c", "3"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"ns1"}
- />
- <Bipartite
-  data={[
-   { link: ["1"] },
-   { link: ["2"] },
-   { link: ["a", "3"] },
-   { link: ["b", "3"] },
-   { link: ["c", "3"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"ns2"}
- />
-</div>
-
-#### Injections
-
-A function ${f: X \to Y}$ is called _injective_ if every element of ${Y}$
-is mapped to _at most once_.
-
-<dfn>
-
-__injection.__ Let ${f}$ be a map from the set ${X}$ to the set ${Y,}$ and ${x
-\in X.}$ If, for each ${x \neq x',}$ 
-
-$$
-	f(x) \neq (x'),
-$$
-
-
-then ${f}$ is an _injection_, and we write:
-
-$$
-	f: X \inj Y.
-$$
-
-</dfn>
-
-That is, every element of ${Y}$ gets _at most_ one of ${X.}$ They
-can get none of ${X,}$ but if they do get something from ${X,}$ they can
-only get one. For example, these are injective functions:
-
-<div className="grid2">
- <Bipartite
-  data={[
-   { link: ["a", "1"] },
-   { link: ["b", "2"] },
-   { link: ["c", "3"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"b1"}
- />
- <Bipartite
-  data={[
-   { link: ["a", "1"] },
-   { link: ["b", "2"] },
-   { link: ["c", "3"] },
-   { link: ["4"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"b2"}
- />
-</div>
-
-But these are not:
-
-<div className="grid2">
- <Bipartite
-  data={[
-   { link: ["a", "1"] },
-   { link: ["b", "2"] },
-   { link: ["c", "3"] },
-   { link: ["d", "3"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"nb1"}
- />
- <Bipartite
-  data={[
-   { link: ["1"] },
-   { link: ["2"] },
-   { link: ["a", "3"] },
-   { link: ["b", "3"] },
-   { link: ["c", "3"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"nb2"}
- />
-</div>
-
-Another way of thinking about injections: They're functions that map distinct
-elements of the domain to distinct elements of the codomain.
-
-#### Bijections
-
-A function ${f: X \to Y}$ is called _bijective_ iff it is both _surjective_
-and _injective_.
-
-<dfn>
-
-__bijection.__ Let ${f}$ be a map from the set ${X}$ to the set ${Y.}$ If, for
-each ${y \in Y,}$ there exists a unique ${x \in X,}$ such that:
-
-$$
-	f(x) = y,
-$$
-
-
-then ${f}$ is an _bijection_, and we write:
-
-$$
-	f: X \bij Y.
-$$
-
-</dfn>
-
-
-For example, these functions only take one appearance:
-
-<Bipartite
- data={[
-  { link: ["a", "1"] },
-  { link: ["b", "2"] },
-  { link: ["c", "3"] },
-  { link: ["d", "4"] },
- ]}
- scale={50}
- height={170}
- marginTop={0}
- marginBottom={0}
- id={"bij1"}
-/>
-
-That is, every element of ${X}$ maps to one, and only one, element of
-${Y,}$ and every element of ${Y}$ is mapped to once, and only once. None of
-these functions are bijective:
-
-<div className="grid2">
- <Bipartite
-  data={[
-   { link: ["a", "1"] },
-   { link: ["b", "2"] },
-   { link: ["c", "3"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"nbij1"}
- />
- <Bipartite
-  data={[
-   { link: ["a", "1"] },
-   { link: ["b", "2"] },
-   { link: ["c", "3"] },
-   { link: ["4"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"nbij2"}
- />
-</div>
-<div className="grid2">
- <Bipartite
-  data={[
-   { link: ["a", { id: "5", hide: true }] },
-   { link: ["b", "2"] },
-   { link: ["c", "3"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"nbij3"}
- />
- <Bipartite
-  data={[
-   { link: ["a", "1"] },
-   { link: ["b", "2"] },
-   { link: ["b", "3"] },
-   { link: ["c", "4"] },
-  ]}
-  scale={100}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"nbij3"}
- />
-</div>
-
-From top-left to bottom-right: The first is surjective but not injective,
-the second is injective but not surjective, and the last two are not
-functions.
-
-#### The Surjection Rule
-
-Let ${X}$ and ${Y}$ be sets. If ${f}$ is a surjective function mapping elements
-from ${X}$ to ${Y,}$ then:
-
-$$
- \card(X) \gte \card(Y)
-$$
-
-I.e., either:
-
-1. ${X}$ has more members than ${Y,}$ or
-2. ${X}$ and ${Y}$ have the same number of members.
-
-#### The Injection Rule
-
-Let ${X}$ and ${Y}$ be sets. If ${f}$ is an injective function mapping elements
-from ${X}$ to ${Y,}$ then:
-
-$$
- \card(X) \lte \card(Y)
-$$
-
-I.e., either:
-
-1. ${X}$ has less members than ${Y,}$ or
-2. ${X}$ and ${Y}$ have the same number of members.
-
-#### The Bijection Rule
-
-Let ${X}$ and ${Y}$ be sets. If ${f}$ is a bijective function mapping elements
-from ${X}$ to ${Y,}$ then:
-
-$$
- \card(X) = \card(Y)
-$$
-
-I.e., ${X}$ and ${Y}$ have the same number of members.
-
-## Families 
-
-Now that we've seen functions, we introduce another special relation called the
-_family_.
-
-<dfn>
-
-__family.__ Let ${I}$ and ${X}$ be sets, and ${f}$ a function defined as
-follows:
-
-1. ${f: I \to X.}$
-2. Where ${i \in I}$ and ${x \in X,}$ ${f(x) = (i,x) = x_i.}$
-
-We call ${I}$ the _index set_, ${i \in I}$ an _index_, ${X}$ the _indexed set_,
-${x \in X}$ a _term_, and the function ${f}$  a _family_.
-
-</dfn>
-
-A particularly special type of family is the _sequence_. But before we examine
-sequences, we need a special set called the _natural numbers_.
-
-## Natural Numbers
-
-There are many ways to define the natural numbers, but for this chapter, we'll
-use the _Von Neumann definition_.
-
-### The Axiom of Infinity
-
-Before we see that definition, we define a special set operation called the
-_successor_.
-
-<dfn>
-
-__successor.__ Let ${S}$ be a set. Then
-
-$$
-	S^+ = S \cup \set{S}
-$$
-
-is the set obtained by adjoining ${S}$ to the elements of ${S,}$ called the _successor_ of ${S.}$
-
-</dfn>
-
-If we represent the empty set with the symbol ${0}$ (i.e., ${0 \def \nil,}$)
-then we have:
-
-$$
-	\small
-	\eqs{
-		0 &= \nil \\
-		0^+ &= \set{\nil} \\
-		(0^+)^+ &= \set{\nil, \set{\nil}} \\
-		((0^+)^+)^+ &= \set{\nil, \set{\nil}, \set{\nil, \set{\nil}}} \\
-		\vdots
-	}
-$$
-
-As we can tell, the pattern continues. It's a bit cumbersome to keep writing
-those zeroes. Since each set is different, we can them unique symbols: 
-
-$$
-	\small
-	\eqs{
-		0 &= \nil \\
-		1 &= \set{\nil} \\
-		2 &= \set{\nil, \set{\nil}} \\
-		3 &= \set{\nil, \set{\nil}, \set{\nil, \set{\nil}}} \\
-		&\vdots
-	}
-$$
-
-If we continued writing out the sets, and gatthered them all in one set, we'd
-eventually have the set:
-
-$$
-	\set{0,1,2,3,4,5,7,9}.
-$$
-
-Which, as we know, is the set of digits. What we want, however, is the set of all the numbers, call it ${\omega:}$
-
-$$
-	\omega = \set{0,1,2,3,\ldots}
-$$
-
-However, if we want to have this set, we need an axiom:
-
-<dfn>
-
-__axiom of infinity.__ There exists a set containing ${0}$ and
-containing the successor of each of its elements.
-
-</dfn>
-
-We need this axiom because nothing we've covered so far allows us to say that
-we can have a set like ${\omega.}$ With this axiom established, we have the
-following definition:
-
-<dfn>
-
-__natural numbers.__ Let ${0 = \set{~~},}$ the empty set, and ${S}$ be the
-successor function ${S(a) = a \cup \set{a}}$ for every set ${a.}$ By the axiom
-of infinity, there exist sets which contain ${0}$ and are closed under ${f.}$ As
-such, there exists a [bijection](#bijections) from ${n}$ to ${S,}$ of the form:
-
-$$
-	\small
-	\eqs{
-		0 &= \set{~~} \\
-		1 &= 0 \cup \set{0} = \set{0} = \set{\set{~~}} \\
-		2 &= 1 \cup \set{1} = \set{0,1} = \set{\set{~~}, \set{\set{~~}}} \\
-		3 &= 2 \cup \set{2} = \set{0,1,2} = \set{\set{~~}, \set{\set{~~}}, \set{\set{~~}, \set{\set{~~}}}} \\
-		&\vdots \\
-		n &= n-1 \cup \set{n-1} = \set{0,1,\ldots,n-1} = \set{\set{~~}, \set{{~~}}, \ldots, \set{{~~}, \set{{~~}}, \ldots}} \ldots
-	}
-$$
-
-We call this bijection the set of natural numbers, denoted ${\NN.}$ Where ${n
-\leq m \iff n \subset m,}$ then the [poset](#posets) ${(\NN, \leq)}$ is a
-[well-ordering](#well-ordered-relations). Given ${n \in \NN,}$ we denote the
-poset ${(n \in \NN, \leq)}$ as:
-
-$$
-	\Seq{n} = (n \in \NN, \leq) = 0 \leq 1 \leq 2 \leq \ldots \leq n-1 = (0,1,2,\ldots,n-1)
-$$
-
-</dfn>
-
-### Peano Axioms
-
-To nail the coffin completely, we take a closer look at what exactly the set of
-natural numbers is. First, recall the definition of the successor set:
-
-$$
-	\small
-	\omega = \lset{
-	\eqs{
-		0 &= \set{~~}, \\
-		1 &= 0 \cup \set{0} = \set{0} = \set{\set{~~}}, \\
-		2 &= 1 \cup \set{1} = \set{0,1} = \set{\set{~~}, \set{\set{~~}}}, \\
-		3 &= 2 \cup \set{2} = \set{0,1,2} = \set{\set{~~}, \set{\set{~~}}, \set{\set{~~}, \set{\set{~~}}}}, \\
-		&\vdots \\
-		n &= n-1 \cup \set{n-1} = \set{0,1,\ldots,n-1} = \set{\set{~~}, \set{{~~}}, \ldots, \set{{~~}, \set{{~~}}, \ldots}} \ldots
-	}}.
-$$
-
-From this definition, we get the first two Peano axioms:
-
-<dfn>
-
-__peano axiom i.__ ${0 \in \omega.}$
-
-__peano axiom ii.__ ${n \in \omega \implies n^+ \in \omega}$
-
-</dfn>
-
-Next, we know that if a set ${S}$ is a subset of ${\omega}$ and ${S}$ is a
-successor set, then ${S = \omega.}$ This gives us the third Peano axiom:
-
-<dfn>
-
-__peano axiom iii.__ If ${S \subset \omega,}$ ${0 \in S,}$ and ${n^+ \in S}$
-whenever ${n \in S,}$ then ${S = \omega.}$
-
-</dfn>
-
-The third axiom follows simply from the definition of the successor set. As it
-turns out, the third Peano axiom is also known as the _Principle of Mathematical
-Induction_ — that given the set ${S}$ we just described, there is always a
-minimal element. 
-
-Next, we know that since ${0}$ represents the empty set, it cannot be the case
-that any successor is ${0,}$ since the successor, by definition, is a union of
-an element and a set — i.e., not empty, and therefore, not zero. This yields the fourth axiom:
-
-<dfn>
-
-__peano axiom iv.__ For all ${n \in \omega,}$ ${n^+ \neq 0.}$
-
-</dfn>
-
-Now, suppose we defined the set ${S}$ as follows:
-
-> ${n \in S}$ if, and only if:
->
-> ${~~~}$ (1) ${n \in \omega~~~}$ _and_
->
-> ${~~~}$ (2) ${\forall x \in n \Seq{ n \not\subset x}}$
-
-That is, ${S}$ is the set of all ${n}$ that are not subsets of themselves. Since
-${0}$ is not a subset of any of its elements (it's the empty set), it follows
-that ${0 \in S.}$ What if, say, ${n \in S?}$ Well, from the definition above, we
-have ${n \in \omega,}$ which means that ${n \subset n,}$ and ${n \notin n.}$ It
-follows, then, that ${n^+}$ (the successor of ${n}$) is not a subset of ${n}$ —
-${n^+ \subset n.}$ But ${n^+}$ must be in there somewhere, otherwise ${n \notin
-\omega.}$ The only other set ${n^+}$ can be a subset of is ${x.}$ But if ${n^+
-\subset x,}$ then ${n \subset x,}$ and because ${n \subset S,}$ it must be the
-case that ${x \notin n.}$ Thus, it cannot be the case that ${n^+ \not\subset
-n,}$ and ${n^+ \not\subset x \in n.}$ Thus, we have the following lemma:
-
-<dfn>
-
-__peano lemma i.__ For all ${n \in S,}$ ${n \not\subset n.}$
-
-</dfn>
-
-Next, suppose we defined the set ${S}$ as follows:
-
-> ${n \in S}$ if, and only if,
->
-> ${~~~}$ (1) ${n \in \omega}$ _and_
->
-> ${~~~}$ (2) ${\forall x \in n \Seq{x \subset n}}$
-
-It's vacuously true that ${0 \in S.}$ Now let's consider ${n \in S.}$ If ${x \in
-n^+,}$ then we have two cases: Either (a) ${x \in n,}$ or (b) ${x = n.}$ For
-case (a), since ${n \in S,}$ it follows that ${x \in n}$ from our definition.
-And since ${n \in S,}$ it follows that ${x \subset n^+.}$ Case (b) is trivial —
-if ${x=n,}$ we have ${x=n \in S,}$ and since ${x=n \in S,}$ ${x=n \subset n^+.}$
-This yields the following lemma:
-
-<dfn>
-
-__peano lemma ii.__ For all ${n \in S,}$ ${n \subset n^+.}$
-
-</dfn>
-
-Now suppose that ${n,m \in S}$ and ${n^+ = m^+}$ (the successor of ${n}$ is the
-same set as the successor of ${m}$). This means there are two cases:
-
-1. Since ${n \in n^+,}$ it follows that ${n \in m^+,}$ and either ${n \in m}$ or ${n = m.}$
-2. Since ${m \in m^+,}$ it follows that ${m \in n^+,}$ and either ${m \in n,}$ or ${m = n.}$
-
-Suppose ${n \neq m.}$ Then it must be the case that ${n \in m}$ and ${m \in n.}$
-From the second lemma, it follows that ${n \in n.}$ But this would then mean
-that ${n \subset n,}$ which contradicts the first lemma. This yields the fifth
-Peano axiom:
-
-<dfn>
-
-__peano axiom v.__ If ${n,m \in \omega}$ and ${n^+ = m^+,}$ then ${n = m.}$
-
-</dfn>
-
-The Peano axioms define the set ${S}$ as the natural numbers ${\NN.}$ Given the
-set ${\NN,}$ we can construct the integers ${\ZZ,}$ the rationals ${\QQ,}$ the
-reals ${\RR,}$ and the complex numbers ${\CC.}$
-
-## Sequences
-
-Now that we've defined the set of natural numbers, we can introduce ourselves to
-a foundational object in mathematics — the sequence. In these materials, we
-define a sequence is a [family](#families), where the index set is the [natural
-poset](#natural-numbers), and the indexed set is some set ${S.}$
-
-<dfn>
-
-__sequence.__ Let ${A_n}$ be a family ${A_n: \Seq{n} \to S.}$ That is, a
-function that maps members of, or all of, the natural numbers to the elements of a set ${S.}$ Then:
-
-$$
-	A_n = \seq{a_0, a_1, a_2, a_3, \ldots, a_{n-1}}
-$$
-
-is an ordered collection of elements — not necessarily distinct — called a _sequence_. Each element of ${A_n}$ is called a _term_ or _component_ of the sequence, and each term may be referenced as ${a_i,}$ where ${i = 0,1,2,3,\ldots,n-1}$ is called the term's _index_.
-
-</dfn>
-
-If we think a little more carefully about that definition, we'd find that
-sequences are actually mappings. The term's index is a natural number, and each
-term has an index. That is, a sequence is a mapping from the natural numbers to
-some set of objects.
-
-For example, our sequence:
-
-$$
-	\seq{\tt{Alice}, \tt{Boram}, \tt{Callum}}
-$$
-
-can also be expressed as:
-
-$$
-	\set{(0, \tt{Alice}), (1, \tt{Boram}), (2, \tt{Callum})}
-$$
-
-or, visually:
-
-<Bipartite
-  data={[
-   { link: ["0", "A"] },
-   { link: ["1", "B"] },
-   { link: ["2", "C"] },
-  ]}
-  scale={50}
-  height={170}
-  marginTop={0}
-  marginBottom={0}
-  id={"seq1"}
-/>
-
-This yields an alternative definition of a sequence:
-
-<dfn>
-
-__sequence.__ A sequence ${a_n}$ is a mapping from the natural numbers to a
-given set ${S.}$
-
-$$
-	a_n : \NN \to S
-$$
-
-</dfn>
-
-## Equivalence Class 
-
-If a object ${x}$ is related to an object ${y}$ by an equivalence relation, we
-say that ${x}$ and ${y}$ are _equivalent_, and write ${x \equiv y.}$ We say this
-earlier in our discussion of [equivalence relations](#equivalence-relations).
-Often, it's helpful to gather all the objects equivalent to some object ${x}$
-into a single set. We call this set the _equivalence class_ of ${x.}$
-
-<dfn>
-
-__equivalence class.__ Let ${\equiv}$ be an equivalence relation on the domain
-of discourse ${\DD,}$ and ${a \in \DD.}$ Then the _equivalence class_ of ${a}$
-is defined as the set:
-
-$$
-	\class{a}_{\equiv}~~\def~~\set{b \in \DD : b \equiv a}
-$$
-
-</dfn>
-
-Given an element ${c \in \class{a}_{\equiv},}$ ${c}$ is called a
-_representative_ of the equivalence class. Note that some authors denote the
-equivalence class with the notation ${\Seq{a}.}$ Because we use this notation in
-another area of mathematics — combinatorics — we instead use the notation
-${\class{a}_{\equiv}.}$

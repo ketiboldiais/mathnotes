@@ -1,10 +1,5 @@
 import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
 
-<head>
-	<title>Dynamic Arrays</title>
-	<description>Notes on dynamic arrays.</description>
-</head>
-
 # Dynamic Arrays
 
 <div className="outline">
@@ -120,7 +115,7 @@ to take for constant time access.
 ## Indirection
 
 One way to get around the fixed-size limitation of static arrays is to use
-a **dynamically-allocated array**, or **dynamic arrays** for short.
+a __dynamically-allocated array__, or __dynamic arrays__ for short.
 Languages like C and C++ handle this well. Below is a comparison of
 declaring the two different arrays in C++ (the right a static array, the
 left dynamic):
@@ -139,7 +134,7 @@ int* arr = new int[size];
 
 The idea behind the dynamic array: Rather than directly storing a reference
 to the array (as is the case with static arrays), we instead store a
-_pointer_ to the array. This technique is a form of **indirection**. For
+_pointer_ to the array. This technique is a form of __indirection__. For
 example, say we started with the following dynamic array:
 
 <Sequence
@@ -204,5 +199,5 @@ and change our pointer's pointee:
 ## Vectors
 
 Dynamic arrays are often used to implement the abstract data type
-**vector**. Below, we examine some implementations of the vector type. For
+__vector__. Below, we examine some implementations of the vector type. For
 the illustrations, we'll write a `Vector` class:

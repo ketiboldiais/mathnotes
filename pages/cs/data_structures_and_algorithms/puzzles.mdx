@@ -1,0 +1,445 @@
+import { Arr, List } from "../../../components/hago";
+
+<Head>
+	<title>Puzzles</title>
+	<meta name={`description`} content={`Various algorithms and puzzles.`}/>
+</Head>
+
+# Puzzles
+Below are various puzzles and games.
+
+<div className={`outline`}>
+
+1. [Number Puzzles](#number-puzzles)
+	1. [Primality Test](#primality-test)
+2. [Array Puzzles](#array-puzzles)
+	1. [Rain Trapping](#rain-trapping)
+3. [String Puzzles](#string-puzzles)
+	1. [Decompress](#decompress)
+	2. [Compress](#compress)
+	3. [Anagrams](#anagrams)
+	4. [Most Frequent Character](#most-frequent-character)
+	5. [Roman Numeral Conversion](#roman-numeral-conversion)
+
+
+</div>
+
+## Number Puzzles
+### Primality Test
+Given a positive integer ${n,}$ write an algorithm that returns true if ${n}$ is prime, and false otherwise.
+
+<Minutiae>
+
+A naive solution is to iterate up to ${n.}$ This would get the job done, but it runs on ${\bigTheta{n}}$ time. We can bring that down to ${\bigTheta{\sqrt{n}}}$ time by relying on the fact that the largest divisor of an integer ${n}$ (say some integer ${d}$), will always be ${d^2.}$ In other words, we only need to check for divisors up to ${\sqrt{n}.}$
+
+<Algo>
+
+__~primality-test~__
+
+- __Argument__: An integer ${n.}$
+- __Image__: ${1}$ if ${n \in \primes,}$ ${0}$ otherwise.
+
+1. __if__ ${n \lt 2}$ __return__ ${0}$
+2. __else__
+	1. __init__ ${\let{i}{2}}$
+	2. __while__ ${i^2 \le n}$ __do__
+		1. __if__ ${n \rem i = 0}$ __return__ ${0}$
+		2. __else__ ${\df{increment } i}$
+		3. __goto__ ${\line{3}}$
+3. __return__ ${1}$
+
+</Algo>
+
+Note that we use the square of the divisor rather than ${\sqrt{n}.}$ Square roots are fairly nasty objects — both in real analysis and on computers — causing problems on the comparison operators because of floating point arithmetic.
+
+</Minutiae>
+
+## Array Puzzles
+
+
+
+### Rain Trapping
+Given ${n}$ non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+
+<Minutiae>
+
+```javascript
+function f(height:number[]) {
+	const L = height.length;
+	let left = 0;
+	let right = L-1;
+	let leftmax = height[left];
+	let rightmax = height[right];
+	let result = 0;
+	while (left < right) {
+		if (leftmax < rightmax) {
+			left++;
+			leftmax = leftmax > height[left] ? leftmax : height[left];
+			result += leftmax-height[left]
+		} else {
+			right--;
+			rightmax = rightmax > height[right] ? rightmax : height[right];
+			result += rightmax - height[right];
+		}
+	}
+	return result;
+} 
+```
+</Minutiae>
+
+## String Puzzles
+For the string puzzles, unless otherwise stated, characters are mapped to
+ASCII.
+
+### Decompress
+Given a string of the form ${nS,}$ where ${n}$ is an integer and ${S}$ is a string, write an algorithm that returns the decompressed form of the string — the string ${S}$ repeated ${n}$ times. For example, the string ${2c}$ results in ${cc.}$ The string ${4a2b}$ results in ${aaaabb.}$ We assume the strings are well-formed.
+
+<Minutiae>
+
+The algorithm below is one possible approach. The idea is to have
+one pointer ${i}$ behind another pointer ${j.}$ We use ${j}$ to move
+through the string ${S.}$ If the character ${S\ix{j}}$ is a numeral (represented by the ${\df{is-digit}}$ function below), we we increment ${j.}$ 
+Otherwise, we enter an innerloop that concatenates the string from ${i}$ to ${j.}$
+
+<Algo>
+
+__~decompress~__
+
+- __Argument__: A string ${S.}$
+- __Image__: An uncompressed string ${S.}$
+
+
+1. ${\let{i}{0}}$
+2. ${\let{j}{0}}$
+3. ${\let{result}{\df{new empty string}}}$
+4. __while__ ${j \lt \len S}$
+	1. __if__ ${\df{is-digit}(S \ix{j})}$ __then__ ${\df{increment }j}$
+	2. __else__
+		1. ${\let{n}{\df{cast int}}~S.\df{slice}(i,j)}$
+		2. ${\let{k}{0}}$
+		3. __while__ ${k \lt n}$
+			1. ${result \inc S \ix{j}}$
+		4. ${\df{increment~}j}$
+		5. ${\let{i}{j}}$
+5. __return__ ${result}$
+
+
+</Algo>
+
+For example, suppose the string is ${2a3b11a.}$ Initially, both ${i}$ and ${j}$ are on the first character:
+
+$$
+	\begin{array}{c:c:c:c:c:c:c}
+		j & ~ & ~ & ~ & ~ & ~ & ~ \\ \hdashline
+		2 & a & 3 & b & 1 & 1 & a \\ \hdashline
+		i & ~ & ~ & ~ & ~ & ~ & ~ \\
+	\end{array}
+	~~~~~~
+	j = 0
+$$
+
+This is a numeral, so ${j}$ moves forward:
+
+$$
+	\begin{array}{c:c:c:c:c:c:c}
+		~ & j & ~ & ~ & ~ & ~ & ~ \\ \hdashline
+		2 & a & 3 & b & 1 & 1 & a \\ \hdashline
+		i & ~ & ~ & ~ & ~ & ~ & ~ \\
+	\end{array}
+	~~~~~~
+	j = 1
+$$
+
+In doing so, ${j}$ is no longer on a numeral,
+so we take the slice from ${i}$ to ${j.}$ That's the
+numeral ${2,}$ so we _cast it to an integer_, then loop 
+up to that cast. At each iteration, we _concatenate_ the
+the character ${j}$ is currently pointing to. At the end of that loop,
+we increment ${j}$ and update ${i}$ to ${j.}$
+
+
+$$
+	\begin{array}{c:c:c:c:c:c:c}
+		~ & j & ~ & ~ & ~ & ~ & ~ \\ \hdashline
+		2 & a & 3 & b & 1 & 1 & a \\ \hdashline
+		~ & i & ~ & ~ & ~ & ~ & ~ \\
+	\end{array}
+	~~~~~~
+	j = 2
+	~~~~~~
+	aa
+$$
+
+At the next iteration, we have ${j}$ on another numeral:
+
+$$
+	\begin{array}{c:c:c:c:c:c:c}
+		~ & ~ & j & ~ & ~ & ~ & ~ \\ \hdashline
+		2 & a & 3 & b & 1 & 1 & a \\ \hdashline
+		~ & i & ~ & ~ & ~ & ~ & ~ \\
+	\end{array}
+	~~~~~~
+	j = 2
+	~~~~~~
+	aa
+$$
+
+The previous process repeats:
+
+$$
+	\begin{array}{c:c:c:c:c:c:c}
+		~ & ~ & ~ & j & ~ & ~ & ~ \\ \hdashline
+		2 & a & 3 & b & 1 & 1 & a \\ \hdashline
+		~ & ~ & i & ~ & ~ & ~ & ~ \\
+	\end{array}
+	~~~~~~
+	j = 3
+	~~~~~~
+	aabbb
+$$
+
+resulting in the state:
+
+$$
+	\begin{array}{c:c:c:c:c:c:c}
+		~ & ~ & ~ & j & ~ & ~ & ~ \\ \hdashline
+		2 & a & 3 & b & 1 & 1 & a \\ \hdashline
+		~ & ~ & ~ & i & ~ & ~ & ~ \\
+	\end{array}
+	~~~~~~
+	j = 3
+	~~~~~~
+	aabbb
+$$
+
+Now, when ${j}$ encounters another numeral followed by another numeral, we
+simply keep incrementing:
+
+$$
+	\begin{array}{c:c:c:c:c:c:c}
+		~ & ~ & ~ & ~ & ~ & j & ~ \\ \hdashline
+		2 & a & 3 & b & 1 & 1 & a \\ \hdashline
+		~ & ~ & ~ & i & ~ & ~ & ~ \\
+	\end{array}
+	~~~~~~
+	j = 5
+	~~~~~~
+	aabbb
+$$
+
+Leaving us with:
+
+$$
+	\begin{array}{c:c:c:c:c:c:c}
+		~ & ~ & ~ & ~ & ~ & ~ & j \\ \hdashline
+		2 & a & 3 & b & 1 & 1 & a \\ \hdashline
+		~ & ~ & ~ & ~ & i & ~ & ~ \\
+	\end{array}
+	~~~~~~
+	j = 6
+	~~~~~~
+	aabbbaaaaaaaaaaa
+$$
+
+In the worst case, this algorithm runs on ${\bigO{n \by m},}$ where ${n}$
+is the length of the string, and ${m}$ is the length of an expansion. The time complexity may be worse, however, depending on how the ${\df{slice}}$ and ${\inc}$ (concatenation) functions are implemented. In a language like JavaScript, those operations run on ${\bigO{n}.}$ These bottlenecks can be avoided by pushing the characters to the array, then joining all of the array elements after the loops. This problem is not encountered in languages like C++.
+
+</Minutiae>
+
+### Compress
+Given a string ${S,}$ write an algorithm that replaces 2 or more consecutive terms of the same character into the number of occurrences followed by the character. For example, ${aaab \to 3ab.}$
+
+<Minutiae>
+
+This implementation uses the same approach as the [uncompress](#uncompress) problem. Note the use of the do-while loop. Unlike the uncompress algorithm, this approach takes ${\bigTheta{n}.}$ There's an inner-while loop, but that loop is purely there to make the code more concise. The ${j}$ pointer increments so long as ${j}$ and ${i}$ point to terms of the
+same character.
+
+<Algo>
+
+__~compress~__
+
+- __Argument__: A string ${S.}$
+- __Image__: A compressed string, ${result.}$
+
+1. ${\let{L}{\len S}}$
+2. ${\let{i}{0},}$ ${\let{j}{0}}$
+3. ${\let{result}{\df{new empty string}}}$
+4. __while__ ${(j \lt L)}$
+	1. __do__ ${\let{j}{j+1}}$
+		1. __while__ ${S\ix{i} = S\ix{j}}$
+	3. __if__ ${j-i \gt 1}$ __then__
+		1. ${result \df{ concat } S \ix{i}}$
+5. __return__ ${result}$
+
+</Algo>
+
+</Minutiae>
+
+### Anagrams
+Given two strings ${S_1}$ and ${S_2,}$ write an algorithm that returns true (or 1) if ${S_1}$ and ${S_2}$ are anagrams, and false (or 0) otherwise. Anagrams are strings that contain the same characters, disregarding order. 
+
+<Minutiae>
+
+~an incorrect~, tempting solution would be to iterate over the first string, accumulating the sum of each element's character code. Then iterate over the second string, subtracting each element's character code from the sum. If two strings have the same set of characters (an anagram), the result should be 0, so we return 1, otherwise we return 0. Before any of these operations occur, we immediately return if the two strings do not have the same length (strings of unequal lengths are not anagrams by definition):
+
+<Algo>
+
+__~anagram~__
+
+- __Argument__: a string ${s_1}$ and a string ${s_2.}$
+- __Image__: Boolean.
+
+1. __if__ ${\len s_1 \neq \len s_2}$ __return__ ${\df{false}}$
+2. __init__
+	1. ${\let{sum}{0}}$ 
+	2. ${\let{i}{0}}$
+3. __if__ ${i \lt \len s_1}$ `start loop body`
+	1. ${\let{sum}{sum + (\df{cast int})s_1\ix{i}}}$
+	2. ${\let{sum}{sum - (\df{cast int})s_2\ix{i}}}$
+	2. ${\let{i}{i+1}}$
+4. __goto__ ${\line{4}}$ `end loop body`
+5. __return__ ${sum=0}$
+
+
+</Algo>
+
+The temptation here is strong: We have a linear time complexity and constant memory complexity. Except there's a case it doesn't cover: ${ac}$ and ${bb.}$
+If the characters were encoded via ASCII, we would have ${97+99=196}$ and ${98+98=196.}$ This yields ${196-196=0,}$ in which case we return true. Clearly, however, the two strings _are not_ anagrams. 
+
+A correct approach would be to use a hash table:
+
+<Algo>
+
+__~anagram~__
+
+- __Argument__: a string ${s_1}$ and a string ${s_2.}$
+- __Image__: Boolean.
+
+1. __if__ ${\len s_1 \neq \len s_2}$ __return__ ${\df{false}}$
+2. __init__
+	1. ${\let{H}{\df{new hash-table}}}$
+	2. ${\let{i}{0}}$
+3. __if__ ${i \lt \len{s_1}}$ `start loop 1 body`
+	1. __if__ ${s_1 \ix{i} \in H}$ __then__ ${H \push (s_1 \ix{i}, 0)}$
+	2. ${{\df{increment}}~{H \ix{s_1 \ix{0}}}}$
+	3. ${\df{increment}~i}$
+4. __goto__ ${\line{4}}$ `end loop 1 body`
+5. ${\let{i}{0}}$
+6. __if__ ${i \lt \len{s_2}}$ `start loop 2 body`
+	1. __if__ ${(H \ix{s_2 \ix{i}} = \nil)}$ __then return__ ${\df{false}}$
+	2. __else__ ${\df{decrement} ~ H \ix{s_2 \ix{i}}}$
+	3. ${\df{increment}~i}$
+7. __goto__ ${\line{10}}$ `end loop 2 body`
+8. __for each__ ${x \in H}$ __do__ `start loop 3 body`
+	1. __if__ ${x \neq 0}$ __return__ ${\df{false}}$
+9. __return__ ${\df{true}}$ `end loop 3 body`
+
+</Algo>
+
+Here, we have a linear time complexity, ${\bigO{n + m},}$ where ${n}$ is the length of either string, and ${m}$ is the number of entries in the hash table. This comes at the cost of ${\bigO{n}}$ memory complexity. The time complexity also depends on the hash table implementation.
+
+</Minutiae>
+
+### Most Frequent Character
+Given a string ${S,}$ write an algorithm that returns the most frequent character of the string. If there are ties, return the earliest character.
+
+<Minutiae>
+
+A hash table would work here.
+
+<Algo>
+
+__~most frequent character~__
+
+- __Input:__ a string ${S.}$
+- __Output:__ a string ${result,}$ the most frequent character.
+
+1. __init__
+	1. ${\let{L}{\len{S}}}$
+	2. ${\let{H}{\df{new hash-table}}}$
+	3. ${\let{i}{0}}$
+	4. ${\let{result}{S \ix{0}}}$
+5. __if__ ${i \lt L}$ __then__ `begin loop body`
+	1. __if__ ${S \ix{i} \in H}$ __then__
+		1. ${\df{increment }H \ix{S \ix{i}}}$
+	2. __else__ ${H \push (S \ix{i}, 1)}$
+6. __goto__ ${\line{5}}$ `end loop body`
+7. __init__ ${\let{max}{0}}$
+8. __for each__ ${(key,value) \in H}$ __do__
+	1. __if__ ${value \gt max}$ __then__
+		1. ${\let{max}{value}}$
+		2. ${\let{result}{key}}$
+9. __return__ ${result}$
+
+</Algo>
+
+This algorithm has a running time of ${\bigO{n+m},}$ where ${n}$ is the length of the string and ${m}$ is the number of entries in the hash table. Given that ${m \le n,}$ we have ${\bigO{n}.}$ Like other hash table solutions, a complete time complexity analysis requires an examining the hash table's implementation. The memory complexity here is ${\bigO{m},}$ where ${m}$ is the size of the hash table.
+
+</Minutiae>
+
+
+### Roman Numeral Conversion
+Write an algorithm that converts a given Roman numeral into its Hindu-arabic equivalent.
+
+<Minutiae>
+<Algo>
+
+__~romnum~__
+
+Let ${S}$ be a finite, non-empty string of length ${n}$ over the alphabet ${\Sigma = \set{\tx{I}, \tx{V}, \tx{X}, \tx{L}, \tx{C}, \tx{D}, \tx{M}}.}$ Further, let ${M}$ be a mapping from ${\Sigma \to z \in \uint^+,}$ defined as
+
+$$
+	M = \lset{
+			\eqs{
+				& (\tx{I},1),(\tx{IV},4),(\tx{V},5) \\
+				& (\tx{IX},9),(\tx{X},10),(\tx{XL},40) \\
+				& (\tx{L},50),(\tx{XC},90),(\tx{C},100) \\
+				& (\tx{CD},400),(\tx{D},500),(\tx{CM},900) \\
+				& (\tx{M},1000)
+			}
+	}.
+$$
+
+For each character ${s_i \in S = (s_0, s_1, \ldots, s_{n-1})}$ with ${n \in \NN}$, the function ${\df{romnum}}$ returns the sum
+
+$$
+	\dsum{i=0}{n-1} M(s_i).
+$$
+
+1. ${\var ~ \let{out}{0}}$
+2. ${\var ~ \let{i}{\len (S) - 1}}$
+3. __while__ ${i \ge 0}$ __do__
+	1. ${\df{switch} ~~ \df{true}}$
+		1. ${\df{case} ~~ S \ix{i} = {\tx{M}}}$
+			1. ${\if ~ S \ix{i-1} = {\tx{C}} ~ \nc}$ ${\let{i'}{i - 1},~~\let{out'}{out + 900}}$
+			2. ${\else ~ \let{out'}{out + 1000}}$
+		2. ${\df{case} ~~ S\ix{i} = {\tx{D}}}$
+			1. ${\if ~ S \ix{i-1} = {\tx{C}} ~ \nc}$ ${\let{i'}{i - 1},~~\let{out'}{out + 400}}$
+			2. ${\else ~ \let{out'}{out + 500}}$
+		3. ${\df{case} ~~ S\ix{i} = {\tx{C}}}$
+			1. ${\if ~ S \ix{i-1} = {\tx{X}} ~ \nc}$ ${\let{i'}{i - 1},~~\let{out'}{out + 90}}$
+			2. ${\else ~ \let{out'}{out + 100}}$
+		4. ${\df{case} ~~ S \ix{i} = {\tx{L}}}$
+			1. ${\if ~ S \ix{i-1} = {\tx{X}} ~ \nc}$ ${\let{i'}{i - 1},~~\let{out'}{out + 40}}$
+			2. ${\else ~ \let{out'}{out + 50}}$
+		5. ${\df{case} ~~ S \ix{i} = \st{\tx{X}}}$
+			1. ${\if ~ S \ix{i-1} = {\tx{I}} ~ \nc}$ ${\let{i'}{i - 1},~~\let{out'}{out + 9}}$
+			2. ${\else ~ \let{out'}{out + 10}}$
+		6. ${\df{case} ~~ S \ix{i - 1} = {\tx{V}}}$
+			1. ${\if ~ S \ix{i-1} = {\tx{I}} ~ \nc}$ ${\let{i'}{i - 1},~~\let{out'}{out + 4}}$
+			2. ${\else ~ \let{out'}{out + 5}}$
+		7. ${\df{default} ~ \let{out'}{out + 1}}$
+4. __return__ ${out}$
+
+</Algo>
+</Minutiae>
+
+$$
+	\ax{
+		\set{3} & \to & \set{7} & \to & \set{1} & \to & \set{4} \\
+		\uarr & ~ & ~ & ~ & ~ & ~ & \darr \\
+		\set{2} & ~ & ~ & ~ & ~ & ~ & \set{43} \\
+		\uarr & ~ & ~ & ~ & ~ & ~ & \darr \\
+		\set{5} & \gets & \set{8} & \gets & \set{19} & \gets & \set{21} \\
+	}
+$$

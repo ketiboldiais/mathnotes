@@ -122,7 +122,7 @@ for each element in the array.
 Alternatively, starting with C++11, we can use a **range-based
 loop**:[^loopnote]
 
-[^loopnote]: The range-based loop is also called a **for-each loop**.
+[^loopnote]: The range-based loop is also called a __for-each loop__.
 
 ```cpp
 #include <iostream>
@@ -151,7 +151,7 @@ The `auto` keyword is used to infer the type of an array. We could've used
 
 ## Grids; Matrices
 
-A **grid**, or **matrix**, is an abstraction of a **multidimensional
+A __grid__, or __matrix__, is an abstraction of a **multidimensional
 array**. A multidimensional array is simply an array whose elements are
 themselves arrays. For example, a 2-dimensional array is an array whose
 elements arrays. A 3-dimensional array is an array whose elements are
@@ -208,7 +208,7 @@ we are comfortable with using them. Below are some exercises.
 Given the array: `[3, 9, 11, 23, 14, 10, 34, 18, 27]`, compute the sum of
 all the elements.
 
-**Solution** Here is one possible solution:
+__Solution__ Here is one possible solution:
 
 ```cpp
 #include <iostream>
@@ -231,7 +231,7 @@ int main() {
 
 -Given the same array above, return the maximum.
 
-**Solution**
+__Solution__
 
 ```cpp
 #include <iostream>
@@ -258,7 +258,7 @@ int main() {
 
 -Given the same array, return the minimum.
 
-**Solution**
+__Solution__
 
 ```cpp
 	#include <iostream>
@@ -286,7 +286,7 @@ int main() {
 Given the array above, determine (i.e., return true, or 1) if the element
 67 is in the array; otherwise false (0).
 
-**Solution**
+__Solution__
 
 ```cpp
 #include <iostream>
@@ -313,7 +313,7 @@ int main() {
 0
 ```
 
-The last exercise above is an example of a **linear search** algorithm. We
+The last exercise above is an example of a __linear search__ algorithm. We
 are searching for a particular element. Given very large arrays, we can
 suspect that this is a grossly inefficient algorithm. Why? Because the
 computer must check, one by one, whether the value exists. In this case,
@@ -333,7 +333,7 @@ shrink as needed. For most tasks involving an array-based data structure,
 that's what we want &mdash; a dynamic list.
 
 Through the standard library, C++ provides dynamic lists. Where Python
-simply calls them a list, C++ opts for **vectors**. To use vectors in our
+simply calls them a list, C++ opts for __vectors__. To use vectors in our
 program, we will have to use a preprocessor: `#include <vector>. Example:`
 
 ```cpp
@@ -431,7 +431,7 @@ LetterGrade johnsGrade = {LetterGrade::A}
 Notice the syntax for initialization. We explicitly state the type, as we
 would any other variable. But in initializing the value, we again state the
 type alongside double colons `::`. Each of `A`, `B`, `C`, `D`, and `F` are
-called **enumerators**.
+called __enumerators__.
 
 Notice what happens when we cast a `LetterGrade` value into an `int`:
 
@@ -459,7 +459,7 @@ John's grade: 0
 
 In C++, enums are actually a range of integers under the hood. By default,
 the enumerators start at 0 and increment by 1, all the way up to however
-many enumerators we've specified. These integers are called **raw values**.
+many enumerators we've specified. These integers are called __raw values__.
 We can change the default behavior by setting an initial raw value:
 
 ```cpp
@@ -583,7 +583,7 @@ enum class UserOptions {
 
 ## Structs
 
-C++ also supports **record types**, which we can define with the keyword
+C++ also supports __record types__, which we can define with the keyword
 `struct`. For example:
 
 ```cpp

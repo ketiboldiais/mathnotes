@@ -1,23 +1,12 @@
-# Cryptography
+## Core Number Theory
+> __~definition~.__ Given integers ${a}$ and ${b}$ with ${b \neq 0,}$ we say that ${b}$ divides ${a}$ if, and only if, there exists an integer ${c}$ such that ${ = bc.}$ If ${b}$ divides ${a,}$ then we write ${a \dv b.}$ If ${a}$ does not divide ${b,}$ we write ${a \not\dv b.}$
 
-Cryptography is the study of using algorithms to protect digital
-information against adversarial attacks.
+__~theorem~.__ Let ${a,b,c \in \uint.}$
+- If ${a \dv b}$ and ${b \dv c,}$ then ${a \dv c.}$
+- If ${a \dv b}$ and ${b \dv a,}$ then ${a = \pm b.}$
+- If ${a \dv b}$ and ${a \dv c,}$ then ${a \dv (b+c).}$
+- If ${a \dv b}$ and ${a \dv c,}$ then ${a \dv (b-c).}$
 
-classical cryptography - designing and using codes that enable two parties
-to send messages while keeping those messages hidden from an eavesdropper
-who can monitor all communication between them
 
-key - a secret shared by the parties in advance
 
-plaintext - the raw, unencrypted form of the message to be sent
 
-ciphertext - the message encrypted
-
-encrypt - "scrambling" the message encryption scheme - the method of
-scrambling the message decrypt - unscramble the message to get the
-plaintext
-
-symetric algorithm
-
-- encryption scheme where parties a and b use a single secret key to
-  encrypt and decrypt

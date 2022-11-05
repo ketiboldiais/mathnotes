@@ -96,14 +96,14 @@ _binary_.
 
 In _binary_, the numbers are represented entirely by two numerals:
 $\{ 0, 1 \}$. 0s and 1s are represented in by computers as
-**bits**.[^bits_note] 0s and 1s are preferable because computers, at the
+__bits__.[^bits_note] 0s and 1s are preferable because computers, at the
 end of the day, work by turning millions of switches off and on:
 electricity flowing (switch on, i.e., `0`) and electricity not flowing
 (switch off, i.e., `1`). We can imagine how this works with lighbulbs. With
 1 light bulb, we can count from 0 to 1:
 
 [^bits_note]:
-    A contraction of "**b**inary digits", coined by the computer scientists
+    A contraction of "__b__inary digits", coined by the computer scientists
     Claude Shannon. In his master's thesis, Shannon argued Boolean logic
     could be used to switch circuits, which in turn could be used for
     arithmetic calculations. Although his work led directly to the binary
@@ -160,7 +160,7 @@ arrangements, we can assign them to numbers:
 | 1 1 1       | 7      |
 
 By assigning arrangements of 1s and 0s to represent numbers, we have
-constructed the **binary system**. The system works exactly like the
+constructed the __binary system__. The system works exactly like the
 decimal system, with one crucial difference: rather than having 10 unique
 digits to work with, we only have 2; this means that our numbers are
 written with powers of 2. 12, for example, is:
@@ -176,15 +176,15 @@ ${2}$ in binary, we can simply write 12.
 
 In the light bulbs above, we might have imagined a physical switch to turn
 the light bulbs on and off. In computers, the same concept applies, but the
-switches are tiny devices called **transistors**, and there are millions of
+switches are tiny devices called __transistors__, and there are millions of
 them in a modern computer.
 
-Thinking carefully about these lights, each bulb has a **state**—a
+Thinking carefully about these lights, each bulb has a __state__—a
 "snapshot" of the present conditions of a given system. In a system with
 just one light bulb, the system only has two states: on or off. With two
 lighbulbs, we have ${2 \times 2 = 2^2 = 4}$ possible states. This same
 analysis applies to bits. However, instead of a board of light bulbs, the
-bits are aggregated in **main memory** (or more specifically, _Random
+bits are aggregated in __main memory__ (or more specifically, _Random
 Access Memory (RAM)_). Main memory is effectively a representation of a
 computer's state. If the computer's RAM can only hold 3 bits, the computer
 has ${2 \times 2 \times 2 = 2^3}$ possible states. With 4 bits, the
@@ -250,7 +250,7 @@ letters.[^victorian_note]
 As an aside, there really is no rhyme to these assignments—a group of
 computer scientists simply sat down and said, "Let's use this number for
 this." There is, however, a reason. Character codes only work if computer
-manufacturers implement them. Without **standardization**—setting minimum
+manufacturers implement them. Without __standardization__—setting minimum
 requirements to be met by all users—it is much harder to share data across
 machines. A recurring theme in the history of computer science is setting
 standards. The internet, language libraries, character encodings, data
@@ -273,15 +273,15 @@ different characters, since each bit can either be a 0 or a 1
 since they can very rapidly grow into large numbers (the characters H, i,
 and ! took up 24 bits alone—imagine how many bits a paragraph or a
 Wikipedia article takes). Because of this problem, we measure bits in
-**bytes**. A byte is simply 8 bits.[^nibble_note]
+__bytes__. A byte is simply 8 bits.[^nibble_note]
 
-[^nibble_note]: Half a byte—a sequence of 4 bits—is called a **nybble**.
+[^nibble_note]: Half a byte—a sequence of 4 bits—is called a __nybble__.
 
 But a byte is extremely limiting—it only represents 256 characters, and
 human language consists of many, many more: accents over English
 characters, characters from different languages, mathematical and logical
 symbols, scientific symbols, emojis, etc. Because of ASCII's limitations,
-another standard, **Unicode** was created to assign numbers to characters,
+another standard, __Unicode__ was created to assign numbers to characters,
 now used by most modern computers. This standard shift was only made
 possible because software and hardware producers decided to move on from
 ASCII.
@@ -299,7 +299,7 @@ other conditions are true.
 
 Not only are numbers assigned to characters, they can also be assigned to
 represent colors. There are a variety of different systems of assigning
-numbers to colors. In the **RGB color model**, colors are represented in
+numbers to colors. In the __RGB color model__, colors are represented in
 the form `rgb(value, value, value)`, where each channel (indicated by
 "value") represents the color's red, green, and blue values respectively.
 This system works because every color can be made by mixing the colors red,
@@ -358,7 +358,7 @@ to how information should be represented and organized.
 Now that we have a general idea of how to represent information (the inputs
 and outputs problem), we return our attention to the black box. What
 exactly happens inside this mysterious box? The black box processes all of
-the inputs we pass through to it with _algorithms_. An **algorithm** is a
+the inputs we pass through to it with _algorithms_. An __algorithm__ is a
 sequence of steps to solving a problem.
 
 Algorithms are not unique to computers. Assembling furniture from Ikea;
@@ -416,7 +416,7 @@ computer science is an amalgamation of subjects related to computation.
 Programming—the study and practice of creating, implementing, and improving
 algorithms under software engineering principles—is just one such subject.
 
-Computer science is also focused on **theory**. Here, we ask questions
+Computer science is also focused on __theory__. Here, we ask questions
 about _computational complexity_, computability, and cryptography. How much
 time does it actually take for an algorithm to complete? Is a problem
 solvable via programming? How do we encrypt? These are all questions
@@ -457,7 +457,7 @@ and still aren't, very good at reading and writing large sequences of 1s
 and 0s. Because of this diffculty, some very smart folks at companies like
 Intel and AMD came up with ways to define unique sequences of 0s and 1s as
 words, letters, and characters. All of these words and letters, put
-together, form a **machine language**.
+together, form a __machine language__.
 
 Machine languages, however, are just as diffcult to write. They're filled
 with cryptic symbols and numbers like `JMP` and `LDY`. Programs in machine
@@ -473,9 +473,9 @@ characters:
 
 Worse, machine languages vary by machine (or more precisely, by _machine
 architecture_). This made it enormously costly, in labor and time, to write
-**cross-platform programs**—programs that could run on different platforms
+__cross-platform programs__—programs that could run on different platforms
 like computers. Because of these difficulties, humans began making
-**high-level languages** such as Java—the language used in this volume.
+__high-level languages__ such as Java—the language used in this volume.
 With high-level languages, programs are much more readable. For example, a
 computer program in some high-level language might look like:
 
@@ -489,29 +489,29 @@ if (todayIsMyBirthday == true) {
 
 But how do these words and symbols in a high-level language—called **source
 code**—transform, or translate, into 1s and 0s? Through a process called
-**compilation**. Essentially, the instructions we wrote in the hypothetical
+__compilation__. Essentially, the instructions we wrote in the hypothetical
 high-level language above are sent to another program, called the
-**compiler**, and the compiler translates the instructions into something
-called **object code**. Roughly, object code consists of the low-level
+__compiler__, and the compiler translates the instructions into something
+called __object code__. Roughly, object code consists of the low-level
 instructions the machine understands. This object code is contained in
-something called an **object file**.
+something called an __object file__.
 
 Now, our high-level language program might rely on source code from another
 file. That other file will also yield an object file. All these separate
-object files are then **linked** by a **linker**. The linker then returns a
-single file, called an **executable file**—containing all of the program's
+object files are then __linked__ by a __linker__. The linker then returns a
+single file, called an __executable file__—containing all of the program's
 object code. This executable contains all the instructions the computer
 understands. When we double click a Word file on our computer, or open
 Safari, we are _running_ or _executing_ an executable file.
 
 ## What is a computer program?
 
-A **program** is a set of instructions to be carried out by a computer.
+A __program__ is a set of instructions to be carried out by a computer.
 When the computer carries out the instructions, the program is said to have
 _executed_. Like humans, computers can only carry out those instructions if
 it actually understands the them. However, unlike humans, computers can
 only understand 0s and 1s. To ensure our instructions are translated to 0s
-and 1s, we write our instructions in a **programming language**—a
+and 1s, we write our instructions in a __programming language__—a
 systematic set of rules used to describe computations in a format that we,
 as humans, can edit.
 
@@ -541,7 +541,7 @@ overkill for small things like auto-responding to emails. Java is a
 general-purpose language. We can use it for virtually any problem (granted,
 there are problems where another language might be a better fit).
 
-Next, Java is object-oriented. This is a **computer paradigm.** A computer
+Next, Java is object-oriented. This is a __computer paradigm.__ A computer
 paradigm is an overloaded term (i.e., lots of people argue over what it
 means), but we can think of it as a philosophy of doing things, or a
 philosophy of solving problems. In object-oriented programming ("OOP"), the
@@ -558,9 +558,9 @@ the same program could be run on a different computer. We will see how Java
 gets around this problem shortly.
 
 Finally, Java is a concurrent language. Historically, programming languages
-were **single-threaded**: Programs written in the programming language
+were __single-threaded__: Programs written in the programming language
 could only do one thing at a time. With concurrency, we now have
-**multi-threaded** languages; languages that allow their programs to
+__multi-threaded__ languages; languages that allow their programs to
 perform more than one thing at a time. One way to think about
 single-threaded and multi-threaded: John gets off of work, arrives home,
 and realizes he needs to do laundry and cook dinner. Under single-threaded
@@ -571,7 +571,7 @@ further on the idea of concurrency in later sections.
 
 The instructions we write in a program are broadly referred to as **source
 code**. When we're ready to execute, we _compile_ the program, whereupon
-the _Java compiler_ translates our source code into **byte code**—code that
+the _Java compiler_ translates our source code into __byte code__—code that
 the computer understands.
 
 There are numerous programming languages, many of which are designed with a
@@ -632,7 +632,7 @@ our file, but for now, pretend that such is the rule.
 Inside the class `Intro`, we have a _method_ called `main()`. We will
 revisit methods more rigorously in later sections, but for now, think of it
 as containing a sequence of instructions. We call these instructions
-**statements**. All of our source code for the next few sections is placed
+__statements__. All of our source code for the next few sections is placed
 inside the curly braces following `main()`. We call this method the **main
 driver**—it's the method that directs the entirety of our program.
 
@@ -651,7 +651,7 @@ Java that other programs or blocks of code can access the class. In Java,
 all programs are defined as public classes because some other application,
 such as the JVM, must be able to start the programs up.
 
-The line `import java.lang.*` is called an **import statement**. This
+The line `import java.lang.*` is called an __import statement__. This
 instructs Java to look into the contents of `java.lang`, a **library
 package**, if we use words inside our program we haven't defined ourselves.
 What's a library package? It's a collection of tools written by other
@@ -821,16 +821,16 @@ distinctions between _well-written programs_ and _poorly-written programs_.
 
 Generally, a program's writing quality depends on a few factors:
 
-1. **Correctness**. Does the program work as intended?
+1. __Correctness__. Does the program work as intended?
 
-2. **Clarity**. Is the program clearly written? I.e., can an unfamiliar
+2. __Clarity__. Is the program clearly written? I.e., can an unfamiliar
    reader read and understand the program?
 
-3. **Conciseness**. Is the program concise? I.e., does it accomplish its
+3. __Conciseness__. Is the program concise? I.e., does it accomplish its
    intent with the minimum amount of statements necessary, without
    sacrificing clarity?
 
-4. **Style**. Does the program follow the prevailing conventions for
+4. __Style__. Does the program follow the prevailing conventions for
    writing statements? I.e., capitalization, punctuation, proper use of
    words, etc.
 

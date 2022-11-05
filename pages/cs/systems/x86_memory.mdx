@@ -153,7 +153,7 @@ we've lost power, the information is lost. When we want to ensure data
 remains saved even with power loss, we use non-volatile memory.
 
 The computer system's most important non-volatile memory chip is the
-**Read-only Memory (ROM)** chip. The ROM is where machine level
+__Read-only Memory (ROM)__ chip. The ROM is where machine level
 instructions are stored, hardcoded during hardware production, as well as
 several other programs:
 
@@ -172,19 +172,19 @@ several other programs:
 
 ROM comes in several varieties:
 
-1. **Programmable Read-only Memory (PROM)** PROM is a type of ROM stores
+1. __Programmable Read-only Memory (PROM)__ PROM is a type of ROM stores
    the microcode (hardware level instructions) necessary for interpreting
    electrical currents and voltages as 1s or 0s in the first place. Like
    ROM, PROM can only be programmed once. PROM chips are still used by
    video game consoles and smaller devices, but were largely replaced with
    EPROM for modern computers.
-2. **Eraseable PROM (EPROM)** is PROM that can be re-programmed by erasing
+2. __Eraseable PROM (EPROM)__ is PROM that can be re-programmed by erasing
    the entire chip with ultra violate light or x-rays. Moden computers have
    replaced EPROM with EEPROM.
-3. **EEPROM** is PROM that can be re-programmed through electronic erasing.
+3. __EEPROM__ is PROM that can be re-programmed through electronic erasing.
    Modern computers use EEPROM chips. EEPROM chips themselves have two
-   types: (1) **electrically alterable read-only memory (EAROM)** and (2)
-   **flash memory**. The primary difference between the two is how quickly
+   types: (1) __electrically alterable read-only memory (EAROM)__ and (2)
+   __flash memory__. The primary difference between the two is how quickly
    we can rewrite the ROM chip. With EAROM, we can only erase and rewrite 1
    bit at time. This is a very slow and voltage-intensive process. Flash
    memory improves this by allowing users to erase and rewrite hundreds of
@@ -208,7 +208,7 @@ stored on the HDD. Manufacturers generally express capacity in units of
 _gigabytes (GB)_, where:
 
 $$
-	1\tt{GB} = 10^{9}~\tt{bytes}
+	1\text{GB} = 10^{9}~\text{bytes}
 $$
 
 Disk capacity is bounded by several factors:
@@ -217,7 +217,7 @@ Disk capacity is bounded by several factors:
    bits that can be squeezed into a 1 inch segment of a track on the disk.
 2. _Track density_. Measured in tracks/inch, this is the number of tracks
    we can squeeze into a 1 inch radial segment.
-3. _Areal density_. Measured in ${\tt{bits}/\tt{in}^2}$, this is the
+3. _Areal density_. Measured in ${\text{bits}/\text{in}^2}$, this is the
    product of the recording and track densities.
 
 ### Memory Transactions
@@ -313,9 +313,9 @@ slowest read-write speeds, we get:
 
 These speeds go downhill if the system allocated memory for our programs
 randomly. Accordingly, computer systems use memory allocation techniques
-guided by the principle of **locality**:
+guided by the principle of __locality__:
 
-> **locality principle**. A program 𝑃, more often than not, will use data
+> __locality principle__. A program 𝑃, more often than not, will use data
 > and instructions with addresses near or equal to those they have used
 > recently.
 
@@ -351,7 +351,7 @@ the CPU. We also get increasingly larger memory capacities.
 
 #### Caches
 
-A **cache** is a memory device used to temporarily hold a small amount of
+A __cache__ is a memory device used to temporarily hold a small amount of
 data. Specifically, it's a staging area for a small part of a large piece
 of data. The idea: For each level ${L}$ in the memory hierarchy presented
 earlier, the memory device used in the level serves as a cache for the
@@ -395,10 +395,10 @@ program, there are two possible scenarios for the program's data:
 1. The data is cached at the current level, or
 2. the data is _not_ stored at the current level
 
-If it's scenario (1), then we have a **cache hit**. The system reads the
+If it's scenario (1), then we have a __cache hit__. The system reads the
 data directly.
 
-If it's scenario (2), we have a **cache miss** — the system must fetch the
+If it's scenario (2), we have a __cache miss__ — the system must fetch the
 data from the cache at the level below, and place it in the current level.
 Because caches get smaller as we go up the hierarchy, the system will
 likely will have to overwrite data in cache. Which data is overwritten? It
@@ -506,8 +506,8 @@ reading the tag and block index together:
 
 With this basic understanding, let's add a bit more detail.
 
-A _cache_ consists of memory cells grouped into **lines**. The lines are
-then grouped into **sets**:
+A _cache_ consists of memory cells grouped into __lines__. The lines are
+then grouped into __sets__:
 
 | set        | line 0     | line 1     | ...        | line 𝑛     |
 | ---------- | ---------- | ---------- | ---------- | ---------- |
@@ -527,7 +527,7 @@ cache can be measured in two dimensions:
    	E = 2^n
    $$
 
-   where ${n \in \NN}$.
+   where ${n \in \nat}$.
 
 2. The number of sets, which is given by the equation:
 
@@ -535,7 +535,7 @@ cache can be measured in two dimensions:
    	S = 2^s
    $$
 
-   where ${s \in \NN.}$
+   where ${s \in \nat.}$
 
 The memory device's placement policy determines which of the sets a
 particular address goes, and which of the lines within that set the address
@@ -543,7 +543,7 @@ is stored.
 
 Within each cache line, there are three key components:
 
-1. 𝐵 bytes, where ${B \in \NN.}$ These bytes are where the actual data are
+1. 𝐵 bytes, where ${B \in \nat.}$ These bytes are where the actual data are
    stored.
 2. A set of _tag_ bits that identify the block's memory address.
 3. A _valid bit_ — a single bit to indicate whether the line is valid.
@@ -720,7 +720,7 @@ In memory, we might get something that looks like:
 />
 
 The addresses for each of these memory cells belongs to a region called the
-**stack**. Importantly, there's no guarantee that the arrays are allocated
+__stack__. Importantly, there's no guarantee that the arrays are allocated
 side by side. There could very well be other occupied bytes separating the
 arrays.
 
@@ -834,7 +834,7 @@ and _jagged arrays_:
 In C, we declare nested arrays with the syntax:
 
 $$
-   \mm{$T$ $A$[$R$][$C$]}
+   \texttt{$T$ $A$[$R$][$C$]}
 $$
 
 where ${T}$ is the nested array's type, ${R}$ is the index of each array
@@ -881,7 +881,7 @@ Accordingly, we have two choices:
 1. Store each element in the nested array _row by row_ (the **row-major
    ordering approach**), or
 2. Store each element in the nested array _column by column_ (the
-   **column-major ordering approach**).
+   __column-major ordering approach__).
 
 To illustrate, suppose we instantiate the following nested array:
 
@@ -937,7 +937,7 @@ To access a nested array's row, the following rule applies:
 > elements of type 𝑇. Then:
 >
 > $$
->   \mm{𝐴[i] = 𝐴 + (i ⨉ 𝑁 ⨉ 𝑆(𝑇))}
+>   \texttt{𝐴[i] = 𝐴 + (i ⨉ 𝑁 ⨉ 𝑆(𝑇))}
 > $$
 >
 > where 𝑆(𝑇) is the size of type 𝑇 in bytes.
@@ -979,7 +979,7 @@ To access nested array elements, the following rule applies:
 > elements of type 𝑇. Then:
 >
 > $$
->   \mm{𝐴[i][j] = 𝐴 + (i ⨉ 𝑁 ⨉ 𝑆(𝑇)) + (j ⨉ 𝑁)}
+>   \texttt{𝐴[i][j] = 𝐴 + (i ⨉ 𝑁 ⨉ 𝑆(𝑇)) + (j ⨉ 𝑁)}
 > $$
 >
 > where 𝑆(𝑇) is the size of type 𝑇 in bytes.
@@ -1127,11 +1127,11 @@ when the compiler sees the `&p->a[idx]`, it makes the following
 computation:
 
 $$
-   \mm{p + (4 ⨉ idx)}
+   \texttt{p + (4 ⨉ idx)}
 $$
 
 That is, it goes to the address where the struct instance resides, and
-reads up to ${4 \times \mm{idx}.}$ This results in the Assembly code:
+reads up to ${4 \times \texttt{idx}.}$ This results in the Assembly code:
 
 ```nasm
 # assume r is in %rdi, idx is in %rsi
@@ -1154,7 +1154,7 @@ struct rec {
 This struct consumes:
 
 $$
-   (4 \. 4) + (8) + (8) = 16 + 16 = 32
+   (4 \cdot 4) + (8) + (8) = 16 + 16 = 32
 $$
 
 bytes of memory. Wait. Why is that `i` consuming 8 bytes of memory?
@@ -1417,14 +1417,14 @@ allocation can be, and why we can't necessarily rely on pointer arithmetic
 to ensure safety.
 
 Allowing users to exceed memory sizes allocated for an array leads to a
-security vulnerability called **buffer overflow**. Undoubtedly, buffer
+security vulnerability called __buffer overflow__. Undoubtedly, buffer
 overflows are the most common technical cause for security problems.
 
 The most common form of buffer overflows: Unchecked lengths of string
 inputs. For example, a user input field takes a password of length 10, but
 the system makes no checks against password inputs longer than 10. By
 feeding extremely large strings into the program, the stack can grow beyond
-the 8MB limit. This kind of attack is often called **stack smashing**.
+the 8MB limit. This kind of attack is often called __stack smashing__.
 
 Unchecked string input lengths stem from a general lack of awareness with
 certain library functions. Take for example the Unix function `gets()`.

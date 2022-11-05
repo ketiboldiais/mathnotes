@@ -1,0 +1,667 @@
+<Head>
+	<title>Algebraic Structures</title>
+	<meta name={`description`} content={`Notes on algebraic structures.`}/>
+</Head>
+
+# Algebraic Structures
+
+This chapter covers notes on _algebraic structures_. 
+
+1. [Operations](#operations)
+	1. [Counting Binary Operations](#counting-binary-operations)
+2. [Algebraic Structure](#algebraic-structure)
+3. [Axiomatic Properties](#axiomatic-properties)
+	1. [Commutativity](#commutativity)
+	2. [Associativity](#associativity)
+	3. [Identity](#identity)
+	4. [Inverse](#inverse)
+	5. [Distributivity](#distributivity)
+4. [Axiomatic Algebras](#axiomatic-algebras)
+	1. [Semigroup](#semigroup)
+	2. [Commutative Semigroup](#commutative-semigroup)
+	3. [Monoid](#monoid)
+	4. [Commutative Monoids](#commutative-monoids)
+	5. [Groups](#groups)
+		1. [Properties of Groups](#properties-of-groups)
+	6. [Abelian Group](#abelian-group)
+5. [Rings](#rings)
+	1. [Ordered Rings](#ordered-rings)
+6. [Fields](#fields)
+7. [Isomorphisms](#isomorphisms)
+
+## Operations
+We begin by defining an operation. As we saw in the [last chapter](./relations),
+an _operation_ is a kind of [map](./relations#maps). We now provide an explicit
+definition:
+
+
+> __~operation~.__ Let ${S}$ be a set and ${n \in \nat.}$ Then the _operation_ ${\op}$ is a _function_ that assigns every tuple ${(a_1, a_2, \ldots, a_n) \in A^n}$ exactly one element ${\op(a_1,a_2, \ldots a_n) \in A,}$ called the _result_ of ${\op}$ on ${(a_1, a_2, \ldots, a_n),}$ which we may also denote as ${a_1 \op a_2 \op \ldots \op a_n.}$ We call the symbol ${\op}$ an _operator_, the function ${\op: A^n \to A}$ the _operation_, ${A}$ the _carrier_, and ${n}$ the _arity_ of ${\op.}$ If ${n=3,}$ then ${\op: A \times A \times A  \to A,}$ in which case we call ${\op}$ a _ternary operation_.  If ${n = 2,}$ then ${\op: A \times A \to A,}$ and ${\op}$ is called a _binary operation_. If ${n=1,}$ then ${\op: A \to A,}$ and ${\op}$ is called a _unary operation_. If ${n=0,}$ then ${\op}$ is called a _nullary operation_, or _constant_.
+
+
+In these materials, we will focus primarily on binary and unary operations. From
+the definition above, we can say that, given ${a,b \in A,}$ a unary operation
+may be written as ${f(a)}$ or ${f(b)}$ and a binary operation may be written as
+${f(a,b).}$ However, we don't usually think of operations as functions (though
+we will soon enough), and the way operations are written depends heavily on the
+problem at hand: 
+
+| Operation     | Equivalent | Type           | Example        |
+| ------------- | ---------- | -------------- | -------------- |
+| ${\op a~b}$   | ${f(a,b)}$ | Binary Prefix  | ${\times a~b}$ |
+| ${a \op b}$   | ${f(a,b)}$ | Binary Infix   | ${a \div b}$   |
+| ${a~b \op}$   | ${f(a,b)}$ | Binary Postfix | ${a~b~+}$      |
+| ${\op a}$     | ${f(a)}$   | Unary Prefix   | ${-a}$         |
+| ${a \op}$     | ${f(a)}$   | Unary Postfix  | ${a!}$         |
+| ${\op a \op}$ | ${f(a)}$   | Delimited      | ${\abs{a}}$    |
+
+In general, we'll use the notation ${a ~\op~ b}$ for binary operations, and
+the notation ${\op a}$ for unary operations. For each of the operations above,
+we call ${a}$ and ${b}$ the _operands_ of ${\op.}$
+
+Something to observe right off the bat: Since ${\op}$ is a function, it
+follows that, where ${a,b \in A,}$ and ${\op:A^2 \to A,}$ we have ${a \op b \in
+A.}$ Furthermore, note that the operator ${\op}$ must always return some
+element in ${A.}$ It can't return an element not in the carrier. In other words,
+for the operation ${\op,}$ the only things that exist in the universe are the
+things in its carrier ${A.}$  For example, suppose:
+
+$$
+	B = \set{0,1}
+$$
+
+One operation we might define on this set is ${\times}$ (multiplication). This
+is a valid binary operation, since the operator always returns an element of the
+set ${B.}$
+
+$$
+	\eqs{
+		\times(0,0) &= 0 \times 0 &= 0 \\
+		\times(0,1) &= 0 \times 1 &= 0 \\
+		\times(1,0) &= 1 \times 0 &= 0 \\
+		\times(1,1) &= 1 \times 1 &= 1
+	}
+$$
+
+Returning to the definition of an operation, there are two nuances we must
+always keep in mind. First, ${a \op b}$ must be _uniquely defined_. That is, it
+should be crystal clear what the element ${a \op b}$ is. For example, suppose we
+defined an operation ${\square}$ on the integers as: ${a \square b}$ is a
+natural number whose square is ${a \times b.}$ This would not qualify as an
+operation. Why? Because if ${a = 2}$ and ${b = 8,}$ then ${ab = 16}$ and ${a \square b = 4 \lor -4.}$
+
+Second, given a carrier set ${S}$ and ${a,b \in S,}$ ${a \op b}$ must be in ${S}$ for ${\op}$ to be an operation. If ${a \op b \notin S,}$ then ${\op}$ is what we call a _partial operation_. If ${a \op b \in S}$ for all ${a,b \in S,}$ we say that ${S}$ is _closed under_ ${\op.}$
+
+
+
+> __~closed carrier~.__ Let ${S}$ be a carrier set and ${\op}$ be an operation on ${S.}$ We say that ${S}$ is _closed under_ ${\op}$ if, and only if, for all ${a,b}$ in ${S,}$ it is true that ${a \op b \in S.}$ Otherwise, we say that ${S}$ is _not closed under_ ${\op.}$
+
+
+
+For example, subtraction is a partial operation on the set of natural numbers ${\nat.}$ Why? Because subtraction does not always return a element of ${\nat,}$ the carrier set: ${0 - 1 = -1,}$ and ${-1 \notin \nat.}$ Likewise, division is a partial operation on the set integers, because ${a/b}$ does not always result in an integer: ${3/4 = 0.75.}$ Division is, however, is an operation on the set of _positive real numbers_, because ${a/b}$ always returns a real number where ${a,b \in \reals.}$ It is not an operation on the set of _all real numbers_, because ${a/0}$ does not return a real number.
+
+### Counting Binary Operations
+
+Suppose we have a carrier set ${S = \set{a,b}.}$ Then the Cartesian product of this set is:
+
+$$
+	S \times S = \lset{
+		\eqs{
+			(a,a)~&~(a,b) \\
+			(b,a)~&~(b,b)
+		}
+	}.	
+$$
+
+Following the definition of an operation, an operation ${\op}$ maps each of the
+pairs above to an element of ${S.}$ For example, some mappings might be:
+
+<Grid cols={2}>
+
+<div className={`two-way-table`}>
+
+|           |       |
+| --------- | ----- |
+| ${(a,a)}$ | ${a}$ |
+| ${(a,b)}$ | ${a}$ |
+| ${(b,a)}$ | ${a}$ |
+| ${(b,b)}$ | ${a}$ |
+
+</div>
+
+<div className={`two-way-table`}>
+
+|           |       |
+| --------- | ----- |
+| ${(a,a)}$ | ${b}$ |
+| ${(a,b)}$ | ${b}$ |
+| ${(b,a)}$ | ${b}$ |
+| ${(b,b)}$ | ${a}$ |
+
+</div>
+
+<div className={`two-way-table`}>
+
+|           |       |
+| --------- | ----- |
+| ${(a,a)}$ | ${a}$ |
+| ${(a,b)}$ | ${b}$ |
+| ${(b,a)}$ | ${a}$ |
+| ${(b,b)}$ | ${b}$ |
+
+</div>
+
+<div className={`two-way-table`}>
+
+|           |       |
+| --------- | ----- |
+| ${(a,a)}$ | ${b}$ |
+| ${(a,b)}$ | ${a}$ |
+| ${(b,a)}$ | ${b}$ |
+| ${(b,b)}$ | ${a}$ |
+
+</div>
+
+</Grid>
+
+Thinking more carefully about this, we can draw a few inferences. First, an operation is a mapping from each element of the Cartesian product of the carrier set to an element of the carrier set. Thus, given a carrier set ${S}$ where the cardinality of ${S}$ is ${n,}$ the cardinality of ${S \times S}$ is ${n \times n = n^2.}$ And since a binary operation is a function of each element of ${S \times S}$ to an element of ${S,}$ we have ${n^{n^2}}$ possible operations. Thus, for our simple carrier set ${S = \set{a,b},}$ we get ${(2)^{2^2} = 2^{4} = 16}$ possible operations.
+
+Notice what this means: Without further information, if ${\op}$ is an operation, then ${a \op b}$ is a _unique element_. That is, ${a \op b}$ is a different element from ${b \op a.}$ This means that we can never assert that ${a \op b = b \op a}$ unless we assume, better yet, prove, that ${\op}$ is [commutative](#commutativity) (we'll study commutativity shortly). Likewise, given a ${c}$ in the carrier set ${S,}$ without more, the element ${a \op (b \op c)}$ is a distinct element from ${(a \op b) \op c.}$ Which means that we cannot assert that ${a \op (b \op c) = (a \op b) \op c}$ without assuming or proving that ${\op}$ is [associative](#associativity).
+
+## Algebraic Structure
+
+An algebraic structure, despite its complicated-sounding name, has a
+surprisingly short definition: 
+
+
+
+> __~algebraic structure~.__ An _algebraic structure_, or _algebra_, is a tuple:
+> 
+> $$
+> 	(S,~\set{\op_0, \op_1, \op_2,~\ldots,~\op_{n-1}})
+> $$
+> 
+> where ${S}$ is the _carrier set_, and ${\op_i}$ are operations on ${A.}$
+
+
+
+From the definition above, an _algebra_ or _algebraic structure_ is a tuple
+with two objects: (1) a set, and (2) a set of operations — functions — that take
+some member(s) of the set as a arguments, and return some member(s) of the set
+as their image. That set could be anything — a set of numbers, vectors, tuples,
+matrices, circuits, Boolean values, chess pieces, politicians, etc. Given that
+operations are functions, functions are relations, and relations are really just
+rules for how objects are paired, it follows that the moment we take a set and
+define rules for how things in that set can be combined, we've created a an
+algebra.
+
+Within reason, we may denote an algebra with the notational form
+${(\text{set},\text{ops}).}$ For example, the algebra ${(\reals, \set{+})}$ is an
+algebra of the reals and addition. Working with just a single operation, we can
+omit the braces and simply write ${(\reals, +).}$ If the algebra includes
+multiple operations, we adopt the convention of using braces. For example,
+${(\reals,\set{+,\times,-,/})}$ is an algebra of the reals and the operations of
+addition, multiplication, subtraction, and division.
+
+## Axiomatic Properties
+
+We begin by presenting _axiomic properties_. These are properties of an
+algebra's carrier set or operations that appear so frequently in proofs that
+appear so frequently that it would be inconvenient to state the same assumptions
+over and over again. Accordingly, we encapsulate the body of assumptions into a
+single package called an _axiomatic property_. This practice isn't unique to
+abstract algebra — we see it in all other areas of mathematics.
+
+### Commutativity
+
+We say that an operation ${\op}$ is _commutative_ on a set
+${A}$ if, and only if, for all ${a,b \in A,}$ it is true that ${a \op b = b \op
+a.}$
+
+> __~commutativity~.__ Let ${S}$ be a carrier set and ${\op}$ an operation on ${S.}$ Then ${\op}$ is _commutative_ if, and only if, for all ${a,b \in S,}$ it is true that ${a \op b = b \op a.}$ Otherwise, we say that the operation ${\op}$ is _noncommutative_.
+
+Some examples: The operation of ${+}$ on the integers is commutative:
+${1+2=2+1.}$ Likewise, the operation of ${\times}$ is commutative on the
+integers ${2 \times 3 = 3 \times 2.}$ The operation of division on the reals,
+however, is not: ${1/2 \neq 2/1.}$ We say the addition is _commutative_ on the
+reals, and division is _noncommutative_ on the reals. Subtraction is not
+commutative on the integers either, ${a-b \neq b-a,}$ with the single exception
+that ${a=b.}$ This does not, however, motivate us to say "partially commutative"
+because an operation is commutative if, and only if, it holds for all members of
+the carrier. Even if there were such a motivation, it wouldn't be very useful.
+(We follow the ancient mantra of mathematics — if it does not need to be
+said/defined, do not say/define it.)
+
+A few more bits of detail: First, since ${\op}$ is a function, the commutative
+property essentially tells us that ${{f}(a,b) = {f}(b,a).}$ In the world
+of functions, we say that ${{f}}$ is a symmetric function.  Given ${a \op b}$
+and ${\op}$ is commutative, we may use the cute phrase, "${a}$ commutes with
+${b,}$ and ${b}$ commutes with ${a.}$" Thus, when an operation ${\op}$ on a set
+${S}$ is commutative, then elements that are placed on the ${\op}$ bus are free
+to sit wherever they'd like — ${\op}$ will send them where they must regardless.
+
+### Associativity
+
+Next, we say that an operation ${\op}$ is _associative_ if, and only if, for all
+${a,b \in A,}$ we can rest assured that ${a \op (b \op c) = (a \op b) \op c.}$
+Associativity is a property that arises when we have more than two operands —
+with just one or two operands, associativity is unnecessary, because
+commutativity/noncommutativity answers all of our questions. When we have more
+than two operands, however, we're confronted with a question that commutativity
+can't answer: Given ${a \op b \op c,}$ can we do ${a \op b}$ first? Put
+differently, associativity tells us whether applying commutativity is at our
+discretion. If an operation is _nonassociative_, then no — there are rules to
+follow. If an operation is associative, then yes — it's a free for all.
+
+> __~associativity~.__ Let ${S}$ be a carrier set and ${\op}$ and operation on ${S.}$ Then ${\op}$ is _associative_ if, and only if, for all ${a,b,c \in S,}$ it is true that ${(a \op b) \op c = a \op (b \op c).}$ Otherwise, we say that the operation ${\op}$ is _nonassociative_.
+
+Once more, since ${\op}$ is just a function, we can think of associativity in
+functional terms as ${f(f(x,y),z) = f(x,f(y,z)).}$ Importantly, the fact that an
+operation is associative does not imply that it's commutative. For example, the
+concatenation operation ${\con}$ on strings is associative, but noncommutative.
+For those unfamiliar, ${\con}$ is an operation that takes two sequences of
+symbols, and _concatenates_, or _joins_ them, into a single sequence of symbols.
+For example, ${\string{ab} \con \string{cd} = \string{abcd},}$ or ${\string{Hi}
+\con \string{~~} \con \string{there.} = \string{Hi there.}}$ Thus, it follows
+that ${(a \con b) \con c = a \con (b \con c) = abc,}$ but it's not the case
+that ${(a \con b) \con c = (b \con a) \con c.}$
+
+The same goes in the other direction: The commutativity _does not imply_
+associativity. Perhaps the most important example of this in real life is
+_floating point addition_ (and by extension, multiplication). ${(a + -a) + b =
+b}$ is always true, but ${a + (-a + b)}$ is not guaranteed to equal ${b}$
+because of precision loss, and the probability that ${a + (-a + b) \neq b}$
+increases if ${b - a}$ is very close to ${0.}$ Failing to consider this fact can
+kill; the Patriot Missile Failure of 1991 killed 28 U.S. soldiers and injured
+about 100 others because of incorrect floating point arithmetic.
+
+### Identity 
+
+The next property we're interested in is whether the carrier set contains an _identity_.
+
+
+> __~identity element~.__ Let ${S}$ be a carrier set and ${\op}$ be an operation on ${S.}$ If, and only if, there exists an element ${e \in S}$ such that, for all ${m \in S,}$ ${e \op m = m}$ and ${m \op e = m,}$ then we say that ${e}$ is an _identity element_ of ${\op.}$
+
+
+For example, for the algebra ${(\reals, +),}$ the identity element is ${0.}$ For
+the algebra ${(\reals, \times),}$ the identity element is ${1.}$ Not all
+algebras have identity elements. The algebra ${(\nodds, +),}$ where
+${\nodds}$ is the set of all odd natural numbers, has no identity element —
+adding an odd natural ${x}$ to another odd natural ${y}$ will always return some
+new odd natural ${z.}$
+
+We must be careful with the identity element's definition — it's deceptively
+simple. There are three pieces to the definition: (1) ${e \op m = m,}$ (2) ${m
+\op e = m,}$ and (3) condition 1 and condition 2 hold _for all_ the elements of
+the carrier set. Thus, if we want to prove that some element ${e}$ is an
+identity element, we must prove all three of these pieces. As it turns out, we
+can satisfy condition 1 without satisfying condition 2, condition 2 without
+condition 1, or neither condition 1 nor condition 2. This leads to the notion of a one-sided identity.
+
+> __one-sided identity.__ Let ${S}$ be a carrier set and ${\op}$ an operation on ${S.}$ Given an element ${e \in S,}$ we say that ${e}$ is a _left-sided identity_ if, and only if, for all ${s \in S,}$ ${e \op s = s.}$ We say that ${e}$ is a _right-sided identity_ if, and only if, for all ${s \in S,}$ ${s \op e = s.}$ If ${e \op s = s}$ and ${s \op e \neq s,}$ then ${e}$ is a _strictly left-sided identity_, and if ${s \op e = s}$ and ${e \op s \neq s,}$ then ${e}$ is a _strictly right-sided identity_. If ${e}$ is either strictly left-sided or strictly right-sided, we say that ${e}$ is a _one-sided identity_. If ${e}$ is both left-sided and right-sided, then ${e}$ is an identity element.
+
+Suppose we're given an algebra ${(S,\ast).}$ We're told that ${\ast}$ has the
+left identity ${e_1 \in S}$ and the right identity ${e_2 \in S.}$ From the definition above, we can infer that, given ${a \in S}$ and ${b \in S,}$ 
+
+$$
+	e_1 \ast a = a \\
+	b \ast e_2 = b.
+$$
+
+What if ${a = e_2}$ and ${b = e_1?}$ Well, a simple substitution shows:
+
+$$
+	e_1 \ast e_2 = e_2 \\
+	e_1 \ast e_2 = e_1.
+$$
+
+That is, ${e_1 = e_2 = e.}$ Consequently, we have the following lemma.
+
+
+> __~lemma~.__ Given a carrier set ${S}$ and a binary operation ${\op}$ on ${S,}$ there is _at most_ one identity element with respect to ${\op.}$
+
+
+### Inverse
+
+If a carrier set has an identity element, we often want to ask whether every element of the carrier set has a  _left inverse_, _right inverse_, or both left and right (_inverse_). Here is the definition of a left-inverse:
+
+
+
+> __~left inverse~.__ Let ${S}$ be a carrier set, ${\op}$ an operation on ${S,}$ and ${e}$ the identity element of ${S.}$ We say that every ${a \in S}$ has a _left inverse_ ${a^{-1}}$ if, and only if,
+> 
+> $$
+> 	a^{-1} \op a = e.
+> $$
+
+
+
+And here is the definition of the right inverse:
+
+
+
+> __~right inverse~.__ Let ${S}$ be a carrier set, ${\op}$ an operation on ${S,}$ and ${e}$ the identity element of ${S.}$ We say that every ${a \in S}$ has a _right inverse_ ${a^{-1}}$ if, and only if,
+> 
+> $$
+> 	a \op a^{-1} = e.
+> $$
+
+
+
+If every element of the carrier set has a right and left inverse, we say that
+the every element of the carrier set has an inverse.
+
+
+
+> __~inverse~.__ Let ${S}$ be a carrier set and ${\op}$ be an operation on ${S.}$ Every ${a \in S}$ has an _inverse_ ${a^{-1} \in S}$ if, and only if,
+>
+> $$
+> 	a \op a^{-1} = a^{-1} \op a = e.
+> $$
+
+
+
+### Distributivity
+
+The third property we'll consider requires us to introduce a second binary operator ${\lamp.}$ Thus, we know have an algebra ${(S, \set{\op, \lamp}),}$ where ${S}$ is a carrier set.[^lamp] With two operations, a question we're interested in is whether the operations are _left distributive_, _right distributive_, or both left and right distributive.
+
+[^lamp]: The symbol ${\lamp}$ is called a _lamp_, and is used to denote a comment in the APL programming language. We use it here as a way to distinguish operations.
+
+Left-distributivity is defined as follows:
+
+
+> __~left-distributivity~.__ Let ${S}$ be a carrier, and ${\op}$ and ${\lamp}$ be operations on ${S.}$ We say that ${\op}$ is _left-distributive over_ ${\lamp}$ if, and only if, for all ${a,b,c \in S,}$ 
+> 
+> $$
+> 	a \op (b \lamp c) = (a \op b) \lamp (a \op c).
+> $$
+
+
+
+Right-distributivity is defined as follows:
+
+
+
+> __~right-distributivity~.__ Let ${S}$ be a carrier, and ${\op}$ and ${\lamp}$ be operations on ${S.}$ We say that ${\op}$ is _right-distributive over_ ${\lamp}$ if, and only if, for all ${a,b,c \in S,}$ 
+> 
+> $$
+> 	(b \lamp c) \op a = (b \op a) \lamp (c \op a).
+> $$
+
+
+
+If an operation ${\op}$ is both left- and right-distributive over an operation ${\lamp,}$ we say that ${\op}$ _distributes over_ ${\lamp,}$ or ${\op}$ _is distributive over_ ${\lamp.}$
+
+
+
+> __~distributivity~.__ Let ${S}$ be a carrier, and ${\op}$ and ${\lamp}$ be operations on ${S.}$ We say that ${\op}$ is _distributive over_ ${\lamp}$ if, and only if, for all ${a,b,c \in S,}$ 
+> 
+> $$
+> 	a \op (b \lamp c) = (a \op b) \lamp (a \op c) = (b \op a) \lamp (c \op a).
+> $$
+
+
+
+A few things to observe from the definition of distributivity: First, it's a
+property that _always_ involves two distinct operations. Accordingly, the
+statement "multiplication is distributive" is akin to an incomplete sentence in
+natural language; it's ambiguous. Why? Because the adjective "distributive"
+entails that the distributive "thing" distributes. And if something distributes,
+there's always a distributor (the thing that distributes) and a distributee (the
+thing that receives the distribution). Thus, when we state that "${x}$ is
+distributive" without more, the audience is told the distributor, but not the
+distributee, which leaves them with no way of verifying whether the statement is
+true or false — it's ambiguous. And in the world of mathematics, ambiguous
+statements are useless. Accordingly, to state that something is distributive,
+the statement must always be either of these forms:
+
+> _${({operation}_1)}$ is distributive over ${({operation}_2).}$_
+>
+> _${({operation}_1)}$ distributes over ${({operation}_2).}$_
+
+Second, distributivity is our first encounter of a property that _relates_ one operation with another. We'll see that there are many other such properties, but distributivity is by far the most common. Casting distributivity in functional terms, suppose ${\op = f}$ and ${\lamp = g.}$ If ${f}$ is left-distributive over ${g,}$ we get:
+
+$$
+\eqs{
+	a \op (b \lamp c) &= (a \op b) \lamp (a \op c) \\
+	a ~f~ (b ~g~ c) &= (a ~f~ b) ~g~ (a ~f~ c) \\
+	a ~f~ (g(b,c)) &= (f(a,b)) ~g~ (f(a,c)) \\
+	f(a,g(b,c)) &= g(f(a,b),f(a,c)) \\
+}
+$$
+
+If ${f}$ is right-distributive over ${g,}$ we get:
+
+$$
+\eqs{
+	(b \lamp c) \op a &= (b \op a) \lamp (c \op a) \\
+	(b ~g~ c) ~f~ a &= (b ~f~ a) ~g~ (c ~f~ a) \\
+	(g(b,c)) ~f~ a &= (f(b,a)) ~g~ (f(c,a)) \\
+	f(g(b,c),a) &= g(f(b,a),f(c,a))
+}
+$$
+
+And if ${f}$ is distributive over ${g,}$ we have:
+
+$$
+	\eqs{
+		a \op (b \lamp c) &= (a \op b) \lamp (a \op c) = (b \op a) \lamp (c \op a) \\
+		a ~f~ (b ~g~ c) &= (a ~f~ b) ~g~ (a ~f~ c) = (b ~f~ a) ~g~ (c ~f~ a) \\
+		a ~f~ (g(b,c)) &= (f(a,b)) ~g~ (f(a,c)) = (f(b,a)) ~g~ (f(c,a)) \\
+		f(a,g(b,c)) &= g (f(a,b),f(a,c)) = g (f(b,a),f(c,a))
+	}
+$$
+
+## Axiomatic Algebras
+
+Having defined the axiomatic properties, we turn to _axiomatic algebras_. Like
+the axiomatic properties, an axiomatic algebra is an algebra that mathematicians
+have given a special name, because (1) the algebra has some interesting
+combination of the axiomatic properties and (2) the algebra appears over and
+over again in many proofs.
+
+Before we look at the algebras themselves, let's establish some conventions associated with algebras. As we saw, an algebra is a tuple ${(S,\Oo),}$ where ${S}$ is some set of elements and ${\Oo}$ is a set of operations on those elements. Now that we're discussing algebras, we'll want to refer to them without having to write ${(S,\Oo)}$ over and over again. This particularly the case once we start talking about larger algebras. The convenion in abstract algebra is to use _fraktur letters_ for algebraic structures. For example, an algebra ${(G,+)}$ may be denoted ${\mathfrak{G}.}$ This notation has the benefits of (1) conciseness and (2) the ability to distinguish the carrier ${G}$ and the algebra ${\mathfrak{G}.}$
+
+### Semigroup
+
+The two most basic algebras are the _associative semigroup_ and the _commutative semigroup_. As we'll see later, recognizing these algebras can allow us to deduce some interesting propositions. First, let's consider the _semigroup_, a very simple algebra:
+
+
+> __~semigroup~.__ Let ${S}$ be a carrier set and ${\op}$ an operation on ${S.}$ Then the algebra ${(S, \op)}$ is an _associative semigroup_ if, and only if, ${\op}$ is [associative](#associativity) on ${S.}$
+
+
+For example, the algebras ${(\nat, +),}$ ${(\uint, +),}$ ${(\nat, \times),}$ and ${(\uint, \times)}$ are all semigroups. The algebra ${(\uint, -)}$ is not a semigroup, because ${-}$ is not associative on the integers. The algebra ${(\nat,-)}$ is not a semigroup, because ${-}$ is not even an operation on ${\nat.}$ Of note, we often refer to algebras with the following syntactic form:
+
+> ${\ltn \text{property} \gtn}$ ${\ltn \text{algebra} \gtn}$ of the ${\ltn \text{carrier} \gtn}$
+
+For example, the semigroup ${(\uint,+)}$ is called the _additive semigroup of the integers_, and the semigroup ${(\nat,\times)}$ is called the _multiplicative semigroup of the naturals._
+
+### Commutative Semigroup
+
+The next simplest algebra is the _commutative semigroup_: 
+
+> __~commutative semigroup~.__ Let ${S}$ be a carrier set and ${\op}$ an operation on ${S.}$ Then the algebra ${(S, \op)}$ is a _commutative semigroup_ if, and only if, ${\op}$ is [commutative](#associativity) on ${S.}$
+
+For example, the algebras ${(\nat, +),}$ ${(\uint, +),}$ ${(\nat, \times)}$ and ${(\uint, \times)}$ are all Abelian semigroups. The operations of addition and multiplication are commutative on ${\nat}$ and ${\uint.}$
+
+### Monoid
+The third simplest algebra is the _monoid_.
+
+
+> __~monoid~.__ Let ${S}$ be a carrier set and ${\op}$ an operation on ${S.}$ Then the algebra ${(S, \op)}$ is an _monoid_ if, and only if, the following propositions are true: (1) ${(S, \op)}$ is an [associative semigroup](#associative-semigroup), and (2) for all ${a \in S,}$ there exists an [identity element](#identity) ${e \in S.}$
+
+
+For example, the algebras ${(\nat,+)}$ and ${(\uint,+)}$ are monoids, because their carrier sets contain the additive identity ${0.}$ Likewise, the algebras ${(\nat, \times)}$ and ${(\uint,\times)}$ are monoids, because they're carrier sets contain the multiplicative identity ${1.}$ In contrast, the algebra ${(2 \uint, \times)}$ is a semigroup but _not_ a monoid, because the multiplicative identity ${1}$ is not a member of the set of even integers ${2 \uint.}$
+
+### Commutative Monoids
+
+If ${\op}$ is associative but not commutative, we say that ${(S, \op)}$ is an _associative monoid_. If ${\op}$ is commutative but not associative, we say that ${(S, \op)}$ is a _commutative monoid_.
+
+### Groups
+
+The fourth simplest algebra is the _group_. By far, they are most common of the simple algebras. In fact, they're so common that there's an entire subfield of abstract algebra dedicated to them, called _group theory_.
+
+
+> __~group~.__ Let ${S}$ be a carrier set and ${\op}$ be an operation on ${S.}$ Then the algebra ${(S, \op)}$ is a _group_ if, and only if, all of the following propositions are true: (1) ${\op}$ is [associative](#associativity). (2) For all ${a \in S,}$ there exists an [identity element](#identity) ${e \in S.}$ And (3) For all ${a \in S,}$ there exists an [inverse](#inverse) ${a^{-1} \in S.}$ If the carrier ${S}$ is a finite set, then we say that the group is a _finite group_.
+
+
+Notice that from the definition above, the _group_ is really just an associative monoid with an addon: Every element ${a \in S}$ has an inverse ${a^{-1} \in S}$ such that ${a \op a^{-1} = e.}$
+
+Let's consider some examples. The algebra ${(\uint, +)}$ is a group, called the _additive group of integers_. Likewise, the algebra ${(\rat, +)}$ is a group, called the _additive group of rationals_. If we defined the natural numbers as excluding zero (which we do not in these materials), then ${(\nat, +)}$ is not a group, because there is no inverse.
+
+Importantly, the definition of a group does not require commutativity. Thus, a given group ${G = (S, \op),}$ without further information, does not tell us whether ${\op}$ is commutative on ${S.}$ If it is commutative, then we say that ${G}$ is an _Abelian group_.
+
+#### Properties of Groups 
+Recall that in our discussion of the [identity element](#identity), we showed that an algebra can have _at most_ one identity element. Since a group, by definition, must have an identity element, we have the following property: 
+
+
+> __~group identity~.__ Given a group ${(G,\op)}$ there exists _exactly one_ element ${e \in G,}$ called the _group identity_, such that, for all ${a \in G,}$ it follows that ${a \op e = a.}$
+
+
+Now consider this question: Can an element ${a \in G}$ have two inverses? Well, let's suppose ${a}$ has the inverses ${a'}$ and ${a''.}$ Then we have:
+
+$$
+	\eqs{
+		a' \op (a \op a'') &= a' \op e = a' \\
+		(a' \op a) \op a'' &= e \op a'' = a''.
+	}
+$$
+
+But since ${\op}$ is associative by definition, it follows that:
+
+$$
+	\eqs{
+		a' \op (a \op'') &= (a' \op a) \op a'' \\
+		a' &= a''.
+	}
+$$
+
+Hence, we have the following property:
+
+
+> __~group inverse~.__ Given a group ${(G,\op)}$ there exists _exactly one_ element ${i \in G,}$ called the _group inverse_, such that for all ${a \in G,}$ it follows that ${a \op i}$ is the identity element ${e \in G.}$
+
+
+### Abelian Group
+
+The term "group" without more, communicates an assocative monoid with the additional property of every element having an inverse. For commutative monoids, we have the _Abelian group_ (named after the mathematician Niels Abel, a forefather of group theory).
+
+
+> __~abelian group~.__ Let ${S}$ be a carrier set and ${\op}$ be an operation on ${S.}$ Then the algebra ${(S, \op)}$ is an _Abelian group_ if, and only if, all of the following propositions are true: (1) ${\op}$ is [commutative](#commutativity). (2) For all ${a \in S,}$ there exists an [identity element](#identity) ${e \in S.}$ And (3) For all ${a \in S,}$ there exists an [inverse](#inverse) ${a^{-1} \in S.}$
+
+
+The algebras of ${(\uint,+),}$ ${(\uint,\times),}$ ${(\nat,+)}$ and ${(\nat,\times)}$ are all Abelian groups. For example, the algebra ${(\Sigma, \con)}$ where ${\Sigma}$ is an alphabet and ${\con}$ is concatenation is a group, but it is not a semigroup (recall the [earlier demonstration](#associativity) that string concatenation is associative but noncommutative).
+
+## Rings
+
+We now turn to our first "big" structure — the _ring_. We say "big" because
+we're now looking at a structure with two operations.
+
+> __~ring~.__ Let ${\mathfrak{R}}$ be the algebra ${(\R, \set{+,*}),}$ where ${\R}$ is a set, and ${+}$ and ${*}$ are operations on ${\R.}$ Then ${\mathfrak{R}}$ is a _ring_ if, and only if, the following propositions are true:
+> 
+> 1. ${(\R,+)}$ is an Abelian group.
+> 2. For all ${a,b,c \in \R,}$ it follows that ${(a*b)*c = a*(b*c).}$ That is, ${*}$ is associative.
+> 3. For all ${a,b,c \in \R:}$ ${a*(b+c)=(a*b)+(a*c),}$ and ${(b+c)*a=(b*a)+(c*a).}$ That is, ${*}$ is distributive over ${+.}$
+
+__~commutative ring~.__ A ring ${\mathfrak{R}=(R,\set{+,*})}$ is a _commutative ring_ if, and only if, ${\mathfrak{R}}$ is both a ring _and_ multiplication is commutative in ${R.}$
+
+The structure ${(\uint,\set{+,*})}$ is a commutative ring. It has an additive identity, 0, and a multiplicative identity, 1. It also has an additive inverse; for every ${n \in \uint,}$ there exists ${-n \in \uint.}$
+
+### Ordered Rings
+
+The structure ${(\uint,\set{+,*})}$ is an example of an _ordered ring_.
+
+> __~ordered ring~.__ A ring ${(S,\set{+,*})}$ is _ordered_ if, and only if, there exists a nonempty set ${P \subset S,}$ called the _positive elements_ of ${S,}$ with the following properties:
+> 
+> 1. If ${a,b \in P,}$ then ${a+b \in P.}$
+> 2. If ${a,b \in P,}$ then ${a*b \in P.}$
+> 3. If ${a \in S,}$ then exactly one of the following is true: ${a \in P,}$ ${a = 0,}$ or ${-a \in P.}$
+
+
+## Fields
+
+> __~field~.__ A _field_ is a structure ${\mathfrak{F}=(F,\set{+,*}),}$ where ${F}$ is a set and ${\set{+,*}}$ are binary operations on ${F,}$ satisfying the following properties, called the _field axioms_:
+> 
+> 1. ${(F,+)}$ is an _Abelian group_.
+> 2. ${(F \smallsetminus \set{0}, \set{*})}$ is an _Abelian group_.
+> 3. ${*}$ is distributive over ${+}$ in ${F.}$
+> 4. ${0 \neq 1.}$
+
+
+## Isomorphisms 
+
+Consider the following pairs of strings:
+
+$$
+	\eqs{
+		&\ar{\string{madam},~~\string{rotor}} \\[1em]
+		&\ar{\string{paper},~~\string{title}} \\[1em]
+		&\ar{\string{egg},~~\string{add}}
+	}
+$$
+
+Do we see a pattern to these strings? Let's create a grid for each pair above.
+We'll have one row per string, one cell per character, and the following
+coloring rule: For all the characters of a given string ${S,}$ if there exists a
+pair of characters ${(a,b) \in S \times S}$ such that ${a = b,}$ then ${a}$ and
+${b}$ are assigned the color _powder blue_. Otherwise, no color is assigned.
+Putting it all together, we have:
+
+<Grid cols={3}>
+	<table className={`grid`}>
+		<tbody>
+			<tr>
+				<td className={`blue`}>m</td>
+				<td className={`blue`}>a</td>
+				<td>d</td>
+				<td className={`blue`}>a</td>
+				<td className={`blue`}>m</td>
+			</tr>
+			<tr>
+				<td className={`blue`}>r</td>
+				<td className={`blue`}>o</td>
+				<td>t</td>
+				<td className={`blue`}>o</td>
+				<td className={`blue`}>r</td>
+			</tr>
+		</tbody>
+	</table>
+	<table className={`grid`}>
+		<tbody>
+			<tr>
+				<td className={`blue`}>p</td>
+				<td>a</td>
+				<td className={`blue`}>p</td>
+				<td>e</td>
+				<td>r</td>
+			</tr>
+			<tr>
+				<td className={`blue`}>t</td>
+				<td>i</td>
+				<td className={`blue`}>t</td>
+				<td>l</td>
+				<td>e</td>
+			</tr>
+		</tbody>
+	</table>
+	<table className={`grid`}>
+		<tbody>
+			<tr>
+				<td>e</td>
+				<td className={`blue`}>g</td>
+				<td className={`blue`}>g</td>
+			</tr>
+			<tr>
+				<td>a</td>
+				<td className={`blue`}>d</td>
+				<td className={`blue`}>d</td>
+			</tr>
+		</tbody>
+	</table>
+</Grid>
+
+Notice that "madam" and "rotor" have some relationship, "paper" and "title" have
+another relationship, and "egg" and "add" have another relationship. All of
+these relationships are examples of _isomorphisms_ — the relationship of
+_structural similarity_ between objects. The string "rotor" is an
+isomorph of "madam" and the string "madam" is an isomorph of "rotor." Likewise,
+"paper" is an isomorph of "title" and vice versa, and "egg" is an isomorph of
+"add" and vice versa.

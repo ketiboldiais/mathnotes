@@ -4,19 +4,19 @@
 
 Values in JavaScript (and many other programming languages), are classified
 by type. A value's type will determine what JavaScript can and cannot do
-with the value. There are two categories of types: **primitive types** and
-**object types**. These primitive types are: `Number`, `String`, `Boolean`,
+with the value. There are two categories of types: __primitive types__ and
+__object types__. These primitive types are: `Number`, `String`, `Boolean`,
 `Null`, `Undefined`, and `Symbol`.
 
 Any value that is not a _number_, _string_, _boolean_, _symbol_, _null_, or
-_undefined_ is an **object type** value. Generally, an **object** (a value
-of _object type_), is a collection of **properties**, where each property
-consists of a** name ** and its corresponding **value** (and that value may
+_undefined_ is an __object type__ value. Generally, an __object__ (a value
+of _object type_), is a collection of __properties__, where each property
+consists of a__ name __ and its corresponding __value__ (and that value may
 be a primitive type value or an object).
 
 The key difference between an object type value and a primitive type value:
-Object type values are **mutable** (the value can be changed), while
-primitive type values are **immutable** (the value cannot be changed).
+Object type values are __mutable__ (the value can be changed), while
+primitive type values are __immutable__ (the value cannot be changed).
 
 For example, if we have an object with a property `{emotion: "happy"}`, the
 emotion's assigned value, "happy" can be changed. But, the value `1`, a
@@ -44,7 +44,7 @@ can store is roughly 9 quadrillion.
 The primitive type `number` stores integers, floats (decimal numbers), and
 approximations of real numbers. In other words, <b>immutable numeric
 data</b>. And when a number appears directly in a JavaScript program is
-called a **numeric literal**. Negative integers can be stored by appending
+called a __numeric literal__. Negative integers can be stored by appending
 a minus sign directly to the number (e.g., `-17`).
 
 JavaScript's number type is not limited to the base-10 system or to decimal
@@ -215,7 +215,7 @@ And the unary operators:
 
 ## Variables
 
-Like other languages, values in JavaScript can be stored in a **variable**.
+Like other languages, values in JavaScript can be stored in a __variable__.
 Variables themselves are a kind of _binding_. They consist of two
 attributes: A _name_, which allows us (and JavaScript) to tell variables
 apart. And a _value_, which represents the current contents of the
@@ -223,15 +223,15 @@ variable. The name of a variable is fixed. But, the value can (but not
 always) change whenever we assign a new value to the variable.
 
 Unlike many other programming languages (e.g., Java), JavaScript variables
-and constants are **untyped**&mdash;we do not specify the type of the value
-to be assigned in a declaration. **Variables** are essentially boxes with
+and constants are __untyped__&mdash;we do not specify the type of the value
+to be assigned in a declaration. __Variables__ are essentially boxes with
 labels, that we can then use to store data. By storing data in a variable,
 we can recall the data later on, use it, or change it.
 
 Before we can use a variable in JavaScript, they must be _declared_. There
 are three ways to declare variables in JavaScript: `let`, `const`, or
 `var`. We cover each of their uses below. To do so, however, we need to
-give the variable a **name**. The general template:
+give the variable a __name__. The general template:
 
 > `let` ${n}$ = ${val}$;
 >
@@ -273,7 +273,7 @@ console.log(x);
 ```
 
 From these rules, we can see that `let` is JavaScript's way of providing
-**mutable variables**.
+__mutable variables__.
 
 Alternatively, we can declare a variable with `const`:
 
@@ -283,7 +283,7 @@ const acceleration = 9.807;
 
 As the name suggests, a variable declared with `const` is a constant
 &mdash; it cannot be redeclared, nor can we reassign it values. Thus,
-`const` is JavaScript's way of providing **mutable variables**. Moreover, a
+`const` is JavaScript's way of providing __mutable variables__. Moreover, a
 variable declared with `const` must always be _initialized_. In other
 words, we
 
@@ -347,8 +347,8 @@ console.log(mass);
 ```
 
 Using `var` is generally discouraged. We will refrain from delving into the
-details for now, but `var` is **function-scoped**, and `let` is
-**block-scoped**. The issues this distinction causes will be explored in
+details for now, but `var` is __function-scoped__, and `let` is
+__block-scoped__. The issues this distinction causes will be explored in
 subsequent materials on functions.
 
 ## Naming Variables and Other Conventions
@@ -376,13 +376,13 @@ const IsEncrypted = true;
 ```
 
 The collection of bindings and their values at any given time is called the
-**environment**. The moment we run a JavaScript program, an environment is
+__environment__. The moment we run a JavaScript program, an environment is
 created. That environment, however, is not limited to the bindings we've
 created. It also contains bindings provided by JavaScript natively.
 
 ## Null & Undefined
 
-The primitive type **null** is a primitive type consisting of only one
+The primitive type __null__ is a primitive type consisting of only one
 value: _null_. The value _null_ represents the absence of a meaningful
 value. This can be useful, in that it allows us to declare a variable
 without assigning it a value, then use it later on.
@@ -422,7 +422,7 @@ the holder. When the variable is `undefined`, there's no holder at all.
 
 ## Strings
 
-A **string** is a sequence of characters. In JavaScript, strings are an
+A __string__ is a sequence of characters. In JavaScript, strings are an
 _immutable_ ordered sequence of 16-bit values, where each value represents
 a Unicode character. Strings are inherently _arrays_ (since they are an
 _ordered_ sequence). Thus, each character in a string has an _index_,
@@ -459,7 +459,7 @@ of the most often used methods are provided below.
 
 ### String Length
 
-The number of characters in a string is called its **length**, and JS can
+The number of characters in a string is called its __length__, and JS can
 return that number by using the syntax `${a}$.length`, where ${a}$ is a
 string:
 
@@ -472,7 +472,7 @@ greeting.length; // returns 5
 ### Concatenating Strings
 
 The arithmetic symbols do not operate on strings, except for `+`. Writing
-`${a}$ + ${b}$`, where ${a}$ and ${b}$ are strings will **concatenate**
+`${a}$ + ${b}$`, where ${a}$ and ${b}$ are strings will __concatenate__
 ${a}$ and ${b}$. Concatenation is simply appending, or combing different
 strings. Strings can be concatenated with a `+` character.
 
@@ -555,7 +555,7 @@ food.indexOf("dog"); // returns 3
 
 ## Primitive Type: Boolean
 
-The primitive type **boolean** covers only 2 values: `true` or `false`.
+The primitive type __boolean__ covers only 2 values: `true` or `false`.
 Because the boolean type has only two values, they are an effective way of
 representing strictly binary values:
 
@@ -565,7 +565,7 @@ representing strictly binary values:
 
 ### Boolean Operators
 
-Like most languages, JavaScript provides **Boolean operators**
+Like most languages, JavaScript provides __Boolean operators__
 corresponding to the logical connectives:
 
 | operator   | meaning       |
@@ -577,7 +577,7 @@ corresponding to the logical connectives:
 ## Comparison Operators
 
 Being able to compare values is critical to making simple decisions. The
-**comparison operators** are what allow us to compare numbers.
+__comparison operators__ are what allow us to compare numbers.
 
 The comparison operator `>` determines whether the first value is _greater
 than_ the second value.

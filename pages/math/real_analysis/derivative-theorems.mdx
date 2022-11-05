@@ -1,0 +1,1218 @@
+import { Plot } from "../../../components/illus/components/Plot/Plot";
+
+<Head>
+	<title>Derivatives</title>
+	<meta name={`description`} content={`Notes on derivatives.`}/>
+</Head>
+
+# The Derivative
+
+_This note covers various derivative theorems_.
+
+1. [Derivative of a Constant](#derivative-of-a-constant)
+2. [Constant Multiples](#constant-multiples)
+3. [Power Rule](#power-rule)
+4. [Derivative Difference Rule](#derivative-difference-rule)
+5. [Derivative Sum Rule](#derivative-sum-rule)
+6. [The Chain Rule](#the-chain-rule)
+7. [Product Rule](#product-rule)
+8. [Derivative Quotient Rule](#derivative-quotient-rule)
+9. [Implicit Differentiation](#implicit-differentiation)
+10. [Derivatives of Exponentials & Logarithmics](#derivatives-of-exponentials--logarithmics)
+		1. [Logarithmic Differentiation](#logarithmic-differentiation)
+		2. [Euler's Number](#eulers-number)
+		3. [General Power Rule](#general-power-rule)
+11. [Derivatives of the Trigonometric Functions](#derivatives-of-the-trigonometric-functions)
+12. [Differentiating Inverse Functions](#differentiating-inverse-functions)
+13. [Higher-order Derivatives](#higher-order-derivatives)
+
+
+
+## Derivative of a Constant
+> __theorem__. Derivative of a Constant. Given the constant function
+> ${y=f(x)=C,}$
+>
+> $$
+> 	\di{y}{x} C = 0.
+> $$
+
+~proof~. Consider the function ${f(x) = C,}$ where ${C}$ is a constant. Applying the definition of a derivative:
+
+$$
+	\begin{aligned}
+		f'(x) &= \lim\limits_{h \to 0} \dfrac{f(x + h) - f(x)}{h} \\[1em]
+		&= \lim\limits_{h \to 0} \dfrac{c - c}{h} \\[1em]
+		&= \lim\limits_{h \to 0} 0 \\[1em] &= 0
+	\end{aligned}
+$$
+
+## Constant Multiples
+> __~theorem~__. Given the function ${f(x) = C \cdot g(x),}$ where ${C}$ is a constant and ${g(x)}$ is a function,
+> 
+> $$
+> 	f'(x) = C \cdot g'(x).
+> $$
+
+Accordingly, the derivative of ${f(x) = \dfrac{3x^6}{2}}$ is ${f'(x) = \dfrac{3}{2} \cdot \di{}{x} (x^6) = \dfrac{3}{2} \cdot (6x^5).}$ In other words, ${f'(x) = 9x^5.}$
+
+Consider the function ${f(x) = \frac{3x^6}{2}.}$ What is the derivative of this function? First, we can rewrite this function as ${f(x) = \frac{3}{2} x^6.}$ The term ${\frac{3}{2}}$ is a constant. Hence, we can construct a more general form: ${f(x) = C \cdot g(x),}$ where ${C = \frac{3}{2}}$ and ${g(x) = x^6.}$ Momentarily, ignore the original problem and consider deriving a function of the form ${f(x) = C \cdot g(x).}$ We have:
+
+$$
+	\eqs{
+		f'(x) &= \lim\limits_{h \to 0} \dfrac{f(x + h) - f(x)}{h} \\[1em]
+		&= \lim\limits_{h \to 0} \dfrac{C g(x + h) - C g(x)}{h} \\[1em]
+		&= \lim\limits_{h \to 0} C \left[ \dfrac{g(x + h) - g(x)}{h} \right] \\[1em]
+		&= C \lim\limits_{h \to 0} \dfrac{g(x + h) - g(x)}{h} \\[1em]
+		&= C g'(x)
+	}
+$$
+
+The transition from line (3) to (4) follows from the limit law of constant
+multiples.
+
+> __~theorem~.__ Given a differentiable function ${y=f(x)}$ and a constant ${c \in \reals,}$ it follows that
+> 
+> $$
+> 	\di{}{x}c{\by}y=c\di{}{x}y=c\di{y}{x}.
+> $$
+
+## Power Rule
+> __~theorem~.__ For all ${n \in \reals,}$
+> 
+> $$
+> 	\di{}{x} x^n = nx^{n-1}.
+> $$
+> 
+> provided ${x^n}$ and ${x^{n-1}}$ are defined.
+
+~proof~. Consider the simplest case, where ${n = 1.}$ If ${n = 1,}$ then
+${f(x) = x^n = x^1 = x.}$ The graph of ${f(x) = x}$ is a straight vertical
+line, which has a slope of ${1.}$ Thus, we have:
+
+> __~lemma~.__ Given the function ${f(x) = x,}$ it follows that
+>
+> $$
+> 	\dfrac{\d}{\d x}~x = 1.
+> $$
+
+But about the more general case, ${x^n?}$ For this case, we return to our
+expression, ${\frac{\Delta f}{\Delta x}:}$
+
+$$
+	\dfrac{(x + \Delta x)^n - x^n}{\Delta x}
+$$
+
+Notice that we wrote ${x}$ instead of ${x_0.}$ We did so because ${x_0}$
+isn't meaninful in this particular computation. ${x}$ can be any fixed
+value of ${x,}$ and we aren't so concerned about its value. However, we state explicitly that ${x}$ is a fixed value, and ${\Delta x}$ is a moving value. To manipulate our expression, we must understand what the ${n^{\text{\scriptsize{th}}}}$ power of a sum is. To do so, we use a theorem from discrete mathematics, called the binomial theorem. The expression ${(x + \Delta x)^n}$ can be rewritten as:
+
+$$
+	(x+\Delta x)_1 \cdot (x+\Delta x)_2 \cdot \ldots \cdot (x+\Delta x)_n
+$$
+
+If we expand this multiplication, the first term in the product is ${x^n.}$ Next, we have a second term of the form ${x^{n-1}\Delta x.}$ How many times does this term occur? ${n}$ times, since we are multiplying ${(x + \Delta x)}$ by itself ${n}$ times. Thus, we have: ${x^n + nx^{n - 1}\Delta x.}$ We have enough to continue computing the derivative using the binomial theorem:
+
+$$
+	(x + \Delta x)^n = \sum\limits_{k = 0}^{n} \dbinom{n}{k}x^{n - k}(\Delta x)^k.
+$$
+
+When ${k \geq 2,}$ we always obtain terms containing ${\Delta x}$ in powers of 2, 3, 4, 5, and so on. Therefore, we can write the sum as
+
+$$
+	(x + \Delta x)^n = x^n + nx^{n - 1}\Delta x + \bigO{(\Delta x)^2}.
+$$
+
+The term ${\bigO{(\Delta x)^2}}$ encapsulates _non-dominant terms_ — terms that, for large values of ${x,}$ are negligible compared to ${x^n}$ and ${nx^{n-1}\Delta x.}$ To ensure the ball isn't hidden hiding the term ${\bigO{(\Delta x)^2}}$ represents:
+
+$$
+	(\Delta x)^2 \sum\limits_{k = 2}^{n} \binom{n}{k}x^{n - k} = (\Delta x)^2 \left( \binom{n}{2}x^{n-2} + \binom{n}{3}x^{n-3} \Delta x + \ldots - (\Delta x)^{n-2} \right)
+$$
+
+Importantly, as ${\Delta x \to 0,}$ we have the equation
+
+$$
+	\lim\limits_{\Delta x \to 0} \dfrac{o(\Delta x)}{\Delta x} = 0.
+$$
+
+We can rewrite our difference quotient as:
+
+$$
+\begin{aligned}
+	\dfrac{\Delta f}{\Delta x} &= \dfrac{1}{\Delta x}((x + \Delta x)^n - x^n) \\
+	&= \dfrac{1}{\Delta x}(x^n + nx^{n-1}\Delta x + O((\Delta x)^2) - x^n) \\
+	&= nx^{n-1} + \dfrac{O((\Delta x)^2)}{\Delta x}
+\end{aligned}
+$$
+
+Apply the limit:
+
+$$
+\begin{aligned}
+	\lim\limits_{\Delta x \to 0} \dfrac{\Delta f}{\Delta x} &= \lim\limits_{\Delta x \to 0} \left(nx^{n-1} + \dfrac{O((\Delta x)^2)}{\Delta x}\right) \\
+	&= nx^{n-1} + 0 \\
+	&= nx^{n-1}.
+\end{aligned}
+$$
+
+<Grid cols={2}>
+
+~example~. ${\di{}{x}\ar{x^2}=2x^{2-1}=2x^1=2x.}$
+
+~example~. ${\di{}{x}\ar{x^3}=3x^{3-1}=3x^2.}$
+
+~example~. ${\di{}{x}\ar{\sqrt{x}}=\di{}{x}\ar{x^{-\frac{1}{2}}}=\dfrac{x^{-\frac{1}{2}}}{2}.}$
+
+~example~. ${\di{}{x}\ar{x^{\sqrt{2}}}=\sqrt{2}x^{\sqrt{2}-1.}}$
+
+</Grid>
+
+## Derivative Difference Rule
+> __~difference rule for derivatives~__. Let ${f(x)}$ and ${g(x)}$ be
+> differentiable functions. The derivative of the difference of ${f}$ and
+> ${g}$ is the difference of the derivative of ${f}$ and ${g:}$
+> 
+> $$
+> 	\di{}{x}(f(x) - g(x)) = \di{}{x}(f(x)) - \di{}{x}(g(x))
+> $$
+> 
+> Alternatively, given the differentiable functions ${r(x),}$ ${s(x),}$ and
+> ${t(x),}$ and that ${r(x) = s'(x) - t'(x):}$
+> 
+> $$
+> 	r'(x) = s'(x) - t'(x)
+> $$
+
+What is the derivative of ${p(x) = 2x^5 - x^3?}$ Here too we can think of ${p(x)}$ as consisting of two separate functions: Given ${q(x) = 2x^5}$ and ${r(x) = x^3,}$ ${p(x) = q(x) - r(x).}$ Again we apply the definition of a derivative.
+
+$$
+	p'(x) = \lim\limits_{h \to 0} \dfrac{p(x + h) - p(x)}{h}.
+$$
+
+Now substitute: ${p(x + h) = q(x + h) - r(x + h)}$ and
+${p(x) = q(x) - r(x):}$
+
+$$
+	p'(x) = \lim\limits_{h \to 0} \dfrac{(q(x + h) - r(x + h)) - (q(x) - r(x))}{h}.
+$$
+
+Rearranging:
+
+$$
+	p'(x) = \lim\limits_{h \to 0} \left( \dfrac{q(x + h) - q(x)}{h} - \dfrac{r(x + h) + r(x)}{h} \right).
+$$
+
+Applying the sum law for limits and the definition of a derivative:
+
+$$
+	\begin{aligned} p'(x) &= \lim\limits_{h \to 0} \left(\dfrac{q(x + h) - q(x)}{h}\right) - \lim\limits_{h \to 0} \left(\dfrac{r(x + h) - r(x)}{h}\right) \\[1em] &= q'(x) - r'(x). \end{aligned}
+$$
+
+Hence, ${p'(x) = 10x^4 - 3x^2,}$ by the difference rule and power rule.
+
+## Derivative Sum Rule
+> __~theorem~.__ Let ${u = f(x)}$ and ${v = g(x)}$ be differentiable functions at ${x}$. For all ${x}$ where ${u}$ and ${v}$ are differentiable, it follows that
+> 
+> $$
+> 	\di{}{x}(u+v) = \di{}{x}u + \di{}{x}v = \di{u}{x} + \di{v}{x}.
+> $$
+>
+> Alternatively, given the differentiable functions ${r(x),}$ ${s(x),}$ and ${t(x),}$ and ${r(x) = s(x) + t(x),}$ then:
+> 
+> $$
+> 	r'(x) = s'(x) + t'(x)
+> $$
+
+What is the derivative of ${f(x) = 3x^3 + 2x^2?}$ To compute this
+derivative, we must apply the _sum rule for derivatives_. To do so, let's
+derive the general rule. The function ${f(x) = 3x^3 + 2x^2}$ can be written
+as the sum of two functions: Suppose ${g(x) = 3x^3}$ and ${j(x) = 2x^2.}$
+Then ${f(x) = g(x) + j(x).}$ That said, we apply the definition of a
+derivative:
+
+$$
+	f'(x) = \lim\limits_{h \to 0} \dfrac{f(x + h) - f(x)}{h}
+$$
+
+Now we substitute ${f(x + h) = g(x + h) + j(x + h)}$ and
+${f(x) = g(x) + j(x):}$
+
+$$
+	f'(x) = \lim\limits_{h \to 0} \dfrac{(f(x + h) + g(x + h)) - (f(x) + g(x))}{h}
+$$
+
+Rearranging:
+
+$$
+	f'(x) = \lim\limits_{h \to 0} \left( \dfrac{f(x+h) - f(x)}{h} + \dfrac{g(x + h) - g(x)}{h} \right)
+$$
+
+And applying the sum law for limits and the definition of a derivative:
+
+$$
+	\begin{aligned} f'(x) &= \lim\limits_{h \to 0} \left( \dfrac{f(x+h)-f(x)}{h} \right) + \lim\limits_{h \to 0}\left( \dfrac{g(x+h)-g(x)}{h} \right) \\[1em] &= f'(x) + g'(x) \end{aligned}
+$$
+
+
+Thus, returning to our original question, what is the derivative of ${f(x) = 3x^3 + 2x^2,}$ the derivative is simply the derivative of each term: ${f'(x) = 9x^2 + 4x,}$ by the sum rule and the power rule. Importantly, remember that ${f(x) + g(x) = (f+g)(x),}$ and that the domain of ${(f+g)(x)}$ is ${\dom{f} \cap \dom{g}.}$ This means that the rule above does not apply if ${\dom{f} \cap \dom{g} = \nil.}$ This isn't a calculus rule; it's foundational set theory.
+
+## The Chain Rule
+> __~the chain rule~__. Suppose ${f}$ and ${g}$ are functions. For all ${x}$ in
+> the domain of ${g}$ for which ${g}$ is differentiable at ${x}$ and ${f}$
+> is differentiable at ${g(x),}$ the derivative of the composite function
+> ${h(x) = (f \circ g)(x) = f(g(x))}$ is given by:
+>
+> $$
+> 	h'(x) = f'(g(x))g'(x)
+> $$
+
+Given the function ${f(x) = x^3 - (1/x),}$ we can write ${f(x) = t(x) - s(x),}$ where ${t(x) = x^3}$ and ${s(x) = 1/x.}$ Doing so, we may arrive at a derivative from this more abstracted form. This technique results from two observations: First, every function can be expressed as the combination of smaller functions. Borrowing from computer science, we might call these smaller functions helper functions. For example, silly as it may be, the function ${f(x) = x^2}$ can be written as ${f(x) = g(x),}$ where ${g(x) = x^2.}$ Or it can be written as ${f(x) = (g(x))^2}$, where ${g(x) = x.}$ Second, there are really only three ways to combine functions. First, we can add functions. For example, the function ${f(x) = \sin x + x^2}$ can be written as ${f(x) = g(x) + h(x),}$ where ${g(x) = \sin x}$ and ${h(x) = x^2.}$ The ability to add functions implies the ability to subtract functions, since addition is really just the addition of a negative. For example, the function ${a(x) = x^3 - x^2}$ can be written as ${a(x) = b(x) + c(x),}$ where ${b(x) = x^3}$ and ${c(x) = -x^2.}$ Second, we can multiply functions. The function ${\alpha(x) = (\sin x)(x^2)}$ can be written as ${\alpha(x) = \beta(x) \gamma(x),}$ where ${\beta(x) = \sin x}$ and ${\gamma(x) = x^2.}$ The ability to multiply functions implies the ability to divide functions, since division is just multiplication with the reciprocal. The function ${L(x) = \frac{\sin x}{x^5}}$ can be written as ${L(x) = M(x) \cdot N(x)}$ where ${M(x) = \sin x}$ and ${N(x) = \frac{1}{x^5}.}$ Third, we can compose, or nest, functions. For example, the function ${f(x) = (x^2 - 1)^2}$ can be written as ${f(x) = (g(x))^2,}$ where ${g(x) = x^2 - 1.}$ Similarly, the function ${\kappa(x) = \sin (x^3)}$ can be written as ${\kappa(x) = \sin (\lambda(x)),}$ where ${\lambda(x) = x^3.}$
+
+Borrowing again from computer science, these are the three means of combination. The remarkable aspect of functions is that every function can be written and rewritten, or expressed, with just these three means. So far, we've used our abstraction technique for the first two means: addition and multiplication. What we haven't used it for, however, is with composition. This limitation leads to some problems. We haven't yet seen a way to apply the technique to a function like ${s(a) = (a^2 - 1)^2.}$ Fortunately, we can simply expand this function: ${s(a) = a^4 - 2a^2 + 1,}$ then apply our familiar rules.
+
+Expansion, however, begins falling apart once we have something like ${(29a^4 - 17a^3 + 32a^2 - 17)^{15}.}$ This is a polynomial that would be messy to expand Worse, neither expansion nor our original method of generalization would help with functions like ${f(x) = \cos (x^2)}$ or ${t(x) = \tan \left(\frac{1}{2x^3 - x}\right).}$ We can, however, express the functions through composition, or nesting. With the composite function ${y = (x^3 - 1)^{100},}$ we generalize ${x^3 - 1}$ to ${u = x^3 - 1.}$ Following this generalization, ${y = u^{100}.}$ The derivative:
+
+$$
+	y = u^{100}
+	\di{y}{u} = 100u^{99}
+$$
+
+The derivative of ${\di{u}{x}:}$
+
+$$
+	u = x^3 - 1
+	\di{u}{x} = u' = 3x^2
+$$
+
+Suppose that ${y = g(x).}$ Then ${f(g(x)) = f(y).}$ Looking at it this way, we can see that ${g(x)}$ outputs a ${y,}$ and that ${y}$ is an input for ${f.}$ Now let's say that ${z = f(x).}$ Viewing it this way, when we ask for the derivative of ${f(g(x)),}$ what we're really asking for is, how quickly (or slowly), does ${f}$ change as ${x}$ changes? The answer to that question is the derivative. We know that a derivative is simply the application of a limit to the quotient rule. Thus, what we want to do is to consider the Newton quotient of the composite function ${f \circ g.}$ Suppose ${f}$ has a derivative at ${g(x)}$ and ${g}$ has a derivative at ${x.}$ Then, by Newton's quotient:
+
+$$
+	\dfrac{f(x + h) - f(x)}{h} = \dfrac{f(g(x + h)) - f(g(x))}{h}
+$$
+
+We replace some of the terms with simpler variables. Suppose ${u = g(x)}$ and ${k = g(x+h) - g(x).}$ Notice that with the above substitutions, ${k}$ depends on ${h.}$ As ${h}$ approaches 0, ${k}$ tends to 0. Bearing this in mind, we can the corresponding terms and arrive at ${\frac{f(u+k)-f(u)}{h}.}$ This looks very similar to the derivative ${f'(u),}$ but we have ${h}$ in the denominator and ${k}$ in the numerator. Recall that ${k}$ depends on ${h.}$ And because ${k}$ depends on ${h,}$ we have two cases to consider: ${k = 0}$ and ${k \neq 0.}$ The easier (and more common) case is when ${k \neq 0,}$ so let's deal with it it first. Suppose ${k \neq 0.}$ If ${k \neq 0,}$ then we can multiply and divide the our equation by ${k:}$
+
+$$
+	\dfrac{f(u + k) - f(u)}{k} \cdot \dfrac{k}{h} = \dfrac{f(u + k) - f(u)}{k} \cdot \dfrac{g(x + h) - g(x)}{h}.
+$$
+
+Examining the resulting equation, when ${h}$ approaches ${0,}$ several things occur. First, the quotient ${\frac{g(x+h)-g(x)}{h}}$ tends to ${g'(x).}$ Second, ${k \to 0}$ as ${h \to 0}$ because ${k = g(x + h) - g(x)}$ and ${g}$ is continuous at ${x}$ (by our first assumptions). Thus, the quotient ${\frac{g(x+h)-g(x)}{h}}$ approaches ${g'(x)}$ as ${h \to 0,}$ and the quotient ${\frac{f(u+k)-f(u)}{k}}$ approaches ${f'(u)}$ as ${h \to 0.}$ Hence, we have the following rule:
+
+$$
+	(f \circ g)'(x) = f'(g(x)) \cdot g'(x).
+$$
+
+The above rule, however, only applies when ${k \neq 0.}$ We must still consider the case where ${k = 0.}$ This is somewhat of an edge case, but because the possibility exists, we must address it. Otherwise, our preceding wouldn't apply. First, say we have a number ${u}$ such that ${f(u)}$ is defined. By the limit of Newton's quotient, we know that: ${\lim_{h \to 0} \frac{f(u + k) - f(u)}{k} = f'(u).}$ Encapsulating: ${\varphi(k) = \frac{f(u + k) - f(u)}{k} - f'(u).}$ It follows then that, as ${k}$ approaches 0, ${\varphi(k) = 0.}$ In other words: ${\lim_{k \to 0} \varphi(k) = \frac{f(u + k) - f(u)}{k} - f'(u) = 0.}$ Multiplying both sides by ${k,}$ we have: ${k \cdot \varphi(k) = f(u + k) - f(u) - kf'(u).}$ We can rewrite this as ${f(u + k) - f(u) = k \cdot f'(u) + k \cdot \varphi(k).}$ Consider what happens when ${k \neq 0.}$ The equation is holds. But if ${k = 0,}$ the equation breaks down, because ${\varphi(k)}$ leaves a 0 in the denominator. We can avoid this by supposing that ${\varphi(k) = 0,}$ in which case the equation holds when ${k = 0,}$ since doing so would simply yield ${f(u)-f(u)=0.}$ Of course, this is true. With this in mind, let's say ${u = g(x)}$ and ${k = g(x + h) - g(x).}$ Then as ${h}$ tends towards 0, so too does ${k.}$ Now, recall that the Newton quotient for the function ${f \circ g}$ is: ${\frac{f(g(x + h)) - f(g(x))}{h} = \frac{f(u + k) - f(u)}{h}.}$ Based on our previous analysis, it follows that:
+
+$$
+	\begin{aligned} \dfrac{f(g(x + h)) - f(g(x))}{h} &= \dfrac{f(u + k) - f(u)}{h} \\ &= \dfrac{k \cdot f'(u) + k \cdot \varphi(k)}{h} \end{aligned}
+$$
+
+Substituting the value for ${k,}$ we have:
+
+$$
+	\begin{aligned} \dfrac{f(g(x + h)) - f(g(x))}{h} &= \dfrac{f(u + k) - f(u)}{h} \\ &= \dfrac{k \cdot f'(u) + k \cdot \varphi(k)}{h} \\ &= \dfrac{g(x + h) - g(x)}{h} f'(u) + \dfrac{g(x + h) - g(x) - g(x)}{h} \varphi(k) \end{aligned}
+$$
+
+Now we take the limit as ${h}$ as 0. Applying this limit, we see that the
+first term approaches ${g'(x)f'(u).}$ Given that the limit of
+${\varphi(k)}$ as ${h \to 0}$ or ${k \to 0}$ is 0, applying the limit to
+the second term results in: ${\lim\_{h \to 0} \dfrac{g(x + h) - g(x)}{h} \varphi(k) = g'(x) \cdot 0 = 0.}$ Accordingly, we have the equality ${f \circ g(x) = f'(g(x))g'(x).}$
+
+> __~the chain rule~__. Suppose ${f}$ and ${g}$ are functions. For all ${x}$ in
+> the domain of ${g}$ for which ${g}$ is differentiable at ${x}$ and ${f}$
+> is differentiable at ${g(x),}$ the derivative of the composite function
+> ${h(x) = (f \circ g)(x) = f(g(x))}$ is given by:
+>
+> $$
+> 	h'(x) = f'(g(x))g'(x)
+> $$
+> 
+> Alternatively, if ${y}$ is a function of ${u,}$ and ${u}$ is a function of
+> ${x,}$ then:
+> 
+> $$
+> 	\di{y}{x} = \di{y}{u} \cdot \di{u}{x}
+> $$
+
+Once more we see that the chain rule applies even when ${k = 0.}$ This
+proves that the chain rule applies in general. Having proved the chain
+rule, we can now see that we can rest easy succumbing to our previous
+temptation:
+
+$$
+	\di{y}{\cancel{u}} \cdot \di{\cancel{u}}{x} = \di{y}{x}
+$$
+
+This is because the chain rule can be expressed by the formula:
+
+$$
+	\dfrac{\d(f \circ g)}{\d x} = \di{f}{u} \cdot \di{u}{x}
+$$
+
+With the chain rule, derivatives of composite functions behave as if we
+could cancel ${\d u.}$ For example, suppose we're asked to compute the
+following derivative:
+
+$$
+	\di{}{x} (3x^2 - 4)^{100}
+$$
+
+We can compute this derivative quickly with the chain rule. First, we need
+the two terms, ${\di{y}{u}}$ and ${\di{u}{x}.}$ The variable
+${u}$ embodies the outer function. ${u = 3x^2 - 4.}$ Thus:
+
+$$
+	\begin{aligned} \di{}{x} (3x^2 - 4)^{100} &= \di{y}{u} \cdot \di{u}{x} \\[1em] &= \di{}{u}(u^{100}) \cdot \di{}{x}(3x^2 - 4) \\[1em] &= 100u^{99} \cdot 6x \\[1em] &= 100(3x^2 - 4)^{99} \cdot 6x \\[1em] &= 600x(3x^2 - 4)^{99} \end{aligned}
+$$
+
+## Product Rule
+> __~theorem~.__ Let ${u = f(x)}$ and ${v = g(x)}$ be differentiable functions at ${x.}$ Then their product is also differentiable at ${x:}$
+> 
+> $$
+> 	\di{}{x}(u \by v) = u\di{v}{x} + \di{u}{x}v.
+> $$
+> 
+> Alternatively, in functional notation: ${(f{\by}g)' = fg' + f'g.}$
+
+It may be tempting to think that the derivative of a product is the product
+of the derivatives. This is wrong, and we've already seen why. Given the
+function ${f(x) = x^2,}$ the derivative of ${f}$ is ${f'(x) = 2x.}$
+However, the function ${f(x) = x^2}$ can be written as
+${f(x) = x \cdot x.}$ If it were the case the derivative of a product is
+the product of the derivatives, then we would have
+${\di{}{x} (x^2) = \di{}{x}(x) \cdot \di{}{x}(x) = 1 \cdot 1 = 1.}$
+Wrong. So what is the rule for products? Well, let's apply the definition of a derivative. Suppose we have two functions, ${f(x)}$ and ${g(x),}$ both of which are differentiable. Now let's say that the function ${k(x)}$ is the product of these two functions:
+
+$$
+	k(x) = f(x)g(x)
+$$
+
+Now apply the definition of a derivative to the function ${k(x):}$
+
+$$
+	k'(x) = \lim\limits_{h \to 0} \dfrac{f(x + h)g(x + h) - f(x)g(x)}{h}
+$$
+
+Let's apply the old trick of adding zero. We add and subtracting
+${f(x)g(x + h)}$ in the numerator:
+
+$$
+	k'(x) = \lim\limits_{h \to 0} \dfrac{f(x + h)g(x + h) - f(x)g(x + h) + f(x)g(x + h) - f(x)g(x)}{h}
+$$
+
+Using the associative property, let's group the terms to break the
+quotient:
+
+$$
+	k'(x) = \lim\limits_{h \to 0} \left( \dfrac{f(x + h)g(x + h) - f(x)g(x + h)}{h} \right) + \lim\limits_{h \to 0} \left( \dfrac{f(x)g(x + h) - f(x)g(x)}{h} \right)
+$$
+
+Applying the associative property again:
+
+$$
+	k'(x) = \lim\limits_{h \to 0} \left( \dfrac{f(x + h) - f(x)}{h} \cdot g(x + h) \right) + \lim\limits_{h \to 0} \left( \dfrac{g(x + h) - g(x)}{h} \cdot f(x) \right)
+$$
+
+Now, we know that ${g(x)}$ is differentiable (by assumption), so it follows
+that ${g(x)}$ is continuous. And since ${g(x)}$ is continuous,
+${\lim\limits_{h \to 0}g(x + h) = g(x).}$ Hence:
+
+$$
+	\begin{aligned} k'(x) &= \underbrace{\cancel{\lim\limits_{h \to 0} \dfrac{f(x + h) - f(x)}{h}}}_{f'(x)} \cdot \underbrace{\cancel{\lim\limits_{h \to 0} g(x + h)}}_{g(x)} + \underbrace{\cancel{\lim\limits_{h \to 0} \dfrac{g(x + h) - g(x)}{h}}}_{g'(x)} \cdot \underbrace{\cancel{\lim\limits_{h \to 0} f(x)}}_{f(x)} \\ &= f'(x)g(x) + g'(x)f(x) \end{aligned}
+$$
+
+
+
+## Derivative Quotient Rule
+> __~theorem~.__ Let ${u = f(x)}$ and ${v = g(x)}$ be differentiable functions with ${v \neq 0.}$ If ${u}$ and ${v}$ are differentiable at ${x,}$ then so, too, is their quotient, ${u/v:}$
+> 
+> $$
+> 	\large\di{}{x}\ar{\frac{u}{v}} = \frac{v\di{u}{x} - u\di{v}{x}}{v^2}.
+> $$
+> 
+> Alternatively, in function notation:
+> 
+> $$
+> 	\large\ar{\frac{f}{g}}' = \frac{g{\by}f' - f{\by}g'}{g^2}.
+> $$
+
+What is the derivative of ${t(x) = \dfrac{5x + 1}{3x - 4}?}$ For this, we need another rule. Never, ever, ever, think that ${\di{}{x} \dfrac{f(x)}{g(x)} = \dfrac{\di{}{x}(f(x))}{\di{}{x}(g(x))}.}$ This is absolutely wrong, and it is one of the most common mistakes made among calculus newcomers. As always, let's generalize our problem, and construct a rule. Suppose ${f(x) = 5x + 1}$ and ${g(x) = 3x - 4.}$ Thus, ${t(x) = \dfrac{f(x)}{g(x)}.}$ Accordingly, we want to compute ${\left(\dfrac{g}{j}\right)'.}$ Applying the quotient rule:
+
+$$
+	\small
+	\begin{aligned}
+			\left( \dfrac{f}{g} \right)' &= \lim\limits_{h \to 0} \dfrac{ \dfrac{f(x+h)}{g(x+h)} - \dfrac{f(x)}{g(x)} }{h} \\[1em]
+			
+			&= \lim\limits_{h \to 0} \dfrac{1}{h} \dfrac{f(x+h)g(x) - f(x)g(x+h)}{g(x+h)g(x)} \\[1em]
+
+			&= \lim\limits_{h \to 0} \dfrac{1}{h} \dfrac{f(x+h)g(x) - f(x)g(x) + f(x)g(x) + f(x)g(x) - f(x)g(x+h)}{g(x+h)g(x)} \\[1em]
+
+			&= \lim\limits_{h \to 0} \dfrac{1}{g(x+h)g(x)} \dfrac{f(x+h)g(x) - f(x)g(x) + f(x)g(x) - f(x)g(x+h)}{h} \\[1em]
+			
+			&= \lim\limits_{h \to 0} \dfrac{1}{g(x+h)g(x)} \left( \dfrac{f(x+h)g(x) - f(x)g(x)}{h} + \dfrac{f(x)g(x) - f(x)g(x+h)}{h} \right) \\[1em]
+			
+			&= \lim\limits_{h \to 0} \dfrac{1}{g(x + h)g(x)} \left( g(x) \dfrac{f(x + h) - f(x)}{h} - f(x) \dfrac{g(x+h) - g(x)}{h} \right) \\[1em]
+			
+			&= \dfrac {1} {\left(\lim\limits_{h \to 0}g(x+h)\right)\left(\lim\limits_{h \to 0}g(x)\right)} \left(\left(\lim\limits_{h \to 0}g(x)\right) \left(\lim\limits_{h \to 0} \dfrac {f(x+h) - f(x)} {h}\right) - \left(\lim\limits_{h \to 0}f(x)\right) \left( \lim\limits_{h \to 0} \dfrac{g(x + h) - g(x)}{h}\right)\right) \\[1em]
+			
+			&= \dfrac{1}{\underbrace{\cancel{\left(\lim\limits_{h \to 0}g(x+h)\right)}}_{g(x)}\underbrace{\cancel{\left(\lim\limits_{h \to 0}g(x)\right)}}_{g(x)}} \left(\underbrace{\cancel{\left(\lim\limits_{h \to 0}g(x)\right)}}_{g(x)} \underbrace{\cancel{\left(\lim\limits_{h \to 0} \dfrac {f(x+h) - f(x)} {h}\right)}}_{f'(x)} - \underbrace{\cancel{\left(\lim\limits_{h \to 0}f(x)\right)}}_{f(x)} \underbrace{\cancel{\left( \lim\limits_{h \to 0} \dfrac{g(x + h) - g(x)}{h}\right)}}_{g'(x)}\right) \\[1em]
+			
+			&= \dfrac{1}{g(x)g(x)} \left( g(x)f'(x) - f(x)g'(x) \right) \\[1em]
+
+			&= \dfrac{f'g - fg'}{g^2}
+	\end{aligned}
+$$
+
+
+## Implicit Differentiation
+Knowing the chain rule, we're now armed with a powerful tool for performing some very clever algebraic techniques. One such technique is implicit differentiation. With implicit differentiation, we can compute derivatives that we've never seen before. For example, we know from the power rule that ${\di{}{x} x^a = a x^{a - 1}.}$ However, we've only applied this rule where ${a}$ is some explicit number. For example, ${x^2,}$ ${x^3,}$ ${x^{-4},}$ etc. But what if the function we're dealing with is something of the form: ${f(x) = x^{m/n}}$ where ${m}$ ${n}$ are integers? In other words, what happens when we have rational exponents? Algebraically, we know that where ${m = 1,}$ the expression ${x^{m/n}}$ yields the ${n^{\text{\scriptsize{th}}}}$ root: ${x^{1/n} = \sqrt[n]{x}.}$ And more generally, ${x^{m/n} = \sqrt[n]{x^m}.}$ Recognizing these relationships, suppose we had the function ${y = x^{m/n}.}$ We can rewrite the function as: ${y^n = x^m.}$ Now, we can apply differentiation to the equation above ${\di{}{x} y^n = x^m.}$ We performed the manipulation because we simply don't know how to differentiate ${x^{m/n}.}$ Applying the derivative to both sides, ${\di{}{x} y^n = \di{}{x} x^m.}$ In the equation above, ${y}$ is a function of ${x}$ &mdash; we have to apply the chain rule ${\left(\di{}{y}y^n\right) \di{y}{x} = mx^{m-1}.}$ Writing the expression this way, we know that
+${\di{}{y}y^n = ny^{n-1}.}$ Hence ${ny^{n - 1} \di{y}{x} = mx^{m-1}.}$
+Solving for ${\di{y}{x}:}$
+
+$$
+	\begin{aligned} \di{y}{x} &= \dfrac{mx^{m-1}}{ny^{n-1}} \\[1em] &= \dfrac{m}{n} \dfrac{x^{m-1}}{(x^{m/n})^{n-1}} \\[1em] &= \dfrac{m}{n} x^{m - 1 - \frac{m}{n}(n-1)} \\[1em] &= \dfrac{m}{n} x^{m - 1 - m + \frac{m}{n}} \\[1em] &= \dfrac{m}{n} x^{-1 + \frac{m}{n}} \\[1em] \end{aligned}
+$$
+
+We can clean the final result above by suppose that ${a = \dfrac{m}{n}:}$ ${\di{y}{x} = a x^{a - 1}.}$ Let's consider another example: ${x^2 + y^2 = 1.}$ As we know, this is the equation for a circle. Solving for ${y,}$ we obtain the following:
+
+$$
+	\begin{aligned}
+		y^2 = 1 - x^2
+		y = \pm \sqrt{1 - x^2}
+	\end{aligned}
+$$
+
+We say that ${x^2 + y^2 = 1}$ is the implicit definition for the function, and ${y = \pm \sqrt{1-x^2}}$ is the explicit definition. Of note, the relation ${x^2 + y^2 = 1}$ is not a function. It's more accurately described as a multifunction, but the notion of implicit and explicit definitions remains equally applicable. The circle multifunction consists of two branches, a positive and a negative branch (i.e., the top half and the bottom half of the circle). For the purposes of simplicity, we'll only consider the positive branch, ${y = \sqrt{1-x^2}.}$ In terms of differentiation, function definitions containing radicands are unsightly. Often, the first step to differentiating such functions is to rewrite the definition in terms of rational number exponents:
+
+$$
+	\begin{aligned} y &= \sqrt{1 - x^2} \\[1em] &= (1 - x^2)^{\frac{1}{2}} \end{aligned}
+$$
+
+Writing the definition in terms of fractional exponents, we clearly see an
+opportunity to apply the chain rule.
+
+$$
+	\begin{aligned} y' &= \dfrac{1}{2}(1 - x^2)^{- \frac{1}{2}}(-2x) \\[1em] &= \dfrac{(-2x)(1-x^2)^{- \frac{1}{2}}}{2} \\[1em] &= - \dfrac{x}{(1 - x^2)^{\frac{1}{2}}} \\[1em] &= - \dfrac{x}{\sqrt{1 - x^2}} \\[1em] \end{aligned}
+$$
+
+The evaluation above yields an explicit solution to computing the derivative. We can, however, take an implicit approach, yielding an implicit solution ${\di{}{x} (x^2 + y^2 = 1) = (2x + 2yy' = 0).}$ Solving for ${y'}$: ${y' = \dfrac{-2x}{2y} = - \dfrac{x}{y} \space \space \space (y = \sqrt{1 - x^2}).}$ When we substitute for ${y,}$ we get ${y' = \dfrac{-2x}{2y} = - \dfrac{x}{\sqrt{1-x^2}}.}$ Consider the mechanics of this approach. We left the original equation, ${x^2 + y^2 = 1,}$ intact. Then, we applied the derivative, arriving at an implicit solution. If we wanted the explicit solution, we substituted for ${y.}$ Moreover, the implicit solution can be easily modified to yield both halves of the circle:
+
+$$
+	y' = \dfrac{-2x}{2y} = - \dfrac{x}{y} \space \space \space (y = \pm \sqrt{1 - x^2}).
+$$
+
+This analysis evidences the fact that the implicit approach is often much
+easier than the explicit approach. Let's consider another example, ${y^4 + xy^2 - 2 = 0.}$ Like the previous example, we can compute the derivative for this equation with the explicit approach, ${y^2 = \frac{-x \pm \sqrt{x^2 - 4(-2)}}{2}.}$ Isolating ${y:}$ ${y = \pm \sqrt{\frac{-x \pm \sqrt{x^2 + 8}}{2}}.}$
+This is a messy quartic equation. We've got a nasty equation with not just two cases, but four. The implicit method is much, much easier. We differentiate by keeping the original equation intact. The first term ${\di{}{x} y^4 = 4y^3y'.}$
+Then we differentiate the second term (applying the product rule), ${\di{}{x}xy^2 = y^2 + x(2yy').}$ Then we differentiate the third term: ${\di{}{x} (-2) = 0.}$ Yielding ${4y^3y' + y^2 + x(2yy') - 0 = 0.}$
+Solving for ${y':}$
+
+$$
+	\begin{aligned} 4y^3y' + y^2 + x(2yy') - 0 &= 0 \\ 4y^3(y') + y^2 + 2xy(y') &= 0 \\ 4y^3(y') + 2xy(y') &= -y^2 \\ (y')(4y^3 + 2xy) &= -y^2 \\ y' &= -\dfrac{y^2}{4y^3 + 2xy} \\ \end{aligned}
+$$
+
+This is just an implicit solution. The explicit solution requires substituting for ${y,}$ as we did earlier:
+
+$$
+	\di{y}{x} = y' = -\dfrac{\left(\pm \sqrt{\dfrac{-x \pm \sqrt{x^2 + 8}}{2}}\right)^2}{4\left(\pm \sqrt{\dfrac{-x \pm \sqrt{x^2 + 8}}{2}}\right)^3 + 2x\left(\pm \sqrt{\dfrac{-x \pm \sqrt{x^2 + 8}}{2}}\right)}
+$$
+
+We leave it to the reader to try the explicit method. While the implicit
+approach is often faster, there are limitations. For starters, it doesn't
+avoid the complexity of quartic equation like the one above. For example,
+with the original equation, ${y^4 + xy^2 - 2 = 0,}$ we know that one
+solution is the coordinate ${(1,1).}$ Thus, the point ${(1,1)}$ likes on
+the graph of ${y^4 + xy^2 - 2 = 0.}$ If we plug in this point to the
+derivative above:
+
+$$
+	\begin{aligned} \di{y}{x} &= -\dfrac{\left(\pm \sqrt{\dfrac{-x \pm \sqrt{x^2 + 8}}{2}}\right)^2}{4\left(\pm \sqrt{\dfrac{-x \pm \sqrt{x^2 + 8}}{2}}\right)^3 + 2x\left(\pm \sqrt{\dfrac{-x \pm \sqrt{x^2 + 8}}{2}}\right)} \\[2em] &= -\dfrac{\left(\pm \sqrt{\dfrac{-(1) \pm \sqrt{(1)^2 + 8}}{2}}\right)^2}{4\left(\pm \sqrt{\dfrac{-(1) \pm \sqrt{(1)^2 + 8}}{2}}\right)^3 + 2(1)\left(\pm \sqrt{\dfrac{-(1) \pm \sqrt{(1)^2 + 8}}{2}}\right)} \\[2em] &= -\dfrac{(1)^2}{4(1)^3 + 2(1)(1)} \\[2em] &= -\dfrac{1}{6} \end{aligned}
+$$
+
+Thus, the slope at the point ${(1,1)}$ on the graph of
+${y^4 + xy^2 - 2 = 0}$ is ${- \frac{1}{6}.}$ For the point ${x = 2,}$
+however, we have no choice but to tackle the complexity head on &mdash; we
+must go through all of the tedious manipulation.
+
+
+## Derivatives of Exponentials & Logarithmics
+We now turn to differentiating exponential and logarithmic functions.
+Knowing how to compute the derivatives for these functions is especially
+useful in applied mathematics fields. For example, we frequently see
+exponential functions with future value calculations in finance, and
+logarithmic functions for discounting to present value. We also see
+exponential functions in population growth models. In all of these
+situations, knowing how to compute various rates of change is invaluabe.
+And as we've seen, that knowledge is provided through the derivative.
+We begin by recalling some of the basic rules of exponents. First, where
+${a, b > 0,}$ the following rules hold:
+
+> __~exponent-product rule~__. The exponential of the sum is the exponential of
+> the product:
+>
+> $$
+> 	a^{x_1} \cdot a^{x_2} = a^{x_1 + x_2}
+> $$
+>
+> where ${a \in \uint^{+},}$ ${x_1, x_2 \in \uint.}$
+
+> __~exponent-quotient rule~__. If the bases are the same, keep the base and
+> subtract the exponent in the denominator from the exponent in the
+> numerator.
+>
+> $$
+> 	\dfrac{a^{x_1}}{a^{x_2}} = a^{x_1 - x_2} = \dfrac{1}{a^{x_2 - x_1}}
+> $$
+>
+> where ${a \in \uint^{+},}$ ${x_1, x_2 \in \uint.}$
+
+> __~raising a product to a power~__. To raise a product to the
+> ${n^{\text{\scriptsize{th}}}}$ power, raise each factor to the
+> ${n^{\text{\scriptsize{th}}}}$ power.
+>
+> $$
+> 	(ab)^{x} = a^xb^x
+> $$
+>
+> where ${a, b \in \uint^{+},}$ ${x \in \uint.}$
+
+> __~exponent-power rule~__. To raise a power to a power, multiply the
+> exponents.
+>
+> $$
+> 	(a^{x_1})^{x_2} = a^{x_1 \cdot x_2}
+> $$
+>
+> where ${a, x_1, x_2 \in \uint^{+}}$
+
+> __~raising a quotient to a power~__. To raise a quotient to the
+> ${n^{\text{\scriptsize{th}}}}$ power, raise both the numerator and the
+> denominator to the ${n^{\text{\scriptsize{th}}}}$ power.
+>
+> $$
+> 	\left(\dfrac{a}{b}\right)^{x} = \dfrac{a^x}{b^x}
+> $$
+>
+> where ${a, x \in \uint^{+}}$
+
+> __~exponent of 1~__. Any number raised to the first power returns the
+> original number.
+>
+> $$
+> 	a^1 = a
+> $$
+>
+> where ${a \in \reals.}$
+
+> __~exponent of 0~__. Any number raised to the zero power returns 1.
+>
+> $$
+> 	a^0 = 1
+> $$
+>
+> where ${\{a \in \reals : a \neq 0\};}$ ${0^0 = \text{undefined}.}$
+
+> __~negative integer exponent rule~__. Negative exponents are equivalent to an
+> exponent in the denominator.
+>
+> $$
+> 	a^{-x} = \dfrac{1}{a^x}
+> $$
+>
+> where ${a, x \in \uint^{+}.}$
+
+> __~fractional exponent rule~__. Fractional exponents are equivalent to the
+> ${\text{denom}^{\text{\scriptsize{th}}}}$ root of the
+> ${\text{numer}^{\text{\scriptsize{th}}}}$ power.
+>
+> $$
+> 	a^{\frac{x_1}{x_2}} = \sqrt[x_2]{a^{x_1}}
+> $$
+>
+> where ${a, x_1, x_2 \in \uint^{+}}$
+
+Keeping these rules in mind, let's see some functions. How about
+${f(x) = 2^x:}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656472710/math/exponential1_leip3a.svg"
+	}
+	imwidth={"259"}
+	imheight={"215"}
+	caption={"Graph of two raised to the x."}
+	width={"50"}
+/>
+
+To find the derivative of this function, let's think about how Newton's
+quotient applies. It would look something like this:
+
+$$
+	f'(x) = \lim\limits_{\Delta x \to 0} \dfrac{a^{x + \Delta x} -a^x}{\Delta x}
+$$
+
+What should we do next? Look at the term ${a^{x + \Delta x} -a^x.}$ We can
+rewrite this term as ${(a^{x})(a^{\Delta x}).}$ Incorporation this rewrite:
+
+$$
+	f'(x) = \lim\limits_{\Delta x \to 0} \dfrac{(a^{x})(a^{\Delta x})- a^x}{\Delta x}
+$$
+
+Now we see a common factor we can factor out, ${a^x}$:
+
+$$
+	\begin{aligned} f'(x) &= \lim\limits_{\Delta x \to 0} \dfrac{(a^{x})(a^{\Delta x})- a^x}{\Delta x} \\[1em] &= \lim\limits_{\Delta x \to 0} (a^x) \left(\dfrac{a^{\Delta x} - 1}{\Delta x}\right) \end{aligned}
+$$
+
+At this point, we have something to work with conceptually. Let's recall
+how the limit ${\lim\limits_{\Delta x \to 0}}$ applies here. With this
+limit, we know that: (1) ${a}$ is fixed, and (2) ${x}$ is fixed. Because of
+these two facts, it follows that ${a^x}$ is constant. And because ${a^x}$
+is constant, we can factor it out of the limit &mdash; it has no bearing on
+our analysis of the limit:
+
+$$
+	f'(x) = a^x \lim\limits_{\Delta x \to 0} \dfrac{a^{\Delta x} - 1}{\Delta x}
+$$
+
+Thus, our analysis is really focused on what the limit term is. Because of
+how important the term is, we'll write this expression as:
+
+$$
+	f'(x) = a^x \cdot L(a)
+$$
+
+where:
+
+$$
+	L(a) = \lim\limits_{\Delta x \to 0} \dfrac{a^{\Delta x} - 1}{\Delta x}
+$$
+
+So, what exactly is ${L(a)?}$ To begin, we state an observation. If we plug
+in the value ${x = 0,}$ we get:
+
+$$
+	\left. \di{}{x} a^x \right\vert_{x = 0} = a^0 \cdot L(a) = 1 \cdot L(a) = L(a)
+$$
+
+This observation tells us that at ${x = 0,}$ the slope of ${a^x}$ is this
+limit we're calling ${L(a).}$ More specifically, since ${a = 2,}$ we have a
+slope of ${L(2)}$ (at ${x = 0.}$) This tells us that if we instead had the
+function ${f(x) = 3^x,}$ at ${x = 0}$ we'd get ${L(3).}$ For
+${f(x) = 13^x,}$ at ${x = 0}$ we'd get ${L(13),}$ and so on. This leads to
+a broader observation: If we know the slope at ${x = 0}$ for some function
+${f(x) = a^x,}$ we can determine the slope everywhere else. We've seen this
+phenomenon before with sines and cosines: We knew the slope for sine and
+cosine at ${x = 0,}$ and from the trigonometric formulas, we determined the
+slope everywhere else.
+
+The difference with exponentials: we're stuck right off the bat. With sine and cosine, we had the benefit of using radians, which allowed us to interpret the limits geometrically. Here, we're dealing directly with a number. There are no clever shortcuts to rely on. So we're going to need a different tactic. We start by stating a proposition: There exists a base ${e,}$ where ${e}$ is a unique real number, such that ${M(e) = 1.}$ Hence, we have the following: ${\di{}{x} e^x = e^x.}$ This is a very important deduction (so much so that we will encapsulate it in a formal definition later). Furthermore, from our previous analysis, we know that:
+
+$$
+	\left. \di{}{x} e^x \right\vert_{x = 0} = 1
+$$
+
+As we're all too familiar with in mathematics, we should never take things for granted. Why does ${e}$ exist? How do we know it exists? So we know that ${f(x) = 2^x}$ exists. That is, after all, what we started with. Furthermore, we know that it has the property ${f'(0) = L(2).}$ Now let's say we stretch the function ${f(x) = 2^x.}$ We can stretch this function by multiplying its inputs with a factor ${k}$: ${f(kx) = 2^{kx}.}$ By the exponent power rule, the expression ${2^{kx}}$ is the same as ${(2^k)^x.}$ And since ${2}$ and ${k}$ are both real numbers, ${2^k}$ is a real number, which we can denote as ${b = 2^x.}$ This means we can rewrite the function above as: ${f(kx) = b^x, \space \space \space (b = 2^k).}$ Now, what happens when we shrink a function's graph? Well, we essentially shrink the ${x}$-axis, which in turn leads to the graph's slope tilting up. Thus, as ${k \to \texttt{+}\infty}$ (${k}$ gets bigger and bigger), the slope of ${f(kx)}$ gets steeper and steeper. This is numerically confirmed by considering the derivative of ${f(kx):}$ ${\di{}{x} b^x = \di{}{x}f(kx) = k \cdot f'(kx).}$ Evaluating at ${0:}$
+
+$$
+	\left. \di{}{x} b^x \right\vert_{x = 0} = k \cdot f'(0) = k \cdot L(2)
+$$
+
+At this point, we know that ${e}$ exists. When ${k = \dfrac{1}{L(2)},}$ we
+have:
+
+$$
+	\left. \di{}{x} b^x \right\vert_{x = 0} = k \cdot f'(0) = \dfrac{1}{L(2)} \cdot L(2) = 1
+$$
+
+Substitute ${e}$ into ${b,}$ the equation holds true: ${e^0 = 1.}$ And since the equation holds true, we know that ${e}$ exists. Knowing that ${e}$ exists, we can continue with our derivative. We must now put all of these observations together. To do so, we rely on a particularly useful operation in mathematics: The natural logarithm. The natural log is defined as such: ${y = e^x \iff \ln y = x.}$ The natural logarithm has several useful properties that are worth revisiting:
+
+- ${\ln (x_1 \cdot x_2) = \ln x_1 + \ln x_2}$
+- ${\ln 1 = 0}$
+- ${\ln e = 1}$
+
+And just to reminder ourselves, the graphs of ${f(x) = e^x}$ and
+${g(x) = \ln x:}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656472775/math/euler1_e2numr.svg"
+	}
+	imwidth={"259"}
+	imheight={"215"}
+	caption={"Euler's number"}
+	width={"50"}
+/>
+
+With the graphs above, we can see that ${g(x) = \ln x}$ is indeed the inverse of ${f(x) = e^x.}$ We're switching the roles of ${x}$ and ${y.}$ Notice further that ${g(x) = \ln x}$ is only defined when ${x > 0.}$ This corresponds to the fact that ${f(x) = e^x}$ is always positive. Since ${g(x) = \ln x}$ is the inverse function of ${f(x) = \ln x,}$ we can use implicit differentiation to find the derivative of the natural logarithm. To do so, we'll write ${w = \ln x.}$ We want to find the derivative of ${w.}$ But we don't know how, so what we'll do is exponentiate: ${w = \ln x \nc e^w = x \nc e^{\ln x} = x.}$ Given that ${w = e^{\ln x} = x,}$ we can differentiate:
+
+$$
+	\begin{aligned} \di{}{x} e^w &= \di{}{x} x \\[1em] &= 1 \end{aligned}
+$$
+
+Applying implicit differentiation, we have:
+
+$$
+	\begin{align*} \left( \di{}{x} e^w \right)\left( \di{w}{x} \right) &= 1\\[1em] \left( e^w \right)\left( \dfrac{dw}{dx} \right) &= 1\\[1em] \di{w}{x} &= \dfrac{1}{e^w} \end{align*}
+$$
+
+Substitute ${w}$ with ${\ln x}$ (since we defined ${w = \ln x}$):
+
+$$
+	\begin{align*} \di{w}{x} &= \dfrac{1}{e^{\ln x}} \\[1em] &= \dfrac{1}{x} \\ \end{align*}
+$$
+
+Hence, we have ${\di{}{x} \ln x = \dfrac{1}{x}.}$ We now have two formulas to work with: ${(e^x)' = e^x}$ and ${(\ln x)' = \dfrac{1}{x}.}$ We now return to our pesky function ${y = a^x.}$ If we can find the derivative for this function, we can find the derivative for any exponential function. Knowing the two formulas above, we can compute the derivative by first rewriting ${a^x}$ in terms of base ${e.}$ I.e., converting ${a^x}$ into base ${e.}$ How do we convert ${a^x}$ to ${e^x?}$ We want to write ${a^x}$ as ${e^{?}.}$ In other words, ${e}$ to some power: ${a^x = (e^{\ln a})^x = e^{x \ln a}.}$ Now we can carry out the differentiation: ${\di{}{x}a^x = \di{}{x} e^{x \ln a}.}$
+
+The first step is often a point of great confusion, so it's critical that we are comfortable with it as possible. First, we emphasize that ${e}$ and ${\ln a}$ are constants. They're fixed. No movement. The only thing that's moving is ${x.}$ If we were asked to compute the derivative of ${e^{2x,}}$ the derivative would look like: ${(e^{2x})' = 2e^{2x}}$ by the chain rule. The same idea applies to the derivative of ${e^{x \ln a}.}$ Hence: ${\di{}{x}a^x = \di{}{x} e^{x \ln a} = (\ln a)e^{x \ln a}.}$ We know that ${e^{x \ln a} = a^x,}$ so we have the derivative of ${a^x:}$ ${\di{}{x} a^x = (\ln a)a^x.}$ Now we can go back to our very first problem: ${y = 2^x.}$ Recall we asked, what exactly is ${L(a)?}$ Well now have it: ${L(a) = \lim_{\Delta x \to 0} \frac{a^{\Delta x} - 1}{\Delta x} = \ln a.}$ Accordingly, we have ${\di{}{x} 2^x = (\ln 2)2^x.}$ Similarly: ${\di{}{x} 10^x = (\ln 10)10^x.}$ This is one of the reasons for why the natural logarithm takes as part of its name the adjective _natural._ No matter what base we choose, the respective exponential function's derivative will contain a natural logarithm. It's a logarithm that appears without any reference.
+
+#### Logarithmic Differentiation
+In the method above, we arrived at the derivative of ${y = a^x}$ by rewriting the base in terms of ${e.}$ There is, however, any way to compute the derivative: through the method of logarithmic differentiation. With logarithmic differentiation, rather than directly computing the derivative of some function ${u,}$ we instead attempt to compute the derivative of its logarithm. More explicitly, instead of computing ${\di{}{x} u,}$ we instead compute: ${\di{}{x} \ln u.}$ Applying the chain rule: ${\di{}{x} \ln u = \left(\frac{d \ln u}{\d u}\right) \di{u}{x}.}$ Note that the expression ${\frac{d \ln u}{\du}}$ just another way to write ${\di{}{u} \ln u.}$ We know that this term evaluates to ${\frac{1}{u},}$ so we have: ${\di{}{x} \ln u = \frac{1}{u} \di{u}{x}.}$ This is the controlling principle of logarithmic differentiation. We state it explicitly: ${(\ln u)' = \frac{u'}{u}.}$ Applying this to ${\di{}{x} a^x:}$ ${\left. \di{}{x}a^x \right\vert_{u = a^x} = \ln u = x \ln a.}$
+
+And as we know from our rules, ${(\ln u)' = \ln a.}$ Why? Because ${\ln a}$ is just a constant. It doesn't move. Performing the rest of the computation: ${\dfrac{u'}{u} = (\ln u)' = \ln a.}$ Solving for ${u':}$ ${u' = u \ln a.}$ Substituting ${u = a^x:}$ ${\di{}{x} a^x = (\ln a)a^x.}$ We get the same derivative we saw with the rewriting-in-terms-of-${e}$ method. Logarithmic differentiation allows us to compute even more complex derivatives. Consider the function: ${(y = x ^ x).}$ This is a fairly nasty function. It's got both a moving base and a moving exponent. Once more, we apply logarithmic differentiation. First, we express ${x^x}$ as a variable: ${(v = x ^ x).}$ Next, we rewrite the expression as a logarithm: ${\ln v = x \ln x.}$ Then we compute the derivative:
+
+$$
+	\begin{align*} (\ln v)' &= \ln x + x \left( \dfrac{1}{x} \right) \\[1em] &= 1 + \ln x \end{align*}
+$$
+
+Accordingly, we now have: ${\frac{v'}{v} = 1 + \ln x.}$ Solving for ${v':}$ ${v' = v(1 + \ln x).}$ Substituting with ${v = x^x,}$ we have the following rule ${\di{}{x} x^x = x^x(1 + \ln x).}$
+
+#### Euler's Number
+Having seen how the natural logarithm is so useful, we now turn to a closer look at the number ${e.}$ After all, this entire discussion has been premised on the existence of ${e,}$ and although we proved that it existed, we didn't delve any deeper. We do so now. Evaluating
+
+$$
+	\lim\limits_{n \to \infty} \left( 1 + \dfrac{1}{n} \right)^n,
+$$
+
+we have:
+
+$$
+	\ln \left( \left( 1 + \dfrac{1}{n} \right)^n \right) = n \ln \left( 1 - \dfrac{1}{n} \right).
+$$
+
+Let's rewrite this expression in a more recognizable form. Suppose
+${\Delta x = \dfrac{1}{n}.}$ This means that as ${n}$ tends to infinity (as
+our expression provies), ${\Delta x}$ tends to zero. Rewriting the
+expression:
+
+$$
+	\ln \left( \left( 1 + \dfrac{1}{n} \right)^n \right) = n \ln \left( 1 - \dfrac{1}{n} \right) = \dfrac{1}{\Delta x}\ln(1 + \Delta x).
+$$
+
+Now we perform the classic trick of subtracting ${0}$ from the expression.
+In this case, we will represent ${0}$ as ${\ln 1:}$
+
+$$
+	\ln \left( \left( 1 + \dfrac{1}{n} \right)^n \right) = n \ln \left( 1 + \dfrac{1}{n} \right) = \dfrac{1}{\Delta x}(\ln(1 + \Delta x) - \ln 1).
+$$
+
+Do we see the pattern in the last expression? Let's rewrite it one more time ${\frac{\ln(1 + \Delta x) - \ln 1}{\Delta x}.}$ This is just an application of Newton's Quotient. It's the expression we get from computing: ${\left. \di{}{x} \ln x \right\vert_{x = 1}}$ And we know the result of this computation:
+
+$$
+	\left. \di{}{x} \ln x \right\vert_{x = 1} = \left. \dfrac{1}{x} \right\vert_{x = 1} = 1
+$$
+
+Finally, given ${x = 1,}$ the limit evaluates to ${1.}$ Now we just have to
+work backwards to determine our original limit,
+${\lim\limits_{n \to \infty} (1 + \frac{1}{n}).}$ First, we remind
+ourselves of the limit we just computed:
+
+$$
+	\lim\limits_{n \to \infty} \ln \left( \left( 1 + \dfrac{1}{n} \right)^n \right) = 1
+$$
+
+This is the limit of the natural logarithm of our original expression. To
+evaluate our original limit, we must &#8220;undo&#8221; the natural
+logarithm. And how do we do so? Be rewriting the natural logarithm in terms
+of its inverse: a power with the base ${e:}$
+
+$$
+	\Large \lim\limits_{n \to \infty} \left( 1 + \dfrac{1}{n} \right)^n = e^{^{\lim\limits_{n \to \infty} \ln \left( \left( 1 + \frac{1}{n} \right)^n \right)}}
+$$
+
+Note that this isn't anything new. We're just undoing what we've done. The
+limit of the log is equal to the log of the limit. And given that we've
+solved for the limit of the log, we see ${e}$ in all its glory:
+
+$$
+	\Large \lim\limits_{n \to \infty} \left( 1 + \dfrac{1}{n} \right)^n = e^{^{\lim\limits_{n \to \infty} \ln \left( \left( 1 + \frac{1}{n} \right)^n \right)}} = e^1 = e
+$$
+
+This is such an important result, that we must state it from a different
+perspective:
+
+$$
+	e = \lim\limits_{n \to \infty} \left( 1 + \dfrac{1}{n} \right)^n
+$$
+
+As an aside, notice that reading the equation the other way leads to
+another key insight: An approximation of ${e.}$ In mathematics, we should
+always read our equations (and really, any proposition) both
+&#8220;forward&#8221; and &#8220;backward&#8221;. If we have equality,
+rewrite it from both directions. Inequality, state it in terms of what's
+less and what's greater. A conditional, state the contrapositive. Switching
+perspectives is the first step towards greater insight.
+
+#### General Power Rule
+Recall our rule for computing the derivative of a power function:
+
+$$
+	(x^n)' = n \cdot x^{n-1}
+$$
+
+Our rule worked, but we restricted it to a particular condition: Where ${n \in \mathbb{Q}.}$ In other words, the power rule, as we originally formulated it, was limited to rational number powers. We couldn't use it to compute the derivatives of something like ${x^{\pi},}$ ${x^{\sqrt{2}}}$ or ${x^{e}.}$ These are all irrational powers. Now that we know how to rewrite bases in terms of ${e}$ and logarithmic differentiation, we can extend the power rule to apply to all real numbers. With what we know now, we have a few ways of computing the derivative of ${f(x) = x^r,}$ where ${r \in \reals.}$ One way is to rewrite the base in terms of ${e:}$ ${f(x) = x^r = (e^{\ln x})^r = e^{r \ln x}.}$ Using prime notation to express the derivative: ${\di{}{x} x^r = (e^{r \ln x})'.}$
+We see that we can compute the derivative by applying the chain rule: ${(e^{r \ln x})' = e^{r \ln x} (r \ln x)'.}$ Simplifying, the derivative of the exponential is just itself, so no change there. The derivative of ${r}$ is zero, since ${r}$ is a constant. And the derivative of ${\ln x}$ is ${1/x,}$ as we know.
+
+$$
+	\begin{aligned} (e^{r \ln x})' &= e^{r \ln x} (r \ln x)' \\[1em] &= e^{r \ln x} \dfrac{r}{x} \\[1em] &= \dfrac{x^r r}{x} \\[1em] &= r \cdot x^{r - 1} \end{aligned}
+$$
+
+We've now extended the power rule to all real numbers. We could've also done the same with logarithmic differentiation. First, we denote ${x^r}$ with the variable ${u:}$ ${(u = x ^ r).}$ Taking the natural logarithm of ${u:}$ ${\ln u = r \ln x.}$ Then, we differentiate: ${ (\ln u)' = (r \ln x) = \dfrac{r}k{x}.}$ Next, we use the fact that ${\ln u}$ is the same as ${\frac{u'}{u}:}$ ${\frac{u'}{u} = \frac{r}{x}.}$ Solving for ${u':}$ ${u' = u \frac{r}{x}.}$ Then substituting ${u}$ with ${x^r:}$ ${u' = x^r \frac{r}{x} = r x^{r - 1}.}$ This confirms that the power rule extends to all real numbers. It also demonstrates that logarithmic differentiation and converting to base ${e}$ are essentially the same methods. The biggest differences: With converting to base ${e,}$ we must deal with exponents, and with logarithmic differentiation, we often must introduce new symbols.
+
+## Derivatives of the Trigonometric Functions
+Let's consider differentiating the sine function ${\di{}{x} \sin x.}$
+Before we continue, recall these two propositions we saw in the previous
+section.
+
+1. ${\lim\limits_{x \to 0} \dfrac{\sin x}{x} = 1}$
+2. ${\lim\limits_{x \to 0} \dfrac{1 - \cos x}{x} = 0}$
+
+Keep these propositions in mind as we derive the derivatives of the trigonometric functions. Now, to differentiate ${\sin x,}$ we use the familiar difference quotient, and apply the limit:
+
+$$
+	\di{}{x} \sin x = \lim\limits_{\Delta x \to 0} \dfrac{\sin (x + \Delta x) - \sin x}{\Delta x}
+$$
+
+As we saw in the section on limits, we want to reframe this expression. To do so, we use a trigonometric identity ${\sin (a + b) = \sin a \cos b + \cos a \sin b.}$
+
+$$
+	\di{}{x} \sin x = \lim\limits_{\Delta x \to 0} \dfrac{(\sin x \cos (\Delta x) + \cos x \sin (\Delta x)) - \sin x}{\Delta x}
+$$
+
+We cannot just plug in 0 into this limit &mdash; it's one of the trickier ones. We must try and group the terms. To group terms, the first thing we want to do is gather what we know. From basic trigonometry, we know that ${\lim\limits_{\Delta x \to 0} \cos(\Delta x)}$ is 1. We also see that ${\sin x}$ is a common term. Using algebra:
+
+$$
+	\begin{aligned}
+		\di{}{x} \sin x
+		&= \ll{\Delta x}{x} \ar{\dfrac{\sin x + \cos \Delta x - \sin x}{\Delta x} + \dfrac{\cos x \sin \Delta x}{\Delta x}} \\[2em]
+		&= \ll{\Delta x}{x} \ar{\dfrac{\sin x (\cos \Delta x - 1)}{\Delta x} + \dfrac{\cos x \sin \Delta x}{\Delta x}} \\[2em]
+		&= \ll{\Delta x}{x} \ar{\sin x \ar{\dfrac{\cos (\Delta x) - 1}{\Delta x}} + \cos x \ar{\dfrac{\sin \Delta x}{\Delta x}}} \\[2em]
+		&= \ll{\Delta x}{x} \sin x \ar{\dfrac{\cos (\Delta x) - 1}{\Delta x}} + \ll{\Delta x}{x} \cos x \ar{\dfrac{\sin \Delta x}{\Delta x}}
+	\end{aligned}
+$$
+
+Rewriting:
+
+$$
+	\di{}{x} \sin x = \lim\limits_{\Delta x \to 0} \sin x(m) + \lim\limits_{\Delta x \to 0} \cos x(n)
+$$
+
+where k ${m = \left( \dfrac{\cos (\Delta x) - 1}{\Delta x} \right),}$ and ${m = \left( \dfrac{\sin \Delta x}{\Delta x} \right).}$ We need a way to get rid of ${m}$ and ${n.}$ To do so, we will use the following properties, to be proven later. (1) ${\lim\limits_{\Delta x \to 0} \dfrac{\cos \Delta x - 1}{\Delta x} = 0}$ and (2) ${\lim\limits_{\Delta x \to 0} \dfrac{\sin \Delta x}{x} = 1}$ Using these properties, we have:
+
+$$
+	\lim\limits_{\Delta x \to 0} \sin x \underbrace{\cancel{\left( \dfrac{\cos (\Delta x) - 1}{\Delta x} \right)}}_{0} + \cos x \underbrace{\cancel{\left( \dfrac{\sin \Delta x}{\Delta x} \right)}}_{1}
+$$
+
+Above, we have ${(\sin x \cdot 0) + (\cos x \cdot 1).}$ This gives us ${\cos x.}$ Thus, we now have a specific formula for the derivative of ${sin x:}$ ${\di{}{x} \sin x = \cos x.}$ Let's now consider the derivative of ${\cos x.}$ The process is similar. Again, we start with the diffference quotient.
+
+$$
+	\di{}{x} \cos x = \lim\limits_{\Delta x \to 0} \dfrac{\cos (x + \Delta x) - \cos x}{\Delta x}
+$$
+
+Just as we used a trigonometric identity in deriving the derivative of
+${\sin x,}$ we will use another trionometric identity for ${\cos x,}$ the
+angle sum formula: ${\cos (a + b) = \cos a \cos b - \sin a \sin b.}$
+Applying the angle sum formula, we have:
+
+$$
+
+\begin{aligned}
+	\di{}{x} \cos x &= \lim\limits_{\Delta \to 0} \dfrac{\cos x \Delta x - \sin x \sin \Delta x - \cos x}{\Delta x} \\
+
+	&= \lim\limits_{\Delta x \to 0} \left(\dfrac{\cos x \cos \Delta x - \cos x}{\Delta x} + \dfrac{- \sin x \sin \Delta x}{\Delta x}\right) \\
+
+	&= \lim\limits_{\Delta x \to 0} \left(\dfrac{\cos x (\cos \Delta x - 1)}{\Delta x} + \dfrac{- \sin x \sin \Delta x}{\Delta x}\right) \\
+
+	&= \lim\limits_{\Delta x \to 0} \left((\cos x) \dfrac{\cos \Delta x - 1}{\Delta x} + (- \sin x)\left(\dfrac{ \sin \Delta x}{\Delta x}\right)\right) \\
+
+	&= \lim\limits_{\Delta x \to 0} (\cos x) \left(\dfrac{\cos \Delta x - 1}{\Delta x}\right) + \lim\limits_{\Delta x \to 0} (- \sin x)\left(\dfrac{ \sin \Delta x}{\Delta x}\right) \\
+\end{aligned}
+$$
+
+Again, we see that this is really:
+
+$$
+	\di{}{x} \cos x = \lim\limits_{\Delta x \to 0} \cos x(a) + \lim\limits_{\Delta x \to 0} - \sin x(b).
+$$
+
+where, ${a = \frac{\cos \Delta x - 1}{\Delta x}}$ and ${b = \frac{ \sin \Delta x}{\Delta x}.}$ We want to get rid of ${a}$ and ${b,}$ so we use the same properties we saw earlier (1) ${\lim\limits_{\Delta x \to 0} \frac{\cos \Delta x - 1}{\Delta x} = 0}$ and (2) ${\lim\limits_{\Delta x \to 0} \frac{\sin \Delta x}{x} = 1.}$ Applying the two properties:
+
+$$
+	\begin{aligned} \di{}{x} \cos x &= \cos x \underbrace{\cancel{\left( \dfrac{\cos \Delta x - 1}{\Delta x} \right)}}_{0} + (- \sin x) \underbrace{\cancel{\left( \dfrac{\sin \Delta x}{\Delta x} \right)}}_{1} \\[1em] &= \cos x(0) + (- \sin x)(1) \\[1em] &= 0 + (- \sin x) \\[1em] &= - \sin x \end{aligned}
+$$
+
+Thus, we know have a specific formula for the derivative of ${\cos x:}$ ${\di{}{x} \cos x = - \sin x.}$ As an aside, let's think about these formulas a little more carefully to contextualize these derivations. Consider the derivative of ${\cos x.}$ When we evaluate ${\di{}{x} \cos x}$ at ${x = 0,}$ then by the definition of a derivative, this is ${\lim_{\Delta x \to 0} \frac{\cos (\Delta x) - 1}{\Delta x}.}$ This limit evaluates to 0, as we saw earlier. The same phenomenon appears for the derivative of ${\sin x.}$ When we evaluate ${\di{}{x} \sin x,}$ we are just evaluating ${\lim_{\Delta x \to 0} \frac{\sin \Delta x}{\Delta x}.}$ This limit evaluates to 1, again, as we saw earlier. What this tells us is that the derivatives of ${\sin x}$ and ${\cos x}$ at ${x = 0}$ yields all the values of ${\di{}{x} \sin x}$ and ${\di{}{x} \cos x.}$ To actually understand how we've derived the specific formulas above, we must understand the behavior of ${\frac{\sin x}{x}}$ and ${\frac{\cos x - 1}{x}}$ when ${x}$ is close to 0. In other words, we must prove the properties we've been using: (1) ${\lim_{\Delta x \to 0} \frac{\cos \Delta x - 1}{\Delta x} = 0}$ (2) ${\lim_{\Delta x \to 0} \frac{\sin \Delta x}{x} = 1.}$ To construct these proofs, we must use geometry, because ${\sin x}$ and ${\cos x}$ are geometric propositions. To do so, we'll need to use a variable other than ${\Delta x.}$ Namely, ${\theta.}$ We want to go back to thinking about sine and cosine as trigonometric ratios, rather than functions. We'll first consider ${\frac{\sin x}{x}.}$ Accordingly, what we are really trying to prove is: ${\lim_{\theta \to 0} \frac{\sin \theta}{\theta} = 1.}$ Let's first start by looking at the unit circle:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823502/math/calc_arclength1_uctu7d.svg"
+	}
+	imwidth={"238"}
+	imheight={"161"}
+	caption={
+		"A unit circle with a radius of length 1. The arc length subtending the angle theta has a length of theta. Opposite the angle theta, the triangle has a leg of length sine theta. The same triangle has a hypotenuse of length 1."
+	}
+	width={"40"}
+/>
+
+Here, our proof will depend on the followng proposition: When the radius of the circle has as length of 1, ${\theta}$ is the length of the arc above (highlighted red). Note that this proposition is true only if the angle ${\theta}$ is measured in radians. It is not true if ${\theta}$ is measured in degrees. This an example of why prefer measuring angles in radians rather than degrees in mathematics. Recall the definition of sine:
+
+$$
+	\sin \theta = \dfrac{\lvert opposite \rvert }{ \lvert hypotenuse \rvert }
+$$
+
+Since the radius is of length 1, then the hypotenuse is of length 1. Thus, the length of the side opposite ${\theta}$ has a length of ${\sin \theta.}$ Now, for the sake of argument, let's make a copy of that triangle and reflect it:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823555/math/calc_arclength2_qohgec.svg"
+	}
+	imwidth={"238"}
+	imheight={"161"}
+	caption={
+		"An equilateral triangle formed by reflecting the original triangle."
+	}
+	width={"40"}
+/>
+
+From the circle above, we see that the total arc length is now ${2 \theta.}$ We also see that we've formed an isosceles triangle, where the green side is of length ${2 \sin \theta,}$ while the blue sides are of length ${1.}$ We also see that the interior angle has a measure of ${2 \theta.}$ With these lengths, the ratio of the green edge of the triangle to the arc length is: ${\frac{2 \sin \theta}{2 \theta} = \dfrac{\sin \theta}{\theta}}$ Now the question is, why does ${\dfrac{\sin \theta}{\theta}}$ tend to 1 as ${\theta}$ gets closer and closer to 0? Because as the angle ${\theta}$ gets very very small, the arc looks more and more like a straight line. Moreover, as ${\theta}$ gets closer and closer to 0, the green segment and the red arch start to merge.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823638/math/calc_arclength3_fi30wc.svg"
+	}
+	imwidth={"81"}
+	imheight={"31"}
+	caption={
+		"Arc and sine theta start to merge. You can barely see the green."
+	}
+	width={"20"}
+/>
+
+This shows that short curves are nearly straight. Hence, we have: ${\lim_{\theta \to 0} \dfrac{\sin \theta}{\theta} = 1.}$ Now let's consider the property ${\lim\limits_{x \to 0} \dfrac{\cos x - 1}{x} = 0.}$ Again, we want to use ${\theta.}$ Here, however, because we are thinking about sine and cosine geometrically, we want a positive quantity, since we're dealing with lengths. So, we perform some manipulation up front:
+
+$$
+	\begin{aligned} \lim\limits_{\theta \to 0} \dfrac{\cos \theta - 1}{\theta} &= \lim\limits_{\theta \to 0} \left( - \dfrac{1 - \cos \theta}{\theta}\right) \\[1em] &= (-1) \cdot \lim\limits_{\theta \to 0} \dfrac{1 - \cos \theta}{\theta} \\[1em] &= 0 \end{aligned}
+$$
+
+Thus, the hypothesis we want to prove is ${(-1) \lim_{\theta \to 0} \dfrac{1 - \cos \theta}{\theta} = 0.}$ The -1 is just a constant, so let's just clean it up a bit more by multiplying ${\dfrac{1}{-1}}$ to both sides ${\lim_{\theta \to 0} \dfrac{1 - \cos \theta}{\theta} = 0.}$ To prove the hypothesis above, we focus on the &#8220;gap&#8221; between the edge and the arc. Since the distance between the origin and the arc is 1, this gap has a length of ${1 - \cos \theta.}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823681/math/calc_arclength4_ndyunr.svg"
+	}
+	imwidth={"238"}
+	imheight={"161"}
+	caption={"The gap"}
+	width={"30"}
+/>
+
+Just as we saw with sine, as the angle ${\theta}$ gets very small, the
+distance ${1 - \cos \theta}$ gets very, very small.
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823708/math/calc_arclength5_k2sr4y.svg"
+	}
+	imwidth={"45"}
+	imheight={"12"}
+	caption={"An even smaller gap"}
+	width={"20"}
+/>
+
+At some point, the segment ${1 - \cos \theta}$ is 0. Hence, we have the following: ${\lim_{\theta \to 0} \frac{\cos \theta - 1}{\theta} = 0.}$ Note that the limit isn't simply ${\dfrac{0}{0}.}$ This is an example of a limit where we aren't just doing a simple plug-and-play. The ${\theta}$ in the denominator is the arc length. The ${\theta}$ we're taking to 0 is the interior angle. Thus, making the angle ${\theta}$ smaller and smaller, the arc length ${\theta}$ is getting closer and closer to 0, but not nearly as fast as ${1 - \cos \theta.}$ Remember, the property we're trying to prove is a ratio. Thus, because ${\cos \theta - 1}$ approaches 0 faster than the arc length ${\theta,}$ the limit of the ratio is 0. To think about this more clearly, compare the approximations in the table above. Notice how much faster ${1 - \cos \theta}$ approaches 0 compared to ${\theta.}$ The proof above is fairly abstract. Let's see another proof. First, suppose there is a point ${P}$ on a unit circle, then move along to ${Q.}$
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823752/math/poq_circle_ipyzyr.svg"
+	}
+	imwidth={"190"}
+	imheight={"181"}
+	caption={"Unit circle with points P and Q"}
+	width={"40"}
+/>
+
+From the circle above, we see that ${\sin \theta}$ is the vertical distance between ${P}$ and the ${x}$-axis. The ${\Delta \theta}$ is the change in the angle, as we move from ${P}$ to ${Q.}$ Accordingly, ${Q}$ is the point on the unit circle where the angle measures ${\theta + \Delta \theta.}$ It follows then that the ${y}$-coordinate of ${Q}$ is ${\sin (\theta + \Delta \theta).}$ To determine the rate of change of ${\sin \theta}$ with respect to theta (i.e., ${\dfrac{d}{d \theta} \sin \theta,}$) we must determine the rate of change for ${y = \sin \theta.}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823790/math/poq_circle2_f6zbi7.svg"
+	}
+	imwidth={"190"}
+	imheight={"181"}
+	caption={
+		"Unit circle with points P and Q. What we are looking for is delta y."
+	}
+	width={"30"}
+/>
+
+If we zoomed in on the ${\Delta y}$ above:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823831/math/poq_tri_kzwx55.svg"
+	}
+	imwidth={"43"}
+	imheight={"30"}
+	caption={"Delta y"}
+	width={"15"}
+/>
+
+The curved portion is the part of the circle. We've also drawn a line segment from ${P}$ to ${Q.}$ In doing so, we've drawn a right triangle ${\triangle PQR.}$ Now, we use a concept we saw earlier: Very short pieces of curves are nearly straight. This means that the ${\text{arc } PQ}$ is essentially the same as the edge ${\overline{\rm PQ}:}$ ${\text{arc } PQ \approx \overline{\rm PQ}.}$ Now, we know that ${\text{arc } PQ}$ has a length of ${\Delta \theta.}$ Thus, we know that: ${\Delta \theta \approx \overline{\rm PQ}.}$ Great, we have one side down. If we can determine the measure of ${\angle QPR}$ is, then we can determine ${\Delta y.}$ Geometrically, we are trying to find the length of ${\overline{\rm PR.}}$ To think about what the measure of ${\angle QPR}$ might be, let's see the line with the whole unit circle:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823864/math/poq_circle3_rxne5t.svg"
+	}
+	imwidth={"203"}
+	imheight={"189"}
+	caption={"A tangent line through the circle"}
+	width={"30"}
+/>
+
+Notice that the segment is almost perpendicular to the radius ${\overline{\rm OP}.}$ When we take the limit, it is just about perpendicular: ${\overline{\rm PQ} \underset{\approx}{\perp} \overline{\rm OP}.}$ If we rotate the entire construction by ${{90}^\circ,}$ we can see that ${\angle QPR}$ is roughly the angle ${\theta.}$
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823907/math/poq_circle4_yzzd2g.svg"
+	}
+	imwidth={"200"}
+	imheight={"203"}
+	caption={"Rotation"}
+	width={"40"}
+/>
+
+Thus, we can conclude that:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655823940/math/poq_tri2_ndoynt.svg"
+	}
+	imwidth={"34"}
+	imheight={"24"}
+	caption={"Approximate angle"}
+	width={"20"}
+/>
+
+Accordingly, ${\angle QPR \approx \theta.}$ With these two propositions: (1) ${\overline{\rm PQ} \approx \Delta \theta,}$ and (2) ${\angle QPR \approx \theta,}$ we can now draw the following premise: ${\Delta y = \overline{\rm PR} \approx (\Delta \theta)\cos \theta.}$ It is this premise that allows us to reach the proposition we were after: ${\frac{\Delta y}{\Delta \theta} \approx \cos \theta.}$ And by applying the limit: ${\lim_{\Delta \theta \to 0} \frac{\Delta y}{\Delta \theta} \approx \cos \theta.}$
+
+## Differentiating Inverse Functions
+Suppose we have the function ${y = \sqrt{x}.}$ We can rewrite this function as ${y^2 = x.}$ Alternatively, we could write ${f(x) = \sqrt{x},}$ which in turn can be written as ${g(y) = x \ni g(y) = y^2}$ (the notation ${\ni}$ means &#8220;such that&#8221;). More generally:
+
+> __~notation~__. Suppose ${y: x \to f(x)}$ is a function, written as ${y = f(x).}$ The function ${g: y \to x,}$ written as ${g(y) = x,}$ is called the inverse function of ${y.}$
+
+In other words, if we have a function ${y = f(x),}$ we can rewrite it as
+${g(y) = x.}$ The function ${g(y) = x,}$ which is really ${g(f(x)) = x,}$ is called the inverse function of ${y = f(x).}$ The inverse function of ${y = f(x),}$ which is ${g(y) = x,}$ is usually written with the notation ${g = f^{-1}.}$ Similarly, the inverse of ${g(y) = x,}$ which is ${y = f(x),}$ is usually written as ${f = g^{-1}.}$ Given our definition above, we can see that ${f(x) = \sqrt{x}}$ has the inverse function ${f^{-1}(x) = x^2.}$ Comparing these two graphs:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655909293/math/inverse1_krifzs.svg"
+	}
+	imwidth={"1306"}
+	imheight={"513"}
+	caption={
+		"The graph of ${y = \\sqrt{x}}$ to the left, and the graph of ${x = y^2}$ to the right."
+	}
+	width={"90"}
+/>
+
+The graphs above evidence the fact that the inverse functions are really just switching the ${x}$ and ${y}$ values. We can see this more clearly when we plot both functions on the same plane:
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655909331/math/inverse2_mgrueu.svg"
+	}
+	imwidth={"259"}
+	imheight={"215"}
+	caption={
+		"Notice how the roles of ${x}$ and ${y}$ are switched. Original: ${x}$ is the input, ${y}$ is the output. Inverse: ${y}$ is the input, ${x}$ is the output."
+	}
+	width={"40"}
+/>
+
+So what does this have to do with implicit differentiation? Well, as long as we know the derivative of some function ${f,}$ we can find the derivative of the inverse function ${f^{-1}.}$ In other words, we can find the derivative of any inverse function ${f^{-1}}$ provided we know the derivative of ${f.}$ This may not seem like much of an insight given the examples we've seen earlier, but it proves to be immeasurably useful when we confront some fairly complex functions. For example, consider the function ${y = \arctan x.}$ This is the function ${y = \tan^{-1} x,}$ which is the inverse of ${x = \tan y.}$ Plotting both these graphs together, we have:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655909384/math/inverse4_ijmkbe.svg"
+	}
+	imwidth={"554"}
+	imheight={"327"}
+	caption={"Inverse functions tan and arctan"}
+	width={"40"}
+/>
+
+A more focused view reveals:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1655909433/math/inverse3_jcjh2n.svg"
+	}
+	imwidth={"412"}
+	imheight={"335"}
+	caption={"Focusing"}
+	width={"40"}
+/>
+
+First, let's consider the derivative of ${\tan y.}$ From trigonometry, we
+know that ${\tan y = \dfrac{\sin y}{\cos y}.}$ Accordingly, the derivative
+of ${\tan y}$ is computed by applying the quotient rule:
+
+$$
+	\begin{aligned} \di{}{y} \tan y &= \dfrac{(\sin y)'(\cos y) - (\sin y)(\cos y)'}{(\cos y)^2} \\[2em] &= \dfrac{(\cos y)(\cos y) - (\sin y)(-\sin y)}{(\cos y)^2} \\[2em] &= \dfrac{\cos^2 y + \sin^2 y}{\cos^2 y} \\[2em] &= \dfrac{1}{\cos^2 y} \\[2em] &= \sec^2 y \end{aligned}
+$$
+
+Thus, ${\di{}{y} \tan y = \sec^2 y.}$ Now we differentiate:
+
+$$
+	\begin{aligned} \di{}{y}(\tan y = x) &= \left(\di{}{y} \tan y\right)\left(\di{y}{x}\right) = 1 \\[2em] &= \dfrac{1}{\cos^2 y} \cdot y' = 1 \end{aligned}
+$$
+
+Solving for ${y',}$ we have ${y' = \cos^2 y.}$ Substituting for ${y,}$ we have ${\di{}{x} \arctan x = y' = \cos^2 (\arctan x)}$ The derivative above is correct, but it is very complicated. Whenever we work with trigonometric functions, we want to always think of applying a trigonometric identity that simplifies the expressions. In this case, we have an identity that's directly applicable: ${\cos y = \frac{1}{\sqrt{1 + x^2}}.}$ Accordingly: ${\cos^2 y = \frac{1}{1 + x^2}.}$ Applying this fact to our derivative, ${\di{}{x} \arctan x = \dfrac{1}{1 + x^2}.}$ Having seen implicit differentiation as applied to ${f(x) = \arctan x,}$ we can see how easy it is for the other inverse trigonometric functions. For example, consider ${y = \arcsin x.}$
+
+$$
+	\begin{aligned}
+		y &= \arcsin x \\
+		\sin y &= x \\
+		\di{}{y} (\sin y = x) &= \left(\di{}{y} \sin y = \di{}{y} x\right) \\
+		&= (\cos y) y' = 1 \\
+	\end{aligned}
+$$
+
+Solving for ${y'}$ and substituting for ${y}$:
+
+$$
+	\begin{aligned}
+	y' &= \dfrac{1}{\cos y} \\
+	&= \dfrac{1}{\sqrt{1 - \sin^2 y}} \\
+	&= \dfrac{1}{\sqrt{1 - x^2}}
+	\end{aligned}
+$$
+
+> __theorem__. Given the function ${y = \arcsin x,}$ the function's
+> derivative ${y'}$ is:
+>
+> $$
+> 	y' = \dfrac{1}{\sqrt{1-x^2}}
+> $$
+
+## Higher-order Derivatives
+The mathematician Hugo Rossi famously quipped, &#8220;In the fall of 1972, President Nixon announced that the rate of increase of inflation was decreasing. This was the first time a sitting president used the third derivative to advance his case for reelection.&#8221; What is this third derivative? It's simply a derivative of a derivative &mdash; a higher-order derivative. Higher derivatives are denoted ordinally. I.e., the &#8220;second derivative,&#8221; the &#8220;third derivative,&#8221; etc. For example, velocity is the first derivative of the position vector with respect to time, representing the change in an object's position over time. Acceleration is the second derivative of the position vector with respect to time, representing the moving object's change in velocity (e.g., how fast does this car go from 0mph to 100mph?). Jerk is the third derivative of the position vector with respect to time, representing the change in acceleration. Somewhat humorously and non-standardized: A snap is the fourth derivative representing the change in jerk. Crackle is the fifth derivative representing the change in snap. Pop is the sixth derivative representing the change in crackle. The rules we've covered thus far equally apply to the computation of higher-order derivatives. For example, given ${u(x) = \sin x,}$ the first derivative is ${u' = \cos x.}$ The second derivative is ${(u')' = (\cos x)' = - \sin x.}$ There are several forms of notation for higher derivatives:
+
+> (1) ${f'(x) \equiv D f \equiv \di{f}{x} \equiv \di{}{x} f}$ and
+> 
+> (2) ${f''(x) \equiv D^2 f \equiv \dfrac{\d^2f}{\d x^2} \equiv (\di{}{x})^2
+f}$
+> (3) ${f'''(x) \equiv D^3 f \equiv \dfrac{\d^3f}{\dx^3} \equiv (\di{}{x})^3 f}$
+> 
+> (4) ${f^{(n)}(x) \equiv D^n f \equiv \dfrac{\d^nf}{\d x^n} \equiv (\di{}{x})^n f}$
+
+The symbols ${D}$ and ${\di{}{x}}$ are operators we can apply to functions. Applying such operators, the derivative of the function is returned.

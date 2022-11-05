@@ -1,0 +1,187 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+
+# Clusters
+
+
+
+Knowing the number of clusters (also called _connected components_, but we use clusters because it's shorter) in a graph is a vital piece of information in constructing application-specific graphs. Earlier, we saw one example of a cluster, the edge ${\ix{o,n}.}$ The graph below contains _three_ clusters:
+
+
+<Graph data={[
+	{link: [6,4]},
+	{link: [4,10]},
+	{link: [4,11]},
+	{link: [4,12]},
+	{link: [4,13]},
+	{link: [6,5]},
+	{link: [6,8]},
+	{link: [6,7]},
+	{link: [3]},
+	{link: [1,2]},
+	{link: [2,9]},
+]}
+id={`accc1`}
+fontSize={0.3}
+repulsion={0.5}
+collisionRadius={10}
+edgeLength={11}
+straightEdges={true}
+scale={40}
+width={200}
+height={110}
+margins={[5,0,10,0]}
+/>
+
+By definition, clusters are _partitions_ of the vertex set ${V.}$ We say that two nodes ${v}$ and ${w}$ are reachable in a cluster ${c}$ if, and only if, they are in the same cluster. To implement this algorithm, we rely on the same _visited pattern_. We traverse the graph just as we would with any other problem, but we perform an additional step: Each time we encounter a node that _we have visited_, we will increment a count variable.
+
+
+
+
+
+
+
+### Cluster Counting: Adjacency Lists
+Below is an algorithm for counting clusters on adjacency lists.
+
+<Algo>
+
+> __~cluster count~.__ Given a graph ${\G,}$ the function ${\df{clustercount}}$ returns the number of clusters in ${\G.}$
+
+- __Argument__: ${\G,}$ a pointer to an adjacency list representing a graph.
+- __Image__: ${n \in \nat,}$ corresponding to the number of clusters.
+
+1. __function__ ${\df{clustercount}}$
+	1. ${\let{visited}{\df{new set}}}$
+	2. __function__ ${\df{explore}(\tx{graph},k)}$
+		1. __if__ ${k \in visited}$ __return__ ${\df{false}}$
+		2. ${\let{visited}{\df{insert}~k}}$
+		3. __for each__ ${v \in \tx{graph}\ix{k}}$ __do__ ${\df{explore}(\tx{graph},v)}$
+		4. __return__ ${\df{true}}$
+2. __init__ ${\let{count}{0}}$
+3. __for each__ ${K \in \G}$ __do__
+	1. __if__ ${\df{explore}(\G,K)}$ __then__ ${count\texttt{++}}$ `increment count`
+4. __return__ ${count}$
+
+</Algo>
+
+This algorithm has a runtime complexity of order ${\bigO{E},}$ where ${E}$ is the number of edges, and a space complexity of order ${\bigO{V},}$ where ${V}$ is the number of nodes.
+
+
+
+
+
+
+
+### Cluster Counting: Adjacency Matrix 
+Cluster counting can also be done on adjacency matrices, albeit with somewhat longer code. The code below uses the ${\df{dftm}}$ algorithm. _See_ [~depth-first traversal on adjacency matrices~](#depth-first-traversal-on-adjacency-matrices).
+
+<Algo>
+
+> __~cluster count~.__ Given an adjacency matrix ${G}$ representing a graph, the function ${\df{clustercount}}$ returns the number of clusters of ${G.}$
+
+- __Argument__: ${G,}$ an adjacency matrix representing a graph.
+- __Image__: ${count \in \nat,}$ representing the number of clusters in ${G.}$
+
+1. __function__ ${\df{clustercount}(G)}$
+	1. ${\let{visited}{\df{new set}}}$
+	2. __function__ ${\df{explore}(row, col)}$
+		1. __if__ ${row \lt 0}$ __or__
+			1. ${col \lt 0}$ __or__
+			2. ${\len{G} \le row}$ __or__
+			3. ${\len{G\ix{0}} \le col}$ __or__
+			4. ${\ix{row,col} \in visited}$ __or__
+			5. ${G\ix{row}\ix{col} \in visited}$ __then return__ false
+		2. ${\let{visited}{\df{insert}~\ix{row,col}}}$
+		3. ${\df{explore}(row+1,col)}$
+		4. ${\df{explore}(row-1,col)}$
+		5. ${\df{explore}(row,col+1)}$
+		6. ${\df{explore}(row,col-1)}$
+		7. __return__ true
+	3. ${\let{count}{0}}$
+	4. __for__ ${\let{row}{0},~row \lt \len{G},~row\texttt{++}}$
+		1. __for__ ${\let{col}{0},~col \lt \len{G\ix{0}},~col\texttt{++}}$
+			1. __if__ ${\df{explore}(row,col)}$ __then__ ${count\texttt{++}}$
+	5. __return__ ${count}$
+
+</Algo>
+
+The ${\df{explore}}$ function for this algorithm looks somewhat different from the DFTM algorithm's implementation. This is due to the fact that we want to count the number of clusters. The actual counting is done in the loop from line 17 to line 19. We only increment that count when ${\df{explore}}$ returns false. As expected, the time complexity for this algorithm is of order ${\bigO{r \by c},}$ where ${r}$ is the number of rows and ${c}$ is the number of columns of the adjacency matrix. Given an ${n \times n}$ matrix, we have an order of ${\bigO{n^2}.}$ Likewise, because of the recursive calls, we have a space complexity of order ${\bigO{r \by c}.}$
+
+
+
+
+
+
+
+### Minimum Cluster Order: Adjacency Matrix
+The algorithm below returns the order (or size) of the smallest cluster in a graph represented by an adjacency matrix.
+
+<Algo>
+
+__~minorderam~.__ Let ${G}$ be an adjacency matrix representing a graph. The function ${\df{minorderam}}$ returns the order of the smallest cluster of ${G.}$
+
+1. __function__ ${\df{minorderam}(G)}$
+	1. ${\let{visited}{\df{new set}}}$
+	2. ${\let{min}{+\infty}}$
+	3. __function__ ${\df{explore}(row, col)}$
+		1. __if__ ${row \lt 0}$ __or__ _ensure ${row}$ in bound_
+			1. ${col \lt 0}$ __or__ _ensure ${col}$ in bound_
+			2. ${\len{G} \le row}$ __or__ _ensure ${row}$ in bound_
+			3. ${\len{G\ix{0}} \le col}$ __or__ _ensure ${col}$ in bound_
+			4. ${\ix{row,col} \in visited}$ __or__ _ensure ${\ix{row,col}}$ is unvisited_
+			5. __then return__ ${0}$
+		2. ${\let{visited}{\df{insert}~\ix{row,col}}}$
+		3. ${\let{size}{1}}$ 
+		4. ${\let{size}{size' + \df{explore}(row-1,col)}}$
+		5. ${\let{size}{size' + \df{explore}(row+1,col)}}$
+		6. ${\let{size}{size' + \df{explore}(row,col-1)}}$
+		7. ${\let{size}{size' + \df{explore}(row,col+1)}}$
+		8. __return__ ${size}$
+	4. __for__ ${\let{i}{0},~ i \lt \len{G},~ i\texttt{++}}$
+		1. __for__ ${\let{j}{0},~ j \lt \len{G},~ j\texttt{++}}$
+			1. ${\let{clustersize}{\df{explore}(i,j)}}$
+			2. __if__ ${(0 \lt clustersize \lt min)}$ __then__
+				1. ${\let{min}{clustersize}}$
+	5. __return__ ${min}$
+
+</Algo>
+
+This algorithm has a time complexity of order ${\bigO{r \by c},}$ where ${r}$ is the number of rows and ${c}$ is the number of columns. Similarly, the algorithm has a space complexity of order ${\bigO{r \by c}.}$
+
+
+
+
+
+
+
+
+### Largest Cluster Detection 
+Suppose we wanted to find the size of the largest cluster. How might we go about doing so? Well, we just build off of the last algorithm. The only difference is: Instead of returning the number of clusters, we just have to return the _size_ of the largest cluster.
+
+<Algo>
+
+> __~glcd~.__ Given an adjacency list representing a graph ${G,}$ the function ${\df{glcd}}$ returns the number of vertices in the largest cluster of ${G.}$
+
+- __Argument__: ${G,}$ an adjacency list representing a graph.
+- __Image__: ${max \in \nat,}$ the size of the largest cluster.
+
+1. __function__ ${\df{glcd}(G):}$
+	1. ${\let{visited}{\df{new set}}}$
+	2. ${\let{max}{0}}$
+	3. ${\let{size}{0}}$
+	4. __function__ ${\df{explore}(vertex):}$
+		1. __if__ ${v \in visited}$ __return__ ${0}$
+		2. ${\let{visited}{\df{insert}(vertex)}}$
+		3. ${\let{size}{1}}$
+		4. __for each__ ${neighbor \in G\ix{vertex}}$
+			1. ${\let{size}{size' + \df{explore}(neighbor)}}$
+		5. __return__ ${size}$
+	5. __for each__ ${vertex \in G}$
+		1. ${\let{size}{\df{explore}(vertex)}}$
+		2. __if__ ${size \gt max}$ __then__
+			1. ${\let{max}{size}}$
+	6. __return__ ${max}$
+
+</Algo>
+
+This algorithm has a time complexity of order ${\bigO{\abs{E}},}$ where ${\abs{E}}$ is the number of edges, and a space complexity of order ${\bigO{\abs{V}},}$ where ${\abs{V}}$ is the number of vertices.

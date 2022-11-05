@@ -1,6 +1,6 @@
+import { range, scaleBand, select } from "d3";
 import React, { useRef, useEffect } from "react";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import {
 	svg,
 	isObjectLiteral,
@@ -37,17 +37,15 @@ export const LinkedList = ({
 	const _svg = svg(width, height, margins);
 	const _data = formatData(data);
 	const nodeCount = _data.length;
-	const xScale = d3
-		.scaleBand()
-		.domain(d3.range(nodeCount))
+	const xScale = scaleBand()
+		.domain(range(nodeCount))
 		.rangeRound([0, _svg.width])
 		.paddingInner(0.5);
 	const nodeWidth = xScale.bandwidth();
 	const nodeHeight = 10;
 
 	useEffect(() => {
-		const canvas = d3
-			.select(LinkedListFigure.current)
+		const canvas = select(LinkedListFigure.current)
 			.select("g.svgElement");
 		const linkedList = canvas
 			.append("g")

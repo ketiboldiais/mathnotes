@@ -7,7 +7,7 @@ import { getArrayMax } from "../utils/getArrayMax/getArrayMax";
 import { getArrayMin } from "../utils/getArrayMin/getArrayMin";
 import { getPropertyValues } from "../utils/getPropertyValues/getPropertyValues";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
+import { axisBottom, axisLeft, scaleLinear, select } from "d3";
 
 const formatData = (arr = []) => {
 	let data = [];
@@ -58,20 +58,17 @@ export const ScatterPlot = ({
 	const _yMax = setValue(
 		getArrayMax(getPropertyValues(scatterPlotData, "y")),
 	);
-	const scaleX = d3
-		.scaleLinear()
+	const scaleX = scaleLinear()
 		.domain([_xMin, _xMax])
 		.range([0, _svg.width]);
-	const scaleY = d3
-		.scaleLinear()
+	const scaleY = scaleLinear()
 		.domain([_yMin, _yMax])
 		.range([_svg.height, 0]);
-	const scaleSqrt = d3.scaleSqrt().domain([0, _yMax]).range([0, 10]);
-	const xAxis = d3.axisBottom().scale(scaleX).ticks(xAxisTickCount);
-	const yAxis = d3.axisLeft().scale(scaleY).ticks(yAxisTickCount);
+	const scaleSqrt = scaleSqrt().domain([0, _yMax]).range([0, 10]);
+	const xAxis = axisBottom().scale(scaleX).ticks(xAxisTickCount);
+	const yAxis = axisLeft().scale(scaleY).ticks(yAxisTickCount);
 	useEffect(() => {
-		const scatterPlot = d3
-			.select(scatterPlotFigure.current)
+		const scatterPlot = select(scatterPlotFigure.current)
 			.select("g.svgElement");
 		const circleGroups = scatterPlot
 			.selectAll("g.circles")

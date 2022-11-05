@@ -1,0 +1,72 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+
+# Reachability
+
+## Directed Path Detection
+Path detection is a function we'll see repeatedly in later algorithms.
+
+> __~directed path detection~.__ Let ${G}$ be the pointer to an acyclic digraph, and let ${a}$ and ${b}$ be vertices on ${G.}$ Given ${G}$ and ${s,}$ the function ${\df{dipath}}$ returns true if there exists exists a directed path between ${a}$ and ${b,}$ and false otherwise.
+
+Note the parameters to this description. The domain of ${f}$ is a triple ${(\G,a,b),}$ where ${\G}$ is an _acyclic digraph_, and ${a,b \in \G_V.}$ These are parameters we must always consider when writing graph-related algorithms. If ${\G}$ were instead cyclic, we must write our algorithms in anticipation of potential infinite loops (we'll consider these cases in a later section). 
+Below are two possible implementations.
+
+<Grid cols={2}><Algo>
+
+__~dipath (depth-first)~__
+- __Argument__: ${\G,}$ a pointer to a graph, ${\S,}$ the start of a path, and ${\D,}$ the end of a path.
+- __Image__: ${\texttt{true}}$ if the path ${(\S\ldots\D)}$ exists, ${\texttt{false}}$ otherwise.
+
+1. __if__ ${\S = \D}$ __return__ ${\texttt{true}}$
+2. __for each__ ${n \in \G\ix{\S}}$
+	1. __if__ ${\df{dipath}(\G,\S,\D)}$
+		1. __return__ ${\texttt{true}}$
+3. __return__ ${\texttt{false}}$
+
+</Algo>
+<Algo>
+
+__~dipath (breadth-first)~__
+- __Argument__: ${\G,}$ a pointer to a graph, ${\S,}$ the start of a path, and ${\D,}$ the end of a path.
+- __Image__: ${\texttt{true}}$ if the path ${(\S\ldots\D)}$ exists, ${\texttt{false}}$ otherwise.
+
+1. __init__
+	1. ${\let{Q}{\df{new queue}(\S)}}$
+2. __while__ ${\len{Q} \gt 0}$
+	1. ${\textbf{init}~\let{c}{\df{dequeue}~Q}}$
+	2. __if__ ${c = \D}$ __return__ ${\texttt{true}}$
+	3. __for each__ ${n \in \G\ix{c}}$
+		1. ${\let{Q}{\df{enqueue}~n}}$
+3. __return__ ${\texttt{false}}$
+
+</Algo></Grid>
+
+Both approaches have a time complexity of order ${\bigO{V+E},}$ where ${V}$ is the number of vertices, and ${E}$ is the number of edges. How should we interpret this time complexity? It depends on what we want to focus on. If we want to speak in terms of nodes, then let ${n}$ denote the number of nodes. It follows that the time complexity, in the worst case, is ${\bigO{n^2},}$ given that the worst possible acyclic graph we can get is one where, for every pair of adjacent nodes ${a}$ and ${b}$ with ${a \neq b,}$ there exists an edge ${(a,b)}$ and an edge ${(b,a).}$ I.e., ${n^2.}$ The space complexity, however, remains ${\bigO{n},}$ or, in vertex terms, ${\bigO{V}.}$
+
+
+
+
+
+
+## Undirected Path Detection
+The problem of detecting paths provides a segue into simple graphs — graphs without directed edges. And because we don't have directed edges, we now need a form of the general traversal algorithm that allows us to traverse _every edge_ of a given graph ${G.}$ The general DFT algorithm is what we'll use to detect undirected paths. The algorithm below is one possible implementation, using the ${\lex\df{simplegraph}}$ function written earlier.
+
+<Algo>
+
+> __~undirected path detection~.__ Let ${G}$ be the pointer to a simple graph, and let ${a}$ and ${b}$ be vertices on ${G.}$ Given ${G}$ and ${s,}$ the function ${f}$ returns true if there exists exists a directed path between ${a}$ and ${b,}$ and false otherwise.
+
+- __Argument__: ${\E,}$ a set of edges, and two vertices, ${a}$ and ${b.}$
+- __Image__: ${\df{true}}$ if there exists a path from ${a}$ to ${b,}$ ${\df{false}}$ otherwise.
+
+1. __init__
+	1. ${\let{G}{\lex\df{simplegraph}}}$
+	2. ${\let{visited}{\lex\df{set}}}$
+2. __function__ ${\df{explore}(G,s,d)}$
+	1. __if__ ${s = d}$ __return__ ${\df{true}}$
+	2. __if__ ${s \in visited}$ __return__ ${\df{false}}$
+	3. ${\let{visited}{\df{insert}(s)}}$
+	4. __for each__ ${n \in G\ix{s}}$
+		1. __if__ ${\df{explore}(G,n,d)}$ __return__ ${\df{true}}$
+	3. __return__ ${\df{false}}$
+3. __return__ ${\df{explore}(G,a,b)}$
+
+</Algo>

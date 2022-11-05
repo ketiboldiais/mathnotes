@@ -7,18 +7,19 @@ import { getArrayMax } from "../utils/getArrayMax/getArrayMax";
 import { getArrayMin } from "../utils/getArrayMin/getArrayMin";
 import { getPropertyValues } from "../utils/getPropertyValues/getPropertyValues";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
+import { axisBottom, axisLeft, format, group, line, scaleLinear, select } from "d3";
+
 
 const setXAxis = (xScale, xTickCount) => {
-	return d3
-		.axisBottom()
+	return axisBottom()
 		.scale(xScale)
 		.ticks(xTickCount)
-		.tickFormat(d3.format("d"));
+		.tickFormat(format("d"));
 };
 
+
 const setYAxis = (yScale, yTickCount) => {
-	return d3.axisLeft().scale(yScale).ticks(yTickCount);
+	return axisLeft().scale(yScale).ticks(yTickCount);
 };
 
 const formatData = (arr = []) => {
@@ -42,17 +43,10 @@ export const LinePlot = ({
 	data,
 	xMin = null,
 	xMax = null,
-	yMin = null,
-	yMax = null,
 	lineWidth = 2,
 	xAxisTickCount = 5,
 	yAxisTickCount = 5,
-	axisPadding = 0,
 	legend = {},
-	radialMagnitude = false,
-	circleRadius = 5,
-	xAxisLabel = "x",
-	yAxisLabel = "y",
 	width = 500,
 	height = 300,
 	containerWidth,
@@ -65,8 +59,7 @@ export const LinePlot = ({
 }) => {
 	const LinePlotFigure = useRef();
 	const linePlotData = formatData(data);
-	const linePlotDataGroups = d3.group(linePlotData, (d) => d.group);
-	const legendKeys = Object.keys(legend);
+	const linePlotDataGroups = group(linePlotData, (d) => d.group);
 	const _svg = svg(width, height, margins);
 
 	const _xMin = setValue(
@@ -84,30 +77,27 @@ export const LinePlot = ({
 		getArrayMax(getPropertyValues(linePlotData, "y")),
 	);
 
-	const xScale = d3
-		.scaleLinear()
+	const xScale = scaleLinear()
 		.domain([_xMin, _xMax])
 		.range([0, _svg.width]);
-	const yScale = d3
-		.scaleLinear()
+	const yScale = scaleLinear()
 		.domain([_yMin, _yMax])
 		.range([_svg.height, 0]);
-	const sqrtScale = d3.scaleSqrt().domain([0, _xMax]).range([0, 10]);
+	
 
 	useEffect(() => {
-		const LinePlot = d3
-			.select(LinePlotFigure.current)
+		const LinePlot = select(LinePlotFigure.current)
 			.select("g.svgElement");
+		
 
-		const trendLines = LinePlot.selectAll("trendline")
+		LinePlot.selectAll("trendline")
 			.data(linePlotDataGroups)
 			.enter()
 			.append("path")
 			.attr("class", "trendline")
 			.attr("fill", "none")
 			.attr("d", (d) =>
-				d3
-					.line()
+					line()
 					.x((d) => xScale(d.x))
 					.y((d) => yScale(d.y))(d[1]),
 			)
@@ -117,14 +107,14 @@ export const LinePlot = ({
 		const xAxisGroup = LinePlot.append("g")
 			.attr("class", "axis x-axis")
 			.attr("transform", translate(0, _svg.height));
-		const renderedXAxis = xAxisGroup.call(
+		xAxisGroup.call(
 			setXAxis(xScale, xAxisTickCount),
 		);
 
 		const yAxisGroup = LinePlot.append("g")
 			.attr("class", "axis y-axis")
 			.attr("transform", translate(0, 0));
-		const renderedYAxis = yAxisGroup.call(
+		yAxisGroup.call(
 			setYAxis(yScale, yAxisTickCount),
 		);
 	});

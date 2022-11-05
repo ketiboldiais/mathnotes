@@ -1,0 +1,672 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+
+<Head>
+	<title>Matrix Algorithms</title>
+	<meta name={`description`} content={`Notes on matrix algorithms.`}/>
+</Head>
+
+# Matrices
+_This note covers various matrix algorithms_.
+
+1. [Vectors](#vectors)
+	1. [Applications of Vectors](#applications-of-vectors)
+	2. [Vector Implementations](#vector-implementations)
+	3. [Vector Operations](#vector-operations)
+		1. [Scalar Multiplication](#scalar-multiplication)
+		2. [Vector Addition](#vector-addition)
+		3. [Algebraic Properties of Vector Operations](#algebraic-properties-of-vector-operations)
+2. [Mazes](#mazes)
+3. [Shortest Path: Maze](#shortest-path-maze)
+4. [Minimum Bridge](#minimum-bridge)
+
+## Vectors
+> __~definition~.__ A _vector_ is a tuple ${\ix{a_0, a_1, \ldots, a_{n-1}},}$ where ${n}$ is the _length_ of the vector, corresponding to the number of elements comprised by the tuple. We call such elements ${a_i}$ the _components_ of the vector, where each ${i \in \nat, 0 \lt i \le n}$ is the component's respective _index_. The set of all indices ${i}$ is called the vector's _dimensions_. We denote a vector with Latin or Greek letters, crowned with a ray (e.g., ${\vc{v}}$). Given a vector ${\vc{v},}$ we denote the ${\ith{i}}$ component with ${v\ix{i},}$ and the _length_ of ${\vc{v}}$ with ${\len{(v)}.}$
+
+> __~definition~.__ The _zero-vector_ is a vector ${v}$ such that, for all ${i \lt \len{(v)},}$ it follows that ${v\ix{i}=0.}$ We denote the zero vector with ${\vc{0}.}$
+
+### Applications of Vectors
+__~2d-coordinates~.__ Given a two-dimensional geometry ${S,}$ a vector ${\ix{x,y}}$ denotes a location in ${S.}$
+
+__~3d-coordinates~.__ Given a three-dimensional geometry ${S,}$ a vector ${\ix{x,y,z}}$ denotes a location in ${S.}$
+
+__~exam data~.__ A person's exam data may be represented as a vector ${\ix{\tx{id},\tx{verbal},\tx{written},\tx{numeric}}.}$
+
+__~time series data~.__ A vector may represent a stock's price ${p_i}$ over a given interval of time: ${\ix{125.2, 134.5, 133.6, \ldots, p_n}.}$
+
+### Vector Implementations
+Unless otherwise stated, we use dynamic arrays as implementations of vectors. For some algorithms, we may use linked lists. We will always make deviations from dynamic arrays explicit.
+
+### Vector Operations
+#### Scalar Multiplication 
+<Algo>
+
+__~scalar multiplication~.__ Let ${\vc{v}}$ be a vector of length ${n,}$ and let ${c}$ be a number. Then the operation ${c \by \vc{v},}$ called _scalar multiplication_, is defined by the procedure below. Per the procedure, ${c \by \vc{v}}$ is a _commutative operation_.
+
+- __Argument__: ${\vc{v},}$ a vector, and ${c,}$ a constant.
+- __Image__: ${\df{vector}.}$
+
+1. __define__ ${\df{number} \by \df{vector} ~:=~ \df{scalar-multiplication}(\df{number},\df{vector})}$
+2. __define__ ${\df{vector} \by \df{number} ~:=~ \df{scalar-multiplication}(\df{number},\df{vector})}$
+3. __function__ ${\df{scalar-multiplication}(c,\vc{v})}$
+	1. __for__ ${\let{i}{0},~i \lt \len{(\vc{v})},~i\texttt{++}}$
+		1. ${\let{\vc{v}\ix{i}}{\vc{v}\ix{i} \times c}}$
+	2. __return__ ${\vc{v}}$
+
+</Algo>
+
+~example~. ${4 \by \ix{1,2,3} = \ix{4,8,12}.}$
+
+~example~. ${4 \by \ix{~} = \ix{~}.}$
+
+#### Vector Addition 
+<Algo>
+
+__~vector addition~.__ Let ${\vc{v}}$ be a vector of length ${n}$ and let ${\vc{w}}$ be a vector of length ${n.}$ Then the operation ${\vc{v} + \vc{w},}$ called _vector addition_, is defined by the procedure below.
+
+- __Argument__: ${\vc{v},}$ a vector, and ${\vc{w},}$ a vector.
+- __Image__: ${\df{vector}}$
+- __Ensure__: ${\len{(\vc{v})} = \len{(\vc{w})}}$
+
+1. __define__ ${(\df{vector}) + (\df{vector}) := \df{vector-addition}(\df{vector},\df{vector})}$
+1. __function__ ${\df{vector-addition}(\vc{v},\vc{w})}$
+	1. __if__ ${\len{(\vc{v})} = \len{(\vc{w})}}$ __then__
+		1. __for__ ${\let{i}{0},~ i \lt \len{(\vc{v})},~ i\pl\pl}$
+			1. ${\let{\vc{v}\ix{i}}{\pl \vc{w}\ix{i}}}$
+		2. __return__ ${\vc{v}}$
+
+</Algo>
+
+_Remark._ Vector addition is only defined on vectors of the same length. It is undefined for vectors of unequal length.
+
+#### Algebraic Properties of Vector Operations
+| __Property__                                                   |                                                                   |
+| -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| ~commutativity of vector addition~                             | ${\vc{v} + \vc{w} = \vc{w} + \vc{v}}$                         |
+| ~associativity of vector addition~                             | ${\vc{u} + (\vc{v} + \vc{w}) = (\vc{u} + \vc{v}) + \vc{w}}$ |
+|                                                                | ${a(b\vc{v}) = ab(\vc{v})}$                                     |
+| ~distributivity of scalar multiplication over vector addition~ | ${c(\vc{v} + \vc{w})=c\vc{v} + c\vc{w}}$                      |
+|                                                                | ${(\vc{v} + \vc{w})c=\vc{v}c + \vc{w}c}$                      |
+| ~existence of zero vector~                                     | ${0(\vc{v})=\vc{0}}$                                            |
+| ~existence of additive identity~                               | ${\vc{v} + \vc{0} = \vc{v}}$                                   |
+| ~existence of additive inverse~                                | ${\vc{v} - \vc{v} = \vc{0}}$                                   |
+
+
+## Mazes
+Consider the following matrix.
+
+|     | 0       | 1       | 2       | 3       | 4       |
+| --- | ------- | ------- | ------- | ------- | ------- |
+| 0   | ${\wc}$ | ${\wc}$ | ${\wc}$ | ${\wc}$ | ${\wc}$ |
+| 1   | ${\wc}$ | ${\bs}$ | ${\wc}$ | ${\wc}$ | ${\wc}$ |
+| 2   | ${\wc}$ | ${\bs}$ | ${\bs}$ | ${\wc}$ | ${\wc}$ |
+| 3   | ${\wc}$ | ${\bs}$ | ${\ws}$ | ${\wc}$ | ${\wc}$ |
+| 4   | ${\wc}$ | ${\bs}$ | ${\bs}$ | ${\wc}$ | ${\wc}$ |
+| 5   | ${\ws}$ | ${\wc}$ | ${\wc}$ | ${\wc}$ | ${\wc}$ |
+
+Each black square corresponds to a wall, each white dot corresponds to open space, and each white square corresponds to an exit. Mathematically, this is a matrix where each cell can only be occupied by exactly one of three values: ${0}$ (a wall), ${1}$ (open space), or ${-1}$ (an exit). We call such a matrix a _maze_.
+
+> __~definition: maze~.__ Let ${M}$ be an ${R \times C}$ matrix, where ${R \in \pint}$ is the number of columns, and ${C \in \pint}$ is the number of rows. We say that ${M}$ is a maze if, and only if, given any cell ${c_{ij},}$ it follows that ${c_{ij} \in \uint}$ and ${-1 \le c_{ij} \le 1,}$ for all ${0 \le i \lt R}$ and for all ${0 \le j \lt C.}$
+
+~example~. The previous matrix can be visualized as:
+
+|     | 0      | 1     | 2      | 3     | 4     |
+| --- | ------ | ----- | ------ | ----- | ----- |
+| 0   | ${1}$  | ${1}$ | ${1}$  | ${1}$ | ${1}$ |
+| 1   | ${1}$  | ${0}$ | ${1}$  | ${1}$ | ${1}$ |
+| 2   | ${1}$  | ${0}$ | ${0}$  | ${1}$ | ${1}$ |
+| 3   | ${1}$  | ${0}$ | ${-1}$ | ${1}$ | ${1}$ |
+| 4   | ${1}$  | ${0}$ | ${0}$  | ${1}$ | ${1}$ |
+| 5   | ${-1}$ | ${1}$ | ${1}$  | ${1}$ | ${1}$ |
+
+Associated with mazes is the operation of navigation.
+
+> __~definition: navigation~.__ Let ${M}$ be an ${R \times C}$ maze. Given: a pair ${(r,c)}$ where ${0 \le r \lt R}$ and ${0 \le c \lt C,}$ and one element of ${\set{y^+, y^-, x^+, x^-},}$ the operation ${\df{nav}}$ is defined as follows:
+> 
+> $$
+> 	\df{nav}((r,c), d) \case{
+> 		(r+1,c) &\if d = y^+ \\
+> 		(r-1,c) &\if d = y^- \\
+> 		(r,c+1) &\if d = x^+ \\
+> 		(r,c-1) &\if d = x^- \\
+> 	}
+> $$
+
+
+
+
+
+
+
+## Shortest Path: Maze
+Given a maze ${M_{RC}}$ we often want to find the shortest possible path from a
+given coordinate ${(r,c) \in RC}$ to an exit ${[(a,b)=0] \in RC.}$ This is
+merely a variant of the shortest path problem on adjacency matrices. The number
+of possible paths depends on where we first start (the pair ${(r,c)}$). For
+example, using the example matrix from the previous section, suppose we're
+initially placed at ${(1,2).}$ There are several possible paths to an exit.
+
+<Grid cols={2}>
+
+|     | 0         | 1     | 2              | 3          | 4     |
+| --- | --------- | ----- | -------------- | ---------- | ----- |
+| 0   | ${1}$     | ${1}$ | ${1}$          | ${1}$      | ${1}$ |
+| 1   | ${1}$     | ${0}$ | ${\wd{1}}$     | ${\wd{1}}$ | ${1}$ |
+| 2   | ${1}$     | ${0}$ | ${0}$          | ${\wd{1}}$ | ${1}$ |
+| 3   | ${1}$     | ${0}$ | ${\wd{\mi 1}}$ | ${\wd{1}}$ | ${1}$ |
+| 4   | ${1}$     | ${0}$ | ${0}$          | ${1}$      | ${1}$ |
+| 5   | ${\mi 1}$ | ${1}$ | ${1}$          | ${1}$      | ${1}$ |
+
+
+|     | 0         | 1     | 2              | 3          | 4          |
+| --- | --------- | ----- | -------------- | ---------- | ---------- |
+| 0   | ${1}$     | ${1}$ | ${1}$          | ${1}$      | ${1}$      |
+| 1   | ${1}$     | ${0}$ | ${\wd{1}}$     | ${\wd{1}}$ | ${\wd{1}}$ |
+| 2   | ${1}$     | ${0}$ | ${0}$          | ${1}$      | ${\wd{1}}$ |
+| 3   | ${1}$     | ${0}$ | ${\wd{\mi 1}}$ | ${\wd{1}}$ | ${\wd{1}}$ |
+| 4   | ${1}$     | ${0}$ | ${0}$          | ${1}$      | ${1}$      |
+| 5   | ${\mi 1}$ | ${1}$ | ${1}$          | ${1}$      | ${1}$      |
+
+
+|     | 0         | 1     | 2              | 3          | 4          |
+| --- | --------- | ----- | -------------- | ---------- | ---------- |
+| 0   | ${1}$     | ${1}$ | ${1}$          | ${1}$      | ${1}$      |
+| 1   | ${1}$     | ${0}$ | ${\wd{1}}$     | ${\wd{1}}$ | ${{1}}$    |
+| 2   | ${1}$     | ${0}$ | ${0}$          | ${\wd{1}}$ | ${\wd{1}}$ |
+| 3   | ${1}$     | ${0}$ | ${\wd{\mi 1}}$ | ${\wd{1}}$ | ${\wd{1}}$ |
+| 4   | ${1}$     | ${0}$ | ${0}$          | ${1}$      | ${1}$      |
+| 5   | ${\mi 1}$ | ${1}$ | ${1}$          | ${1}$      | ${1}$      |
+
+
+|     | 0              | 1         | 2          | 3     | 4     |
+| --- | -------------- | --------- | ---------- | ----- | ----- |
+| 0   | ${\wd 1}$      | ${\wd 1}$ | ${\wd 1}$  | ${1}$ | ${1}$ |
+| 1   | ${\wd 1}$      | ${0}$     | ${\wd{1}}$ | ${1}$ | ${1}$ |
+| 2   | ${\wd 1}$      | ${0}$     | ${0}$      | ${1}$ | ${1}$ |
+| 3   | ${\wd 1}$      | ${0}$     | ${\mi 1}$  | ${1}$ | ${1}$ |
+| 4   | ${\wd 1}$      | ${0}$     | ${0}$      | ${1}$ | ${1}$ |
+| 5   | ${\wd{\mi 1}}$ | ${1}$     | ${1}$      | ${1}$ | ${1}$ |
+
+</Grid>
+
+Our task is to find the shortest path. The best approach here is to use a
+breadth-first traversal. We start at our starting point ${(r,c),}$ and explore
+outwards, rather than inwards. The moment we encounter an exit, we return the
+length of the path. Otherwise, we continue exploring. The algorithm below is
+one possible implementation.
+
+<Algo>
+
+1. __function__ ${\df{cexit}(M, r, c)}$
+	1. ${\let{R}{\len{M}}}$ _number of rows_
+	2. ${\let{C}{\len{M\ix{0}}}}$ _number of columns_
+	3. ${\let{queue}{\df{new queue}}}$
+	4. ${\let{queue}{\df{enqueue}(\ix{r,c,0})}}$ _triple ${(\tx{row index}, \tx{col index}, \tx{distance})}$_
+	5. ${\let{visited}{\df{new set}}}$
+	6. ${\let{visited}{\df{insert}}(\ix{r,c})}$
+	7. ${\let{\Delta}{\set{{\ix{1,0}, \ix{\mi 1,0}, \ix{0,1}, \ix{0,\mi 1}}}}}$  _all possible turns_
+	8. __while__ ${queue \neq \nil}$
+		1. ${\let{data}{\df{dequeue}~queue}}$ _queuers are triples_
+		2. ${\let{row}{data\ix{0}}}$ _row index_
+		3. ${\let{col}{data\ix{1}}}$ _col index_
+		4. ${\let{\varepsilon}{data\ix{2}}}$ _distance_
+		5. __if__ ${(M\ix{row}\ix{col} = \mi 1)}$ __return__ ${\varepsilon}$
+		6. __for each__ ${\delta \in \Delta}$ __do__ _for each possible turn_
+			1. ${\let{\Nn_{row}}{row + \delta\ix{0}}}$ _neighbor row index_
+			2. ${\let{\Nn_{col}}{col + \delta\ix{1}}}$ _neighbor col index_
+			3. __if__ ${~0 \le \Nn_{row} \lt R}$ __and__  _ensure neighbor row index inbounds_
+				1. ${~0 \le \Nn_{col} \lt C~}$ __and__ _ensure neighbor col index inbounds_
+				2. ${M\ix{\Nn_{row}}\ix{\Nn_{co}} \neq 0}$ __then__ _ignore walls_
+					1. ${\let{visited}{\df{insert}(\ix{\Nn_{row},\Nn_{col}})}}$
+					2. ${\let{queue}{\df{enqueue}~(\ix{\Nn_{row},\Nn_{col},\varepsilon+1})}}$
+	9. __return__	 ${\mi 1}$ _only reached if no possible path_
+				
+</Algo>
+<Minutiae tx={`sample trace`}>
+<table>
+<tbody>
+<tr>
+<td width={`70%`}>
+
+The initial state. For readability, we're using shapes rather than numbers. Let
+${\bs = 0,}$ ${\wc = 1,}$ and ${\bigstar = -1.}$ Our starting position will be
+${(0,2).}$ We mark our initial position and our current positions thereafter
+with the letter ${p,}$ and mark visited cells with black dots. We have two
+auxiliary structures, ${queue}$ corresponding to a queue, and ${visited,}$
+corresponding to a set. Both have been initialized, corresponding to lines 1
+through 6 in the pseudocode.
+
+
+| ${\let{visited}{\df{insert}}}$ | ${\ix{0,2}}$   |
+| ------------------------------ | -------------- |
+| ${\let{queue}{\df{enqueue}}}$  | ${\ix{0,2,0}}$ |
+
+</td>
+<td>
+<div className={`TableMatrix`}>
+
+|     | 0            | 1       | 2       | 3            | 4       |
+| --- | ------------ | ------- | ------- | ------------ | ------- |
+| 0   | ${\bs}$      | ${\wc}$ | ${p}$   | ${\bs}$      | ${\bs}$ |
+| 1   | ${\wc}$      | ${\wc}$ | ${\wc}$ | ${\wc}$      | ${\bs}$ |
+| 2   | ${\bigstar}$ | ${\wc}$ | ${\wc}$ | ${\wc}$      | ${\wc}$ |
+| 3   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+| 4   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\bigstar}$ | ${\wc}$ |
+| 5   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+
+</div>
+</td>
+</tr>
+<tr>
+<td width={`70%`}>
+
+The queue is not empty, so we enter the while-loop. We dequeue ${queue,}$ and get back the triple ${\ix{0,2,0}.}$ Following lines 10 through 13, we have:
+
+| ${row}$ | ${col}$ | ${\varepsilon}$ |
+| ------- | ------- | --------------- |
+| 0       | 2       | 0               |
+
+The element ${M\ix{0}\ix{2} \neq -1,}$ so we enter the for-loop. For each of
+the possible moves (stored in the set ${\Delta}$), we compute the row-neighbor
+(${\Nn_{row}}$) and column-neighbor (${\Nn_{col}}$). This yields the table
+below. The last two rows indicate the pairs inserted into visited and the pairs
+that will be dequeued respectively (those that satisfy conditions from lines 17
+to 21). Notice the queuers are triples of the form ${(r_n, c_n, \delta),}$
+where ${r_n}$ is the row-index of a neighbor, ${c_n}$ is the column-index of a
+neighbor, and ${\delta}$ is the distance, incremented by 1. That third
+component (the distance) is the key to this problem. By having every queuer
+maintain the current distance travelled from the starting place, the shortest path
+will be held by the queuer who reaches an exit first. We've crossed out all the neighbor
+coordinates that fail the conditions for inserting into the ${visited}$ set and enqueueing.
+
+
+| ${\delta \in \Delta}$          | ${\ix{1,0}}$   | ${\ix{\mi 1,0}}$          | ${\ix{0,1}}$ | ${\ix{0,\mi 1}}$ |
+| ------------------------------ | -------------- | ------------------------- | ------------ | ---------------- |
+| ${+\ix{r,c}}$                  | ${\ix{0,2}}$   | ${\ix{0,2}}$              | ${\ix{0,2}}$ | ${\ix{0,2}}$     |
+| ${\ix{\Nn_{col},\Nn_{row}}}$   | ${\ix{1,2}}$   | ${\cancel{\ix{\mi 1,2}}}$ | ${\ix{0,3}}$ | ${\ix{0,1}}$     |
+| ${\let{visited}{\df{insert}}}$ | ${\ix{0,2}}$   |                           |              |                  |
+|                                | ${\ix{1,2}}$   |                           |              | ${\ix{0,1}}$     |
+| ${\let{queue}{\df{enqueue}}}$  | ${\ix{1,2,1}}$ |                           |              | ${\ix{0,1,1}}$   |
+
+</td>
+<td>
+<div className={`TableMatrix`}>
+
+|     | 0            | 1       | 2       | 3            | 4       |
+| --- | ------------ | ------- | ------- | ------------ | ------- |
+| 0   | ${\bs}$      | ${\wc}$ | ${p}$   | ${\bs}$      | ${\bs}$ |
+| 1   | ${\wc}$      | ${\wc}$ | ${\wc}$ | ${\wc}$      | ${\bs}$ |
+| 2   | ${\bigstar}$ | ${\wc}$ | ${\wc}$ | ${\wc}$      | ${\wc}$ |
+| 3   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+| 4   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\bigstar}$ | ${\wc}$ |
+| 5   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+
+</div>
+</td>
+</tr>
+<tr>
+<td width={`70%`}>
+
+The queue is not empty, so we enter the while-loop. We dequeue ${queue,}$ and
+get back the triple ${\ix{1,2,1}.}$ So, we will place ${p}$ at the coordinate
+${\ix{1,2}.}$
+
+| ${row}$ | ${col}$ | ${\varepsilon}$ |
+| ------- | ------- | --------------- |
+| 1       | 2       | 1               |
+
+The element ${M\ix{1}\ix{2} \neq -1,}$ so we enter the for-loop. Again we
+calculate the neighbor indices, this time with ${\ix{r,c}=\ix{1,2}.}$
+
+
+| ${\delta \in \Delta}$          | ${\ix{1,0}}$             | ${\ix{\mi 1,0}}$      | ${\ix{0,1}}$   | ${\ix{0,\mi 1}}$ |
+| ------------------------------ | ------------------------ | --------------------- | -------------- | ---------------- |
+| ${+\ix{r,c}}$                  | ${\ix{1,2}}$             | ${\ix{1,2}}$          | ${\ix{1,2}}$   | ${\ix{1,2}}$     |
+| ${\ix{\Nn_{col},\Nn_{row}}}$   | ${\ix{2,2}}$             | ${\cancel{\ix{0,2}}}$ | ${\ix{1,3}}$   | ${\ix{1,1}}$     |
+| ${\let{visited}{\df{insert}}}$ | ${\ix{0,2}}$             |                       |                |                  |
+|                                | ${\ix{1,2}}$             |                       |                | ${\ix{0,1}}$     |
+|                                | ${\ix{2,2}}$             |                       | ${\ix{1,3}}$   | ${\ix{1,1}}$     |
+| ${\let{queue}{\df{enqueue}}}$  | ${\xcancel{\ix{1,2,1}}}$ |                       |                | ${\ix{0,1,1}}$   |
+|                                | ${\ix{2,2,2}}$           |                       | ${\ix{1,3,2}}$ | ${\ix{1,1,2}}$   |
+
+</td>
+<td>
+<div className={`TableMatrix`}>
+
+|     | 0            | 1       | 2       | 3            | 4       |
+| --- | ------------ | ------- | ------- | ------------ | ------- |
+| 0   | ${\bs}$      | ${\wc}$ | ${\bc}$ | ${\bs}$      | ${\bs}$ |
+| 1   | ${\wc}$      | ${\wc}$ | ${p}$   | ${\wc}$      | ${\bs}$ |
+| 2   | ${\bigstar}$ | ${\wc}$ | ${\wc}$ | ${\wc}$      | ${\wc}$ |
+| 3   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+| 4   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\bigstar}$ | ${\wc}$ |
+| 5   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+
+</div>
+</td>
+</tr>
+<tr>
+<td width={`70%`}>
+
+The queue is not empty, so we enter the while-loop. We dequeue ${queue,}$ and
+get back the triple ${\ix{0,1,1}.}$ So, we will place ${p}$ at the coordinate
+${\ix{0,1}.}$
+
+| ${row}$ | ${col}$ | ${\varepsilon}$ |
+| ------- | ------- | --------------- |
+| 0       | 1       | 1               |
+
+The element ${M\ix{1}\ix{2} \neq -1,}$ so we enter the for-loop. Again we
+calculate the neighbor indices, this time with ${\ix{r,c}=\ix{0,1}.}$
+Nothing gets queued or inserted at this iteration, since all pairs
+have either been visited, have an out-of-bounds index, or correspond to
+a wall.
+
+
+| ${\delta \in \Delta}$          | ${\ix{1,0}}$             | ${\ix{\mi 1,0}}$          | ${\ix{0,1}}$          | ${\ix{0,\mi 1}}$         |
+| ------------------------------ | ------------------------ | ------------------------- | --------------------- | ------------------------ |
+| ${+\ix{r,c}}$                  | ${\ix{0,1}}$             | ${\ix{0,1}}$              | ${\ix{0,1}}$          | ${\ix{0,1}}$             |
+| ${\ix{\Nn_{col},\Nn_{row}}}$   | ${\cancel{\ix{1,1}}}$    | ${\cancel{\ix{\mi 1,1}}}$ | ${\cancel{\ix{0,2}}}$ | ${\cancel{\ix{0,0}}}$    |
+| ${\let{visited}{\df{insert}}}$ | ${\ix{0,2}}$             |                           |                       |                          |
+|                                | ${\ix{1,2}}$             |                           |                       | ${\ix{0,1}}$             |
+|                                | ${\ix{2,2}}$             |                           | ${\ix{1,3}}$          | ${\ix{1,1}}$             |
+| ${\let{queue}{\df{enqueue}}}$  | ${\xcancel{\ix{1,2,1}}}$ |                           |                       | ${\xcancel{\ix{0,1,1}}}$ |
+|                                | ${\ix{2,2,2}}$           |                           | ${\ix{1,3,2}}$        | ${\ix{1,1,2}}$           |
+
+</td>
+<td>
+<div className={`TableMatrix`}>
+
+|     | 0            | 1       | 2       | 3            | 4       |
+| --- | ------------ | ------- | ------- | ------------ | ------- |
+| 0   | ${\bs}$      | ${p}$   | ${\bc}$ | ${\bs}$      | ${\bs}$ |
+| 1   | ${\wc}$      | ${\wc}$ | ${\bc}$ | ${\wc}$      | ${\bs}$ |
+| 2   | ${\bigstar}$ | ${\wc}$ | ${\wc}$ | ${\wc}$      | ${\wc}$ |
+| 3   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+| 4   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\bigstar}$ | ${\wc}$ |
+| 5   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+
+</div>
+</td>
+</tr>
+<tr>
+<td width={`70%`}>
+
+The queue is not empty, so we enter the while-loop. We dequeue ${queue,}$ and
+get back the triple ${\ix{2,2,2}.}$ So, we will place ${p}$ at the coordinate
+${\ix{2,2}.}$
+
+| ${row}$ | ${col}$ | ${\varepsilon}$ |
+| ------- | ------- | --------------- |
+| 2       | 2       | 2               |
+
+The element ${M\ix{2}\ix{2} \neq -1,}$ so we enter the for-loop. Again we
+calculate the neighbor indices, this time with ${\ix{r,c}=\ix{2,2}.}$
+
+| ${\delta \in \Delta}$          | ${\ix{1,0}}$             | ${\ix{\mi 1,0}}$      | ${\ix{0,1}}$   | ${\ix{0,\mi 1}}$         |
+| ------------------------------ | ------------------------ | --------------------- | -------------- | ------------------------ |
+| ${+\ix{r,c}}$                  | ${\ix{2,2}}$             | ${\ix{2,2}}$          | ${\ix{2,2}}$   | ${\ix{2,2}}$             |
+| ${\ix{\Nn_{col},\Nn_{row}}}$   | ${\cancel{\ix{3,2}}}$    | ${\cancel{\ix{1,2}}}$ | ${\ix{2,3}}$   | ${\ix{2,1}}$             |
+| ${\let{visited}{\df{insert}}}$ | ${\ix{0,2}}$             |                       |                |                          |
+|                                | ${\ix{1,2}}$             |                       |                | ${\ix{0,1}}$             |
+|                                | ${\ix{2,2}}$             |                       | ${\ix{1,3}}$   | ${\ix{1,1}}$             |
+|                                |                          |                       | ${\ix{2,3}}$   | ${\ix{2,1}}$             |
+| ${\let{queue}{\df{enqueue}}}$  | ${\xcancel{\ix{1,2,1}}}$ |                       |                | ${\xcancel{\ix{0,1,1}}}$ |
+|                                | ${\xcancel{\ix{2,2,2}}}$ |                       | ${\ix{1,3,2}}$ | ${\ix{1,1,2}}$           |
+|                                |                          |                       | ${\ix{2,3,3}}$ | ${\ix{2,1,3}}$           |
+
+</td>
+<td>
+<div className={`TableMatrix`}>
+
+|     | 0            | 1       | 2       | 3            | 4       |
+| --- | ------------ | ------- | ------- | ------------ | ------- |
+| 0   | ${\bs}$      | ${\bc}$ | ${\bc}$ | ${\bs}$      | ${\bs}$ |
+| 1   | ${\wc}$      | ${\wc}$ | ${\bc}$ | ${\wc}$      | ${\bs}$ |
+| 2   | ${\bigstar}$ | ${\wc}$ | ${p}$   | ${\wc}$      | ${\wc}$ |
+| 3   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+| 4   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\bigstar}$ | ${\wc}$ |
+| 5   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+
+</div>
+</td>
+</tr>
+<tr>
+<td width={`70%`}>
+
+The queue is not empty, so we enter the while-loop. We dequeue ${queue,}$ and
+get back the triple ${\ix{1,3,2}.}$ So, we will place ${p}$ at the coordinate
+${\ix{1,3}.}$
+
+| ${row}$ | ${col}$ | ${\varepsilon}$ |
+| ------- | ------- | --------------- |
+| 1       | 3       | 2               |
+
+The element ${M\ix{1}\ix{3} \neq -1,}$ so we enter the for-loop. Again we
+calculate the neighbor indices, this time with ${\ix{r,c}=\ix{1,3}.}$ Nothing is inserted
+to the ${visited}$ set or enqueued at this iteration.
+
+| ${\delta \in \Delta}$          | ${\ix{1,0}}$             | ${\ix{\mi 1,0}}$      | ${\ix{0,1}}$             | ${\ix{0,\mi 1}}$         |
+| ------------------------------ | ------------------------ | --------------------- | ------------------------ | ------------------------ |
+| ${+\ix{r,c}}$                  | ${\ix{1,3}}$             | ${\ix{1,3}}$          | ${\ix{1,3}}$             | ${\ix{1,3}}$             |
+| ${\ix{\Nn_{col},\Nn_{row}}}$   | ${\cancel{\ix{2,3}}}$    | ${\cancel{\ix{0,3}}}$ | ${\cancel{\ix{1,4}}}$    | ${\cancel{\ix{1,2}}}$    |
+| ${\let{visited}{\df{insert}}}$ | ${\ix{0,2}}$             |                       |                          |                          |
+|                                | ${\ix{1,2}}$             |                       |                          | ${\ix{0,1}}$             |
+|                                | ${\ix{2,2}}$             |                       | ${\ix{1,3}}$             | ${\ix{1,1}}$             |
+|                                |                          |                       | ${\ix{2,3}}$             | ${\ix{2,1}}$             |
+| ${\let{queue}{\df{enqueue}}}$  | ${\xcancel{\ix{1,2,1}}}$ |                       |                          | ${\xcancel{\ix{0,1,1}}}$ |
+|                                | ${\xcancel{\ix{2,2,2}}}$ |                       | ${\xcancel{\ix{1,3,2}}}$ | ${\ix{1,1,2}}$           |
+|                                |                          |                       | ${\ix{2,3,3}}$           | ${\ix{2,1,3}}$           |
+
+</td>
+<td>
+<div className={`TableMatrix`}>
+
+|     | 0            | 1       | 2       | 3            | 4       |
+| --- | ------------ | ------- | ------- | ------------ | ------- |
+| 0   | ${\bs}$      | ${\bc}$ | ${\bc}$ | ${\bs}$      | ${\bs}$ |
+| 1   | ${\wc}$      | ${\wc}$ | ${\bc}$ | ${p}$        | ${\bs}$ |
+| 2   | ${\bigstar}$ | ${\wc}$ | ${\bc}$ | ${\wc}$      | ${\wc}$ |
+| 3   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+| 4   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\bigstar}$ | ${\wc}$ |
+| 5   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+
+</div>
+</td>
+</tr>
+<tr>
+<td width={`70%`}>
+
+The queue is not empty, so we enter the while-loop. We dequeue ${queue,}$ and
+get back the triple ${\ix{1,1,2}.}$ So, we will place ${p}$ at the coordinate
+${\ix{1,1}.}$
+
+| ${row}$ | ${col}$ | ${\varepsilon}$ |
+| ------- | ------- | --------------- |
+| 1       | 1       | 2               |
+
+The element ${M\ix{1}\ix{1} \neq -1,}$ so we enter the for-loop. Again we
+calculate the neighbor indices, this time with ${\ix{r,c}=\ix{1,1}.}$
+
+| ${\delta \in \Delta}$          | ${\ix{1,0}}$             | ${\ix{\mi 1,0}}$      | ${\ix{0,1}}$             | ${\ix{0,\mi 1}}$         |
+| ------------------------------ | ------------------------ | --------------------- | ------------------------ | ------------------------ |
+| ${+\ix{r,c}}$                  | ${\ix{1,1}}$             | ${\ix{1,1}}$          | ${\ix{1,1}}$             | ${\ix{1,1}}$             |
+| ${\ix{\Nn_{col},\Nn_{row}}}$   | ${\cancel{\ix{2,1}}}$    | ${\cancel{\ix{0,1}}}$ | ${\cancel{\ix{1,2}}}$    | ${{\ix{1,0}}}$           |
+| ${\let{visited}{\df{insert}}}$ | ${\ix{0,2}}$             |                       |                          |                          |
+|                                | ${\ix{1,2}}$             |                       |                          | ${\ix{0,1}}$             |
+|                                | ${\ix{2,2}}$             |                       | ${\ix{1,3}}$             | ${\ix{1,1}}$             |
+|                                |                          |                       | ${\ix{2,3}}$             | ${\ix{2,1}}$             |
+|                                |                          |                       |                          | ${\ix{1,0}}$             |
+| ${\let{queue}{\df{enqueue}}}$  | ${\xcancel{\ix{1,2,1}}}$ |                       |                          | ${\xcancel{\ix{0,1,1}}}$ |
+|                                | ${\xcancel{\ix{2,2,2}}}$ |                       | ${\xcancel{\ix{1,3,2}}}$ | ${\xcancel{\ix{1,1,2}}}$ |
+|                                |                          |                       | ${\ix{2,3,3}}$           | ${\ix{2,1,3}}$           |
+|                                |                          |                       |                          | ${\ix{1,0,3}}$           |
+
+</td>
+<td>
+<div className={`TableMatrix`}>
+
+|     | 0            | 1       | 2       | 3            | 4       |
+| --- | ------------ | ------- | ------- | ------------ | ------- |
+| 0   | ${\bs}$      | ${\bc}$ | ${\bc}$ | ${\bs}$      | ${\bs}$ |
+| 1   | ${\wc}$      | ${p}$   | ${\bc}$ | ${\bc}$      | ${\bs}$ |
+| 2   | ${\bigstar}$ | ${\wc}$ | ${\bc}$ | ${\wc}$      | ${\wc}$ |
+| 3   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+| 4   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\bigstar}$ | ${\wc}$ |
+| 5   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+
+</div>
+</td>
+</tr>
+<tr>
+<td width={`70%`}>
+
+The queue is not empty, so we enter the while-loop. We dequeue ${queue,}$ and
+get back the triple ${\ix{2,3,3}.}$ So, we will place ${p}$ at the coordinate
+${\ix{2,3}.}$
+
+| ${row}$ | ${col}$ | ${\varepsilon}$ |
+| ------- | ------- | --------------- |
+| 2       | 3       | 3               |
+
+The element ${M\ix{1}\ix{1} \neq -1,}$ so we enter the for-loop. Again we
+calculate the neighbor indices, this time with ${\ix{r,c}=\ix{2,3}.}$
+
+| ${\delta \in \Delta}$          | ${\ix{1,0}}$             | ${\ix{\mi 1,0}}$      | ${\ix{0,1}}$             | ${\ix{0,\mi 1}}$         |
+| ------------------------------ | ------------------------ | --------------------- | ------------------------ | ------------------------ |
+| ${+\ix{r,c}}$                  | ${\ix{2,3}}$             | ${\ix{2,3}}$          | ${\ix{2,3}}$             | ${\ix{2,3}}$             |
+| ${\ix{\Nn_{col},\Nn_{row}}}$   | ${{\ix{3,3}}}$           | ${\cancel{\ix{1,3}}}$ | ${{\ix{2,4}}}$           | ${\cancel{\ix{2,2}}}$    |
+| ${\let{visited}{\df{insert}}}$ | ${\ix{0,2}}$             |                       |                          |                          |
+|                                | ${\ix{1,2}}$             |                       |                          | ${\ix{0,1}}$             |
+|                                | ${\ix{2,2}}$             |                       | ${\ix{1,3}}$             | ${\ix{1,1}}$             |
+|                                |                          |                       | ${\ix{2,3}}$             | ${\ix{2,1}}$             |
+|                                |                          |                       |                          | ${\ix{1,0}}$             |
+|                                | ${\ix{3,3}}$             |                       | ${\ix{2,4}}$             |                          |
+| ${\let{queue}{\df{enqueue}}}$  | ${\xcancel{\ix{1,2,1}}}$ |                       |                          | ${\xcancel{\ix{0,1,1}}}$ |
+|                                | ${\xcancel{\ix{2,2,2}}}$ |                       | ${\xcancel{\ix{1,3,2}}}$ | ${\xcancel{\ix{1,1,2}}}$ |
+|                                |                          |                       | ${\xcancel{\ix{2,3,3}}}$ | ${\ix{2,1,3}}$           |
+|                                |                          |                       |                          | ${\ix{1,0,3}}$           |
+|                                | ${\ix{3,3,4}}$           |                       | ${\ix{2,4,4}}$           |                          |
+
+</td>
+<td>
+<div className={`TableMatrix`}>
+
+|     | 0            | 1       | 2       | 3            | 4       |
+| --- | ------------ | ------- | ------- | ------------ | ------- |
+| 0   | ${\bs}$      | ${\bc}$ | ${\bc}$ | ${\bs}$      | ${\bs}$ |
+| 1   | ${\wc}$      | ${\bc}$ | ${\bc}$ | ${\bc}$      | ${\bs}$ |
+| 2   | ${\bigstar}$ | ${\wc}$ | ${\bc}$ | ${p}$        | ${\wc}$ |
+| 3   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+| 4   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\bigstar}$ | ${\wc}$ |
+| 5   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+
+</div>
+</td>
+</tr>
+<tr>
+<td width={`70%`}>
+
+The queue is not empty, so we enter the while-loop. We dequeue ${queue,}$ and
+get back the triple ${\ix{2,1,3}.}$ So, we will place ${p}$ at the coordinate
+${\ix{2,1}.}$
+
+| ${row}$ | ${col}$ | ${\varepsilon}$ |
+| ------- | ------- | --------------- |
+| 2       | 1       | 3               |
+
+The element ${M\ix{2}\ix{1} \neq -1,}$ so we enter the for-loop. Again we
+calculate the neighbor indices, this time with ${\ix{r,c}=\ix{2,1}.}$
+
+| ${\delta \in \Delta}$          | ${\ix{1,0}}$             | ${\ix{\mi 1,0}}$      | ${\ix{0,1}}$             | ${\ix{0,\mi 1}}$         |
+| ------------------------------ | ------------------------ | --------------------- | ------------------------ | ------------------------ |
+| ${+\ix{r,c}}$                  | ${\ix{2,1}}$             | ${\ix{2,1}}$          | ${\ix{2,1}}$             | ${\ix{2,1}}$             |
+| ${\ix{\Nn_{col},\Nn_{row}}}$   | ${{\ix{3,1}}}$           | ${\cancel{\ix{1,1}}}$ | ${\cancel{\ix{2,2}}}$    | ${{\ix{2,0}}}$           |
+| ${\let{visited}{\df{insert}}}$ | ${\ix{0,2}}$             |                       |                          |                          |
+|                                | ${\ix{1,2}}$             |                       |                          | ${\ix{0,1}}$             |
+|                                | ${\ix{2,2}}$             |                       | ${\ix{1,3}}$             | ${\ix{1,1}}$             |
+|                                |                          |                       | ${\ix{2,3}}$             | ${\ix{2,1}}$             |
+|                                |                          |                       |                          | ${\ix{1,0}}$             |
+|                                | ${\ix{3,3}}$             |                       | ${\ix{2,4}}$             |                          |
+|                                | ${\ix{3,1}}$             |                       |                          | ${\ix{2,0}}$             |
+| ${\let{queue}{\df{enqueue}}}$  | ${\xcancel{\ix{1,2,1}}}$ |                       |                          | ${\xcancel{\ix{0,1,1}}}$ |
+|                                | ${\xcancel{\ix{2,2,2}}}$ |                       | ${\xcancel{\ix{1,3,2}}}$ | ${\xcancel{\ix{1,1,2}}}$ |
+|                                |                          |                       | ${\xcancel{\ix{2,3,3}}}$ | ${\ix{2,1,3}}$           |
+|                                |                          |                       |                          | ${\ix{1,0,3}}$           |
+|                                | ${\ix{3,3,4}}$           |                       | ${\ix{2,4,4}}$           |                          |
+|                                | ${\ix{3,1,4}}$           |                       |                          | ${\yd{\ix{2,0,4}}}$      |
+
+We will end the trace here. Notice that ${\ix{2,0,4}}$ is now in the queue. The pair ${\ix{2,0}}$ will return the element ${M\ix{2}\ix{0}=-1,}$
+which corresponds to an exit. The returned length is ${4,}$ which is correct — the shortest path to an exit starting at ${\ix{0,2}}$ is, in fact,
+a path of length 4.
+
+</td>
+<td>
+<div className={`TableMatrix`}>
+
+|     | 0            | 1       | 2       | 3            | 4       |
+| --- | ------------ | ------- | ------- | ------------ | ------- |
+| 0   | ${\bs}$      | ${\bc}$ | ${\bc}$ | ${\bs}$      | ${\bs}$ |
+| 1   | ${\wc}$      | ${\bc}$ | ${\bc}$ | ${\bc}$      | ${\bs}$ |
+| 2   | ${\bigstar}$ | ${p}$   | ${\bc}$ | ${\bc}$      | ${\wc}$ |
+| 3   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+| 4   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\bigstar}$ | ${\wc}$ |
+| 5   | ${\wc}$      | ${\wc}$ | ${\bs}$ | ${\wc}$      | ${\wc}$ |
+
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</Minutiae>
+
+
+## Minimum Bridge
+Consider the following matrix ${A,}$ comprised of two islands:
+
+$$
+	A=\mx{
+		0 & 0 & 0 & 1 & 1 \\
+		1 & 1 & 0 & 0 & 1 \\
+		1 & 1 & 1 & 0 & 1 \\
+		0 & 1 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 0 & 0
+	}
+$$
+
+An island is defined as a 1 whose vertical or horizontal neighbors are 1s. We call the number of cells to change to a 1, such that the number of islands of ${M}$ is exactly 1, a _bridge_. A _minimum bridge_, denoted ${\df{minb}(M),}$ is defined as the ${\min\set{B},}$ where ${B}$ is the set of all possible bridges. Given a matrix ${M}$ of exactly 2 islands, is there an algorithm that returns ${\df{minb}(M)?}$ In the case of ${A,}$ we have ${\df{minb}(A) = 1.}$
+
+
+$$
+	A=\mx{
+		0 & 0 & 0 & 1 & 1 \\
+		1 & 1 & 0 & 0 & 1 \\
+		1 & 1 & 1 & {\red 1} & 1 \\
+		0 & 1 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 0 & 0
+	}
+$$
+
+This problem resolves to a shortest-path problem. We start by searching for our first island. Once encountered, we then perform a bread-first search for another island, keeping track of our distance from our starting island. As soon as we encounter our second island, we return the distance tracked. Importantly, it doesn't matter which island we start on, since ${M}$ will always comprise of two islands. Below is an illustration of the exploration sequence. We start at any location of the island, and continue exploring outwards. The numbers in each cell correspond to the distance travelled.
+
+$$
+	\ax{
+		\wd{{1}}\yd{{0}}\wd{{1}}\wd{{2}}\wd{{3}}\sd{\no{1}}\\
+		\yd{{0}}\yd{{0}}\wd{{1}}\wd{{2}}\wd{{3}}\sd{\no{1}}\\
+		\wd{{1}}\yd{{0}}\wd{{1}}\wd{{2}}\wd{{3}}\sd{\no{1}}\\
+		\wd{{2}}\wd{{1}}\wd{{2}}\wd{{3}}\sd{\no{1}}\sd{\no{1}}\\
+		\wd{{3}}\wd{{2}}\wd{{3}}\yd{\no{1}}\yd{\no{1}}\sd{\no{1}}\\
+		\sd{\no{1}}\sd{\no{1}}\sd{\no{1}}\sd{\no{1}}\sd{\no{1}}\sd{\no{1}}
+	}
+$$
+
+<Algo>
+
+- __Argument__: ${M,}$ a Boolean matrix.
+- __Image__: a natural number ${n,}$ corresponding to a minimum bridge.
+
+1. __~function~__ ${\df{minb}(M)}$
+	1. __function__ ${\df{explore}(r,c)}$
+
+</Algo>

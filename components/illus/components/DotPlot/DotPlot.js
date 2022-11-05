@@ -2,8 +2,8 @@ import React, { useRef, useEffect } from "react";
 import { translate, svg, className } from "../utils";
 import { Base } from "../base/Base";
 import { formatDotPlotData } from "./formatDotPlotData";
-import * as d3 from "d3";
 import { MathText } from "../utils/MathText/MathText";
+import { axisBottom, bin, scaleLinear, select } from "d3";
 
 export const DotPlot = ({
 	data = [],
@@ -30,13 +30,11 @@ export const DotPlot = ({
 	const _dotPlotREF = useRef();
 	const _svg = svg(width, height, margins);
 	const _class = className.dotPlot;
-	const x = d3
-		.scaleLinear()
+	const x = scaleLinear()
 		.rangeRound([0, _svg.width])
 		.domain([xMin, xMax]);
 	const formattedData = formatDotPlotData(data);
-	const histogram = d3
-		.bin()
+	const histogram = bin()
 		.domain(x.domain())
 		.thresholds(x.ticks(20))
 		.value(function (d) {
@@ -46,8 +44,7 @@ export const DotPlot = ({
 	const bins = histogram(formattedData).filter((d) => d.length > 0);
 
 	const renderDotPlot = () => {
-		const canvas = d3
-			.select(_dotPlotREF.current)
+		const canvas = select(_dotPlotREF.current)
 			.select("g.svgElement")
 			.append("g")
 			.attr("class", _class.canvas);
@@ -87,7 +84,7 @@ export const DotPlot = ({
 			.append("g")
 			.attr("class", _class.xAxis)
 			.attr("transform", translate(0, _svg.height))
-			.call(d3.axisBottom(x));
+			.call(axisBottom(x));
 		// append x-axis label
 		const xAxisLabel = canvas
 			.append("g")

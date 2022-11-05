@@ -24,5 +24,6 @@ export const insertArrowDefinitions = (
 		.attr("orient", orient)
 		.append("svg:path")
 		.attr('class', `${className}ArrowHead`)
+		.attr('fill', fill)
 		.attr("d", "M0,-5L10,0L0,5Z");
 };

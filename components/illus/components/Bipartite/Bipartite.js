@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
+import { linkHorizontal, select } from "d3";
 import {
 	svg,
 	translate,
@@ -84,14 +84,13 @@ export const Bipartite = ({
 		linkSort,
 	);
 	computeLinkBreadths(nodes);
-	const linkGen = d3
-		.linkHorizontal()
+	const linkGen = linkHorizontal()
 		.source((d) => [d.source.x1, d.source.y1])
 		.target((d) => [d.target.x0, d.target.y0]);
 
 	const renderBipartite = () => {
 		// set up group
-		const canvas = d3.select(_bipartiteREF.current).select("g.svgElement");
+		const canvas = select(_bipartiteREF.current).select("g.svgElement");
 		const bipartite = canvas.append("g").attr("class", "Bipartite");
 		const edgeGroup = bipartite
 			.append("g")
@@ -169,12 +168,12 @@ export const Bipartite = ({
 			.attr("transform", translate(-3, 5))
 			.each(function (d, i) {
 				const graphId = Trim(id, [/ /]);
-				let sel = d3.select(this);
+				let sel = select(this);
 				MathText(
 					sel,
 					d.name,
 					fontSize,
-					10,
+					50,
 					10,
 					`${graphId}-${d.name}-${i}`,
 					"black",

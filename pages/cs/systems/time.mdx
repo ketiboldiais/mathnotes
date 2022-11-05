@@ -3,9 +3,9 @@
 The gates we've implemented so far all execute instantenously. We can
 perform Boolean and arithmetic operations, but the operations occur all at
 once. This is because our implementations have been pure applications of
-**combinatorial logic** &mdash; the logical analysis of _fixed_
+__combinatorial logic__ &mdash; the logical analysis of _fixed_
 propositions, or propositions whose truth values are predetermined.
-Computers, however, operate on **sequential logic** &mdash; the logical
+Computers, however, operate on __sequential logic__ &mdash; the logical
 analysis of _variable_ propositions, or propositions whose truth values are
 not predetermined. The key difference between these two forms of logic:
 Combinatorial logic does not account for time, or change, but sequential
@@ -34,9 +34,9 @@ a computer. To do so, we divide time into discrete, equal-sized blocks.
 
 ![Computer time](https://res.cloudinary.com/sublimis/image/upload/v1653171670/cs/computer_time_nauhft.svg)
 
-In computer terms, the length of each block is called a **cycle** &mdash;
+In computer terms, the length of each block is called a __cycle__ &mdash;
 the computer's unit of time. Question: How do we divide time with a
-computer? With a device called a **clock**, or more generally, an
+computer? With a device called a __clock__, or more generally, an
 electronic oscillator. The clock is a circuit that takes direct current
 (DC), and converts it into alternating current (AC) &mdash; `0` and `1`.
 This results in square waves, and each period of the square wave &mdash;
@@ -59,8 +59,8 @@ Notice what we've accomplished &mdash; sequential operations; perform an
 details.
 
 The first problem with our approach is that the clock takes time to go from
-`0` to `1` (called the **rise time**) and from `1` to `0` (called the
-**fall time**). These are delays.
+`0` to `1` (called the __rise time__) and from `1` to `0` (called the
+__fall time__). These are delays.
 
 ![Jitter](https://res.cloudinary.com/sublimis/image/upload/v1653171768/cs/jitter_uu5bxa.svg)
 

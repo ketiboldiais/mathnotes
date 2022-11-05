@@ -1,56 +1,561 @@
-# Divisibility
+import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
 
-This chapter covers notes on divisibility.
+<Head>
+	<title>Elementary Number Theory</title>
+	<meta name={`description`} content={`Notes on elementary number theory.`}/>
+</Head>
 
-## Preliminary Definitions
 
-__~divides~.__ Let ${a,b \in \ZZ}$ and ${a \neq 0.}$ 
+# Elementary Concepts
 
+This chapter covers the core concepts of number theory.
 
-## Parity Rules
+<div className={"outline"}>
 
-Below are some useful properties of odd and even integers that we'll make use of
-extensively.
+1. [Arithmetic](#arithmetic)
+2. [Divisibility](#divisibility)
+3. [Prime Numbers](#prime-numbers)
+	1. [The Sieve of Eratosthenes](#the-sieve-of-eratosthenes)
+	2. [Semiprimes](#semiprimes)
+4. [Integer Reference](#integer-reference)
 
-__~parity of addition~.__ Let ${a,b \in \NN.}$ If ${a + c \in \EE,}$ 
+</div>
+
+Below is a small sample of just a few of the types of integers we'll be
+considering.
+
+$$
+\begin{aligned}
+	& \tx{integers } \set{\ldots, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, \ldots} \\
+	& \tx{naturals } \set{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, \ldots} \\
+	& \tx{primes } \set{2, 3, 5, 7, 11, 13, 17, 19, 23, \ldots} \\
+	& \tx{composites } \set{4, 6, 8, 9, 10, 12, 14, 15, 16, \ldots} \\
+	& \tx{evens } \set{\ldots, -6, -4, -2, 0, 2, 4, 6, 8, 10, 12, \ldots} \\
+	& \tx{perfect squares } \set{0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, \ldots} \\
+	& \tx{negative cubes } \set{-1, -8, -27, -64, -125, -216, -343} \\
+	& \tx{abundant numbers } \set{12, 18, 20, 24, 30, 36, 40, 42, 48, 54, \ldots} \\
+	& \tx{palindromes } \set{11, 313, 838, 3443, 7447, 57875, \ldots} \\
+	\end{aligned}
+$$
+
+We begin by definining symbols used in this volume. The symbol ${\nat}$ denotes the set of natural numbers, ${\set{0,1,2,\ldots,n}.}$ The natural numbers in these materials specifically include ${0.}$ To denote the set of positive integers, we use the symbol ${\pint.}$ To denote the set of negative integers, we use ${\nint.}$ The set of nonpositive integers, while rarely used, is denoted ${\int_{\le 0}.}$ No additional symbol is needed for the set of nonnegative integers, as those numbers are the naturals ${\nat.}$ On occassion, we should like to use a few more: The set of odd integers is denoted ${\odds,}$ the evens ${\evens,}$ and the primes ${\primes.}$
+
+## Arithmetic
+
+Arithmetic, fundamentally, is just fast counting. The simplest counting technique is _enumeration_ — given a box of ${n}$ peaches, we see one peach and think, that's one. We see another and think, that's two. We see an apple and think, "not a peach, don't count." If we're given another box containing equinumerous (an equal amount of) peaches, we could enumerate again. But if we're told that the first and second boxes have the same amount of peaches, we can instead use a faster counting technique — _addition_ for the peaches, _subtraction_ for the faux. If we're given ten boxes of ${n}$ peaches, we could add each one, but why run when we can drive: _multiplication_ for the peaches, for the _division_ the others. And if we're given ${n}$ boxes of ${n}$ peaches, we can fly — _exponentiation_ and _rooting_. Below are the basic definitions we'll use throughout the materials.
+
+<dfn className={`align`}>
+
+__closure of integer addition__ ${(a + b = c~\land~a,b \in \uint) \nc (c \in \uint).}$
+
+</dfn>
+
+<dfn className={`align`}>
+
+__closure of integer multiplication__ ${(a \by b = c~\land~a,b \in \uint) \nc (c \in \uint).}$
+
+</dfn>
+
+<dfn className={`align`}>
+
+__commutativity of integer addition__ ${(a,b \in \uint) \nc (a + b = b + a).}$
+
+</dfn>
+
+<dfn className={`align`}>
+
+__commutativity of integer multiplication__ ${(a,b \by \uint) \nc (a + b = b + a).}$
+
+</dfn>
+
+<dfn className={`align`}>
+
+__associativity of integer addition__ ${a,b,c \in \uint \nc (a+b)+c = a+(b+c).}$
+
+</dfn>
+
+Closure, commutativity, and associativity are enough to give us some interesting
+tricks. For example, if we know that ${a,b\in \uint,}$ then we know that
+${a+b=b+a.}$ And if we know that ${a+b = b+a,}$ then we can _transpose_ some
+integer ${c}$ to the equation: 
+
+$$
+	\eqs{
+			a + b &= b + a \\
+			&\parallel \\
+			c + a + b &= b + a + c 
+	}
+$$
+
+Exponentiation leads to the notion "perfectly-shaped" numbers.
 
 <dfn>
 
-__parity rules.__ Let ${a,b \in \Z.}$ Then:
+__perfect square__ Let ${a}$ and ${b}$ be integers. Then ${a}$ is a _perfect square_ if, and only if, ${a = b^2.}$
 
-<Grid cols={2} rowgap={10}>
+</dfn>
 
-| ${a}$ | ${+}$ | ${b}$ | ${=}$ | ${c}$ |
-| ----- | ----- | ----- | ----- | ----- |
-| even  |       | even  |       | even  |
-| even  |       | odd   |       | odd   |
-| odd   |       | even  |       | odd   |
-| odd   |       | odd   |       | even  |
+The term "perfect square" is descriptive. Some examples of perfect squares:
 
-| ${a}$ | ${-}$ | ${b}$ | ${=}$ | ${c}$ |
-| ----- | ----- | ----- | ----- | ----- |
-| even  |       | even  |       | even  |
-| even  |       | odd   |       | odd   |
-| odd   |       | even  |       | odd   |
-| odd   |       | odd   |       | even  |
+<div className={"numbered"}>
+
+| ${0}$   | ${1}$   | ${4}$   | ${9}$   |
+| ------- | ------- | ------- | ------- |
+| ${16}$  | ${25}$  | ${36}$  | ${49}$  |
+| ${64}$  | ${81}$  | ${100}$ | ${121}$ |
+| ${144}$ | ${169}$ | ${196}$ | ${225}$ |
+
+</div>
 
 
-| ${a}$ | ${\times}$ | ${b}$ | ${=}$ | ${c}$ |
-| ----- | ---------- | ----- | ----- | ----- |
-| even  |            | even  |       | even  |
-| even  |            | odd   |       | even  |
-| odd   |            | even  |       | even  |
-| odd   |            | odd   |       | odd   |
+<dfn>
+
+__perfect cube__ Let ${a}$ and ${b}$ be integers. Then ${a}$ is a _perfect cube_ if, and only if, ${a = b^3.}$ 
+
+</dfn>
+
+Like their lower-dimension cousins, perfect cubes share a similar pattern, but notice how fast the numbers become.
+
+<div className={"numbered"}>
+
+| ${0}$    | ${1}$    | ${8}$    | ${27}$   |
+| -------- | -------- | -------- | -------- |
+| ${64}$   | ${125}$  | ${216}$  | ${343}$  |
+| ${512}$  | ${729}$  | ${1000}$ | ${1331}$ |
+| ${1728}$ | ${2197}$ | ${2744}$ | ${3375}$ |
+
+</div>
 
 
-| ${a^2}$  | ${\iff}$ | ${a}$    |
-| -------- | -------- | -------- |
-| ${odd}$  |          | ${odd}$  |
-| ${even}$ |          | ${even}$ |
 
-</Grid>
+Both perfect cubes and perfect powers are examples of _perfect powers_. Thus, a perfect square is a perfect power of 2, and a perfect cube is a perfect power of 3.
+
+<dfn>
+
+__perfect power__ Let ${a,}$ ${b,}$ and ${c}$ be integers. Then ${a}$ is a _perfect power_ if, and only if, ${a = b^c.}$ 
+
+</dfn>
+
+## Divisibility
+
+We begin by building some intuition. How many 4s must we add together to get 12? 3. And 44? 11. In both these cases, we say that 12 and 44 are _multiples_ of 4. 12 is a multiple of 3, and 11 is a multiple of 44. But 3 is not a multiple of 44, nor is 11 a multiple of 12. Already we see some interesting relationships. Let's explore this further.
+
+Starting at 0, suppose we count by 2 all the way up to 50. This gives us the following pattern:
+
+<div className={"numbered"}>
+
+| 2   | 4   | 6   | 8   | 10  |
+| --- | --- | --- | --- | --- |
+| 12  | 14  | 16  | 18  | 20  |
+| 22  | 24  | 26  | 28  | 30  |
+| 32  | 34  | 36  | 38  | 40  |
+| 42  | 44  | 46  | 48  | 50  |
+
+</div>
+
+Let's express this pattern in a different way:
+
+$$
+	\eqs{
+		2 &= 2 \\
+		4 &= 2 \by 2 \\
+		6 &= 2 \by 2 \by 2 \\
+		8 &= 2 \by 2 \by 2 \by 2 \\ 
+		10 &= 2 \by 2 \by 2 \by 2 \by 2 \\ 
+		12 &= 2 \by 2 \by 2 \by 2 \by 2 \by 2 \\ 
+		&\vdots
+	}
+$$
+
+Notice that each of the sums can be expressed as the product of 2 and another integer:
+
+$$
+	\eqs{
+		2 &= 2 \by 1 \\
+		4 &= 2 \by 2 \\
+		6 &= 2 \by 3 \\
+		8 &= 2 \by 4 \\ 
+		10 &= 2 \by 5 \\ 
+		12 &= 2 \by 6 \\ 
+		&\vdots
+	}
+$$
+
+Simply playing with these patterns returns useful insight. The multiple of a positive integer ${n}$ is a member of a structure that can be drawn as a right triangle:
+
+$$
+	\seq{k \by n}{k=1}{\infty} = 
+	\eqs{
+		& n \\
+		& n + n \\
+		& n + n + n \\
+		& n + n + n + n \\
+		& n + n + n + n + n \\
+		& n + n + n + n + n + n \\
+		& n + n + n + n + n + n + n \\
+		& \vdots
+	}
+$$
+
+Above, the number ${k}$ tells us how many ${n}$s we need to get a multiple of
+${n,}$ or, algebraically, the number of ${n}$s we need to get ${kn.}$ If we
+express ${x = kn,}$ then commutivity tells us that ${x}$ is also an integer.
+Thus, given an integer ${x,}$ one question we might ask is: How many ${n}$s do
+we need to get ${x?}$ Or, perhaps more interestingly, if someone gave us a
+number ${x,}$ would we find it in the structure above? As it turns out, knowing
+the answer to this question is extremely valuable. If ${x}$ is the number of
+available dollars and ${n}$ is the number of people, knowing the value ${k}$
+determines whether a distribution is fair (assuming we define fair as everyone
+gets an equal piece of the pie). This brings us to the concept of _divisibility._
+
+<dfn>
+
+__divisibility__ Let ${a}$ and ${b}$ be integers. If there exists an integer ${c}$ such that ${a \by c = b,}$ then we say that ${a}$ _divides_ ${b}$ and write ${a \dv b.}$ If ${a}$ does not divide ${b,}$ we write ${a \ndv b.}$ Symbolically: ${a \dv b \iff \exists c \ar{~ ac = b ~}.}$
+
+</dfn>
+
+There are some subtleties to this definition. First, ${a \dv b}$ is a completely different expression from ${a \div b,}$ ${a/b,}$ or ${\frac{a}{b}.}$ It's also a completely different expression ${b \div a,}$ ${b/a,}$ and ${\frac{b}{a}.}$ When we write ${x/y,}$ we're saying "$x$ _divided_ by $y.$" This is not a proposition — we can't assign it a value of true or false because it's just an expression of some object (e.g., the number ${x/y}$). But when we write ${x \dv y,}$ we're saying "$x$ _divides_ $y.$" That's a proposition — we can assign it a value of either true or false.
+
+Second, notice that this definition does not impose the requirement that ${c \neq 0.}$ This is because ${0}$ has the special property of being the multiple of every integer. For example, ${0 \by 3 = 0.}$ The oft-taught rule "dividing by 0 is undefined" purposely hides a nuance to avoid overcomplicating elementary matters. What that rule really means is, "0 does not have a multiplicative inverse." If it did, we would have
+
+$$
+	\eqs{
+		0 &= 0 \by \dfrac{1}{0} \\[1em]
+		  &= \cancel{0} \by \dfrac{1}{\cancel{0}} \\[1em]
+			&= 1
+	}
+$$
+
+Clearly, we don't want to have a structure where ${1=0.}$ Because division on the reals is defined as multiplying by the multiplicative inverse, 0's lack of a multiplicative inverse means that "dividing by 0 is undefined." The notion of divisibility is divorced from all of this drama because it lives only in the world integers — ${0 \dv 0}$ is trivially true. If we brought it into the world of rationals or reals, however, we'd have to impose the requirement that ${a \neq 0.}$ This requires us to prove or assume that ${a \neq 0}$ whenever we want to work with divisibility.
+
+The third point in the definition is that divisibility is an antisymmetric relation. That is, if ${a \dv b}$ and ${b \dv a,}$ then ${a = b.}$ For example, 3 divides 12, but 12 does not divide 3. 15 divides 5, but 5 does not divide 15. This leads to an alternative statement of divisiblity.
+
+<dfn>
+
+__proposition 0.1__ Let ${a,b \in \uint}$ with ${a \neq 0.}$ Then ${a \dv b \iff \dfrac{b}{a} \in \uint.}$
+
+</dfn>
+
+That is, the sentence ${a \dv b}$ is equivalent to ${b/a \in \uint.}$ Viewed this way, we can think of divisibility as being the border between rationals and integers. ${1/3}$ is not integer, but ${3/3}$ is. Knowing that a rational ${b/a}$ is not an integer is the first step to figuring out how we can "naturalize" the the rational. The rational ${1/3}$ needs a ${1/3 + 2/3 = 3/3 = 1.}$
+
+If ${a \dv b}$ is true, then we can multiply ${b/a}$ by ${a}$ to get the integer ${b.}$ This seems elementary, but it has a profound impact on many other areas of mathematics and computer science. For example, computers have a finite number of bits they can use to represent numbers. This poses challenges for computations involving extremely large numbers — astronomical distances, stock exchanges, physics simulations, etc. Many of these challenges can be eased by reducing some massive integer ${x}$ to a tiny integer ${b.}$ We can only do so if we know that ${x = b/a}$ and ${a \dv b.}$
+
+<dfn>
+
+__terminology__ Let ${n/d \in \uint}$ with ${d \neq 0.}$ Then all of the following statements are equivalent: 
+
+- ${n}$ is a _multiple_ of ${d.}$ 
+- ${n}$ is _divisible_ by ${d.}$ 
+- ${d}$ is a _divisor_ of ${n.}$ 
+- ${d}$ _divides_ ${n.}$
+
+If ${n \neq d}$ and ${d \in \uint^+,}$ then we say that ${d}$ is a _proper divisor_ of ${n.}$ Given an integer ${n,}$ we denote the set of all factors of ${n}$ with ${\df{factors}(n),}$ and a member of this set with ${\df{divisor}(n).}$ 
+
+</dfn>
+
+Briefly returning to the integer zero, we can always express zero in terms of another integer ${n:}$
+
+$$
+	0 = \dfrac{0}{n}.
+$$
+
+Consider the following patterns of multiples:
+
+<Sequence containerHeight={0.07} margins={[0,0,0,0]} data={[0,1,{val:2,class:'blue'},3,{val:4,class:`blue`},5,{val:6,class:`blue`},7,{val:8,class:`blue`},9,{val:10,class:`blue`},11,{val:12,class:`blue`},13,{val:14,class:`blue`},15,{val:16,class:`blue`},17,{val:18,class:`blue`},19,{val:20,class:`blue`}]}/>
+<Sequence containerHeight={0.07} margins={[0,0,0,0]} data={[0,1,2,{val:3,class:'blue'},4,5,{val:6,class:`blue`},7,8,{val:9,class:`blue`},10,11,{val:12,class:`blue`},13,14,{val:15,class:`blue`},16,17,{val:18,class:`blue`},19,20]}/>
+<Sequence containerHeight={0.07} margins={[0,0,0,0]} data={[0,1,2,3,{val:4,class:'blue'},5,6,7,{val:8,class:`blue`},9,10,11,{val:12,class:`blue`},13,14,15,{val:16,class:`blue`},17,18,19,{val:20,class:`blue`}]}/>
+<Sequence containerHeight={0.07} margins={[0,0,0,0]} data={[0,1,2,3,4,{val:5,class:'blue'},6,7,8,9,{val:10,class:`blue`},11,12,13,14,{val:15,class:`blue`},16,17,18,19,{val:20,class:`blue`}]}/>
+<Sequence containerHeight={0.07} margins={[0,0,0,0]} data={[0,1,2,3,4,5,{val:6,class:'blue'},7,8,9,10,11,{val:12,class:`blue`},13,14,15,16,17,{val:18,class:`blue`},19,20]}/>
+<Sequence containerHeight={0.07} margins={[0,0,0,0]} data={[0,1,2,3,4,5,6,{val:7,class:'blue'},8,9,10,11,12,13,{val:14,class:`blue`},15,16,17,18,19,20]}/>
+<Sequence containerHeight={0.07} margins={[0,0,0,0]} data={[0,1,2,3,4,5,6,7,{val:8,class:'blue'},9,10,11,12,13,14,15,{val:16,class:`blue`},17,18,19,20]}/>
+<Sequence containerHeight={0.07} margins={[0,0,0,0]} data={[0,1,2,3,4,5,6,7,8,{val:9,class:'blue'},10,11,12,13,14,15,16,17,{val:18,class:`blue`},19,20]}/>
+<Sequence containerHeight={0.07} margins={[0,0,0,0]} data={[0,1,2,3,4,5,6,7,8,9,{val:10,class:'blue'},11,12,13,14,15,16,17,18,19,{val:20,class:`blue`}]}/>
+
+These patterns correspond to the multiples of an integer ${n}$ in 2 through 10, along the range from 0 to 20. Notice that we never see a multiple of ${n}$ before ${n}$ itself. This leads to the following:
+
+<dfn>
+
+__lemma 0.1__ Let ${a,b \in \uint.}$ If ${a \dv b,}$ then ${0 \le a \lt b.}$
+
+</dfn>
+
+What the lemma above tells us is that, if we're searching for the factors of ${b,}$ then our range is only between ${0}$ and ${b.}$ The smaller ${b}$ is, the less we have to search. The larger ${b}$ is, the more we have to search. Of course, we aren't always so lucky to get a small ${b.}$ Are there ways to make our range smaller?
+
+Compare the factors of 6 and the factors of 18:
+
+$$
+	\eqs{
+		\df{factors}(6) &= \set{1,2,3,6} \\
+		\df{factors}(18) &= \set{1,2,3,6,9,18} \\
+	}
+$$
+
+Notice that the factors of of 18 are also the factors of 6. Is there a relationship here? Well, suppose ${a \dv b}$ and ${b \dv c.}$ This means that we can write ${b=ak}$ and ${c = aj,}$ where ${k}$ and ${j}$ are integers. If we multiply them:
+
+$$
+	bc = (ak)(aj) = a(kj). 
+$$
+
+Given the multiplication is closed on the integers, we know that ${kj}$ is an integer. And since ${kj}$ is an integer, we know that ${a \dv c.}$ Thus, we have the following:
+
+<dfn id={`lemma02`}>
+
+__lemma 0.2__ Let ${a,b,c \in \uint.}$ If ${a \dv b}$ and ${b \dv c,}$ then ${a \dv c.}$
+
+</dfn>
+
+Another way to view this lemma: If ${a \dv b}$ and ${b \dv c,}$ then we can write ${c}$ in terms of ${b.}$ And if we can write ${b}$ in terms of ${a,}$ then we can write ${c}$ in terms of ${a.}$ For example:
+
+$$
+	\eqs{
+		18 &= 3 \by 6 \\
+		&= 3 \by (3 \by 2)
+	}
+$$
+
+This observation leads to another lemma. If we know that ${a \dv b,}$ then it must be the case that ${a \dv bc}$ for any integer ${c.}$ Suppose ${t = bc.}$ Because multiplication is closed on the integers, ${t}$ is an integer. Therefore, ${a \dv t.}$ And since ${t = bc,}$ it follows that ${a \dv bc.}$
+
+<dfn id={`lemma03`}>
+
+__lemma 0.3__ Let ${a,b,c \in \uint.}$ If ${a \dv b,}$ then ${a \dv bc}$ for any integer ${c.}$
+
+</dfn>
+
+Consider the factors of ${8}$ and the factors of ${10:}$
+
+$$
+	\eqs{
+		\df{factors}(8) &= \set{1,2,4,8} \\
+		\df{factors}(24) &= \set{1,2,5,10}
+	}
+$$
+
+If we add 8 and 10 together, we get ${18.}$ Let's compare the factors of 18 as well:
+
+$$
+	\eqs{
+		\df{factors}(8) &= \set{1,2,4,8} \\
+		\df{factors}(24) &= \set{1,2,5,10} \\
+		\df{factors}(18) &= \set{1,2,3,6,9,18}
+	}
+$$
+
+Notice that the factors shared here are ${1}$ and ${2.}$ That is,
+
+$$
+	\df{factors}(8) \cap \df{factors}(20) \cap \df{factors}(18) = \set{1,2}
+$$
+
+We can generlize this result. If ${a \dv b}$ and ${a \dv c,}$ then from the definition of divisiblity, we can write ${b = ak}$ and ${c = aj,}$ where ${k}$ and ${j}$ are integers. Which means that if we add ${b}$ and ${c,}$ we get:
+
+$$
+	b + c = ak + aj = a(k + j)
+$$
+
+And since multiplication and addition are closed on the integers, the term ${k + j}$ is also an integer. Thus, we have the following lemma: 
+
+<dfn id={`lemma04`}>
+
+__lemma 0.4__ Let ${a,}$ ${b,}$ and ${c}$ be integers. If ${a \dv b}$ and ${b \dv c,}$ then ${a \dv (b + c).}$
+
+</dfn>
+
+This lemma leads to a particularly important corollary. Suppose ${a \dv b}$ and ${a \dv c.}$ From [lemma 0.3](#lemma03), we know that we can rewrite these statements as ${a \dv kb}$ and ${a \dv jc,}$ where ${k}$ and ${j}$ are integers. And [lemma 0.4](#lemma04) just showed us that we can then rewrite this as ${a \dv nb + mc.}$ Thus, we have the following corollary:
+
+<dfn>
+
+__corollary__ Let ${a,b,c \in \uint.}$ If ${a \dv b}$ and ${a \dv c,}$ then ${a \dv kb + jc}$ for all integers ${k}$ and ${j.}$
 
 </dfn>
 
 
+
+## Prime Numbers
+
+In the previous sections, we saw that integers can be broken down into smaller integers, called the integers _factors_, or _divisors_. This results from the fact that ${1}$ is a divisor of every natural number, and every natural number is a divisor of itself. Thus, every natural number has _at least two_ positive divisors. This means that we have a split among the integers greater than 1. Those that have exactly two divisors, and those that have more. 
+
+<dfn>
+
+__prime number__ Let ${n}$ be an integer greater than ${1.}$ Then ${n}$ is prime if, and only if, its only divisors are ${1}$ and ${n.}$ We denote the set of all primes as ${\primes,}$ and if ${n}$ is prime, we write ${n \in \primes.}$
+
+</dfn>
+
+<dfn>
+
+__composite number.__ Let ${a,b,c \in \uint^+}$ with ${a \gt 1}$ and ${b \gt 1.}$ Then ${c}$ is a composite number if, and only if, ${c = ab}$ with ${a \neq c}$ and ${b \neq c,}$
+
+</dfn>
+
+We can think of primes as being the "end of the road" integers. If we encounter a prime ${p,}$ then we have only two ways of expressing it: ${p}$ or ${p \by 1.}$ The first prime is defined to be ${2.}$ Why? Because the factors of ${0}$ are all the integers. The integer ${1}$ isn't prime because if it were, it would make the definition of prime useless. We could simply write any prime ${p}$ as ${p \by 1 \by 1 \by \ldots \by 1,}$ in which case ${p}$'s divisors wouldn't just be ${1}$ and itself — it has infinitely many divisors of ${1.}$ The integer ${1,}$ however, is a very special number. It's the only positive integer that's neither prime nor composite. It's not prime by definition. However, it's not composite either because it's ${1.}$ Because of this special status, the number ${1}$ is sometimes called the _unit number._
+
+This hints at why primes are so special — they're unique. The only way to express a prime ${p}$ is by either writing ${p}$ or ${p \by 1.}$ And since ${p \by 1 = p,}$ we can really only express ${p}$ as, well, ${p.}$ For example, ${4}$ can be written as ${2 \by 2.}$ Hence the name _composite_ — we can _decompose_ ${4}$ into ${2 \by 2.}$ The integer ${3,}$ however, can't be decomposed. Our only options are ${3}$ and ${3 \by 1.}$ 
+
+### The Sieve of Eratosthenes
+
+ 
+Consider the following pattern, where non-primes are greyed out.
+
+<div className={"numbered"}>
+
+| ${\gy{1}}$  | 2           | 3           | ${\gy{4}}$  | 5           | ${\gy{6}}$  | 7           | ${\gy{8}}$  | ${\gy{9}}$  | ${\gy{10}}$  |
+| ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ------------ |
+| 11          | ${\gy{12}}$ | 13          | ${\gy{14}}$ | ${\gy{15}}$ | ${\gy{16}}$ | 17          | ${\gy{18}}$ | 19          | ${\gy{20}}$  |
+| ${\gy{21}}$ | ${\gy{22}}$ | 23          | ${\gy{24}}$ | ${\gy{25}}$ | ${\gy{26}}$ | ${\gy{27}}$ | ${\gy{28}}$ | 29          | ${\gy{30}}$  |
+| 31          | ${\gy{32}}$ | ${\gy{33}}$ | ${\gy{34}}$ | ${\gy{35}}$ | ${\gy{36}}$ | 37          | ${\gy{38}}$ | ${\gy{39}}$ | ${\gy{40}}$  |
+| 41          | ${\gy{42}}$ | 43          | ${\gy{44}}$ | ${\gy{45}}$ | ${\gy{46}}$ | 47          | ${\gy{48}}$ | ${\gy{49}}$ | ${\gy{50}}$  |
+| ${\gy{51}}$ | ${\gy{52}}$ | 53          | ${\gy{54}}$ | ${\gy{55}}$ | ${\gy{56}}$ | ${\gy{57}}$ | ${\gy{58}}$ | 59          | ${\gy{60}}$  |
+| 61          | ${\gy{62}}$ | ${\gy{63}}$ | ${\gy{64}}$ | ${\gy{65}}$ | ${\gy{66}}$ | 67          | ${\gy{68}}$ | ${\gy{69}}$ | ${\gy{70}}$  |
+| 71          | ${\gy{72}}$ | 73          | ${\gy{74}}$ | ${\gy{75}}$ | ${\gy{76}}$ | ${\gy{77}}$ | ${\gy{78}}$ | 79          | ${\gy{80}}$  |
+| ${\gy{81}}$ | ${\gy{82}}$ | 83          | ${\gy{84}}$ | ${\gy{85}}$ | ${\gy{86}}$ | ${\gy{87}}$ | ${\gy{88}}$ | 89          | ${\gy{90}}$  |
+| ${\gy{91}}$ | ${\gy{92}}$ | ${\gy{93}}$ | ${\gy{94}}$ | ${\gy{95}}$ | ${\gy{96}}$ | 97          | ${\gy{98}}$ | ${\gy{99}}$ | ${\gy{100}}$ |
+
+</div>
+
+As we get further and further down, there are less and less primes. This particular pattern is called the _Sieve of Eratosthenes_, defined by the following algorithm.
+
+<Algo>
+
+__Sieve of Eratosthenes__
+
+- __Argument__: ${n \in \uint^+}$
+- __Image__: A list ${L = \ar{f_0, f_1, f_2, \ldots, f_{i=n-1}}}$ where ${f_i}$ are the factors of ${n.}$  
+
+1. __init__ ${\let{L}{\df{new list}}}$
+2. __init__ ${\let{d}{2}}$
+3. __while__ ${n \gt 1}$ __and__ ${d^2 \le n}$ __do__
+	1. __init__ ${\let{k}{0}}$
+	2. __while__ ${d \dv n}$ __do__
+		1. ${\let{n'}{n/2}}$
+		2. ${\let{k'}{k+1}}$
+		3. __if__ ${k \gt 0}$ __then__
+			1. ${\df{push}(k) \mapsto L}$
+			2. ${\let{d'}{d+1}}$
+4. __if__ ${n \gt 1}$ __then__ ${\df{push}(1) \mapsto L}$
+5. __return__ ${L}$ ${\blacksquare}$
+
+</Algo>
+
+Broadly, the algorithm works as follows: We loop from ${2}$ to ${n,}$ eliminating all multiples of ${2.}$ Then we go to the next number, ${3,}$ and eliminate all of its multiples. ${4}$ was eliminated when we eliminated ${2}$'s multiples, so we go to ${5.}$ Eliminate all of ${5}$'s multiples. This continues all the way up to our desired number. That's the broad description. What exactly is that ${d^2}$ term? This question brings us to the notion of the _semiprimes_.
+
+### Semiprimes
+
+<dfn>
+
+__semiprime.__ Let ${n}$ be a positive integer. Then ${n}$ is a _semiprime_ if, and only if, there exists a prime number ${a}$ and a prime number ${b}$ such that ${n = ab.}$ If ${a = b,}$ we say that ${n}$ is a _square-semiprime_. If ${a \neq b,}$ we say that ${n}$ is a _squarefree-semiprime._
+
+</dfn>
+
+Below is a sample pattern of square-semiprimes.
+
+$$
+	\ax{
+		& p & 2 & 3 & 5 & 7 & 11 & 13 & 17 & 19 & 23 & 29 & 31 \\[0.9em] 
+		& p^2 & 4 & 9 & 25 & 48 & 121 & 169 & 289 & 361 & 529 & 841 & 961 \\ 
+	}
+$$
+
+If examine this [integer reference](#integer-reference) we see that each square semiprime ${p^2}$ is the smallest composite number whose prime divisors are no less than ${p.}$ For example, ${4}$ only has one prime divisor, ${2.}$ So, ${4}$ is the smallest composite number whose prime divisors are no less than ${2.}$ Likewise, ${9}$'s only prime divisor is ${3.}$ Thus, ${9}$ is the smallest composite number whose prime divisors are no less than ${3.}$ 
+
+This stems from a fact we've seen earlier: Given an integer ${p,}$ the factors of ${p}$ will lie between ${0}$ and ${p.}$ This means that the largest factor of ${p}$ is ${p}$ itself. We can also infer that any integer of the form ${p^2}$ is a composite number by definition, since ${p}$ is the product of two integers other than ${1}$ and ${p.}$
+
+Suppose we're given the following facts:
+
+- ${\df{a}}$: ${c,d,p,q \in \uint^+.}$
+- ${\df{b}}$: ${c}$ is composite.
+- ${\df{c}}$: ${d}$ is a factor of ${c.}$
+- ${\df{d}}$: ${d \lt p.}$
+- ${\df{e}}$: ${q}$ is a factor of ${d.}$
+- ${\df{f}}$: ${q}$ is prime.
+
+We can therefore infer the following:
+
+- ${\df{g}}$: ${\df{c} \nc d \dv c.}$ 
+- ${\df{h}}$: ${\df{e} \nc q \dv d.}$ 
+- ${\df{i}}$: ${\df{g} \land \df{h}}$ ${\nc}$ ${q \dv c.}$ 
+- ${\df{j}}$: ${\df{h}}$ ${\nc}$ ${q \le d.}$
+- ${\df{k}}$: ${\df{j} \land \df{d}}$ ${\nc}$ ${q \le d \lt p.}$ 
+- ${\df{l}}$: ${\df{k}}$ ${\nc}$ ${c}$ has a prime divisor less than ${p,}$ namely, ${q.}$
+
+Our conclusion ${\df{l}}$ doesn't seem all that interesting until we consider its contrapositive: If ${c}$ has no prime divisors less than ${p,}$ then ${d \lt q}$ or ${d \le p.}$ Since proposition ${\df{h}}$ tells us that ${q \dv d,}$ ${d \lt q}$ can't be true, so it must be the case that ${d \le p.}$ This statement, however, can be narrowed further: Because of proposition ${\df{d},}$ we know that ${d \lt p.}$ This leads to the following lemma.
+
+<dfn>
+
+__lemma.__ Let ${p}$ be a positive integer and ${c}$ be a composite number. If ${c}$ has no prime factors less than ${p,}$ then ${c}$ has no factors less than ${p.}$
+
+
+</dfn>
+
+Now let's connect this lemma with our discussion of square-semiprimes. By definition, a square semiprime is a composite number — it's the square of two primes, ${p^2 = p \by p.}$ Given a composite number ${n \lt p^2,}$ it follows that ${n}$ has a divisor ${d}$ that is less than ${p^2.}$ If it turns out that ${d}$ is prime, it must be less than ${p.}$ Why? Because if ${d \gt p,}$ then ${d^2 \gt p^2.}$ And if ${d^2 \gt p^2,}$ then ${n \gt p^2,}$ which contradicts the fact that ${n \lt p^2.}$ The lemma we just proved tells us that if ${c}$ has no prime factors less than ${p,}$ then ${c}$ has no factors less than ${p.}$ Which means that, if we want to find all of the prime factors of an integer ${c,}$ we only need to check for prime divisors less than or equal to ${\sqrt{c.}}$ 
+
+<dfn>
+
+__corollary.__ Let ${c \in \uint^+}$ with ${c \gt 1}$ and ${\df{lpf}(c)}$ denoting the least prime factor of ${c.}$ Then ${\df{lpf}(c) \lt \sqrt{c}.}$
+
+</dfn>
+
+
+## Integer Reference
+
+Below is a table of factors for reference.
+
+<div className={`numbered`}>
+
+| ${n \in \uint^+}$ | ~factors~                         | ~prime factors~  | ~properties~                             |
+| ---------------- | --------------------------------- | ---------------- | ---------------------------------------- |
+| ${1}$            | ${\set{1}}$                       | ${\nil}$         | unit number, neither prime nor composite |
+| ${2}$            | ${\set{1,2}}$                     | ${\set{2}}$      |                                          |
+| ${3}$            | ${\set{1,3}}$                     | ${\set{3}}$      |                                          |
+| ${4}$            | ${\set{1,2,4}}$                   | ${\set{2}}$      | perfect square, square semi-prime        |
+| ${5}$            | ${\set{1,5}}$                     | ${\set{5}}$      |                                          |
+| ${6}$            | ${\set{1,2,3,6}}$                 | ${\set{3}}$      |                                          |
+| ${7}$            | ${\set{1,7}}$                     | ${\set{7}}$      |                                          |
+| ${8}$            | ${\set{1,2,4,8}}$                 | ${\set{2}}$      |                                          |
+| ${9}$            | ${\set{1,3,9}}$                   | ${\set{3}}$      | perfect square, square semi-prime        |
+| ${10}$           | ${\set{1,2,5,10}}$                | ${\set{2,5}}$    |                                          |
+| ${11}$           | ${\set{1,11}}$                    | ${\set{11}}$     |                                          |
+| ${12}$           | ${\set{1,2,3,4,6,12}}$            | ${\set{2,3}}$    |                                          |
+| ${13}$           | ${\set{1,13}}$                    | ${\set{13}}$     |                                          |
+| ${14}$           | ${\set{1,2,7,14}}$                | ${\set{2,7}}$    |                                          |
+| ${15}$           | ${\set{1,3,5,15}}$                | ${\set{3,5}}$    |                                          |
+| ${16}$           | ${\set{1,2,4,8,16}}$              | ${\set{2}}$      | perfect square                           |
+| ${17}$           | ${\set{1,17}}$                    | ${\set{17}}$     |                                          |
+| ${18}$           | ${\set{1,2,3,6,9,18}}$            | ${\set{2,3}}$    |                                          |
+| ${19}$           | ${\set{1,19}}$                    | ${\set{19}}$     |                                          |
+| ${20}$           | ${\set{1,2,4,5,10,20}}$           | ${\set{2,5}}$    |                                          |
+| ${21}$           | ${\set{1,3,7,21}}$                | ${\set{3,7}}$    |                                          |
+| ${22}$           | ${\set{1,2,11,22}}$               | ${\set{11}}$     |                                          |
+| ${23}$           | ${\set{1,23}}$                    | ${\set{23}}$     |                                          |
+| ${24}$           | ${\set{1,2,3,4,6,8,12,24}}$       | ${\set{2,3}}$    |                                          |
+| ${25}$           | ${\set{1,5,25}}$                  | ${\set{5}}$      | perfect square, square-semiprime         |
+| ${26}$           | ${\set{1,2,13,26}}$               | ${\set{2,13}}$   |                                          |
+| ${27}$           | ${\set{1,3,9,27}}$                | ${\set{3}}$      |                                          |
+| ${28}$           | ${\set{1,2,4,7,14,28}}$           | ${\set{2,7}}$    |                                          |
+| ${29}$           | ${\set{1,29}}$                    | ${\set{29}}$     |                                          |
+| ${30}$           | ${\set{1,2,3,5,6,10,15,30}}$      | ${\set{2,3,5}}$  |                                          |
+| ${31}$           | ${\set{1,31}}$                    | ${\set{31}}$     |                                          |
+| ${32}$           | ${\set{1,2,4,8,16,32}}$           | ${\set{2}}$      |                                          |
+| ${34}$           | ${\set{1,2,4,17,34}}$             | ${\set{17}}$     |                                          |
+| ${35}$           | ${\set{1,5,7,35}}$                | ${\set{5,7}}$    |                                          |
+| ${36}$           | ${\set{1,2,3,4,6,9,12,18,36}}$    | ${\set{2,3}}$    | perfect square                           |
+| ${37}$           | ${\set{1,37}}$                    | ${\set{37}}$     |                                          |
+| ${38}$           | ${\set{1,2,19,38}}$               | ${\set{2,19}}$   |                                          |
+| ${39}$           | ${\set{1,3,13,39}}$               | ${\set{2,13}}$   |                                          |
+| ${40}$           | ${\set{1,2,4,5,8,10,20}}$         | ${\set{2,5}}$    |                                          |
+| ${41}$           | ${\set{1,41}}$                    | ${\set{41}}$     |                                          |
+| ${42}$           | ${\set{1,2,3,6,7,14,21,42}}$      | ${\set{2,3,7}}$  |                                          |
+| ${43}$           | ${\set{1,43}}$                    | ${\set{43}}$     |                                          |
+| ${44}$           | ${\set{1,2,4,11,22,44}}$          | ${\set{2,11}}$   |                                          |
+| ${45}$           | ${\set{1,3,5,9,15,45}}$           | ${\set{3,5}}$    |                                          |
+| ${46}$           | ${\set{1,2,23,46}}$               | ${\set{2,23}}$   |                                          |
+| ${47}$           | ${\set{1,47}}$                    | ${\set{47}}$     |                                          |
+| ${48}$           | ${\set{1,2,3,4,6,8,12,16,24,48}}$ | ${\set{2,3}}$    | perfect square, square-semiprime         |
+| ${49}$           | ${\set{1,7,49}}$                  | ${\set{7}}$      |                                          |
+| ${50}$           | ${\set{1,2,5,10,25,50}}$          | ${\set{2,5}}$    |                                          |
+| ${51}$           | ${\set{1,3,17,51}}$               | ${\set{3,17}}$   |                                          |
+| ${52}$           | ${\set{1,2,4,13,26,52}}$          | ${\set{2,2,13}}$ |                                          |
+| ${53}$           | ${\set{1,53}}$                    | ${\set{53}}$     |                                          |
+| ${54}$           | ${\set{1,2,3,6,9,18,27,54}}$      | ${\set{2,3}}$    |                                          |
+| ${55}$           | ${\set{1,5,11,55}}$               | ${\set{5,11}}$   |                                          |
+
+</div>
 

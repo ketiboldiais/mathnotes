@@ -1,0 +1,19 @@
+Progress: resolved 0, reused 1, downloaded 0, added 0
+Progress: resolved 82, reused 46, downloaded 4, added 0
+Progress: resolved 176, reused 107, downloaded 39, added 0
+Progress: resolved 642, reused 391, downloaded 42, added 0
+Packages: +44 -1
+++++++++++++++++++++++++++++++++++++++++++++-
+Progress: resolved 1177, reused 567, downloaded 42, added 0
+Progress: resolved 1177, reused 567, downloaded 43, added 44, done
+
+dependencies:
++ mermaid 9.2.0
+
+ WARN  Issues with peer dependencies found
+.
+└─┬ mdx-mermaid
+  └── ✕ missing peer unist-util-visit@^2.0.0
+Peer dependencies that should be installed:
+  unist-util-visit@^2.0.0
+

@@ -1,7 +1,7 @@
-<head>
+<Head>
 	<title>Tuples</title>
-	<description>Notes on tuples.</description>
-</head>
+	<meta name={`description`} content={`Notes on tuples.`}/>
+</Head>
 
 # Tuples
 
@@ -12,6 +12,7 @@ This chapter provides notes on ordered pairs and tuples.
 1. [Ordered Pairs](#ordered-pairs)
 2. [Tuples](#tuples)
 3. [The Cartesian Product](#the-cartesian-product)
+	1. [Cardinality of the Cartesian Product](#cardinality-of-the-cartesian-product)
 
 </div>
 
@@ -113,7 +114,7 @@ $$
 if, and only if, 
 
 $$
-	a = c ~~~\tt{and}~~~ b = d
+	a = c ~~~\text{and}~~~ b = d
 $$
 
 </dfn>
@@ -167,13 +168,13 @@ generalizes the notion of an ordered pair — an ordered pair is simply a 2-tupl
 
 <dfn>
 
-__n-tuple.__ Where ${n \in \NN,}$ the collection:
+__n-tuple.__ Where ${n \in \nat,}$ the collection:
 
 $$	
 (a_1,a_2,a_3,\ldots,a_n) = 
 \begin{cases}
-		\nil           & ~~\tt{if}~~ n = 0 \\[1em]
-		(a_1, (a_2, a_3, \ldots, a_n)) & ~~\tt{else}~~
+		\nil           & ~~\text{if}~~ n = 0 \\[1em]
+		(a_1, (a_2, a_3, \ldots, a_n)) & ~~\text{else}~~
 \end{cases}
 $$
 
@@ -239,7 +240,32 @@ A_i}$ for ${i = 1,2,\ldots,n.}$ That is,
 $$
 	\small
 	A_1 \times A_2 \times \ldots \times A_n	= \set{(a_1,a_2,\ldots,a_n) : a_i \in
-	A_i \tt{ for } i=1,2,3,\ldots,n}
+	A_i \text{ for } i=1,2,3,\ldots,n}
 $$
 
 </dfn>
+
+### Cardinality of the Cartesian Product
+
+Given that the Cartesian product is the set of all tuples ${(a_1, a_2, \ldots, a_n)}$ where ${a \in A_1,}$ ${a_2 \in A_2,}$ ${\ldots,}$ ${a_n \in A_n}$ with ${n \in \nat,}$ we have the following theorem.
+
+<dfn>
+
+__cardinality of the cartesian product.__ Let ${A_1, A_2, \ldots A_n}$ be sets, with ${n \in \nat.}$ Then
+
+$$
+	\card{(A_1 \times A_2 \times \ldots \times A_n)} = \card{(A_1)} \times \card{(A_2)} \ldots \times \card{(A_n).}
+$$
+
+</dfn>
+
+For example, given the set ${B = \set{0,1},}$ then the cardinality of ${B \times B}$ is ${4,}$ since:
+
+$$
+	B \times B = \lset{
+		\eqs{
+			(0,0)~&~(0,1) \\
+			(1,0)~&~(1,1)
+		}
+	}.	
+$$

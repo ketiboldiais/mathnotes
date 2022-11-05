@@ -1,0 +1,432 @@
+# Cycle Detection
+
+
+Recall that a _cycle_ is a walk where the only repeated vertices are the first and the last. Below, graphs ${A}$ and ${C}$ contain cycles, but graphs ${B}$ and ${D}$ do not. _Cycle detection algorithms_ are algorithms whose core objective is determining whether a given graph ${G}$ contains a cycle. The algorithm has many applications, most commonly in cryptography. For example, cycle lengths are one benchmark for assessing a pseudorandom number generator's strength (in short, how close to random the generator's outputs are).
+
+<Grid cols={2}>
+<Graph data={[
+	{link: ['a','b']},
+	{link: ['b','c']},
+	{link: ['c','a']},
+]} id={'cycledetection1'} isDirected={true} wh={[270,150]} scale={100}/>
+<Graph data={[
+	{link: ['a','b']},
+	{link: ['a','c']},
+	{link: ['b','c']},
+	{link: ['c','d']},
+]} id={'cycledetection2'} isDirected={true} wh={[270,150]} scale={100}/>
+$$
+	\tx{Graph } A
+$$
+$$
+	\tx{Graph } B
+$$
+<Graph data={[
+	{link: ['a','b']},
+	{link: ['a','c']},
+	{link: ['e','f']},
+	{link: ['f','e']},
+]} id={'cycledetection3'} isDirected={true} wh={[270,150]} scale={100}/>
+<Graph data={[
+	{link: ['q','r']},
+	{link: ['q','s']},
+	{link: ['r','t']},
+	{link: ['r','u']},
+	{link: ['v','w']},
+	{link: ['x','w']},
+]} id={'cycledetection4'} isDirected={true} wh={[270,150]} scale={100}/>
+$$
+	\tx{Graph } C
+$$
+$$
+	\tx{Graph } D
+$$
+</Grid>
+
+A common algorithm for detecting cycles is the _White-grey-black (WGB) Algorithm_.
+
+### White-grey-black Algorithm
+
+<table className={`trace`}><tbody>
+<tr><td width={'50%'}>
+
+The WGB algorithm is a type of coloring algorithm. We have a palette of size 3: ${\set{\tx{white}, \tx{grey}, \tx{black}}.}$ The color white corresponds to _unvisited_, grey to _visiting_, and black to _visited_. To illustrate, we'll use shown, which contains the cycle ${f-h-i-j.}$ Below is the adjacency list representation of the graph.
+
+$$
+	\small G \gets \lset{\ax{
+		a &\mapsto& \ix{c} \\
+		b &\mapsto& \ix{a} \\
+		c &\mapsto& \ix{~~} \\
+		f &\mapsto& \ix{h} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{i} \\
+		i &\mapsto& \ix{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+</td><td>
+
+<Graph data={[
+	{link: ['g','f']},
+	{link: ['g','j']},
+	{link: ['j','f']},
+	{link: ['f','h']},
+	{link: ['h','i']},
+	{link: ['i','j']},
+	{link: ['b','a']},
+	{link: ['a','c']},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb1'}/>
+
+</td></tr>
+<tr><td>
+
+As we'll see, it doesn't matter which node we start at. Suppose we start on ${a.}$ When we land on ${a,}$ we see that it's white, which tells us that it's unvisited. So, we change its color to grey.
+
+
+$$
+	\small G \gets \lset{\ax{
+		\wd{a} &\mapsto& \ix{c} \\
+		b &\mapsto& \ix{a} \\
+		c &\mapsto& \ix{~~} \\
+		f &\mapsto& \ix{h} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{i} \\
+		i &\mapsto& \ix{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+</td><td>
+
+<Graph data={[
+	{link: ['g','f']},
+	{link: ['g','j']},
+	{link: ['j','f']},
+	{link: ['f','h']},
+	{link: ['h','i']},
+	{link: ['i','j']},
+	{link: ['b',{id:'a',class:'off'}]},
+	{link: ['a','c']},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb2'}/>
+
+</td></tr>
+<tr><td>
+
+Now we travel to ${a}$'s neighbors. Here, there is only one: ${c.}$ We go to ${c,}$ and see that it's white. It hasn't been visited. So, we color ${c}$ grey.
+
+$$
+	\small G \gets \lset{\ax{
+		\wd{a} &\mapsto& \ix{\wd{c}} \\
+		b &\mapsto& \ix{a} \\
+		c &\mapsto& \ix{~~} \\
+		f &\mapsto& \ix{h} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{i} \\
+		i &\mapsto& \ix{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+</td><td>
+
+<Graph data={[
+	{link: ['g','f']},
+	{link: ['g','j']},
+	{link: ['j','f']},
+	{link: ['f','h']},
+	{link: ['h','i']},
+	{link: ['i','j']},
+	{link: ['b',{id:'a',class:'off'}]},
+	{link: ['a',{id:'c',class:'off'}]},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb3'}/>
+
+</td></tr>
+<tr><td>
+
+Now we travel to ${c}$'s neighbors. ${c}$ has no neighbors, so we conclude that ${c}$ has now been visited. Color it black and get back to ${a.}$ Notice that in the adjacency list, we've replaced the vertices with black-squares. This emphasizes the fact that whenever we encounter these black squares, we immediately conclude that these vertices have been visited, and we do not visit them.
+
+
+$$
+	\small G \gets \lset{\ax{
+		\wd{a} &\mapsto& \ix{\bs} \\
+		b &\mapsto& \ix{a} \\
+		\bs &\mapsto& \ix{~~} \\
+		f &\mapsto& \ix{h} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{i} \\
+		i &\mapsto& \ix{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+</td><td>
+
+<Graph data={[
+	{link: ['g','f']},
+	{link: ['g','j']},
+	{link: ['j','f']},
+	{link: ['f','h']},
+	{link: ['h','i']},
+	{link: ['i','j']},
+	{link: ['b',{id:'a',class:'off'}]},
+	{link: ['a',{id:'c',class:'nil'}]},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb4'}/>
+
+</td></tr>
+<tr><td>
+
+Back at ${a,}$ we again travel to ${a}$'s neighbors. There are none left, so we conclude that ${a}$ has been visited and color it black, with the accompanying changes in the adjacency list. We go to ${b}$ next, and mark it grey.
+
+
+$$
+	\small G \gets \lset{\ax{
+		\bs &\mapsto& \ix{\bs} \\
+		\wd{b} &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{~~} \\
+		f &\mapsto& \ix{h} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{i} \\
+		i &\mapsto& \ix{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+</td><td>
+
+<Graph data={[
+	{link: ['g','f']},
+	{link: ['g','j']},
+	{link: ['j','f']},
+	{link: ['f','h']},
+	{link: ['h','i']},
+	{link: ['i','j']},
+	{link: [{id:'b',class:'off'},{id:'a',class:'nil'}]},
+	{link: ['a',{id:'c',class:'nil'}]},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb5'}/>
+
+</td></tr>
+<tr><td>
+
+The ${b}$ node has a single neighbor ${a,}$ but we've already visited ${a.}$ 
+So, we get back to ${b,}$ and color it black, since ${a}$ was ${b}$'s only neighbor. The next vertex in the list is ${c,}$ but ${c}$ is already visited. So, we go to the next vertex, ${f,}$ and mark it as visiting.
+
+$$
+	\small G \gets \lset{\ax{
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{~~} \\
+		\wd{f} &\mapsto& \ix{h} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{i} \\
+		i &\mapsto& \ix{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+</td><td>
+
+<Graph data={[
+	{link: ['g',{id:'f',class:'off'}]},
+	{link: ['g','j']},
+	{link: ['j','f']},
+	{link: ['f','h']},
+	{link: ['h','i']},
+	{link: ['i','j']},
+	{link: [{id:'b',class:'nil'},{id:'a',class:'nil'}]},
+	{link: ['a',{id:'c',class:'nil'}]},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb6'}/>
+
+</td></tr>
+<tr><td>
+
+We now explore all of ${f}$'s neighbors. Here, there is one neighbor, ${h.}$ So, we go to ${h,}$ and find that ${h}$ is white. So, we color it grey and visit all of its neighbors.
+
+
+$$
+	\small G \gets \lset{\ax{
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{~~} \\
+		\wd{f} &\mapsto& \ix{\wd{h}} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{i} \\
+		i &\mapsto& \ix{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+</td><td>
+
+<Graph data={[
+	{link: ['g',{id:'f',class:'off'}]},
+	{link: ['g','j']},
+	{link: ['j','f']},
+	{link: ['f',{id:'h',class:'off'}]},
+	{link: ['h','i']},
+	{link: ['i','j']},
+	{link: [{id:'b',class:'nil'},{id:'a',class:'nil'}]},
+	{link: ['a',{id:'c',class:'nil'}]},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb7'}/>
+
+</td></tr>
+<tr><td>
+
+Now we visit all of ${h}$'s neighbors. That's ${i.}$ So, we color ${i}$ grey, and visit all of its neighbors.
+
+
+$$
+	\small G \gets \lset{\ax{
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{~~} \\
+		\wd{f} &\mapsto& \ix{\wd{h}} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{\wd{i}} \\
+		i &\mapsto& \ix{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+</td><td>
+
+<Graph data={[
+	{link: ['g',{id:'f',class:'off'}]},
+	{link: ['g','j']},
+	{link: ['j','f']},
+	{link: ['f',{id:'h',class:'off'}]},
+	{link: ['h',{id:'i',class:'off'}]},
+	{link: ['i','j']},
+	{link: [{id:'b',class:'nil'},{id:'a',class:'nil'}]},
+	{link: ['a',{id:'c',class:'nil'}]},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb8'}/>
+
+</td></tr>
+<tr><td>
+
+We see that ${i}$ has one neighbor, ${j.}$ So, we color ${j}$ grey and visit all of its neighbors.
+
+
+$$
+	\small G \gets \lset{\ax{
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{~~} \\
+		\wd{f} &\mapsto& \ix{\wd{h}} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{\wd{i}} \\
+		i &\mapsto& \wd{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+</td><td>
+
+<Graph data={[
+	{link: ['g',{id:'f',class:'off'}]},
+	{link: ['g',{id:'j',class:'off'}]},
+	{link: ['j','f']},
+	{link: ['f',{id:'h',class:'off'}]},
+	{link: ['h',{id:'i',class:'off'}]},
+	{link: ['i','j']},
+	{link: [{id:'b',class:'nil'},{id:'a',class:'nil'}]},
+	{link: ['a',{id:'c',class:'nil'}]},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb9'}/>
+
+</td></tr>
+<tr><td>
+
+${j}$ has one neighbor, ${f,}$ so we had there. Upon arriving at ${f,}$ however, we see that ${f}$ is colored grey. This means that we're already currently visiting ${f.}$ Which in turn means we have a _cycle_.
+
+
+$$
+	\small G \gets \lset{\ax{
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{\bs} \\
+		\bs &\mapsto& \ix{~~} \\
+		\wd{f} &\mapsto& \ix{\wd{h}} \\
+		g &\mapsto& \ix{f,j} \\
+		h &\mapsto& \ix{\wd{i}} \\
+		i &\mapsto& \wd{j} \\
+		j &\mapsto& \ix{f}
+	}}
+$$
+
+Accordingly, we can immediately return true — ${G}$ contains a cycle. Thus, the basic idea is: If we _can_ run a depth-first traversal without encountering a grey neighbor, then ${G}$ _does not_ contain a cycle. Inversely, if we _cannot_ run a depth-first traversal without encountering a grey neighbor, then ${G}$ _does_ contain a cycle.
+
+</td><td>
+
+<Graph data={[
+	{link: ['g',{id:'f',class:'red'}]},
+	{link: ['g',{id:'j',class:'off'}]},
+	{link: ['j','f']},
+	{link: ['f',{id:'h',class:'off'}]},
+	{link: ['h',{id:'i',class:'off'}]},
+	{link: ['i','j']},
+	{link: [{id:'b',class:'nil'},{id:'a',class:'nil'}]},
+	{link: ['a',{id:'c',class:'nil'}]},
+]} wh={[250,155]} isDirected={true} fontSize={0.5} ty={2} scale={70} id={'wgb10'}/>
+
+</td></tr>
+</tbody>
+</table>
+
+The WGB algorithm has a time complexity of order ${\bigO{\abs{E}}}$ and the space complexity is of order ${\bigO{\abs{V}},}$ where ${\abs{E}}$ is the number of edges of ${G,}$ and ${\abs{V}}$ is the number of vertices of ${G.}$ Below is a pseudocode implementation.
+
+<Algo>
+
+1. __function__ ${\lex\df{cycle}(G)}$
+	1. ${\let{black}{\df{new set}}}$
+	2. ${\let{grey}{\df{new set}}}$
+	3. __function__ ${\df{dft}(v)}$
+		1. __if__ ${v \in black}$ __return__ ${\mo{false}}$
+		2. __if__ ${v \in grey}$ __return__ ${\mo{true}}$
+		3. ${grey\mc\df{insert}(v)}$
+		4. __for__ ${\let{i}{0},~i \lt \len{G\ix{v}},~i\pl\pl}$
+			1. ${\let{neighbor}{G\ix{v}\ix{i}}}$
+			2. __if__ ${\df{dft}(neighbor)}$ __return__ ${\mo{true}}$
+		5. ${grey\mc\df{remove}(v)}$
+		6. ${black\mc\df{insert}(v)}$
+		7. __return__ ${\mo{false}}$
+	4. __for each__ ${k \in G}$
+		1. __if__ ${\df{dft}(k)}$ __return__ ${\mo{true}}$
+	5. __return__ ${\mo{false}}$
+
+</Algo>
+
+### Application: Circular Dependency
+Sophisticated modern computer programs rely on potentially thousands of modules, often written by firms and engineers outside the program's manufacturer. This introduces the problem of _circular dependency_ — a relation where two or more modules rely on one another, directly or indirectly. These modules are called _mutually recursive modules_, and they almost always generate substantial problems. Consider, for example, the dependency graph below, where a circular dependency is marked with red edges, alongside an accompanying edge list.
+
+<Grid cols={2}>
+$$
+	\mx{
+		\ix{d,b} \\
+		\ix{b,a} \\
+		\ix{a,c} \\
+		\ix{c,e} \\
+		\ix{e,b} \\
+		\ix{d,e} \\
+		\ix{o,p}
+	}
+$$
+<Graph data={[
+	{link: ['d','b']},
+	{link: ['b','a'],class:'red'},
+	{link: ['a','c'],class:'red'},
+	{link: ['c','e'],class:'red'},
+	{link: ['e','b'],class:'red'},
+	{link: ['d','e']},
+	{link: ['o','p']},
+]} isDirected={true} wh={[250,100]} fontSize={0.45} repulsion={0.3} collisionRadius={8} edgeLength={30} ty={-10}/>
+</Grid>
+
+As we can likely tell, determining whether a dependency graph contains a cycle is nothing more than a cycle detection problem, and we can use the WGB algorithm. The only difference, is, we'll convert the edge list representation to an adjacency list. A more interesting result for this particular application is its complexity analysis. Here, the time complexity is of order ${\bigO{v + n},}$ and the space complexity is of order ${\bigO{v + n},}$ where ${v}$ is the number of modules, and ${n}$ is the number of dependencies. Or, in graph theory terms, ${v}$ is the number of vertices, and ${n}$ is the number of neighbors. This is supported by the fact that we must iterate over the edge list to construct the adjacency list representation of the graph.
+
+
+
+
+
+
+
+
+

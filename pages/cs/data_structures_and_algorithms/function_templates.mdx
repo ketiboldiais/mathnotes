@@ -26,7 +26,7 @@ void print(double arr[], int length) {
 The only thing that differentiates this function is the argument type. When
 programming, it's not uncommon to have functions like this &mdash; the same
 computation, but different arguments. In these situations, it's best to use
-a **function template**. We can think of a function template as simply a
+a __function template__. We can think of a function template as simply a
 more general, or abstract form of the function. We can reduce the functions
 above into a single function:
 
@@ -42,7 +42,7 @@ void print(T arr[], int length) {
 
 The `T` in the code above essentially acts like a placeholder. C++ will
 replace the `T` with the appropriate data type. This results in `print()`
-becoming a **generic function**. Applying this feature, our code begins to
+becoming a __generic function__. Applying this feature, our code begins to
 look cleaner, while keeping the added functionality:
 
 ```cpp

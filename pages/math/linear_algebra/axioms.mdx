@@ -1,0 +1,141 @@
+<Head>
+	<title>Vectors</title>
+	<meta name={`description`} content={`Notes on vectors`}/>
+</Head>
+
+# Vectors
+_This note presents an overview of vectors._
+
+1. [Vector Space](#vector-space)
+2. [${\bm{n}}$-Vector Spaces](#bmn-vector-spaces)
+3. [Subspaces](#subspaces)
+	1. [Sums of Subspaces](#sums-of-subspaces)
+	2. [Direct Sums](#direct-sums)
+4. [Spans](#spans)
+5. [Linear Combinations](#linear-combinations)
+
+## Vector Space
+> __~vector space~.__ A _vector space_ ${\Vv}$ is an algebra ${(V,S,\set{\by,+}).}$ The set ${V}$ is a collection of objects called _vectors_, and ${S}$ is a collection of objects called _scalars_. The operation ${+}$ is a function called _vector addition_, which assigns to each pair of elements ${\uu, \vv \in V}$ an element ${\uu + \vv \in V.}$ The operation ${\by}$ is a function called _scalar multiplication_, which assigns to each ${a \in S}$ and to each ${\vv \in V,}$ an element ${a \by \vv \in V.}$ Given a vector space ${\Vv,}$ the following properties hold.
+
+> ${\px{\df{i}}}$ _Commutativity of Vector Addition_. For all ${\uu, \vv \in V,~~}$ ${\uu + \vv = \vv + \uu.}$
+>
+> ${\px{\df{ii}}}$ _Associativity of Vector Addition_. For all ${\uu, \vv, \ww \in V,~~}$ ${(\uu + \vv) + \ww = \uu + (\vv + \ww).}$
+>
+> ${\px{\df{iii}}}$ _Associativity of Scalar Multiplication_. For all ${a,b \in S}$ and for all ${\vv \in V,~~}$ ${(a \by b)\vv = a(b \by \vv).}$
+>
+> ${\px{\df{iv}}}$ _Existence of Additive Identity_. For all ${\vv \in V,~~}$ there exists an element ${\textbf{0} \in V}$ such that ${\vv + \textbf{0} = \vv.}$
+>
+> ${\px{\df{v}}}$ _Existence of Additive Inverse_. For all ${\vv \in V,~~}$ there exists a ${\ww \in V}$ such that ${\vv + \ww = \textbf{0}.}$
+>
+> ${\px{\df{vi}}}$ _Existence of Multiplicative Identity_. For all ${\vv \in V,~~}$ ${1\vv = \vv.}$
+>
+> ${\px{\df{vii}}}$ _Distributity_. For all ${a,b \in S}$ and for all ${\uu, \vv \in V,~~}$ ${a(\uu + \vv) = a\uu + a\vv}$ and ${(a + b)\vv = a\vv + b\vv.}$
+
+> __~lemma~.__ Given any vector space ${\Vv,}$ there exists one, and only one, additive identity.
+
+> __~lemma~.__ For all ${\vv \in \Vv,}$ there exists a unique additive inverse ${-\vv \in \Vv.}$
+
+## ${\bm{n}}$-Vector Spaces
+> __~definition~.__ Let ${\Vv}$ be a vector space and let ${n \in \nat.}$ If, for all vectors ${\vv \in \Vv,~}$ ${n}$ is the smallest number such that, given any collection ${C_v=\set{\vv_1, \ldots, \vv_{n+1} : \vv \in \Vv},}$ ${C_v}$ is linearly dependent. That is, there exist objects ${a_1, a_2, \ldots, a_{n+1}}$ such that
+> 
+> $$
+> 	a_1\vv_1 + a_2\vv_2 + \ldots + a_{n+1}\vv_{n+1} = 0.
+> $$
+> 
+> Given ${n \in \nat}$ as to ${\Vv}$ and the existence of such objects as to ${\Vv,}$ we say that ${\Vv}$ is an _${n}$-vector space_ or _${n}$-dimensional vector space_.
+
+> __~notation~.__ The notation ${\field^n}$ is an ${n}$-vector space denoting either ${\reals^n}$ or ${\Complex^n,}$ where ${\reals}$ is the field of real numbers and ${\Complex}$ is the field of complex numbers. The notation ${\field}$ denotes either ${\reals}$ or ${\Complex.}$
+
+> __~addition in ${\field^n}$~.__ Let ${\vv = (v_1,\ldots,v_n)}$ and ${\ww=(w_1,\ldots,w_n)}$ be vectors in ${\field^n}$ Then ${\vv + \ww \in \field^n}$ is the vector mapped whose components are the sums of the corresponding components of ${\vv}$ and ${\ww.}$ That is,
+> $$
+> 	\vv + \ww = (v_1+w_1,~\ldots,~v_n+w_n).
+> $$
+
+> __~zero vector in ${\field^n}$~.__ The _zero vector_ is the vector of ${\field^n}$ such that every component is ${0.}$ We denote the zero vector with ${\bf{0}.}$
+
+> __~additive inverse in ${\field^n}$~.__ Given ${\vv \in \field^n,}$ the _additive inverse_ of ${\vv}$ is a vector ${-\vv \in \field^n}$ such that ${\vv + (-\vv) = \bf{0}.}$
+
+> __~theorem~.__ Addition in ${\field^n}$ is commutative.
+
+> ~proof~. Let ${\vv = (v_1,\ldots,v_n)}$ and let ${\ww = (w_1,\ldots,w_n).}$ Then
+> 
+> $$
+> 	\eqs{
+> 		\vv + \ww &= (v_1,\ldots,v_n) + (w_1,\ldots,w_n) \\
+> 		&= (v_1 + w_1, \ldots, v_n + w_n)  ~~ \small\tx{by definition of addition in } \field^n\\
+> 		&= (w_1 + v_1, \ldots, w_n + v_n) ~~ \small\tx{by commutativity of addition in } \field^n\\
+> 		&= (w_1,\ldots,w_n) + (v_1, \ldots, v_n) ~~ \small\tx{by definition of addition in } \field^n\\
+> 		&= \ww + \vv.
+> 	}
+> $$
+
+> __~scalar multiplication in ${\field^n}$~.__ Let ${\vv}$ be a vector in ${\field^n}$ and let ${a}$ be a scalar in ${\field.}$ The _scalar product_ of ${a}$ and ${\vv}$ is the vector ${c\vv}$ such that every component of ${\vv}$ is multiplied by ${c.}$ That is,
+>
+> $$
+> 	c\vv = (cv_1, \ldots cv_n).
+> $$
+
+> __~lemma~.__ For every ${\vv \in \field^n,}$ it follows that ${{\bf 0}\vv = \bf 0.}$
+
+> __~lemma~.__ For every ${a \in \field,}$ it follows that ${0a = 0.}$
+
+> __~lemma~.__ For every ${\vv \in \field^n,}$ it follows that ${(-1)\vv = -\vv.}$
+
+## Subspaces
+> __~subspace~.__ Let ${V}$ be a subset of the vector space ${\field^n.}$ If ${V}$ is a vector space, then ${V}$ is a _subspace_ of the vector space ${\field^n.}$
+
+> ~example~. ${\set{\ar{x,~x^2} : x \in \reals}}$ is a subspace of ${\reals^2.}$
+
+> ~example~. ${\set{\ar{v_1,~v_2,~0} : v_1,v_2 \in \field}}$ is a subspace of ${\field^3.}$
+
+### Sums of Subspaces
+> __~subset sum~.__ Let ${V_1, V_2, \ldots, V_{m-1}, V_m}$ be subsets of the vector space ${\field^n.}$ The subset sum of ${V_1, V_2, \ldots, V_{m-1}, V_m}$ is defined as
+> 
+> $$
+> 	\small V_1 + V_2 + \ldots + V_{m-1} + V_m = \set{v_1 + v_2 + \ldots + v_{m-1} + v_m ~:~ v_1 \in V_1, v_2 \in V_2, \ldots, v_{m-1} \in V_{m-1}, v_{m} \in V_m}.
+> $$
+> 
+> That is, the set of all possible sums of elements of ${V_1, V_2, \ldots, V_{m-1}, V_m.}$
+
+~example~. 
+1. Let ${~~~\no{W+}V=\set{(x,0,0) \in \field^3 : x \in \field}.}$ 
+2. Let ${~~~\no{V+}W=\set{(0,y,0) \in \field^3 : y \in \field}.}$ 
+3. Then ${V+W=\set{(x,y,0) \in \field^3 : x,y \in \field}.}$
+
+> __~theorem~.__ Let ${V_1,\ldots,V_m}$ be subspaces of ${\field^n.}$ Then ${V_1 + \ldots + V_m}$ is the smallest subspace of ${\field^n}$ containing ${V_1,\ldots,V_m.}$
+
+> ~proof~. Clearly, ${0 \in V_1+\ldots+V_m}$ and ${V_1+\ldots+V_m}$ is closed under addition and scalar multiplication, since ${\field^n}$ is either ${\reals}$ or ${\Complex.}$ Moreover, given ${v_1 \in V_1, \ldots, v_m \in V_m}$ such that ${v_1 = v_2 = \ldots = v_{m-1} = 0,}$ it follows that ${V_1,\ldots,V_m}$ contains ${V_1 + \ldots + V_m.}$ Therefore, ${V_1 + \ldots + V_m}$ is the smallest subspace containing ${V_1,\ldots,V_m.}$ ${\footnotesize\bs}$
+
+### Direct Sums
+Given that every element ${v_i}$ of ${V_1+\ldots+V_m}$ can be written in the form ${v_1+\ldots+v_m,}$ where ${V_1,\ldots V_m}$ are subspaces of ${\field^n,}$ we often want to know if every vector of ${V_1+\ldots+V_m}$ can be expressed in exactly one way. If the subspace sum ${V_1+\ldots + V_m}$ has this property, then we know that every vector of ${V_1 + \ldots + V_m}$ is _unique_, since every vector can be _uniquely expressed_.
+
+> __~direct sum~.__ Let ${V_1,\ldots,V_m}$ be subspaces of ${\field^n.}$ If each element ${v_{1 \le i \lt n}}$ of ${V_1 + \ldots + V_m}$ can be expressed in exactly one way as the sum ${v_1 + \ldots + v_m,}$ then we say that ${V_1 + \ldots + V_m}$ is a _direct sum_ of ${\field^n.}$ We denote a direct sum ${V_1 + \ldots + V_m}$ with the notation ${V_1 \oplus \ldots \oplus V_m.}$
+
+~example~. 
+1. Let ${~~~~V=\set{(x,y,0) \in \field^3 : x \in \field}.}$ 
+2. Let ${~~~W=\set{(0,0,z) \in \field^3 : y \in \field}.}$ 
+3. Then ${\field^3=\set{(x,y,z) \in \field^3 : x,y,z \in \field} = V\oplus W.}$
+
+## Spans
+> __~vector list~.__ The notation ${[\vv_1,\ldots,\vv_n]}$ denotes a _list of vectors_.
+
+~example~. ${[(1,2,3),(4,5,6),(7,8,9)].}$
+
+## Linear Combinations
+> __~definition~.__  Let ${[\vv_1,\ldots,\vv_m]}$ be a list of vectors in ${\field^n.}$ A vector of the form
+> 
+> $$
+> 	a_1 \vv_1 + \ldots a_m \vv_m
+> $$
+> 
+> where ${a_1,\ldots,a_m \in \field}$ is called a _linear combination_.
+
+~example~. Let ${\aa = (32,88,23),}$ ${\vv = (2,8,3)}$ and ${\ww = (4,8,1),}$ where ${\aa, \vv, \ww \in \field^3.}$ Then ${\aa}$ is a linear combination of the list ${[\vv, \ww],}$ since ${(32,88,23)=6(2,8,3) + 5(4,8,1).}$ That is, there exist ${a_1 = 6}$ and ${a_2 = 5}$ in ${\field}$ such that ${\aa = a_1\vv + a_2\ww.}$
+
+$$
+	\eqs{
+		 &6(2,8,3) = (12,48,18) \\
+		 +~&5(4,8,1) = (20,40,~~5) \\ \hline
+&\no{5(4,8,1) =} (32,88,23) \\
+	}
+$$

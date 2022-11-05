@@ -1,622 +1,311 @@
 import { CartProd, Plot } from "../../../components/hago";
 import { Plot as Plot2 } from "../../../components/illus/components/Plot/Plot";
 
+<Head>
+	<title>Probability Introduction</title>
+	<meta name={`description`} content={`Notes on probability.`}/>
+</Head>
+
 # Probability
 
-These notes provide an overview of probability.
+_These notes provide an overview of probability._
+
+1. [Primitives](#primitives)
+	1. [Set Notation](#set-notation)
+	2. [Theorems of Set Theory](#theorems-of-set-theory)
+	3. [Definitions](#definitions)
+2. [Combinatorial Analysis](#combinatorial-analysis)
+	1. [Cardinality](#cardinality)
+	2. [Disjoint Sum Rule](#disjoint-sum-rule)
+	3. [Complementary Rule](#complementary-rule)
+	4. [Symmetry Rule](#symmetry-rule)
+	5. [Pigeonhole Principle](#pigeonhole-principle)
+	6. [Enumerating Pairs](#enumerating-pairs)
+	7. [Enumerating Multiplets](#enumerating-multiplets)
+	8. [Three Possible Cases of Orderings](#three-possible-cases-of-orderings)
+	9. [Enumerating Bijective Orderings](#enumerating-bijective-orderings)
+	10. [Enumerating Injective Orderings](#enumerating-injective-orderings)
+	11. [Enumerating Surjective Orderings](#enumerating-surjective-orderings)
+3. ["Impossibilities"](#impossibilities)
+4. [Nonnegativity of Probability](#nonnegativity-of-probability)
+5. [Probability of Not-Events](#probability-of-not-events)
+6. [Probability of Or-Events](#probability-of-or-events)
+
+## Primitives
+Broadly, probability comprises three types: (1) _classical probability_ — 
+probability theory premised on a finite number of equally likely possible
+outcomes. E.g., What is the probability of pulling an ${(\tx{ace}, \spades)}$
+from a standard deck? (2) _frequentist probability_ — probability theory
+premised on the limits of long-run experiments. E.g., What is the probability
+of hitting a bull's eye on a dart board? (3) _subjective probability_ —
+probability theory premised on subjective interpretations of conclusions from
+the previous two types.
+
+### Set Notation
+We begin with some set notation we will use extensively.
+
+> __~notation~.__ Given the non-empty set ${A}$ and the non-empty set ${B,}$ we define the following notations:
+> 
+| ~notation~                      | ~meaning~                                                                                                                                                                          |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ${a \in A}$                     | ${a}$ is an element of ${A.}$                                                                                                                                                      |
+| ${b \in B}$                     | ${b}$ is an element of ${B.}$                                                                                                                                                      |
+| ${A \cup B}$                    | ${\set{x : x \in A ~\tx{ or }~} x \in B}$                                                                                                                                          |
+| ${A \cap B}$                    | ${\set{x : x \in A ~\tx{ and }~} x \in B}$                                                                                                                                         |
+| ${A \rid B}$                    | ${\set{x : x \in A ~\tx{ and }~} x \notin B}$                                                                                                                                      |
+| ${A \dif B}$                    | ${\set{x : x \in A ~\tx{ xor }~} x \in B}$                                                                                                                                         |
+| ${\nix{A}}$                     | ${\set{x : x \notin A}}$                                                                                                                                                           |
+| ${A \subset B}$                 | If ${x \in A,}$ then ${x \in B.}$                                                                                                                                                  |
+| ${A \not\subset B}$             | If ${x \in A,}$ then ${x \notin B.}$                                                                                                                                               |
+| ${A = B}$                       | If ${x \in A,}$ then ${x \in B,}$ and if ${x \in B,}$ then ${x \in A.}$                                                                                                            |
+| ${A \neq B}$                    | If ${x \in A,}$ then ${x \notin B,}$ and if ${x \in B,}$ then ${x \notin A.}$                                                                                                      |
+| ${A \subseteq B}$               | ${A \subset B}$ or ${A = B.}$                                                                                                                                                      |
+| ${\abs{A}}$                     | The number of elements of ${A.}$                                                                                                                                                   |
+| ${\abs{B}}$                     | The number of elements of ${B.}$                                                                                                                                                   |
+| ${f: A \leftrightsquigarrow B}$ | A set ${f,}$ whose elements are pairs ${(a,b),}$ where ${a \in A}$ and ${b \in B,}$ such that ${(a,b)}$ satisfies a condition ${C.}$ We call this set a _relation_.                |
+| ${f: A \mapsto B}$              | A relation ${f,}$ where the condition ${C}$ is: For all ${a \in A}$ and for all ${b_1,b_2 \in B,}$ if ${(a,b_1) \in f,}$ then ${(a,b_2) \notin f.}$ We call this set a _function_. |
+| ${f: A \inj B}$                 | A function ${f}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _at most once_. We call this set an _injection_.                          |
+| ${f: A \surj B}$                | A function ${f,}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _at least once_. We call this set a _surjection_.                        |
+| ${f: A \bij B}$                 | A function ${f,}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _exactly once_. We call this set a _bijection_.                          |
+| ${\ar{a \le i \le b : P(x_i)}}$ | The sequence ${(x_a, \ldots, x_b)}$ where each ${x_i}$ is defined by the expression ${P(x_i).}$                                                                                    |
+| ${\ix{n}}$                      | The sequence ${(0 \le i \lt n : x_i).}$ That is, ${(0,1,2,3,4,\ldots,n-1).}$                                                                                                       |
+
+### Theorems of Set Theory
+Below is a list of several useful theorems from set theory.
+
+| ~reference~        | ~theorem~                                  |
+| ------------------ | ------------------------------------------ |
+| Identity Law 1     | ${A \subseteq U \iff A \cap U = L}$        |
+| Identity Law 2     | ${A \subseteq U \iff A \cap \nil = A}$     |
+| Identity Law 3     | ${A \subseteq U \iff A \dif \nil = A}$     |
+| Identity Law 4     | ${A \subseteq U \iff A \rid \nil = A}$     |
+| Indempotence Law 1 | ${S \cup S = S}$                           |
+| Indempotence Law 2 | ${S \cap S = S}$                           |
+| Nilpotence Law 1   | ${S \dif \nil = \nil}$                     |
+| Nilpotence Law 2   | ${S \rid S = \nil}$                        |
+| Domination Law 1   | ${S \subseteq U \nc S \cup U = U}$         |
+| Domination Law 2   | ${S \subseteq U \nc S \cap \nil = \nil}$   |
+| Domination Law 3   | ${S \subseteq U \nc S \times \nil = \nil}$ |
+| Domination Law 4   | ${S \subseteq U \nc \nil \rid S = \nil}$   |
+
+### Definitions
+
+Below are definitions used extensively throughout the notes.
+
+> __~experiment~.__ An _experiment_ is any procedure that (1) can be repeated, and (2) has a well-defined set of all possible outcomes.
+
+> __~sample space~.__ A _sample space_ is the set of all possible outcomes of an experiment. We denote a sample space with the symbol ${\Omega.}$
+
+~example~. Coin toss: ${\set{H, T}.}$
+
+~example~. Toss a coin twice: ${\set{H, T} \times \set{H, T}.}$ Or, more explicitly, the set of tuples ${\set{(H,H)~(H,T)~(T,H)~(T,T)}.}$
+
+~example~. Roll a die: ${\set{1,2,3,4,5,6}.}$
+
+~example~. Roll two dice: ${\set{1,2,3,4,5,6} \times \set{1,2,3,4,5,6}.}$
 
-## Sample Space
+~example~. Timing Olympic runners: ${\oio{a}{b}}$ (some open interval). The previous examples are instances of _discrete sample spaces_. This is an example of _continuous sample space_. In all experiments (especially this one), we must get the sample space right. Missing just one outcome will almost always result in a bogus analysis.
 
-A _sample space_ is a set of possible outcomes. We can think of it as a list
-of events: heads, tails, rolling a four with a dice, picking the queen of
-hearts, a stock increasing in value, a car crashing into another. Sample spaces,
-however, are a special set of outcomes because of two key properties:
+~example~. Selecting a ${1024 \times 1024}$ black and white image: ${\abs{S}=1024\times 1024 \times 256}$ (assuming 1 byte per pixel). Discrete does not mean "small" or "easier."
 
-1. Its members are _mutually exclusive_. That is, if we pull one thing out of
-   the set, we won't also pull another thing out. Put in probability terms, if
-   one event occurs, we can rest assured that another event in the set won't
-   occur. For example, if we flip heads, we won't also flip tails.
-2. It is _collectively exhaustive_ — it contains all the possible outcomes of an
-   experiment. For example, if the experiment is flipping a coin, then the
-   sample space ${\set{\tt{heads}, \tt{tails}}}$ is collectively exhaustive.
+> __~event~.__ A subset of the sample space — ergo an outcome set — is called an _event_. By definition, we say that the result of an experiment is an _event_. We denote events in uppercase Latin letters.
 
-Consider rolling a tetrahedral die twice. The sample space can be viewed as:
+~example~. Rolling an even number on a die. The sample space is ${\set{1,2,3,4,5,6},}$ the event is ${\set{2,4,6}.}$
 
-<CartProd x={[1,2,3,4]} y={[1,2,3,4]}/>
+~example~. Rolling a ${-1}$ on a die. The sample space is ${\set{1,2,3,4,5,6},}$ the event is ${\nil.}$
 
-Above, we have a sample space of size 16. This is an example of a _discrete
-sample space_ — a sample space of finite size. Some samples, however, are
-_continuous sample spaces_ — sample spaces of infinite size. For example,
-the set of all points on a dart board:
+> __~simple event~.__ An event comprising just one outcome is called a _simple event_.
 
-<Plot2 geo={[{type:"circle",xy: [0,0], r:1, class:"blueCircle"}]} scale={70}
-domain={[-2,2]} />
+Simple events are also called _samples_, _sample points_, or _points_.
 
-Ther are infinitely many points on this dart board. Because of its infinite
-nature, we often express such sample spaces by writing:
+> __~compound event~.__ An event comprising two or more outcomes is called a _compound event_.
 
-$$
-	\Omega = \set{ (x,y) | x^2 + y^2 = 1 }
-$$
-
-This idea — assigning probabilities to events rather than outcomes — applies to
-discrete sample spaces. For example, if the experiment is flipping a coin and
-the sample space consists of only heads or tails, what we are really assigning
-probabilities to is a sample space that looks like:
-
-$$
-	\set{ \set{\tt{heads}},\set{\tt{tails}} }
-$$
-
-That is, a sample space where the events are singletons — sets with only one
-element.
-
-## Axioms of Probability
-
-There's a distinction between _events_ and _outcomes_. As we saw, a sample space
-is a set of possible outcomes. An __event__ is a subset of the sample space. We
-assign probabilities to _events_, not outcomes. Why? Because of sample spaces
-can be infinite sets. Consider the dart board example. What is the probability
-that, if we threw a dart, it would land at some point ${(x,y)?}$ The answer is
-zero. No matter how hard we tried, it would always land at some point
-
-$$
-	(x.000 \ldots 001, y. 000 \ldots 0001)
-$$
-
-because there are infinitely many points! Obviously, we do not want to say zero
-every time someone asks for a probability. We avoid this problem by assigning
-probabilities to subsets rather than individual outcomes. Thus, given a sample
-space ${\Omega,}$ what we're interested is not some outcome ${x}$ in
-${\Omega,}$ but a set of outcomes ${E}$ in ${\Omega:}$
-
-<Plot2
-	geo={[
-		{type: "rectangle",
-			xy: [0, 0],
-			w: 20,
-			h: 12,
-			class: "yellowRectangle"},
-		{ type: "circle", xy: [0, 0], r: 5, class: "blueCircle" },
-		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
-		{ type: "label", id: "E", xy: [-0.5, 1], fontSize: 2 },
-	]}
- marginTop={0}
- marginBottom={0}
- noAxes={true}
- scale={40}
- id={"event"}
-/>
-
-If we get an outcome inside ${E,}$ we say that ${E}$ _occurred_. If we don't get
-an oucome inside ${E,}$ we say that ${E}$ _did not occur_. 
-
-We can now lay some ground rules about assigning probabilities:
-
-1. A _probability_ ${\P}$ must be a real number between ${0}$ and ${1}$
-   inclusive: ${\set{\P \in \RR | 0 \lte \P \lte 1}.}$
-2. If we assign an event ${E}$ the probability ${\P=0,}$ then we are expressing
-   the notion: "I am certain ${E}$ _will not_ occur."
-3. If we assign an event ${E}$ the probability ${\P=1,}$ then we are expressing
-   the notion: "I am certain ${E}$ _will_ occur."
-
-Moreover, there are three axioms that every probability model must obey
-(which in turn means we can rely on these facts when interpreting the models):
-
-<dfn>
-
-__Nonnegativity Axiom of Probability.__ Let ${\P(A)}$ be the probability
-assigned to some event ${A.}$ Then ${\P}$ is nonnegative.
-
-$$
-	\P(A) \gte 0
-$$
-
-</dfn>
-
-<dfn>
-
-__Normalization Axiom of Probability.__ Let ${\P(\Omega)}$ be the probability of
-some sample space ${\Omega.}$ Then:
-
-$$
-	\P(\Omega) = 1
-$$
-
-</dfn>
-
-<dfn>
-
-__Additivity Axiom of Probability.__ Let ${\P(A)}$ be the probability of some
-event ${A,}$ and ${\P(B)}$ be the probability of some event ${B.}$ Then:
-
-$$
-	(A \cap B = \nil) \implies \P(A \cup B) = \P(A) + \P(B)
-$$
-
-</dfn>
-
-Let's briefly think about the additivity axiom. Whenever we see the notation:
-
-$$
-	A \cap B
-$$
-
-in the context of probability, we read it as: "${A}$ occurs _and_ ${B}$ occurs."
-Visually, this refers to the outcomes within the intersection of ${A}$ and
-${B:}$
-
-<Plot2
-	geo={[
-		{type: "rectangle",
-			xy: [0, 0],
-			w: 20,
-			h: 12,
-			class: "yellowRectangle"},
-		{ type: "circle", xy: [-2, 0], r: 5, class: "blueCircle" },
-		{ type: "circle", xy: [2, 0], r: 5, class: "redCircle" },
-		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
-		{ type: "label", id: "A \\cap B", xy: [-1.5, 1], fontSize: 1.5 },
-		{ type: "label", id: "A", xy: [-6, 2], fontSize: 1.5 },
-		{ type: "label", id: "B", xy: [5, 2], fontSize: 1.5 },
-	]}
- marginTop={0}
- marginBottom={0}
- noAxes={true}
- scale={40}
- id={"and_event"}
-/>
-
-When we see the notation:
-
-$$
-	A \cup B
-$$
-
-we read it as: "${A}$ occurs, ${B}$ occurs, or both ${A}$ and ${B}$ occur." In
-this case, ${A \cup B}$ refers to all the events within ${A,}$ ${B,}$ and both
-${A}$ and ${B.}$
-
-<Plot2
-	geo={[
-		{type: "rectangle",
-			xy: [0, 0],
-			w: 20,
-			h: 12,
-			class: "yellowRectangle"},
-		{ type: "circle", xy: [-2, 0], r: 5, class: "redCircle" },
-		{ type: "circle", xy: [2, 0], r: 5, class: "redCircle"  },
-		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
-		{ type: "label", id: "A \\cup B", xy: [-1.5, 5.6], fontSize: 1.5 },
-		{ type: "label", id: "A", xy: [-6, 2], fontSize: 1.5 },
-		{ type: "label", id: "B", xy: [5, 2], fontSize: 1.5 },
-	]}
- marginTop={0}
- marginBottom={0}
- noAxes={true}
- scale={40}
- id={"or_event"}
-/>
-
-Next, when we see the notation:
-
-$$
-	A \cap B = \nil
-$$
-
-we read it as: "${A}$ and ${B}$ are mutually exclusive." The notation indicates
-that the events are _disjoint_. Visually, this appears as:
-
-<Plot2
-	geo={[
-		{type: "rectangle",
-			xy: [0, 0],
-			w: 20,
-			h: 12,
-			class: "yellowRectangle"},
-		{ type: "circle", xy: [-5, 0], r: 4.5, class: "blueCircle" },
-		{ type: "circle", xy: [5, 0], r: 4.5, class: "redCircle" },
-		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
-		{ type: "label", id: "A", xy: [-5, 3], fontSize: 1.5 },
-		{ type: "label", id: "B", xy: [4.5, 3], fontSize: 1.5 },
-	]}
- marginTop={0}
- marginBottom={0}
- noAxes={true}
- scale={40}
- id={"xor_event"}
-/>
-
-The additivity axiom tells us that the probability of ${A}$ _or_ ${B}$ occuring
-is the sum of both these probabilities. But what about that rule where a
-probability must be less than or equal to 1? Why isn't that an axiom? That rule
-isn't stated as an axiom because of a common characteristic of mathematics as a
-field: If it doesn't need to be said, don't say it. In this case, the rule
-doesn't need to be said because we can derive it from the three axioms.
-
-From the normalization axiom, we know that ${\P(\Omega) = 1.}$ From the
-partition rule of set theory, we know that:
-
-$$
-	P(\Omega) = \P(A \cup A^{\c}).
-$$
-
-That is, the sample space consists of the set ${A}$ with the complement of ${A}$
-(the set of all things outside of ${A}$ and inside ${\Omega,}$ denoted
-${A^{\c}}$). Then, by the third axiom, we have:
-
-$$
-	\P(A) + \P(A^{\c}) = 1
-$$
-
-Because probabilities are nonnegative real numbers per the nonnegativity axiom,
-we can rewrite this equation as:
-
-$$
-	\P(A) = 1 - \P(A^{\c}).
-$$
-
-And since probabilities are nonnegative (again by the nonnegativity axiom), the
-smallest ${\P(A^{\c})}$ can be is ${0}$ (any smaller and it becomes negative,
-which violates the nonnegativity axiom) and the largest it can be is ${1}$ (any
-larger and ${1-\P(A^{\c})}$ is negative, which also violates the nonnegativity
-axiom). Thus, it follows that: 
-
-$$
-	\P(A) \lte 1
-$$
-
-Because of its derived nature, we can state this as a lemma rather than axiom:
-
-<dfn>
-
-__lemma i.__ Let ${\P(A)}$ be the probability of some event ${A.}$ Then:
+> __~event notations~.__ Given the events ${A}$ and ${B}$ of a sample space ${\Omega,}$ we use the following notations to denote compound events of ${A}$ and ${B:}$
+>
+> | ~notation~      | ~event~               |
+> | --------------- | --------------------- |
+> | ${A \cup B}$    | ${A}$ _or_ ${B}$      |
+> | ${A \cap B}$    | ${A}$ _and_ ${B}$     |
+> | ${\nix{A}}$     | _not_ ${A}$           |
+> | ${A \subset B}$ | ${A}$ _implies_ ${B}$ |
+> | ${A \dup B}$    | ${A}$ _xor_ ${B}$     |
+> | ${\Omega}$      | certainly             |
+> | ${\nil}$        | certainly not         |
 
-$$
-	\P(A) \lte 1
-$$
-
-</dfn>
-
-Using just the three axioms, we can analyze the probabilities of multiple
-events. Suppose we had three disjoint events:
-
-<Plot2
-	geo={[
-		{type: "rectangle",
-			xy: [0, 0],
-			w: 20,
-			h: 12,
-			class: "yellowRectangle"},
-		{ type: "circle", xy: [-6.5, 0], r: 3, class: "blueCircle",id:`A`},
-		{ type: "circle", xy: [0, 0], r: 3, class: "redCircle",id:`B`},
-		{ type: "circle", xy: [6.5, 0], r: 3, class: "purpleCircle",id:`C`},
-		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
-	]}
- marginTop={0}
- marginBottom={0}
- noAxes={true}
- scale={40}
- id={"multi_event"}
-/>
-
-The probability of ${A}$ occurring, ${B}$ occurring, ${C}$ occurring, or all
-three occurring together is written as:
-
-$$
-	\P(A \cup B \cup C)
-$$
-
-The additivity axiom tells us how to determine the probability of two events,
-but how do we deal with three? Well, set theory tells us that the union
-operation is associative. Thus: 
-
-$$
-	\P(A \cup B \cup C) = \P((A \cup B) \cup C)
-$$
-
-Because ${A,}$ ${B,}$ and ${C}$ are disjoint, ${A \cup B}$ and ${C}$ are
-disjoint. Thus, we have:
-
-$$
-	\begin{aligned}
-		 \P(A \cup B \cup C) &= \P(A \cup B) + \P(C) \\
-		 &= \P(A) + \P(B) + \P(C)
-	\end{aligned}
-$$
-
-This yields another useful lemma:
+> __~probability~.__ Let ${E}$ be an event where ${E \subset \Omega.}$ The _probability_ of ${E,}$ denoted ${\pb{E},}$ is a ratio of the cardinality of ${E}$ to the cardinality of ${\Omega.}$ That is,
 
-<dfn>
-
-__lemma ii.__ Let ${E_1, E_2, \ldots, E_n}$ be disjoint events in sequence.
-Then:
-
 $$
-	\P\paren{\bigcup\limits_{i=1}^{n}E_i} = \P(E_1) + \P(E_2) + \ldots \P(E_n)
+	\pb{E} = \frac{\tx{number of outcomes in } E}{\tx{number of outcomes in } \Omega} 
+	= \frac{\abs{E}}{\abs{\Omega}}.
 $$
-
-
-</dfn>
 
-Let's apply these rules we've just derived to the experiment of rolling two
-tetrahedral die:
+> __~probability distribution~.__ A probability distribution ${\texttt{P}}$ is a function that assigns to each event ${E}$ a probability ${\pb{E},}$ such that: (1) ${\pb{E} \ge 0,}$ (2) ${\pb{\Omega}=1,}$ and (3) if ${A \cap B = \nil,}$ then ${\pb{A \cup B}=\pb{A} + \pb{B}.}$
 
-<CartProd x={[1,2,3,4]} y={[1,2,3,4]}/>
-
-We make the assumption that each outcome is equally likely. That is, all
-of the outcomes above (the tuples) have a ${1/16}$ chance of occuring. We will
-revisit this assumption at length later.
-
-1. What is the probability of rolling 1 followed by a 1, or rolling 1 followed
-by a 2? Answer: Applying the additivity law, we have:
-
-$$
-	\begin{aligned}
-		 \P(\set{(x,y) | \set{x=1},~ y \in \set{1,2}}) &= \P((1,1)) + \P((1,2)) \\
-		 &= 1/16 + 1/16 \\
-		 &= 2/16 \\
-		 &= 1/8
-	\end{aligned}
-$$
+It's helpful to think of probabilities as physical weights (in a classical sense). The universe (sample space) has a weight (probability). The universe also contains objects (events) which also have a weight (probability). The objects are comprised of atoms (outcomes) which also have a weight (probability).
 
-2. What is the probability of rolling one on the first roll? Here, we're looking
-   for the probability of the set of all outcomes where ${x=1:}$
+~example~. What is the probability of rolling a 1 on a six-sided die? The sample space is ${\set{1,2,3,4,5,6}.}$ The event ${\set{1}}$ has a cardinality of one. Hence, we have ${\pb{1} = 1/6.}$
 
-$$
-		\begin{aligned}
-			\P(\set{x=1}) &= \P((1,1)) + \P((1,2)) + \P((1,3)) + \P((1,4))  \\
-			&= 1/16 + 1/16 + 1/16 + 1/16 \\
-			&= 4/16 \\
-			&= 1/4
-		\end{aligned}
-$$
+~example~. What is the probability of rolling a 1 or 2 on a six-sided die? The sample space is ${\set{1,2,3,4,5,6}.}$ The event ${\set{1,2}}$ has a cardinality of 2. Hence, we have ${\pb{1,2} = 2/6 = 1/3.}$
 
+~remark on percentages~. Generally, we express probabilities in terms of rational numbers. There isn't anything wrong with using percentages, but it can lead to confusion, given the different contexts in which percentages are used. In some contexts, they're used to denote fractions, in others, measures of change. For example, suppose we're told that ${\pb{A}=40\%,}$ and that an event ${B}$ has a ${25\%}$ higher probability than ${A.}$ Does this mean ${\pb{B}=40\% + (25\% \times 40\%)=50\%,}$ or that ${\pb{B}=25\% + 40\%=65\%?}$ The matter is resolved by making additional statements for clarification, but we don't need to make such statements if we simply used rationals.
 
-3. What is the probability that ${x + y}$ is odd? Here, we use a tiny bit of
-   number theory. The number of odd integers in a given sequence is given by the
-   formula:
-	 
-	$$
-	\C = 
-	\begin{cases}
-		\begin{aligned}
-				&\ceil{\dfrac{a_n - a_1}{2} + 1} &\tt{if}~~~a_n, a_1 \in \tt{even} \\[1em]
-				&\ceil{\dfrac{a_n - a_1}{2}} &\tt{else}
-		\end{aligned}
-	\end{cases}
-	$$
-
-
-	Here, the sequence is ${\seq{1,2,3,4}.}$ Thus, the number of odd integers is:
-
-	$$
-		\ceil{\dfrac{4-1}{2}} = \ceil{1.5} = 2 
-	$$
-
-	Since the natural numbers are well-ordered, the number of even integers is
-	simpl ${n-\C,}$ where ${n}$ is the number of terms.  Next, odd integers are
-	integers of the form ${2k + 1,}$ and even integers are integers of the form
-	${2k,}$ where ${k \in \NN.}$ Thus, to roll an odd integer, we must roll an odd
-	and an even. Therefore, we have:
-
-	$$
-		\begin{aligned}
-			 \P(\set{(x,y) | x+y \in \OO}) &= \P(\set{x \in \OO, y \in \EE}) +
-			 \P(\set{x \in \EE, y \in \OO}) \\
-			 &= (2/16 + 2/16) + (2/16 + 2/16) \\
-			 &= 4/16 + 4/16 \\
-			 &= 8/16
-		\end{aligned}
-	$$
-
-4. What is the probability that the minimum of two rolls is 2? Here, we're asked
-   for the probability of ${\P(\min(x,y)=2).}$ Here, it's helpful to think about
-   the cases where the minimum is 2: (a) When ${x=2}$ and ${y=2,}$ (b) when
-   ${y=2}$ and ${x \gtn y,}$ and (c) when ${x=2}$ and ${y \gtn x.}$ For case
-   ${a,}$ we only have outcome, so our first term is:
+## Combinatorial Analysis
+Combinatorics is a branch of mathematics distinct from probability, and contrary to popular belief, underlies a small subset of probability theory. Much of modern probability theory is instead built atop _measure theory_, the branch of mathematics from which integral calculus and geometry shoot. We cover only the basic combinatorial theorems necessary for the _combinatorial analyses_ of probability theory. We will also present the theorems without proof, as the proofs may be found in the [~note on combinatorics~](./../combinatorics/counting).
 
-$$
-	\P(\min(x,y)=2) = 1/16
-$$
+### Cardinality
+An alternative name for combinatorics is _finite set theory_ — it is the study of finite sets, with a particular emphasis on the cardinalities of finite sets.
 
-	 For case (b), we have two: ${(3,2)}$ and ${(4,2).}$ This gives us the next
-	 two terms:
+> __~definition~.__ Given the sets ${A}$ and ${B,}$ we say that ${A}$ is _equipotent_ to ${B}$ if there exists a bijection from ${A}$ to ${B.}$ If ${A}$ and ${B}$ are equipotent, we write ${A \seteq B.}$
 
-$$
-	\P(\min(x,y)=2) = 1/16 + 1/16 + 1/16
-$$
+> __~definition~.__ Given the non-empty set ${A,}$ we say that ${A}$ is _countably infinite_ if, and only if, ${A \seteq B.}$
 
-	And for case (c), we have two again: ${(2,3)}$ and ${(2,4):}$
+> __~definition~.__ Given the non-empty set ${A,}$ if ${A}$ is neither countably infinite nor countably finite, then we say that ${A}$ is _uncountably infinite_, and write ${\abs{A}=\infty.}$
 
-$$
-	\P(\min(x,y)=2) = 1/16 + 1/16 + 1/16 + 1/16 + 1/16
-$$
+> __~definition~.__ Given the set ${A,}$ we say that ${A}$ is _countably finite_ if, and only if, ${A \seteq \ix{n}}$ or ${A \seteq \nil.}$ If ${A \seteq \ix{n},}$ we write ${\abs{A} = n.}$ If ${A \seteq \nil,}$ we write ${\abs{A}=0.}$
 
-	Therefore:
+> __~properties of cardinality~.__ Let ${A}$ and ${B}$ be countably finite sets. The following properties hold for ${A.}$
+>
+> (1) ${A \seteq A.}$
+> 
+> (2) If ${A \seteq B,}$ then ${B \seteq A.}$
+> 
+> (3) If ${A \seteq B}$ and ${B \seteq C,}$ then ${A \seteq C.}$
 
-$$
-	\P(\min(x,y)=2) = 5/16
-$$
+The definitions above evidence a preliminary task that's not often mentioned in combinatorics materials: Before we even deal with the cardinality of sets, we must first establish that the sets in question are actually finite.
 
-## The Discrete Uniform Law
+### Disjoint Sum Rule
+> __~theorem~.__ Let ${A}$ be a set of disjoint finite sets ${A_1, A_2, \ldots A_n.}$ It follows that
+> 
+> $$
+> 	\abs{A} = \abs{A_1 \dup A_2 \dup \ldots \dup A_n} = \left\vert{\bigsqcup_{i=1}^{n}A_i}\right\vert = \dsum{i=1}{n}\abs{A_i}= \abs{A_1} + \abs{A_2} + \ldots + \abs{A_n}.
+> $$
 
-In the previous questions, we made the assumption that all the outcomes are
-equally likely. Put formally, by making that assumption, we rely on the premise
-that the sample space obeys the _Discrete Uniform Law._
+### Complementary Rule
+> __~theorem~.__ Let ${U}$ be a countably finite set, and let ${A \subseteq U.}$ It follows that:
+> 
+> $$
+> 	\abs{\nix{A}} = \abs{U} - \abs{A}.
+> $$
 
-<dfn>
+### Symmetry Rule 
+> __~theorem~.__ Let ${U}$ be a countably finite set. If ${A \subseteq U,}$ ${B \subseteq U,}$ ${C \subseteq U,}$ and ${\abs{A} = \abs{B},}$ then
+> 
+> $$
+> 	\abs{A} = \dfrac{\abs{U}-\abs{C}}{2}.
+> $$
 
-__discrete uniform law.__ Let ${A}$ be an event within the sample space ${\Omega}$. If all the outcomes of ${A}$
-are equally likely, then:
+Visually, this rule results from the following. Suppose ${U}$ is a countably finite set partitioned into the sets ${A,B,C,}$ with ${\abs{A}=\abs{B}:}$
 
 $$
-	\P(A) = \dfrac{\card(A)}{\card(\Omega)}
+	^{\normalsize U}~{\wd{A}\wd{~~C~~}\wd{B}}
 $$
-
-</dfn>
-
-That is, the probability of ${A}$ is the number of elements of ${A}$ divided by
-the number of elements of the sample space. If we assume that all outcomes are
-equally likely (i.e., the discrete uniform law applies), then computing
-probabilities reduces to counting. Of course, that doesn't make the computation any
-easier. In later sections, we'll see that counting can get hairy very quickly —
-it's why there's an entirely separate mathematical field devoted to it, _combinatorics_.
-
-## Continuous Uniform Law
-
-For continous sample spaces, we apply the _Continuous Uniform Law._ An explicit
-statement of this law requires a little more background information, so we'll
-delay this task to a later section. For now, we'll simply describe it:
 
-<dfn>
+The cardinality of ${A}$ (or ${B}$) can be determined by constructing a set without ${C,}$ counting all its elements, and dividing by 2.
 
-Given an event ${x,}$ the probability of ${x}$ occurring is the area of ${x.}$
-
-</dfn>
-
-
-For example, suppose we had the following plane:
-
-<Fig
-link={"https://res.cloudinary.com/sublimis/image/upload/v1662836342/math/cul_cmljfd.svg"}
-imwidth={"280"} imheight={"253"} caption={"board"} width={"50"} />
-
-What is the probability of landing at some point ${(x,y)}$ such that ${x + y
-\lte 1/2?}$ Well, it's simply the area beneath the curve ${x + y = 1/2.}$ Or, in
-perhaps more familiar notation:
-
 $$
-	y = \dfrac{1}{2} - x
+	^{\normalsize U}~{\wd{A}{\sd{~~\no{C}~~}}\wd{B}}
 $$
-
-This area is simply the integral:
-
-<Grid cols={2}>
 
+### Pigeonhole Principle
+__~theorem~.__ Let ${P}$ and ${H}$ be countably finite sets, and let ${f: P \mapsto H.}$ If ${\abs{P} \gt \abs{H},}$ then at least one ${h \in H}$ is mapped to _twice_. That is, ${f}$ is _not injective_.
 
-$$
-	\small
-	\begin{aligned}
-			\P(x+y \lte 1/2) &= \int_{0}^{1/2} \dfrac{1}{2} - x~dx \\[1em]
-			&= \int_{0}^{1/2} \dfrac{1}{2}~dx + \int_{0}^{1/2} x~dx \\[1em]
-			&= \paren{\left. \dfrac{1}{2}x + C \right \vert_{0}^{1/2}} - \paren{\left. \dfrac{x^2}{2} + C \right \vert_{0}^{1/2}} \\[1em]
-			&= \dfrac{1}{4} - \dfrac{1}{8} \\[1em]
-			&= \dfrac{1}{8}
-	\end{aligned}
-$$
+__~theorem~.__ Let ${P}$ and ${H}$ be countably finite sets, and let ${f: P \mapsto H.}$ If ${\abs{P} \lt \abs{H},}$ then at least one ${h \in H}$ is _not mapped to_. That is, ${f}$ is _not surjective_.
 
-<Plot data={[
-	{f: (x) => 0.5-x, integrate:[0,0.5,'x']}
-]}
-domain={[0,1.5]}
-range={[0,1.5]}
-/>
+### Enumerating Pairs
+> __~theorem~.__ Given ${n}$ elements ${\set{x_1,\ldots,x_n}}$ and ${m}$ elements ${\set{y_1,\ldots,y_n},}$ there are ${n \times m}$ _pairs_ of the form ${(x_j,y_k).}$ That is, tuples containing exactly one unique element from each type.
 
-</Grid>
+~example~. Suppose ${A = \set{1,2,3}}$ and ${B = \set{a,b,c}.}$ We have the pairs:
 
-Of course, we could have just calculated the area using the triangle area
-formula:
-
 $$
-	\begin{aligned}
-		\P (x + y \lte 1/2) &= \dfrac{(1/2) \cdot (1/2)}{2} \\[1em]
-		&= \dfrac{(1/4)}{2} \\[1em]
-		&= \dfrac{1}{8}
-	\end{aligned}
+	\lset{\ax{
+		(1,a) & (2,a) & (3,a) \\
+		(1,b) & (2,b) & (3,b) \\
+		(1,c) & (2,c) & (3,c) \\
+	}}
 $$
-
-We demonstrate the calculus approach because in the real world, most continuous
-sample spaces have far more complicated shapes that require us to apply
-calculus, and for the thorniest problems, real analysis.
 
-Computing probabilities, however, is an entirely separate exercise from building
-and interpreting the arguments that those computations must support. Sometimes
-it's geometry, sometimes it's calculus, and occassionally it's real and complex
-analysis. For the remaining sections, this author will assume that the reader
-has some background in these areas. 
+### Enumerating Multiplets
+> __~theorem~.__ Given ${n_1}$ elements ${\set{a_1, \ldots, a_{n_1}},}$ and ${n_2}$ elements ${\set{b_1, \ldots, b_{n_2}},}$ etc., up to ${n_r}$ elements ${\set{x_1, \ldots, x_{n_r}},}$ there are ${n_1 \times n_2 \times \ldots \times n_r}$ _multiplets_ of the form ${(a_{j_1}, b_{j_1}, \ldots, x_{j_r}).}$ That is, tuples containing ${r}$ unique elements from each type.
 
-### Nuances to the Axiom of Additivity
+This is merely a generalization of the previous theorem. Pairs have an _arity_ of two: ${A \times B.}$ Multiplets have an arity of ${r:}$ ${S_1 \times S_2 \times \ldots \times S_r.}$
 
-The previous discussion on continuous sample spaces raises a subtle point about
-the axiom of additivity. Earlier, we saw the following lemma:
+### Three Possible Cases of Orderings
+> __~definition: generic ordering~.__ Let ${A}$ be the set ${\set{a_1,\ldots,a_n},}$ let ${B}$ be the set ${\set{b_1,\ldots,b_n},}$ and let ${f \subset A \times B.}$ If ${(a_i, b_k) \in f}$ and ${(a_j,b_k) \in f,}$ then we say that ${f}$ is a _generic ordering_, or _sampling with replacement_. That is, after an element ${b_k}$ has been mapped to by an element ${a_i,}$ another element ${a_j \neq a_i}$ _may_ map to ${b_k.}$ 
 
-$$
-	\P\paren{\bigcup\limits_{i=1}^{n}E_i} = \P(E_1) + \P(E_2) + \ldots \P(E_n)
-$$
+> __~definition: injective ordering~.__ Let ${A}$ be the set ${\set{a_1,\ldots,a_n},}$ let ${B}$ be the set ${\set{b_1,\ldots,b_n},}$ and let ${f \subset A \times B}$ be a mapping from ${A}$ to ${B.}$ If every element of ${B}$ is mapped to _at most once_, then ${f}$ is an _injective ordering_, or _sampling without replacement_.
 
-Let's suppose our sample space is the unit square, as used in the previous
-section:
-
-<Fig
-link={"https://res.cloudinary.com/sublimis/image/upload/v1662836342/math/cul_cmljfd.svg"}
-imwidth={"280"} imheight={"253"} caption={"board"} width={"50"} />
-
-Suppose we were interested in the probability of some part of this square:
-
-<Plot2
-	geo={[
-		{type: "rectangle",
-			xy: [0, 0],
-			w: 10,
-			h: 10,
-			class: "yellowRectangle"},
-		{ type: "circle", xy: [0,0], r: 2, class: "blueCircle", id:`A`},
-		{ type: "label", id: "1", xy: [-6, 6.4], fontSize: 2 },
-		{ type: "label", id: "1", xy: [5, -5], fontSize: 2 },
-		{ type: "label", id: "0", xy: [-6, -5], fontSize: 2 },
-	]}
- marginTop={0}
- marginBottom={0}
- scale={40}
- noAxes={true}
- id={"us"}
-/>
-
-Intuitively, we can think of this square as being comprised of infinitely many points. Building on this intuition, we can infer that the area of the square, in total, is:
+> __~definition: surjective ordering~.__ Let ${A}$ be the set ${\set{a_1,\ldots,a_n},}$ let ${B}$ be the set ${\set{b_1,\ldots,b_n},}$ and let ${f \subset A \times B}$ be a mapping from ${A}$ to ${B.}$ If every element of ${B}$ is mapped to _at least once_, then ${f}$ is a _surjective ordering_, or _total sampling with replacement_.
 
-$$
-	\A = \bigcup\limits_{x,y}~\set{(x,y)}
-$$
+> __~definition: bijective ordering~.__ Let ${A}$ be the set ${\set{a_1,\ldots,a_n},}$ let ${B}$ be the set ${\set{b_1,\ldots,b_n},}$ and let ${f \subset A \times B}$ be a mapping from ${A}$ to ${B.}$ If every element of ${B}$ is mapped to _exactly once_, then ${f}$ is a _bijective ordering_, or _total sampling without replacement_.
 
-Next, we know that the total probability of ${\A}$ is ${1,}$ and it's the sum of
-all the elements ${(x,y):}$
+### Enumerating Bijective Orderings
+> __~theorem~.__  Given ${n}$ elements, there are ${n! = n(n-1)(n-2)\ldots(2)(1)}$ possible bijective orderings.
 
-$$
-	\P(\A) = 1 = \sum_{x,y} \P(\set{(x,y)})
-$$
+~example~. How many ways are there to order the elements of ${\set{0,1}?}$ There are ${2! = 2}$ ways: ${(0,1)}$ and ${(1,0).}$
 
-But now we have a problem. The area of just a single point ${(x,y)}$ is 0. So we
-have:
+~example~. How many ways are there to order the outcomes ${\set{a,b,c}?}$ There are ${3! = 6}$ ways:
 
-$$
-	\P(\A) = 1 = \sum_{x,y} \P(\set{(x,y)}) = 0 + 0 + \ldots + 0 = 0
-$$
+<div className={`TableMatrix`}>
+| position | 0     | 1     | 2     |
+| -------- | ----- | ----- | ----- |
+|          | ${a}$ | ${b}$ | ${c}$ |
+|          | ${a}$ | ${c}$ | ${b}$ |
+|          | ${b}$ | ${a}$ | ${c}$ |
+|          | ${b}$ | ${c}$ | ${a}$ |
+|          | ${c}$ | ${a}$ | ${b}$ |
+|          | ${c}$ | ${b}$ | ${a}$ |
+</div>
 
-We've just concluded that ${1 = 0.}$ What went wrong? The culprit is the implicit equality we made:
+Orders are merely _bijections_ from a set of natural numbers to a set of objects. Thus, each of the orders above are distinct sets of tuples.
 
 $$
-	\bigcup\limits_{x,y}~\set{(x,y)} = \sum_{x,y} \P(\set{(x,y)})
+	P_1=\lset{(0,a)~~(1,b)~~(2,c)} \\
+	P_2=\lset{(0,a)~~(1,c)~~(2,b)} \\
+	P_3=\lset{(0,b)~~(1,a)~~(2,c)} \\
+	P_4=\lset{(0,b)~~(1,c)~~(2,a)} \\
+	P_5=\lset{(0,c)~~(1,a)~~(2,b)} \\
+	P_6=\lset{(0,c)~~(1,b)~~(2,a)} \\
 $$
 
-We missed a very subtle part of the lemma: _in sequence_. The union:
+Each set ${P_i}$ is a mathematical object called a _permutation_, and more generally, a type of _strict ordering_. The term strict comes from the fact that (1) once a given element of the base set ${\set{a,b,c}}$ has been mapped to, it cannot be mapped to again, and (2) every element of the set ${\set{a,b,c}}$ is mapped to at least once. For example, we will never have a set ${\set{(0,a), (1,a), (2,a)}.}$ Orderings free from these two conditions are called _weak orderings_. This brings us to the notion of sampling with and without replacement.
 
-$$
-	\bigcup\limits_{x,y}~\set{(x,y)}
-$$
+### Enumerating Injective Orderings
+> __~theorem~.__ Let ${A = \set{a_1, a_2, \ldots, a_n},}$ let ${B = \set{b_1, b_2 \ldots, b_m},}$ and let ${\ix{A \inj B}}$ be the set of all possible injections from ${A}$ to ${B.}$ It follows that
+> 
+> $$
+> 	\abs{\ix{A \inj B}} = \dfrac{m!}{(m-n)!} ~~~~~\tx{provided}~~ (n \le m).
+> $$
+> 
+> If ${m \lt n,}$ then ${\ix{A \inj B} = \nil.}$
 
-will never exhaust the entire unit square. The unit square is an uncountable
-set; it has far more elements than any sequence could have. From this caveat,
-let's rewrite our lemma as a cautionary measure:
+### Enumerating Surjective Orderings
+> __~theorem~.__ Let ${A = \set{a_1, a_2, \ldots, a_n},}$ let ${B = \set{b_1, b_2 \ldots, b_m},}$ and let ${\ix{A \surj B}}$ be the set of all possible surjections from ${A}$ to ${B.}$ It follows that
+> 
+> $$
+> 	\abs{\ix{A \surj B}} = \dsum{i=0}{n}(-1)^i \dbinom{n}{i}(n-i)^m ~~~~~\tx{provided}~~ (n \le m).
+> $$
+> 
+> If ${m \lt n,}$ then ${\ix{A \surj B} = \nil.}$
 
-<dfn>
 
-__lemma ii.__ Let ${E_1, E_2, \ldots, E_n}$ be disjoint events in sequence.
-Then:
+## "Impossibilities"
+> __~theorem~.__ ${\pb{\nil}=0.}$
+> 
+> ~proof~. Set theory tells us that ${\Omega \cup \nil = \Omega,}$ and that ${\Omega \cap \nil = \nil.}$ Hence, ${\pb{\nil} + \pb{\Omega}=\pb{\Omega}.}$ That is, ${\pb{\nil} + 1 = 1.}$
 
-$$
-	\P\paren{\bigsqcup\limits_{i=1}^{n}E_i} = \P(E_1) + \P(E_2) + \ldots \P(E_n)
-$$
+## Nonnegativity of Probability
+> __~theorem~.__ ${\pb{A} \le 1}$ for all ${A \subseteq \Omega.}$
+>
+> ~proof~. Every event ${A}$ has a complete with ${\pb{\nix{A}} \ge 0.}$ It follows that ${\pb{A}=1-\pb{\nix{A}} \le 1.}$
 
+## Probability of Not-Events
+> __~theorem~.__ ${\pb{\nix{A}}=1-\pb{A}.}$
+>
+> ~proof~. ${A \cap \nix{A}=\nil}$ and ${A \cup \nix{A}=\Omega.}$ Therefore, ${\pb{\Omega}=\pb{A}+\pb{\nix{A}}=1.}$ Hence, ${\pb{\nix{A}}=1-\pb{A}.}$
 
-</dfn>
+## Probability of Or-Events
+> __~theorem~.__ Let ${A}$ and ${B}$ be events of a sample ${\Omega.}$ The probability of _${A}$ or ${B}$ occurring_, denoted ${A \cup B,}$ is given by
+> 
+> $$
+> 	\pb{A \cup B} = \pb{A} + \pb{B} - \pb{A \cap B}.
+> $$

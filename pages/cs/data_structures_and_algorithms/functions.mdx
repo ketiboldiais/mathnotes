@@ -11,8 +11,8 @@
 >   reason about what the code is doing.
 
 In the simplest terms, a function is a piece of code that performs a
-specific task. It takes inputs, called **arguments**, and returns an
-output, called a **return value**. There are many ways to think about
+specific task. It takes inputs, called __arguments__, and returns an
+output, called a __return value__. There are many ways to think about
 functions. For now, we can think of functions as ways to _modularize_ our
 code. If we have a particular computation that must be performed over and
 over again, that computation would be best capsulated as a function. For
@@ -93,9 +93,9 @@ void printIntArr(int arr[], int length) { for (int i = 0; i < length; i++)
 ```
 
 Erring on the side of functions when writing code is a hallmark of the
-programming paradigm **functional programming**. The benefits of functional
+programming paradigm __functional programming__. The benefits of functional
 programming is modularized code, and it is the exact opposite of
-**monolithic programming** &mdash; writing all of our code in a single
+__monolithic programming__ &mdash; writing all of our code in a single
 area, such as `main()`. If we wrote all of our code in `main()`, then we
 take on several risks. First, suppose our program spanned several thousand
 lies (not at all unusual). If we so happen to encounter a bug, we would
@@ -149,7 +149,7 @@ int main() {
 Most programmers, however, do not like having these implementations before
 the `main()` function. The `main()` function is where all of the primary
 source code lies, so we usually want to see that as soon as possible. To do
-so, we include **function prototypes** before `main()`. This prototype
+so, we include __function prototypes__ before `main()`. This prototype
 serves as sort of a "heads up" to the compiler about an upcoming function.
 It takes the form:
 
@@ -181,7 +181,7 @@ double circleArea(double r) {
 Obviously, a program can have numerous functions, in which case we might
 have hundreds, if not thousands, of function protoypes. This is when we
 start writing functions in separate files, and `include` them in our
-primary source code file. These files are called **header files**, and we
+primary source code file. These files are called __header files__, and we
 discuss them in more detail in a later section.
 
 Some functions do not explicitly return a value. What is the return type
@@ -227,7 +227,7 @@ function must always be defined before it is called.
 
 In the code above, the `average()` function is called the **callee
 function** &mdash; it is the function that is called. The `main()` function
-is called the **caller function** &mdash; the function that calls.
+is called the __caller function__ &mdash; the function that calls.
 
 In the function `average()`, we have `double a` and `double b`. These are
 the _parameters_ of `average()`. The variables `a` and `b` exist only

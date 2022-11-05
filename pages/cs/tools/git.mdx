@@ -11,24 +11,24 @@ control system.
 But what exactly does Git do? What do we get out of using Git? Several
 things:
 
-1. **Track changes across multiple files**. Made a change to a file but do
+1. __Track changes across multiple files__. Made a change to a file but do
    not know what change you made? Git allows you to see all of the changes
    you've made for you to see.
-2. **Compare versions of a project**. Projects change over time. They can
+2. __Compare versions of a project__. Projects change over time. They can
    multiple different versions, particularly when we have multiple people
    working on the same project. Git allows us to compare those versions.
-3. **"Time travel" to older versions of a file or project**. Project and
+3. __"Time travel" to older versions of a file or project__. Project and
    file versions do not just vary across groups. They also vary across
    time. Git allows us to look at older versions.
-4. **Revert to a previous version**. We've made a version of a project or
+4. __Revert to a previous version__. We've made a version of a project or
    file, and we've worked for a very long time on it. After looking at the
    route we took, we realize, this was not a very good idea in the first
    place. Git allows us to go back to the previous version.
-5. **Collaborate and share changes**. Large projects require multiple
+5. __Collaborate and share changes__. Large projects require multiple
    hands. But, we need a way to make sure we're all on the same page, and
    to make sure that our changes don't conflict. Git ensures that
    everything is kept in order, while allowing us to share and collaborate.
-6. **Combine changes**. We've made changes, and our other team members have
+6. __Combine changes__. We've made changes, and our other team members have
    made changes. We both look at what we've done, and we like them. Git
    makes it easy for us to take the next step&mdash;merging the changes.
 
@@ -49,13 +49,13 @@ file and make another branch. And if that branch works, we can merge
 changes. This may seem abstract at the moment, but it will become clearer
 in the sections on branching and merging.
 
-**Git** is a version control system that runs locally on our machines.
+__Git__ is a version control system that runs locally on our machines.
 I.e., it's a program that runs just like any other program that runs in our
 computer, be it Word or Garageband. We do not need to register an account
 to use Git, nor do we need an internet connection. We can use Git without
 ever touching Github.
 
-**Github**. is a service that hosts Git repositories ("repos") in the cloud
+__Github__. is a service that hosts Git repositories ("repos") in the cloud
 and makes it easier to collaborate with others. To use Github, we need to
 register an account. In sum, Github is an online service that allows us to
 share our work with others and our future selves.
@@ -418,7 +418,7 @@ All that's left to do is committing the files we've staged.
 
 The git commit command is the command we use to make a commit the files
 we've added to the staging area. Whenever we make a commit, we must include
-a **commit message**&mdash;a brief note that summarizes and describes the
+a __commit message__&mdash;a brief note that summarizes and describes the
 changes and work decided to group together.
 
 For example, for the files we committed above, we should add a commit
@@ -451,7 +451,7 @@ Date:   Sat Aug 21 10:45:29 2021 -0500
 	changes made
 ```
 
-The large string of characters and digits is called a **git hash code**. We
+The large string of characters and digits is called a __git hash code__. We
 will explore this hash code in further detail later, but for now, we can
 think of it as an identification code for a particular commit. We can then
 use that identification code to refer to a particular commit. Because this
@@ -539,7 +539,7 @@ future commits will ignore the files and directories listed in the
 
 ## Branching
 
-Arguably, the most important Git topic is **branching**. Every major
+Arguably, the most important Git topic is __branching__. Every major
 project will inevitably raise branching issues, and as such, we must be
 familiar with it.
 
@@ -575,7 +575,7 @@ nothing to commit, working tree clean
 ```
 
 The branch main is the default branch created when we make a new git repo.
-This is also called the **trunk**. All other branches stem from branch
+This is also called the __trunk__. All other branches stem from branch
 main. From git's perspective, branch main is just like any other branch.
 So, we can create our own branch and treat it as the _master branch_. Many
 developers, however, treat branch main as sort of the &#8220;final
@@ -595,7 +595,7 @@ Particularly, what (HEAD->main) means. What does HEAD mean? The HEAD is a
 pointer referring to the current location in the repository. From HEAD,
 there is a pointer to a particular branch _reference_, in this case, a
 reference to main. More specifically, HEAD points to the last commit on
-branch main. This last reference is called the **tip**.
+branch main. This last reference is called the __tip__.
 
 If we switch to another branch, say a branch named x, then HEAD points to
 the tip of x &mdash; (HEAD->x). If we switch to a branch named y, HEAD then
@@ -618,7 +618,7 @@ git branch
 * main
 ```
 
-The **active branch**&mdash;the branch we are currently on &mdash; is
+The __active branch__&mdash;the branch we are currently on &mdash; is
 denoted by an asterisk \*.
 
 ## Making a New Branch.
@@ -850,7 +850,7 @@ renamed. Once we are on that branch, we use the following syntax to rename:
 ### Fast Forwarded Merge.
 
 When we make changes in a branch ${\alpha}$ and combine them with changes
-made a branch ${\beta}$, we **merge** branches ${\alpha}$ and ${\beta.}$
+made a branch ${\beta}$, we __merge__ branches ${\alpha}$ and ${\beta.}$
 There are two underlying principles for merging: (1) We do not merge
 commits, we merge branches. (2) We always merge to the current HEAD branch.
 These two principles are made apparent in the following discussion. To
@@ -888,7 +888,7 @@ foobar.txt | 5 +++++
 Importantly, merging does not delete a branch. The x_branch still exists,
 and we can still go back to that branch to make changes.
 
-This is the simplest kind of merge, called a **fast-forward merge**. We
+This is the simplest kind of merge, called a __fast-forward merge__. We
 call this a fast foward merge because there was no work done on main. We
 simply continued working on x_branch, then merged it into main (we
 fast-forwarded).
@@ -908,7 +908,7 @@ does not have, and changes in branchx that main does not have. The problem
 in this situation: there is room for conflict. Suppose there are changes
 made on line 10 of foo.txt in branch main, and there are also changes made
 on line 10 of foo.txt in branch branchx. Which change do we keep? This is a
-**conflict**.
+__conflict__.
 
 We will address conflicts in a later section, but for now, assume that
 there is no conflict. If there is no conflict, i.e., neither branchx nor
@@ -1061,7 +1061,7 @@ Next, we have _markers_:
 This tells line tells us that changes to a/bang.txt are indicated with a
 minus sign, and changes made in a/bang.txt are indicated with a plus sign.
 
-Next, we have **chunks**:
+Next, we have __chunks__:
 
 ```bash
 @@ -1,4 +1,6 @@

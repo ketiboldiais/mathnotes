@@ -2,8 +2,8 @@
 
 When functions have parameters without default values, they must be passed
 arguments. In C++, passing arguments into functions can be done in three
-ways: (1) **pass-by-value**, (2) **pass-by-reference**, and (3)
-**pass-by-address**.
+ways: (1) __pass-by-value__, (2) __pass-by-reference__, and (3)
+__pass-by-address__.
 
 ## Pass-by-value
 
@@ -89,7 +89,7 @@ y = 1
 ```
 
 Strange. It didn't perform the swap. Why? Because calling functions the way
-we did above, `swap(a, b)`, is by default **pass-by-value**. In
+we did above, `swap(a, b)`, is by default __pass-by-value__. In
 pass-by-value, the function only receives a{" "} copy of the values passed.
 They are not pass an original. To understand what this implies, recall what
 happens in main memory when we execute a function.
@@ -202,7 +202,7 @@ like how we intended in `swap()`?
 
 ## Pass-by-address
 
-One way to do so is with **pass-by-address**. Pass-by-address is exactly
+One way to do so is with __pass-by-address__. Pass-by-address is exactly
 what it sounds like. Instead of sending copies of the values to a function,
 we send the address of the values:
 
@@ -250,7 +250,7 @@ addresses of `a` and `b` in `main()`.
 Recall that we can think of a _reference_ as a nickname, or pseudonym, for
 a variable. That nickname, or pseudonym, can be passed as an argument to a
 function. Passing references as arguments to a function is called
-**pass-by-reference**. For example, using our code above:
+__pass-by-reference__. For example, using our code above:
 
 ```cpp
 #include <iostream>
@@ -284,7 +284,7 @@ y = 0
 ```
 
 The same result from passing by address is obtained. This is because we
-employed **pass-by-reference**. When `main()` is memory is allocated for
+employed __pass-by-reference__. When `main()` is memory is allocated for
 its variables, as usual. However, the distinction is when the loader
 encounters `swap(a, b)`. The formal parameters of `a` and `b` are `&a` and
 `&b`.

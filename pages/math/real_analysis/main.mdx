@@ -1,11 +1,6 @@
 import {Sequence} from "../../../components/hago/";
 import { Plot } from "../../../components/illus/components/Plot/Plot";
 
-<head>
-	<title>Intro to Real Analysis</title>
-	<description>Introduction to real analysis.</description>
-</head>
-
 # Real Analysis
 
 These notes provide an overview of real analysis.
@@ -20,31 +15,28 @@ These notes provide an overview of real analysis.
 	2. [Product of Limits](#product-of-limits)
 	3. [Quotient of Limits](#quotient-of-limits)
 
-- [Definition: Convergence](#definition-of-convergence) 
-- [Definition: Divergence](#definition-of-divergence)
-
 </div>
 
 ## Sequences
 
 A real sequence is a function that maps natural numbers to real numbers. If
-${0 \in \NN,}$ we write:
+${0 \in \nat,}$ we write:
 
 $$
-   a: \NN \to \RR
+   a: \nat \to \reals
 $$
 
-If ${0 \notin \NN,}$ we write:
+If ${0 \notin \nat,}$ we write:
 
 $$
-   a : \NN_0 \to \RR
+   a : \NN_0 \to \reals
 $$
 
 We may also denote a real sequence by writing any of the following:
 
 $$
    (a_1, a_2, a_3, \ldots, a_n) \\[1em]
-   (a_n)_{n \in \NN} \\[1em]
+   (a_n)_{n \in \nat} \\[1em]
    (a_n)_{n=1}^{\infty} \\[1em]
    (a_n)
 $$
@@ -52,7 +44,7 @@ $$
 We can define sequences by writing a rule of assignment:
 
 $$
- (a_n)_{n \in \NN} = ((-1)^n)_{n \in \NN} = (-1, 1, -1, 1, -1, \ldots)
+ (a_n)_{n \in \nat} = ((-1)^n)_{n \in \nat} = (-1, 1, -1, 1, -1, \ldots)
 $$
 
 We can also plot this sequence:
@@ -62,7 +54,7 @@ We can also plot this sequence:
 Here's another sequence, perhaps more interesting:
 
 $$
- (a_n)_{n \in \NN} = \paren{\dfrac{1}{n}}_{n \in \NN} = \paren{1, \dfrac{1}{2}, \dfrac{1}{3}, \dfrac{1}{4}, \dfrac{1}{5}, \ldots}
+ (a_n)_{n \in \nat} = \ar{\dfrac{1}{n}}_{n \in \nat} = \ar{1, \dfrac{1}{2}, \dfrac{1}{3}, \dfrac{1}{4}, \dfrac{1}{5}, \ldots}
 $$
 
 Here we have a sequence that gets smaller and smaller. In fact, this
@@ -75,14 +67,14 @@ $$
 Of course, not all sequences have this special property:
 
 $$
-   (a_n)_{n \in \NN} = \paren{2^n}_{n \in \NN} = \paren{2,4,8,16,32,64,\ldots}
+   (a_n)_{n \in \nat} = \ar{2^n}_{n \in \nat} = \ar{2,4,8,16,32,64,\ldots}
 $$
 
 Clearly, this sequence just gets bigger and bigger. It's not a _convergent
 sequence_.
 
-> __informal definition.__ A sequence ${(a_n)_{n \in \NN}}$ is called
-> convergent to an ${a \in \RR}$ if the members of ${a_n}$ lie arbitrarily
+> __informal definition.__ A sequence ${(a_n)_{n \in \nat}}$ is called
+> convergent to an ${a \in \reals}$ if the members of ${a_n}$ lie arbitrarily
 > close to ${a}$ eventually.
 
 A good way to get some idea of what this definition means is to think about
@@ -125,8 +117,8 @@ With this intuition, we can now give a more formal definition.
 
 <dfn id={`definition-of-convergence`}>
 
-__convergence.__ A sequence ${a_n}$ is _convergent_ to ${a \in \RR}$ iff for
-${\varepsilon \gtn 0,}$ there exists an ${N \in \NN}$ such that, for all ${n
+__convergence.__ A sequence ${a_n}$ is _convergent_ to ${a \in \reals}$ iff for
+${\varepsilon \gtn 0,}$ there exists an ${N \in \nat}$ such that, for all ${n
 \gte N,}$
 
 $$
@@ -222,8 +214,8 @@ pull an axiom: _The Archimedean Property of Real Numbers._
 
 <dfn>
 
-__archimedean property of real numbers.__ Given any ${x \in \RR^+}$ and ${y \in
-\RR,}$ there exists an ${n \in \Z^+}$ such that:
+__archimedean property of real numbers.__ Given any ${x \in \reals^+}$ and ${y \in
+\reals,}$ there exists an ${n \in \Z^+}$ such that:
 
 $$
  y \ltn nx
@@ -238,7 +230,7 @@ proof's final piece is merely requiring that the reader choose some number:
 
 <dfn>
 
-__proof__. Let ${\varepsilon \gtn 0.}$ Choose an ${N \in \NN}$ such
+__proof__. Let ${\varepsilon \gtn 0.}$ Choose an ${N \in \nat}$ such
 that ${N \cdot \varepsilon \gtn 1.}$ It follows that: For ${n \gte N,}$ we have
 
 $$
@@ -269,7 +261,7 @@ choose. There will always be infinitely many points far from ${a.}$
 Recall our convergence definition's requirements:
 
 1. ${\forall \varepsilon \gtn 0}$
-2. ${\exists N \in \NN}$
+2. ${\exists N \in \nat}$
 3. ${\forall n \gte \N : \abs{a_n - a \ltn \varepsilon}}$
 
 Given these requirements, we want to choose an ${\varepsilon}$ that's small
@@ -291,12 +283,12 @@ which effectively excludes ${-1}$ and ${1.}$ This implies that:
 1. ${\abs{a_N - a} \ltn \varepsilon}$ and
 2. ${\abs{a_{N+1} - a \ltn \varepsilon}}$
 
-Because ${\N \in \NN,}$ we know that one of the indices is even, and the other
+Because ${\N \in \nat,}$ we know that one of the indices is even, and the other
 is odd. This ensures that we always get the outcomes ${-1}$ and ${1:}$
 
 $$
 	\abs{1-a} \ltn \varepsilon  \\
-	\tt{ and } \\
+	\text{ and } \\
 	\abs{(-1)-a} \ltn \varepsilon
 $$
 
@@ -304,7 +296,7 @@ At this point, we've unearthed the contradiction, since ${\varepsilon = 1:}$
 
 $$
 	\abs{1-a} \ltn 1 \\
-	\tt{ and } \\
+	\text{ and } \\
 	\abs{(-1)-a} \ltn 1
 $$
 
@@ -359,7 +351,7 @@ Let's break this definition down to a procedure:
 
 1. Input:
 	1. ${a_n}$ - A sequence
-	2. ${c \in \RR}$
+	2. ${c \in \reals}$
 2. For ${i = 0}$ to ${i = n}$
 	1. If ${\abs{a_i} \gtn c,}$ return "${a_n}$ is unbounded"
 3. Return "${a_n}$ is bounded"
@@ -381,20 +373,20 @@ Importantly, the fact that a sequence converges implies that it is bounded _but
 not the other way around._ 
 
 $$
-	\tt{convergence} \implies \tt{boundedness}
+	\text{convergence} \nc \text{boundedness}
 $$
 
 This leads to a further inference:
 
 $$
-	\small \neg \tt{boundedness} \implies \tt{unboundedness} \implies \neg \tt{convergence} \implies \tt{divergence}
+	\small \neg \text{boundedness} \nc \text{unboundedness} \nc \neg \text{convergence} \nc \text{divergence}
 $$
 
 ## The Limit of a Sequence
 
-The number ${a \in \RR}$ in the definition of convergence is called the _limit_
+The number ${a \in \reals}$ in the definition of convergence is called the _limit_
 of ${a_n.}$ An important point about _the_ limit is that there is one, and only
-one, ${a \in \RR}$ that ${a_n}$ converges to.
+one, ${a \in \reals}$ that ${a_n}$ converges to.
 
 Why? Well let's say there were two distinct limits: ${a}$ and ${a'.}$ This
 implies that ${a \neq a',}$  which in turn implies that ${\abs{a - a'} \gtn 0.}$
@@ -411,9 +403,9 @@ $$
 
 By the definition of convergence, it follows that:
 
-1. There exists an ${N \in \NN}$ such that ${\forall n \gte N,}$ ${\abs{a_n - a
+1. There exists an ${N \in \nat}$ such that ${\forall n \gte N,}$ ${\abs{a_n - a
    \ltn \varepsilon,}}$ and
-2. There exists an ${N' \in \NN}$ such that ${\forall n \gte \N',}$ ${\abs{a_n -
+2. There exists an ${N' \in \nat}$ such that ${\forall n \gte \N',}$ ${\abs{a_n -
   a' \gtn \varepsilon.}}$
 
 Therefore, ${n \gte \max(N,N').}$ By the triangle inequality, we have:

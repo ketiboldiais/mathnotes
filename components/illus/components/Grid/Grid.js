@@ -2,9 +2,8 @@ export const Grid = ({
 	children,
 	cols = 1,
 	rows = 1,
-	colgap = 0,
+	colgap = 6,
 	rowgap = 0,
-	borders = false,
 	width = 100
 }) => {
 	const gridStyles = {
@@ -16,11 +15,7 @@ export const Grid = ({
 	};
 
 	return (
-		<div
-			style={gridStyles}
-			className={`grid_map_container${borders ? ` grid_map_container_with_outline` : ""
-				}`}
-		>
+		<div style={gridStyles} className={`grid-map-container`}>
 			{children.map((child, i) => {
 				return <div key={`${i}_${child.props.id}`} className={`grid-container`}>{child}</div>;
 			})}

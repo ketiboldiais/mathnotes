@@ -1,0 +1,219 @@
+<Head>
+	<title>Proof Techniques</title>
+	<meta name={`description`}content={`Notes on proof techniques and methods.`}/>
+</Head>
+
+# Proof Techniques
+_This note covers various proof techniques._
+
+1. [Proof by Induction](#proof-by-induction)
+
+
+## Proof by Induction
+Proof by induction is often very confusing for those new to the method. There are a variety of causes for this confusion, but to name a few:
+
+> (1) The use of dominoes and ladders masks too many details. This causes some students to start asking questions about the dominoes and ladders themselves.
+> 
+> (2) The name "induction" conflicts with philosophical and scientific induction. This is particularly problematic given that students are more likely to be familiar with the scientific method than proof by induction.
+> 
+> (3) The step of "assume it's true" then reaching a conclusion that it is true throws the student into a wrestling match with "Isn't that circular reasoning?" because too many details were left opaque by (1).
+> 
+> (4) The problems used to as introductory examples involve too many symbols while the student is still grappling with all of the above.
+
+It's no wonder why students struggle so much with inductive proofs — they're thrown into a dark pit of abstractions with formidable opponents. We will avoid this pit by taking a more careful approach, considering the points above.
+
+> __~successor set~.__ Let ${x}$ be a set. Then the _successor_ of ${x,}$ denoted ${x^+,}$ is defined as follows:
+> $$
+>	  x^+ = x \cup \set{x}.
+> $$ 
+
+~example~. ${A=\set{a,b,c}.}$ ${A^+ = \set{a,b,c,\set{a,b,c}}.}$
+
+Simple enough. Now we define a special set called the _inductive set_:
+
+> __~inductive set~.__ Let ${\Ss}$ be a set. ${\Ss}$ is an _inductive set_ if, and only if, ${\Ss}$ has the following properties:
+>
+> 1. ${\nil \in \Ss.}$
+> 2. If ${x \in \Ss,}$ then ${x^+ \in \Ss.}$
+
+~example~.
+
+$$
+\Ss = {\footnotesize\lset{\ax{
+	\nil \\
+	\set{\nil} \\
+	\set{\nil, \set{\nil}} \\
+	\set{\nil, \set{\nil, \set{\nil}}} \\
+	\set{\nil, \set{\nil, \set{\nil, \set{\nil}}}} \\
+	\set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil}}}}} \\
+	\set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil}}}}}} \\
+	\set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil}}}}}}} \\
+	\vdots
+}}}
+$$
+
+Instead of having to write each of the sets above, we can give _unique symbols_ from some alphabet. By preferred alphabet today is the set of Hindu-Arabic numerals:
+
+$$
+\Ss = {\footnotesize\lset{\ax{
+0 &:=& \nil \\
+1 &:=& \set{\nil} \\
+2 &:=& \set{\nil, \set{\nil}} \\
+3 &:=& \set{\nil, \set{\nil, \set{\nil}}} \\
+4 &:=& \set{\nil, \set{\nil, \set{\nil, \set{\nil}}}} \\
+5 &:=& \set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil}}}}} \\
+6 &:=& \set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil}}}}}} \\
+7 &:=& \set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil, \set{\nil}}}}}}} \\
+\vdots ~ &\vdots& ~ \vdots
+}}}
+$$
+
+Pause. Think for a moment about how this idea sits with us. First, the word _inductive_ comes from the the Latin _inductivus_, which, roughly translated, means "leading to." Looking at the inductive set's definition, we can think of how it got its name — each set _leads to_ another. The name inductive set shares its descriptor with _inductive reasoning_, but they're different concepts. However, we can see a linguistic connection between the two. In inductive reasoning, we draw conclusions from the specific to the general. For example, the scientific method is based on inductive reasoning. Specific pieces of evidence _lead to_ general conclusions. Again, this is purely a linguistic similarity. What we call induction in mathematics is completely different from the inductive reasoning in philosophy and science. Because of how different these ideas are, a better name for the inductive set would be _successive set_, following the name _successor set_. If build on this convention, terms associated with "induction" in mathematics can be replaced with the following:
+
+|                      |                       |
+| -------------------- | --------------------- |
+| _induction_          | _succession_          |
+| _inductive_          | _successive_          |
+| _inductive set_      | _successive set_      |
+| _proof by induction_ | _proof by succession_ |
+| _inductive proof_    | _successive proof_    |
+
+The second question we may want to ask: Is there such a set? This is a perfectly reasonable question, and naive set theory answers it with an axiom:
+
+> __~axiom of infinity~.__ There exists a set containing ${\nil}$ and the successor of each of its elements.
+
+If this is unsatisfying to us, we're in good company. It's a problem that logicians and set theorists debate. Such debates are beyond the scope of this note, so we will stick to the axiom above. Assuming we accept the axiom above, we have the following definition:
+
+> __~definition~.__ The set
+>
+> $$
+>  \set{n \mid n \in \Ss \tx{ for every inductive set } \Ss}
+> $$
+>
+> is called the _set of natural numbers_, denoted ${\nat.}$
+
+Pause again. How does this idea sit with us? Does the set above exist? Naive set theory gives us an axiom to help us justify the set's existence. Before we see that axiom, we introduce some notation.
+
+> __~notation~.__ Let ${x}$ be some object. The notation ${\P(x)}$ denotes the proposition "${x}$ has a property ${\P.}$" If ${x}$ has the property ${\P,}$ then we write ${\P(x)=\top.}$ If ${x}$ does not have the property ${\P,}$ we write ${\P(x)=\bot.}$
+
+In the examples that follow, the notation ${:=}$ means "is defined as."
+
+~example~. ${\tx{red}(\tx{car}) := }$ _The car is red._
+
+~example~. ${\tx{student}(\tx{Kate}) := }$ _Kate is a student._
+
+~example~. ${\tx{even}(2) := }$ _${2}$ is even._
+
+~example~. ${\tx{odd}(2) = \bot.}$
+
+If this looks like function notation, _it is_. When we write ${\P(x),}$ we're defining a Boolean function _${x}$ has property ${\P}$_. A Boolean function is a function who codomain is ${\set{\top, \bot}.}$ That is, ${\set{\tx{true},\tx{false}}.}$ Having defined the notation, here is the axiom we need:
+
+> __~axiom of comprehension~.__ Let ${\P(x)}$ be a property of some object ${x.}$ For any set ${A,}$ there exists a set ${B}$ such that ${x \in B}$ if, and only if, ${x \in A}$ and ${\P(x)=\top.}$
+
+The axiom of comprehension (more correctly called the _axiom schema of comprehension_, but that's too long), allows us to prove that ${\nat}$ exists. 
+
+> (1) Let ${\P(n):=}$ ${n \in \Ss \tx{ for every inductive set } \Ss.}$ 
+>
+> (2) By the Axiom of Comprehension, for any set ${A,}$ there exists a set ${B}$ such that ${n \in B}$ if, and only if, ${n \in A}$ and ${\P(n)=\top.}$
+>
+> (3) By the Axiom of Infinity, there exists an inductive set ${B.}$
+> 
+> (4) It follows that there exists a set
+> $$
+> 	\nat=\set{n \in A \mid n \in \Ss \tx{ for every inductive set } \Ss}.
+> $$
+
+Thus, we have a set called the natural numbers, ${\nat:}$
+
+$$
+\nat = \footnotesize{\lset{\ax{
+		0 &=& \nil     \\
+		0^+ &=& \set{0}             &=& 0+1 &=& 1 \\
+		1^+ &=& \set{0,1}           &=& 1+1 &=& 2 \\
+		2^+ &=& \set{0,1,2}         &=& 2+1 &=& 3 \\
+		3^+ &=& \set{0,1,2,3}       &=& 3+1 &=& 4 \\
+		4^+ &=& \set{0,1,2,3,4}     &=& 4+1 &=& 5 \\
+		5^+ &=& \set{0,1,2,3,4,5}   &=& 5+1 &=& 6 \\
+		6^+ &=& \set{0,1,2,3,4,5,6} &=& 6+1 &=& 7 \\
+		&\vdots& &\vdots& &\vdots& \\
+		n^+ &=& \set{0,\ldots,n}    &=& n+1
+	}}}
+$$
+
+Question: Is ${\nat}$ inductive? Since ${n \in \nat,}$ we know that ${n \in \Ss}$ for any inductive set ${\Ss.}$ This means that, ${(0=\nil) \in \Ss,}$ so we satisfy the first requirement that ${\nil \in \Ss.}$ And if ${n \in \nat,}$ then ${(n+1) \in \Ss}$ for any inductive set ${\Ss,}$ which also implies that ${(n+1) \in \Ss}$ (remember that the axiom of comprehension is a biconditional). It follows that ${\nat}$ is inductive: ${\nat \subseteq \Ss.}$
+
+> __~lemma~.__ The set of natural numbers ${\nat}$ is an inductive set. Given any inductive set ${\Ss,}$ it follows that ${\nat \subseteq \Ss.}$
+
+With all of these basic constructs, we can now state the principle of mathematical induction:
+
+> __~principle of mathematical induction~.__ Let ${n}$ be a natural number. Let ${\P(n)}$ be a property of ${n.}$ Suppose that:
+> 
+> 1. ${\P(0)}$ is true.
+> 2. For all natural natural numbers ${n,}$ if ${\P(n)}$ is true, then ${\P(n^+)}$ is true.
+>
+> Then ${\P(n)}$ is true for every natural number ${n.}$
+
+If we think about this principle, it's simply a consequence of how we've defined ${\nat.}$ Recall that, for any inductive set ${A,}$ we have:
+
+$$
+	\nat=\set{n \in A \mid n \in \Ss \tx{ for every inductive set } \Ss}.
+$$
+
+What the principle of mathematical induction says, is this: Let's say we have a natural number ${x,}$ that belongs to some set ${X.}$ We then write ${\P(x)}$ — ${x}$ has the property ${\P.}$ Now suppose ${x}$ comes in various shapes and sizes. I.e., the ${x}$s look different, but they're all still members of ${X.}$ How would we prove that despite these differences, ${\P(x)}$ is true for every ${x \in X?}$ Well, we just have to prove that this set exists:
+
+$$
+	X = \set{n \in \nat \mid n \in X ~ \tx{and} ~ \P(x)}.
+$$
+
+That is, there exists a natural number ${n}$ such that ${\P(x)}$ is true. And how do we prove this? By proving that:
+
+> (1) When ${n=0,}$ ${\P(x)}$ is true, and
+> 
+> (2) for all ${n \in \nat,}$ if ${\P(x)}$ is true for ${n,}$ then ${\P(x)}$ is true for its successor, ${n^+.}$
+
+If we prove the two conditions above are true, then by the Axiom of Comprehension, the set ${X = \nat.}$ Why? Because once again, the Axiom of Comprehension is a _biconditional_:
+
+> _Axiom of Comprehension._ Let ${\P(x)}$ be a property of some object ${x.}$ For any set ${A,}$ there exists a set ${B}$ such that ${x \in B}$ if, and only if, ${x \in A}$ and ${\P(x)=\top.}$
+
+Symbolically:
+
+$$
+	A \iff \set{x \in B \mid x \in A ~~ \tx{and} ~~ \P(x)=\top}.
+$$
+
+Let ${A = X,}$ and let ${B = \nat.}$ Then we have:
+
+$$
+	X \iff \set{n \in \nat \mid n \in X ~~ \tx{and} ~~ \P(x) = \top}.
+$$
+
+That is all mathematical induction is. If we can prove that there exists a set of natural numbers ${X}$ such that ${\P(x)}$ is true, then the fact that ${\P(x)}$ is true for all ${x \in X}$ is merely an implication of ${X}$'s existence. One way to think about this is: We're trying to create a version of the natural numbers, in this case ${X,}$ that only allows ${x}$s that satisfy the property ${\P.}$ If we can show that ${X}$ complies with the definition of the natural numbers, then the fact that ${\P(x)}$ is true for all ${x}$s is just a bonus. In fact, let's explore this idea by looking at the symbolic form of mathematical induction:
+
+$$
+	\forall n ~ \ix{~ \P\px{n}  ~ \nc ~ \P\px{n+1} ~}.
+$$
+
+The negation of this logical formula is:
+
+$$
+	\lex n ~ \ix{~ \P\px{n}  ~ \land ~ \neg\P\px{n+1} ~}.
+$$
+
+That negation leads to two ways of performing a proof by induction.
+
+|     |            | __~standard method~__                             | ~translation~                                                            |
+| --- | ---------- | ------------------------------------------------- | ------------------------------------------------------------------------ |
+| (1) | ~prove~    | ${\P(0) \tf \top.}$                               | ${\P\px{n}}$ is true when ${n=0.}$                                       |
+| (2) | ~assume~   | ${\forall n\ix{\P(n)} \tf \top.}$                 | For all ${n \in \nat,}$ ${\P\px{n}}$ is true.                            |
+| (3) | ~prove~    | ${\P(n) \nc \P(n+1) \tf \top.}$                   | If ${\P\px{n}}$ is true, then ${\P\px{n+1}}$ is true.                    |
+| (4) | ~infer~    | ${\P(n) \nc P(n+1) \tf \forall n \ix{\P\px{n}}.}$ | By induction, this implies that ${\P(n)}$ is true for all ${n \in \nat}$ |
+| (5) | ~conclude~ | ${\forall \ix{\P\px{n}} \tf \top.}$               | ${\P(n)}$ is true for all ${n \in \nat.}$                                |
+
+|     |            | __~alternative method~__                                                | ~translation~                                                                                                  |
+| --- | ---------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| (1) | ~assume~   | ${\neg\forall n \ix{\P\px{n}} \tf \top.}$                               | Suppose ${P(n)}$ is not necessarily true for all ${n \in \nat.}$                                               |
+| (2) | ~infer~    | ${\neg\forall n \ix{\P\px{n}} \tf \lex n \ix{\neg \P\px{n}} \tf \top.}$ | Then there exists an ${n \in \nat}$ such that ${P(n)}$ is false.                                               |
+| (3) | ~prove~    | ${\lex n \ix{\P\px{n}} \tf \top.}$                                      | There exists an ${n \in \nat}$ such that ${P(n)}$ is true.                                                     |
+| (4) | ~infer~    | ${\neg\forall n \ix{\P\px{n}} \land \lex n\ix{\P\px{n}} \tf \bot.}$     | (3) contradicts (1), so it cannot be true that there exists an ${n \in \nat}$ such that ${\P\px{n}}$ is false. |
+| (5) | ~conclude~ | ${\forall n \ix{\P\px{n}} \tf \top.}$                                   | It must be true that ${P(n)}$ is true for all ${n \in \nat.}$                                                  |
+

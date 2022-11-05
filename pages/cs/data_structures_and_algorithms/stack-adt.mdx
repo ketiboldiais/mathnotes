@@ -1,0 +1,56 @@
+<Head>
+	<title>Stacks</title>
+	<meta name={`description`} content={`Notes on stacks.`}/>
+</Head>
+
+# Stacks
+
+_This note provides an overview of stacks_.
+
+## Definitions
+
+> __~stack~.__ Let ${S}$ be a dynamic array of objects: ${\ix{x_1, x_2, \ldots, x_{n-1}, x_n},}$ where ${\len{S}=n.}$ A _stack_ is a structure ${(S,P),}$ where ${P}$ is a set of operations on ${S,}$ defined as follows.
+
+<Grid cols={2}>
+<Algo>
+
+__~push~.__ Where ${S}$ is a dynamic array and ${x}$ is an object, ${\df{push}}$ inserts ${x}$ as the last element of the dynamic array.
+
+- __operation__ ${\let{S}{\df{push}~x}}$
+	1. __init__ ${\let{i}{\len{S}-1}}$
+	2. ${\let{S\ix{i}}{x}}$
+	3. __return__ ${S}$
+
+</Algo>
+<Algo>
+
+__~pop~.__ Where ${S}$ is a dynamic array, ${\df{pop}}$ removes the last element of ${S.}$ If ${S}$ is empty, then ${\df{pop}}$ returns ${S.}$ Otherwise, ${\df{pop}}$ returns the removed element.
+
+- __operation__ ${{\df{pop}~S}}$
+	1. __if__ ${S = \nil}$ __return__ ${S}$
+	2. __else__
+		1. __init__
+			1. ${\let{i}{\len{S}-1}}$
+			2. ${\let{x}{S\ix{i}}}$
+		2. ${\let{S\ix{i}}{\nil}}$
+		3. __return__ ${x}$
+
+</Algo>
+</Grid>
+
+
+~example~. Below is a trace of a program pushing and popping onto a stack.
+
+| ~${\df{state}_{n-1}}$~ | ~statement~                 | ${\df{state}_{n}}$                          |
+| ---------------------- | --------------------------- | ------------------------------------------- |
+| ${\nil}$               | ${\let{S}{\df{new stack}}}$ | ${\ix{\no{1}~\no{2}~\no{3}~\no{4}~\no{5}}}$ |
+| ${\ix{~}}$             | ${\let{S}{\df{push}~1}}$    | ${\ix{1~\no{2}~\no{3}~\no{4}~\no{5}}}$      |
+| ${\ix{1}}$             | ${\let{S}{\df{push}~2}}$    | ${\ix{1~2~\no{3}~\no{4}~\no{5}}}$           |
+| ${\ix{1~2}}$           | ${\let{S}{\df{push}~3}}$    | ${\ix{1~2~3~\no{4}~\no{5}}}$                |
+| ${\ix{1~2~3}}$         | ${\let{S}{\df{push}~4}}$    | ${\ix{1~2~3~4~\no{5}}}$                     |
+| ${\ix{1~2~3~4}}$       | ${\let{S}{\df{push}~5}}$    | ${\ix{1~2~3~4~5}}$                          |
+| ${\ix{1~2~3~4~5}}$     | ${{\df{pop}~S}}$            | ${\ix{1~2~3~4~\no{5}}}$                     |
+| ${\ix{1~2~3~4}}$       | ${{\df{pop}~S}}$            | ${\ix{1~2~3~\no{4}~\no{5}}}$                |
+| ${\ix{1~2~3}}$         | ${{\df{pop}~S}}$            | ${\ix{1~2~\no{3}~\no{4}~\no{5}}}$           |
+| ${\ix{1~2}}$           | ${{\df{pop}~S}}$            | ${\ix{1~\no{2}~\no{3}~\no{4}~\no{5}}}$      |
+| ${\ix{1}}$             | ${{\df{pop}~S}}$            | ${\ix{\no{1}~\no{2}~\no{3}~\no{4}~\no{5}}}$ |

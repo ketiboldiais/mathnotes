@@ -1,0 +1,459 @@
+import { Plot } from "../../../components/hago";
+
+<Head>
+	<title>Limits</title>
+	<meta name={`description`} content={`Notes on limits.`}/>
+</Head>
+
+# Limits
+
+We begin with a naive definition of the limit.
+
+> __~naive definition~.__ Given a function ${y=f(x),}$ an ${x}$-value ${n,}$ and a ${y}$-value ${L,}$ we write
+> 
+> $$
+> 	\ll{x}{n} f(x) = L
+> $$
+> 
+> iff whenever ${x}$ is near ${n,}$ ${y}$ is near ${L.}$
+
+This definition is called _casual_ because the word "near" is ambiguous. Near to whom? Residents of Madison, Wisconsin, might describe a trip to the city of Chicago as a _skip and a hop_ — 147.7 miles. For many others, that trip is called a _flight_. So, we must somehow make this more rigorous.
+
+> __~informal definition~.__ Given a function ${y=f(x),}$ an ${x}$-value ${n,}$ and a ${y}$-value ${L,}$ we write
+> 
+> $$
+> 	\ll{x}{n} f(x) = L
+> $$
+> 
+> iff whenever ${x}$ is within a _certain tolerance level_ of ${n,}$ then the corresponding ${y = f(x)}$ is within a _certain tolelerance level_ of ${I.}$
+
+Notice what this definition does. We're fighting back subjective definitions of _nearness_ by saying, "We're not going to dictate what 'near' means. You decide what's 'near.'" We do this by using the phrase _certain tolerance level_. Traditionally, the ${x}$-tolerance is denoted with ${\delta,}$ and the ${y}$-tolerance is denoted with ${\epsilon.}$ Thus, we can rewrite the phrase _certain tolerance level_ in a more rigorous form:
+
+> __~semiformal definition~.__ Given a function ${y=f(x),}$ an ${x}$-value ${n,}$ and a ${y}$-value ${L,}$ we write
+> 
+> $$
+> 	\ll{x}{n} f(x) = L
+> $$
+> 
+> iff whenever ${x}$ is within ${\delta}$ units of ${n,}$ then the corresponding ${y = f(x)}$ is within a ${\varepsilon}$ units of ${I.}$
+
+Both phrases "within ... units ..." can be written in pure mathematical terms:
+
+| phrase                                           | notation                  | equivalent notation                           |
+| ------------------------------------------------ | ------------------------- | --------------------------------------------- |
+| "${x}$ is within ${\delta}$ units of ${n}$"      | ${x - n \lt \delta}$      | ${n - \delta \lt x \lt n + \delta}$           |
+| "${y}$ is within ${\varepsilon}$ units of ${n}$" | ${y - L \lt \varepsilon}$ | ${L - \varepsilon \lt y \lt L + \varepsilon}$ |
+
+This leads to the formal definition.
+
+### Formal Definition
+> __~formal definition~.__ Let ${I}$ be a real interval containing a number ${n,}$ and let ${f}$ be a function defined on ${I,}$ except possibly at ${n.}$ Then
+> 
+> $$
+> 	\lim_{x \to n} f(x) = L
+> $$
+> 
+> iff for every ${\varepsilon \gt 0,}$ there exists a ${\delta \gt 0}$ such that, given any ${x,}$
+
+$$
+	\tx{ if } ~~ {0 \lt x - n \lt \delta,} ~~ \tx{ then } ~~ {f(x)-L \lt \varepsilon.}
+$$
+
+Ultimately, the formal definition simply ensures people keep their mouths shut about _near._ In other words, it filters familiar argument openers like "who's to say."
+
+### Limits at Infinity
+The symbol ${\infty}$ is merely a suggestive symbol — it doesn't mean anything, in the sense that it isn't tied to some sort of object, such as how the numeral ${1}$ is tied to the successor of the empty set. For the purpose of elementary real analysis, we treat the symbol ${x \to \infty}$ as a shorthand for "${x}$ grows arbitrarily far from ${0}$ in the positive direction" and the symbol ${x \to \infty^-}$ as shorthand for "${x}$ grows arbitrarily far from ${0}$ in the negative direction." That's all the symbol ${\infty}$ is used for. Outside of these contexts, it might as well be a misprinted '8' — it means nothing. 
+
+That said, because of how much ${\infty}$ is used, it's become subject to an abuse of notation, so standardized that they're are a few "abuse conventions" we should be aware of.
+
+<Grid cols={2} rowgap={20}>
+
+$$
+	{\tx{countable}~\infty} - {\tx{uncountable}~\infty} = -\infty.
+$$
+
+$$
+	{\tx{uncountable}~\infty} - {\tx{countable}~\infty} = \infty.
+$$
+
+$$
+	\dfrac{\tx{countable}~\infty}{\tx{uncountable}~\infty} = 0.
+$$
+
+$$
+	\dfrac{\tx{uncountable}~\infty}{\tx{countable}~\infty} = \infty.
+$$
+
+$$
+	\infty + x = \infty ~~~ \tx{where} ~~~ x \neq -\infty.
+$$
+
+$$
+	\infty + \infty = \infty
+$$
+
+$$
+	-\infty - x = -\infty ~~~ \tx{where} ~~~ x \neq -\infty.
+$$
+
+$$
+	-\infty -\infty = -\infty.
+$$
+
+$$
+	x(\infty) = \infty.
+$$
+
+$$
+	(-x)(\infty) = -\infty.
+$$
+
+$$
+	\infty(\infty) = \infty.
+$$
+
+$$
+	(-\infty)(-\infty) = \infty.
+$$
+
+$$
+	(-\infty)(\infty) = -\infty.
+$$
+
+$$
+	\dfrac{\infty}{x} = \infty.
+$$
+
+$$
+	\dfrac{\infty}{-x} = -\infty.
+$$
+
+$$
+	\dfrac{-\infty}{x} = -\infty.
+$$
+
+$$
+	\dfrac{-\infty}{-x} = \infty.
+$$
+
+$$
+	\dfrac{x}{\infty} = 0.
+$$
+
+$$
+	\dfrac{x}{-\infty}=0.
+$$
+
+</Grid>
+
+
+
+> __~definition~.__ Let ${f}$ be a function on ${\reals.}$ The notation
+> 
+> $$
+> 	\ll{x}{\infty}f(x) = L
+> $$
+> 
+> means, for every ${\varepsilon \gt 0,}$ there exists an ${M \in \reals}$ such that, for all ${x \in \dom{f},}$ if ${M \lt x,}$  then ${f(x) - L \lt \varepsilon.}$
+
+> __~definition~.__ Let ${f}$ be a function on ${\reals.}$ The notation
+> 
+> $$
+> 	\ll{x}{-\infty}f(x) = L
+> $$
+> 
+> means, for every ${\varepsilon \gt 0,}$ there exists an ${N \in \reals}$ such that, for all ${x \in \dom{f},}$ if ${x \lt N,}$ then ${f(x) - L \lt \varepsilon.}$
+
+### Structure of Limit Proofs
+Limit proofs are more pro-forma than other proofs. Generally, they have the following structure. Below, the ${\ws}$ indicate slots to be filled in.
+
+|     | ~proof~                         | ~options~                               |
+| --- | ------------------------------- | --------------------------------------- |
+| 1   | Let ${\varepsilon \gt 0.}$      |                                         |
+| 2   | Let ${(\delta = \ws) \gt 0.}$   | ${\delta \in \reals}$                   |
+| 3   | For any ${x}$ such that ${\ws}$ | ${n - \delta \lt x \lt n + \delta}$     |
+|     |                                 | ${x - n \lt \delta}$                    |
+|     |                                 | ${0 \lt x - n \lt \delta}$              |
+| 4   | ${\vdots}$                      |                                         |
+|     | _steps_                         |                                         |
+|     | ${\vdots}$                      |                                         |
+| 5   | we have ${\ws}$                 | ${L - \epsilon \lt y \lt L + \epsilon}$ |
+|     |                                 | ${y - L \lt \epsilon}$                  |
+|     |                                 | ${0 \lt y - L \lt \epsilon}$            |
+
+__~warning~.__ Given ${n \in \reals,}$ ${\ll{x}{n}f(x)}$ exists iff ${\ll{x}{n}f(x)}$ exists for ${n - \delta \lt x}$ and ${\ll{x}{n}f(x)}$ exists for ${x \lt n + \delta}$ _and_ they're equal. That is, ${\ll{x}{n^-}f(x) = \ll{x}{n^+}f(x) = \ll{x}{n}f(x).}$ Because of the limit uniqueness theorem, a function ${f(x)}$ _cannot_ have two different limits. It may be the case that the function has specific limits at specific intervals of its domain, but that's a different claim from saying that ${L}$ is _the_ limit of ${f.}$
+
+### Limit Laws  
+Below are some commonly used limit theorems.
+
+> __~theorem~.__ Let ${f}$ be a function in ${\reals.}$ Then the following propositions are true.
+>  
+> |                                                                                                         |
+> | ------------------------------------------------------------------------------------------------------- |
+> | ${\ll{x}{a}C = C,}$ where ${C}$ is a real constant.                                                     |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a}[C \by f(x)] = C \by \ll{x}{a} f(x).}$                                                       |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a}(f(x) + g(x)) = {\ll{x}{a}f(x)} + {\ll{x}{a}g(x)}.}$                                         |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a}(f(x) - g(x)) = \ll{x}{a}f(x) - \ll{x}{a}g(x).}$                                             |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a}f(x)g(x) = {\ll{x}{a}f(x)} \by {\ll{x}{a}g(x)}.}$                                            |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a}\dfrac{f(x)}{g(x)}=\dfrac{\ll{x}{a}f(x)}{\ll{x}{a}g(x)}}$ provided ${\ll{x}{a}g(x) \neq 0.}$ |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a}f(x)^n = \ar{\ll{x}{a}f(x)}^n}$ provided ${n \in \pint.}$                                    |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a}\sqrt[n]{f(x)}=\sqrt[n]{\ll{x}{a}{f(x)}}}$ provided ${n \in \pint.}$                         |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{0} \dfrac{\sin{x}}{x} = 1.}$                                                                   |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a} \dfrac{1}{x} = 0.}$                                                                         |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a} P(x) = Q(x)}$ where ${P(x)}$ and ${Q(x)}$ are polynomials.                                  |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{a}\dfrac{f(x)}{g(x)} = \dfrac{P(x)}{Q(x)}}$ where ${P(x)}$ and ${Q(x)}$ are polynomials.       |
+> | ${~}$                                                                                                   |
+> | ${\ll{x}{c}f(x) = L \iff \ll{x}{c^+}f(x) \tx{ and } \ll{x}{c^-}f(x).}$                                  |
+
+While these laws are helpful, _they should not be applied blindly_.
+
+### Common Limit Mistakes    
+Below are some common mistakes associated with limits.
+
+#### Failing to Evaluate the Limit
+Consider the following:
+
+$$
+	\eqs{
+		\ll{x}{1} \dfrac{4-4x^2}{5x-5} &= \dfrac{4(1-x^2)}{5(x-1)} \\
+		&= \dfrac{-4(x^2-1)}{5(x-1)} \\
+		&= \dfrac{-4(x+1)\cancel{(x-1)}}{5\cancel{(x-1)}} \\
+		&= \dfrac{-4(x+1)}{5} \\
+		&= \dfrac{-8}{5}
+	}
+$$
+
+The mistake here is blindly plugging in ${x=1.}$ We can avoid this pitfall by always making sure we attach the limit notation if we aren't evaluating the limit. Thus, all of the pain could have been avoided had we instead started off on a clean slate:
+
+$$
+	\ll{x}{1} \dfrac{4-4x^2}{5x-5} = \dfrac{\ll{x}{1}\ar{4-4x^2}}{\ll{x}{1}\ar{5x-5}}.
+$$
+
+The limit notation stays there and is promptly removed once its evaluated.
+
+
+### Fundamental Trigonometric Limit
+> __~theorem~.__ ${\ll{x}{0} \dfrac{\sin{x}}{x} = 1.}$
+
+### Limits of Rational Functions 
+Rational functions take the form 
+
+$$
+	f(x) = \dfrac{a(x)}{b(x)},
+$$
+
+where ${a(x)}$ and ${b(x)}$ are polynomial functions. For rational functions
+in particular, the first line of attack should always be to try and write
+the function into a form where known limits apply. E.g.,
+
+$$
+	\ll{x}{\infty} \dfrac{1}{m} = 0.
+$$
+
+### The Squeeze Theorem
+> __~theorem~.__ Let ${f,}$ ${g,}$ and ${h}$ be functions in ${\reals}$ with ${f(x) \le g(x) \le h(x)}$ in some open interval ${I}$ containing ${n.}$ If
+> 
+> $$
+> 	\ll{x}{n}f(x) = L = \ll{x}{n} h(x)
+> $$
+> 
+> then
+> 
+> $$
+> 	\ll{x}{n}g(x) = L.
+> $$
+
+
+### Limits and Asymptotes
+Most calculus textbooks simply state the definition of an asymptote, and a few remarks on how they're useful for "sketching graphs." This hardly captures how interesting and useful asymptotes are. Informally, the _Law of Diminishing Returns_ provides that if we increase one input (e.g., capital investments) while holding all other inputs fixed (e.g., available technology), the gains we obtain from the inputs get smaller and smaller. This concept is made rigorous through asymptotes. Asymptotes are what provide the "big picture" view of functions: What happens when we blow this function up? This question underlies numerous mathematical applications: What makes one algorithm better than another? Why can't we have faster processors? Why do some institutions fail despite increased monetary funds? We use _asymptotic analysis_ to answer these questions.
+
+#### Horizontal Asymptotes
+
+> __~definition~.__ Let ${f}$ be a real function. Then the line ${y = b}$ is a _horizontal asymptote_ of ${f}$ if either of these conditions is true:
+> 
+> $$
+> 	\eqs{
+> 		&(a) ~~~ \ll{x}{\infty} f(x) = b ~~~~~ \tx{or} \\[1em]
+> 		&(b) ~~~ \ll{x}{\infty^-} f(x) = b
+> 	}
+> $$
+
+A few things to observe from this definition. First, because there are only two possible conditions to satisfy, a function ${f}$ can have _at most_ two horizontal asymptotes. Similarly, the function can have no horizontal asymptotes at all, or exactly one horizontal asymptote. We get exactly one asymptote if ${\ll{x}{\infty^+}f(x)=\ll{x}{\infty^-}f(x).}$ The function ${f}$ has no horizontal asymptote if ${f}$ _diverges_ as ${x \to \infty.}$ For example, polynomials of positive degrees have no horizontal asymptotes.
+
+<Grid cols={2}>
+
+<>
+
+~example~. ${f(x)=\frac{x^3-2}{\abs{x}^3+1}.}$ We consider the limits as ${x \to \infty^+}$ and as ${x \to \infty^-.}$ When ${x \ge 0,}$ we have:
+
+$$
+	\small\eqs{
+		\ll{x}{\infty^+}\frac{x^3-2}{\abs{x}^3+1}&=\ll{x}{\infty}\frac{x^3-2}{{x}^3+1}.\\
+		&=\ll{x}{\infty^+} \frac{1-(2/x^3)}{1+(1/x^3)}.\\
+		&=1.\\
+	}
+$$
+
+When ${x \le 0,}$ we get:
+
+$$
+	\small\eqs{
+		\ll{x}{\infty^-}\frac{x^3-2}{\abs{x}^3+1}&=\ll{x}{\infty}\frac{x^3-2}{{(-x)}^3+1}.\\
+		&=\ll{x}{\infty^-} \frac{1-(2/x^3)}{1+(1/x^3)}.\\
+		&=-1.\\
+	}
+$$
+
+This gives us the two asymptotes ${y = 1}$ and ${y=-1,}$ as seen in the graph.
+
+</>
+
+<Plot data={[
+		{f:(x) => ((x**3)-2)/(Math.abs((x**3))+1)},
+		{f:(x)=>1, color:`teal`,dash:2},
+		{f:(x)=>-1, color:`teal`,dash:2},
+	]}
+	domain={[-3,3]}
+	range={[-3,3]}
+	scale={100}
+/>
+
+</Grid>
+
+<Grid cols={2}>
+
+<>
+
+~example~. ${f(x)=x\sin{\frac{1}{x}}.}$ Again, consider the limits as ${x \to \infty^+}$ and as ${x \to \infty^-.}$ Generally, we want to keep the operands passed to trigonometric operations as simple as possible. So, we will denote ${\frac{1}{x}=t.}$
+If ${t=\frac{1}{x},}$ then we know that as ${x \to \infty,}$ we have ${t \to 0^+.}$ Thus, we have:
+
+$$
+	\eqs{
+		\ll{x}{\infty}\sin(1/x)=\ll{t}{0^+}{\sin}{t}=0.
+	}
+$$
+
+Now we calculate the limits as ${x \to \infty^+:}$
+
+$$
+	\ll{x}{\infty^+}{x}{\sin\frac{1}{x}} = \ll{t}{0^+}\frac{\sin{t}}{t}=1.
+$$
+
+and ${x \to \infty^-:}$ 
+
+$$
+\ll{x}{\infty^-}{x}{\sin}{\frac{1}{x}}=\ll{t}{0^-}\frac{\sin{t}}{t}=1.
+$$
+
+We have a single horizontal asymptote ${y=1,}$ as displayed in the graph.
+
+</>
+
+<Plot data={[
+		{f:(x) => (x*(Math.sin(1/x)))},
+		{f:(x)=>1, color:`teal`,dash:2},
+	]}
+	domain={[-1.5,1.5]}
+	range={[-0.4,1.5]}
+	scale={100}
+/>
+
+</Grid>
+
+
+### Oblique Asymptotes 
+Whenever we encounter rational functions, we want to consider whether the function has an oblique asymptote.
+
+> __~definition~.__ Let ${f}$ be a function in ${\reals.}$ We say that a line ${y=ax+b}$ with constants ${a,b \in \reals}$ is an _oblique asymptote_ ${f}$ iff there exists a function ${g}$ in ${\reals}$ such that:
+>
+> $$
+> 	f(x) = ax + b + g(x) \\
+> 	\tx{and} \\
+> 	\ll{x}{\pm\infty}g(x) = 0.
+> $$
+
+<Grid cols={2}>
+<>
+~example~. Consider the function ${f(x)=\frac{x^2-3}{2x-4}.}$ To determine whether ${f}$ has an oblique asymptote, we want to express this in the form dictated by the definition of an oblique asymptote. This is done with polynomial division.
+
+$$
+	\begin{array}{r}
+		\frac{x}{2} + 1 \\
+		\ldiv{2x-4}{x^2-0x-3} \\
+		\underline{x^2-2x} \no{-3} \\
+		{2x-3} \\
+		\underline{2x-4} \\
+		1
+	\end{array}
+$$
+
+Hence, we have:
+
+$$
+	f(x) = \dfrac{x^2-3}{2x-4} = \tnote{\ar{\frac{x}{2}+1}}{linear $ax+b$} + \bnote{\ar{\frac{1}{2x-4}}}{$g(x)$}
+$$
+
+The function ${g(x)}$ is the remainder, and it corresponds to the distance between ${f}$ and ${g.}$ As ${x \to \pm \infty,}$ that distance becomes arbitrarily small (i.e., goes to 0), giving us the oblique asymptote ${y = \frac{x}{2}+1.}$
+
+</>
+<Plot data={[
+		{f:(x) => (((x**2)-3)/((2*x)-4))},
+		{f:(x)=>((x/2)+1), color:`teal`,dash:2},
+	]}
+	domain={[-4,6.5]}
+	range={[-2,5]}
+	scale={100}
+/>
+</Grid>
+
+#### Dominant Terms 
+The previous example illsutrates a concept that's extended upon heavily in [asymptotic analysis](../../cs/data_structures_and_algorithms/dsa_complexity_analysis). We saw that:
+
+$$
+	f(x) = \frac{x^3 - 3}{2x-4} = \ar{\frac{x}{2}+1} + \ar{\frac{1}{2x-4}}.
+$$
+
+For very large ${\abs{x},}$ we have:
+
+$$
+	\ll{x}{\infty}f(x) = \frac{\ll{x}{\infty} x^3 - 3}{\ll{x}{\infty} 2x-4} = \tnote{\ll{x}{\infty}\ar{\frac{x}{2}+1}}{dominates} + \bnote{\ll{x}{\infty}\ar{\frac{1}{2x-4}}}{closer and closer to 0}.
+$$
+
+Because of this behavior, we say that the term ${\frac{x}{2} + 1}$ is the _dominant term_, or that ${\frac{x}{2} + 1}$ _dominates_ all other terms in the expression.
+
+### Vertical Asymptotes
+> __~definition~.__ Let ${f}$ be a function in ${\reals.}$ We say that a vertical line ${x = c}$ is a _vertical asymptote_ of ${f}$ iff
+> 
+> $$
+> 	\ll{x}{c^+}{f(x)} = {\pm\infty} \\
+> 	\tx{or} \\
+> 	\ll{x}{c^-}{f(x)} = {\pm\infty} \\
+> $$
+
+From the perspective of applied mathematics, vertical asymptotes tell us what inputs to a function would cause it to grow in a direction we want/don't want.
+
+<Grid cols={2}>
+<>
+~example~. Consider the function ${f(x)=-\frac{8}{x^2-4}.}$ This function has asymptotes at ${y=0,}$ ${x=-2,}$ and ${x=2.}$
+</>
+<Plot data={[
+		{f:(x) => (-1*((8)/((x**2)-4)))},
+		{f:-2,color:`teal`,dash:5},
+		{f:2,color:`teal`,dash:5},
+	]}
+	domain={[-5,5]}
+	range={[-5,8]}
+	scale={100}
+/>
+</Grid>

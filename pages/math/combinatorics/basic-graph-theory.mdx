@@ -1,0 +1,604 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+import {Tree} from "../../../components/illus/components/Tree/Tree";
+import { Graph as Graf } from "../../../components/hago";
+
+<Head>
+	<title>Graph Theory</title>
+	<meta name={`description`} content={`The notes below cover basic graph theory concepts.`}/>
+</Head>
+
+# Graph Theory
+
+The following materials are notes on graph theory.
+
+1. [Terminology](#terminology)
+	1. [Simple Graphs](#simple-graphs)
+	2. [Subgraphs](#subgraphs)
+	3. [Graph Operations](#graph-operations)
+	4. [Isomorphisms](#isomorphisms)
+	5. [Walks](#walks)
+	6. [Paths](#paths)
+		1. [Disjoint Paths](#disjoint-paths)
+		2. [Hamiltonian Path](#hamiltonian-path)
+	7. [Trails](#trails)
+		1. [Circuits](#circuits)
+		2. [Cycles](#cycles)
+			1. [Hamilton Tour](#hamilton-tour)
+		3. [Euler Tour](#euler-tour)
+	8. [Connectivity](#connectivity)
+		1. [Strong Connectivity](#strong-connectivity)
+	9. [Trees](#trees)
+		1. [Rooted Trees](#rooted-trees)
+	10. [k-ary Trees](#k-ary-trees)
+		1. [Full k-ary Trees](#full-k-ary-trees)
+		2. [Complete k-ary Trees](#complete-k-ary-trees)
+		3. [Perfect k-ary Trees](#perfect-k-ary-trees)
+		4. [Binary Trees](#binary-trees)
+		5. [Spanning Trees](#spanning-trees)
+	11. [Graph Operations](#graph-operations-1)
+	12. [Digraphs](#digraphs)
+2. [Adjacency Matrices](#adjacency-matrices)
+
+Graph theory is a fairly nascent field, and there are many
+pieces of terminology. We lay all of them out now for
+expediency.
+
+## Terminology
+Visually, graphs appear as a bundle of line segments.
+
+<Grid cols={2}>
+	<Graph data={
+		[
+			{link:[1,2]},
+			{link:[2,3]},
+			{link:[3,4]},
+			{link:[4,5]},
+			{link:[5,6]},
+			{link:[6,1]},
+			{link:[1,7]},
+			{link:[7,2]},
+			{link:[2,9]},
+			{link:[9,5]},
+			{link:[5,7]},
+			{link:[7,4]},
+			{link:[4,8]},
+			{link:[8,3]},
+			{link:[3,9]},
+			{link:[9,6]},
+			{link:[6,8]},
+			{link:[8,1]},
+		]}
+		id={`introduction`}
+		straightEdges={true}
+		width={180}
+		height={180}
+		collisionRadius={11}
+		edgeLength={10}
+		scale={100}
+	/>
+	<Graph data={
+		[
+			{link:[0,9]},
+			{link:[9,8]},
+			{link:[1,8]},
+			{link:[8,7]},
+			{link:[7,10]},
+			{link:[10,11]},
+			{link:[11,7]},
+			{link:[7,6]},
+			{link:[7,3]},
+			{link:[3,2]},
+			{link:[3,5]},
+			{link:[6,5]},
+		]}
+		id={`dfs8`}
+		collisionRadius={11}
+		edgeLength={10}
+		straightEdges={true}
+		scale={100}
+		width={180}
+		height={180}
+	/>
+</Grid>
+
+
+
+Each circle is called a _vertex_ (or _node_), and each line is called an _edge_ (or _link_). Below is a general definition of a graph. The numbers are simply objects associated with each node (what we can think of as labels or datum). The objects chosen is a matter of application. They might be computers, people, chemical compounds, it's entirely up to us. Graph theory, in general, isn't particularly interested in what the vertices or edges represent. Instead, we're more interested in the general properties of graphs as objects in themselves.
+
+> __~graph~.__ A graph ${G}$ is an ordered pair of disjoint sets ${(V, E).}$ The set ${V}$ is a set of objects called _vertices_. The set ${E}$ is a set of two element subsets called _edges_. For all edges ${\set{a,b} \in E,}$ we may denote an edge with a variable ${e = \set{a,b}.}$ Given a graph ${G}$ and absent ambiguity, we denote the set of all vertices of ${G}$ with the notation ${V_G,}$ and the set of all edges of ${G}$ with the notation ${V_E.}$ Given the edge ${\set{a,b}}$ we say that ${a}$ and ${b}$ are _adjacent_ to one another, and that ${a}$ and ${b}$ are _incident_ to ${e.}$ We say that two edges are _adjacent_ if, and only if, they share exactly one common vertex.
+
+> __~order and size~.__ Given a graph ${G,}$ the cardinality of ${V_G}$ is called the _order_ of ${G,}$ denoted ${\tx{ord}(G),}$ and the cardinality of ${V_E}$ is called the _size_ of ${G,}$ denoted ${\tx{sz}(G).}$
+
+> __~neighborhood~__. The _neighborhood_ of a vertex ${v,}$ denoted ${\Nn(v),}$ is the set of all vertices of ${G}$ adjacent to ${v.}$ Symbolically: ${\Nn(v) = \set{w \in V_G : (v,w):V_E.}}$ 
+
+> __~degree~.__ The number of edges adjacent to a vertex ${v}$ is called the _degree_ of ${v,}$ denoted ${\tx{deg}(v).}$
+
+> __~graph degree~.__ The degree of a graph, denoted ${\deg(G),}$ is the degree of the vertex with the largest degree. Symbolically: ${\deg(G)=\max\set{\deg(v):v\in V_G}.}$
+
+> __~density~.__ The _density_ of graph ${G,}$ denoted ${\tx{den}(G),}$ is defined as
+> 
+> $$
+> 	\tx{den}(G) = \dfrac{2\by{\tx{sz}(G)}}{n(n-1)}.
+> $$
+
+The definitions above are broad. In short, it doesn't preclude a graph from having vertices that connect to themselves, or "duplicate edges." Such graphs are called _nonsimple graphs_.
+
+> __~nonsimple graph~.__ A nonsimple graph ${G}$ is a graph whose edges are _ordered pairs_. That is, ${E_G \subseteq V_G \times V_G.}$
+
+Because nonsimple graphs have ordered pairs as edges, the edge ${(v,w)}$ is a different edge from ${(w,v).}$ If an edge set ${V_E}$ contains both ${(v,w)}$ and ${(w,v),}$ then we say that ${G}$ contains a _parallel edge_. If an edge set contains an edge ${(v,v),}$ then ${G}$ contains a _loop_. Compare this with the general definition of a graph, where the edge ${\set{v,w}}$ is the same edge as ${\set{w,v}.}$ All nonsimple graphs, however, are still graphs, since the pair ${(a,b)}$ and ${(b,a)}$ can both be represented as the Kuratowski pairs ${\set{a,\set{a,b}}}$ and ${\set{b,\set{a,b}}}$ respectively, and ${n}$-tuples with ${n \ge 2}$ can be arbitrarily represented as partial functions domiciled in ${\nat.}$
+
+<Graph
+	data={[
+		{ link: ["a", "b"] }, { link: ["b", "c"] },
+		{ link: ["c", "b"] }, { link: ["c", "d"] },
+		{ link: ["d", "a"] }, { link: ["d", "e"] },
+		{ link: ["e", "g"] }, { link: ["e", "e"] },]}
+	id={`sample3`} collisionRadius={20} edgeLength={20}
+	scale={45} width={200} height={110} fontSize={0.5}/>
+
+Above, ${(e,e)}$ is an example of a _loop_, and the edges ${(b,c)}$ and ${(c,b)}$ are examples of _parallel edges_.
+
+> __~loop~.__ Given a graph ${G = (V,E)}$ and an edge ${(a,b) \in E,}$ the edge ${(a,b)}$ is a _loop_ if, and only if, ${a = b.}$
+
+> __~parallel edges~.__ Given a graph ${G = (V,E),}$ if ${(a,b) \in E}$ and ${(b,a) \in E}$ with ${(a,b) \neq (b,a),}$ then ${(a,b)}$ and ${(b,a)}$ are _parallel edges_.
+
+
+### Simple Graphs 
+The general definition of a graph is a _simple graph_. Thus, whenever we use the term nondescript term _graph_, we refer to a simple graph. In the next section we discuss various nonsimple graphs. By definition, simple graphs have "no direction." That is, the edge ${\set{a,b}}$ is the same edge as ${\set{b,a}.}$ We can also see that given a simple graph ${G_s,}$ there are, at most, ${\frac{n(n-1)}{2}}$ edges, where ${n = \tx{ord}(G).}$ This is because ${\tx{ord}(G)^2,}$ the cardinality of the Cartesian product of ${V \times V,}$ includes self-loops and counts each edge between distinct vertices. Thus, we subtract ${V}$ and divide by 2. Alternatively, the result ${\frac{n(n-1)}{2}}$ is an elementary result from Euclidean geometry: Given a set of ${n}$ points, there are, at most, ${\frac{n(n-1)}{2}}$ line segments.
+
+> __~theorem~.__ Given a simple graph ${G = (V,E)}$ with ${n \in \nat}$ vertices, there are, at most, ${\dfrac{n(n - 1)}{2}}$ edges.
+
+This bound is partly why simple graphs are the most widely-used type of graph. The bound no longer exists once we allow parallel edges.
+
+### Subgraphs
+In some cases, we're only interested in just a few parts of a graph ${G,}$ rather than the entirety of ${G.}$ Those parts are called _subgraphs_.
+
+> __~subgraph~.__ Given a graph ${G=(V,E),}$ a _subgraph_ of ${G}$ is a
+graph ${G' = (V',E'),}$ such that ${V' \subseteq V}$ and ${E'\subseteq E.}$ If ${G'}$ is a subgraph of ${G,}$ we write ${G' \subset G.}$
+
+> __~induced subgraph~.__ Let ${A}$ and ${B}$ be graphs. If ${A \subset B}$ (${A}$ is a subgraph of ${B}$) and ${E_{A}}$ contains all the edges of ${B}$ incident to ${v \in V_{A},}$ then we say that ${A}$ is _spanned_ by ${V_{A},}$ and write ${G[V_A].}$ If ${V_A = V_B,}$ then we say that ${A}$ is the _spanning subgraph_ of ${B.}$
+
+### Graph Operations
+
+> __~dispersion~.__ Let ${G}$ be a graph and let ${W \subset V_G.}$ Then ${G \vex W}$ is the subgraph of ${G}$ resulting from excluding the vertices in ${W}$ _and all the edges incident to them_. That is, ${G \vex W = G[V_G \smallsetminus W].}$ We call the operation ${\vex}$ _dispersion_, and the graph ${G \vex W}$ the _dispersion_ _of_ ${G}$ _with_ ${W.}$
+
+> __~deletion~.__ Let ${G}$ be a graph and let ${\Ee \subset E_G.}$ Then ${G \eex \Ee}$ is the graph of resulting from excluding the edges in ${A}$ from ${E_G.}$ That is, ${G \eex \Ee = (V_G, E_G \smallsetminus \Ee).}$ We call the operation ${\eex}$ _deletion_, and the graph ${G \eex \Ee}$ the _deletion_ _of_ ${\Ee}$ _from_ ${G.}$
+
+> __~joinder~.__ Let ${G}$ be a graph and let ${\Vv}$ be a set of vertices. Then ${G \vad \Vv}$ is the graph resulting from including the vertices of ${\Vv}$ in ${V_G.}$ That is, ${G \vad \Vv = (V_G \cup \Vv, E_G).}$ We call the operation ${\vad}$ _joinder_, and the graph ${G \vad \Vv}$ the _joinder_ of ${G}$ and ${\Vv.}$
+
+> __~spread~.__ Let ${G}$ be a graph, and let ${\Ee}$ be a set of vertices. Then ${G \ead \Ee}$ is the graph resulting from including the edges of ${\Ee}$ in ${E_G}$ and _all the vertices incident to them_ in ${V_G.}$ That is, ${G \ead \Ee = (V_G \cup \set{v,x : v,x \in \Ee}, E_G \cup \Ee).}$ We call the operation ${\ead}$ _spread_, and the graph ${G \ead \Ee}$ the _spread_ _of_ ${G}$ _with_ ${\Ee.}$
+
+### Isomorphisms
+> Two graphs ${G_1=(V_1,E_1)}$ and ${G_2=(V_2,E_2)}$ are _isomorphic_ if and only if there exists a bijection ${b: V_1 \to \V_2}$ such that
+> 
+> $$
+> 	\set{x,y} \in E_1 \iff \set{b(x),b(y)} \in E_2.
+> $$
+
+### Walks
+A sequence of vertices and edges is called a _walk_.
+
+> __~walk~.__ Let ${G=(V_G, E_G)}$ be a graph of ${n \in \nat}$ vertices. A _walk_ is a sequence ${W = (v_1, e_1, v_2, e_2, v_3, e_3, \ldots, v_{n-1}, e_{n-1}, v_n)}$ where each ${v_i \in V_G}$ and ${e_i \in E_G}$ for all ${0 \le i \le n}$ We define the number of edges in ${W}$ as the _length_ of the walk.
+
+### Paths
+A sequences of vertices and edges with _no repeated vertices_ is called a _path_.
+
+> __~path~.__ Let ${G=(V_G, E_G)}$ be a graph of ${n \in \nat}$ vertices. ${G}$ contains a _path_ if, and only if, there exists a walk ${P=(v_1, e_1, v_2, e_2, \ldots, v_{n-1}, e_{n-1}, v_n)}$ where each ${v_i \in P}$ is distinct, for all ${1 \le i \lt n.}$ We denote the set of all vertices comprising ${P}$ with ${V_P,}$ and the set of all all edges as ${P_E.}$ We say that ${P}$ has a _length_ of ${n.}$ If there exists a path from a vertex ${a \in V_G}$ and ${b \in V_G,}$ then ${b}$ is _reachable_ from ${a.}$
+
+#### Disjoint Paths
+
+> __~vertex disjoint paths~.__ Two paths ${P_1}$ and ${P_2}$ are _vertex disjoint_ if and only if ${V_{P_1} \cap V_{P_2} = \nil.}$ 
+
+> __~edge disjoint paths~.__ Two paths ${P_1}$ and ${P_2}$ are _edge disjoint_ if and only if ${E_{P_1} \cap E_{P_2} = \nil.}$ 
+
+> __~disjoint paths~.__ Two paths ${P_1}$ and ${P_2}$ are _disjoint_ if, and only if, they are both vertex disjoint and edge disjoint.
+
+#### Hamiltonian Path
+A Hamiltonian path on a graph ${G}$ is a path on ${G}$ containing every vertex of ${G.}$
+
+> __~definition~.__ A path ${P}$ on a graph ${G=(E,V)}$ is a _Hamiltonian path_ if, and only if, ${V_P = V_G.}$
+
+### Trails
+A walk with _no repeated edges_ is called a _trail_. In contrast to paths, trails may contain repeated vertices.
+
+> __~definition~.__ Let ${G=(V_G, E_G)}$ be a graph of ${n \in \nat}$ vertices. ${G}$ contains a _trail_ if, and only if, there exists a walk ${T=(v_1, e_1, v_2, e_2, v_3, e_3, \ldots, v_{n-1}, e_{n-1}, v_n)}$ where each ${e_i \in T}$ is distinct, for all ${1 \le i \lt n.}$
+
+#### Circuits
+A _circuit_ is a trail that starts and finishes at the same node (but may have multiple repeated vertices).
+
+> __~definition~.__ Given a graph ${G=(V_G, E_G)}$ with ${n \in \nat}$ vertices, we say that ${G}$ contains a _circuit_ if, and only if, there exists a trail ${T=(v_1, e_1, v_2, e_2, v_3, e_3, \ldots, v_{n-1}, e_{n-1}, v_n)}$ such that ${v_n = v_1,}$ for all ${1 \le i \lt n,}$ 
+
+#### Cycles
+A _cycle_ is a circuit where the only repeated vertices are the first and the last.
+
+> __~cycle~.__ Let ${G=(V_G, E_G)}$ be a graph of ${n \in \nat}$ vertices. ${G}$ contains a _cycle_ if, and only if, there exists a circuit ${C=(v_1, e_1, v_2, e_2, v_3, e_3, \ldots, v_{n-1}, e_{n-1}, v_n),}$ where ${v_1 = v_n}$ and ${v_1}$ is the only repeated vertex for all ${1 \le i \lt n.}$ If ${G}$ contains a cycle, then we say that ${G}$ is called _cyclic_. Otherwise, we say that ${G}$ is _acyclic._
+
+##### Hamilton Tour
+Some cycles have a special property of containing every vertex of ${G.}$ We call these cycles _Hamiltonian cycles_ or _tours_.
+
+> __~definition~.__ A cycle ${C}$ on a graph ${G}$ is a _Hamilton tour_ if, and only if, ${C_V=V_G.}$
+
+#### Euler Tour
+Cycles that contain every edge of ${G}$ are called _Euler tours_.
+
+> __~definition~.__ A cycle ${C}$ on a graph ${G}$ is an _Euler tour_ if, and only if, ${C_E=E_G.}$
+
+### Connectivity
+Graphs are called _connected_ if it contains a path from every vertex to every other vertex. In other words, there exists a path we can take if we wanted to visit every single vertex.
+
+> __~definition~.__ A graph ${G=(V_G,E_G)}$ is _connected_ if, and only if, for any two vertices ${x,y \in V_G,}$ there exists a _path_ whose endpoints are ${x}$ and ${y.}$ That is, every vertex in ${G}$ is reachable from every other vertex in ${G.}$ Otherwise, we say that ${G}$ is _disconnected_.
+
+#### Strong Connectivity
+For a digraph ${D,}$ if we can can visit every vertex in the correct direction, we call ${D}$ a _strongly-connected graph_.
+
+> __~strong-connectivity~.__ A digraph ${D=(V_G,E_G)}$ is _strongly-connected_ if, and only if, there exists a walk ${W=(v_1, e_1, v_2, e_2, v_3, e_3, \ldots, v_{n-1}, e_{n-1}, v_n),}$ such that, if ${v_i \in V_G,}$ then ${W(v_i) = v_i}$ and ${A(v_i) = v_i,}$ where ${A}$ is the adjacency function of ${D.}$ Otherwise, we say that ${D}$ is _weakly-connected_.
+
+### Trees
+> __~tree~.__ A graph ${T}$ is called a _tree_ if, and only if, ${T}$ is acyclic, undirected, and connected.
+
+> __~trivial tree~.__ A _trivial tree_ is a graph consisting of a single vertex.
+
+> __~empty tree~.__ The _empty_ tree is a graph consisting of no vertices or edges.
+
+> __~leaf~.__ Let ${v}$ be a vertex of a tree. If ${\deg(v)=1,}$ then ${v}$ is called a _leaf_ or _terminal vertex_. We denote the set of all leaves of a tree ${T}$ with the notation ${T_\ell}$ and the cardinality of ${T_\ell}$ with ${\abs{T_\ell}.}$
+
+<Grid cols={2}>
+
+> __~lemma~.__ All non-trivial trees have at least one leaf.
+
+~proof~. By the definition of connectedness, a nontrivial tree ${T}$ must have ${\tx{ord}~T \gt 1,}$ and ${\tx{sz}~T \ge 1.}$ Suppose ${T}$ is a nontrivial tree with no leaves. Then either the maximum degree of ${T}$ is ${0}$ or ${T}$ contains a cycle. If the maximum degree of ${T}$ is 0, then ${\tx{sz}~T=0.}$ But that cannot be true, because ${\tx{sz}~T \ge 1.}$ If ${T}$ contains a cycle, then ${T}$ is not a tree. It must be the case that a nontrivial ${T}$ must have at least one leaf. ${\bs}$
+
+</Grid>
+
+> __~shoot~.__ Let ${v}$ be a vertex of a tree. If ${\deg(v) \gt 1,}$ then ${v}$ is called a _shoot_ or _internal vertex_. We denote the set of all shoots of a tree ${T}$ with the notation ${T_S}$ and the cardinality of ${T_S}$ with ${\abs{T_S}.}$
+
+<Grid cols={2}>
+
+> __~lemma~.__ Given a nontrivial tree ${T,}$ it follows that ${\tx{order}(T) = \abs{T_S} + \abs{T_\ell}.}$
+
+~proof~. Given a node ${v}$ of a nontrivial tree ${T,}$ ${v}$ cannot both be a shoot and a leaf by definition. Hence, every vertex ${v}$ of a nontrivial ${T}$ is either a shoot or a leaf. It follows that the order of ${T}$ is the sum of the number of shoots, ${\abs{T_S},}$ and the sum of the number of leaves, ${\abs{T_\ell}.}$
+
+</Grid>
+
+
+
+<Grid cols={2}>
+
+> __~theorem~.__ Let ${T}$ be tree with ${\tx{ord}~{T}=n.}$ Then for all ${n \in \pint,}$ ${\tx{size}~{T} = n - 1.}$
+
+~proof~. _By induction on ${n.}$_ Base case: Let ${n = 1.}$ Then ${T}$ is the trivial tree of ${0}$ edges, and the theorem is true for ${n = 1.}$ Let ${n = k}$ and suppose the the theorem is true: Every tree with ${k}$ vertices has ${k - 1}$ edges. Let ${T}$ be a tree with ${k + 1}$ vertices. Then ${T}$ is a nontrivial tree with a leaf ${v.}$ Consider the tree ${T'}$ obtained by excluding ${v}$ from ${T_V.}$ Then ${T'}$ has ${k}$ vertices. By the inductive hypothesis, ${T'}$ has ${k - 1}$ edges. But ${v}$ is a leaf, so ${\deg(v)=1}$ by definition. It follows that ${T}$ has one more edge than ${T'.}$ ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~theorem~.__ For all ${n \in \nat,}$ if ${G}$ is a connected graph with ${\tx{order}~G=n}$ and ${\tx{size}~G=n-1,}$ then ${G}$ is a tree.
+
+~proof~. _By contradiction_. Let ${G}$ be a connected graph with ${n}$ vertices and ${n-1}$ edges. Suppose ${G}$ is not a tree. Then ${G}$ contains a cycle. Exclude an edge from the cycle so that ${G'}$ is a new graph. If ${G'}$ has cycles, continue excluding until no cycles exist. Suppose the process is repeated ${k}$ times. Then ${G'}$ is now a tree with ${n}$ vertices and ${n - 1 - k}$ edges. But this contradicts the previous theorem. Therefore, it must be true that if ${G}$ is a connected graph with ${n}$ vertices and ${n-1}$ edges, then ${G}$ is a tree. ${\bs}$
+
+</Grid>
+
+#### Rooted Trees
+Below is an example of rooted tree.
+
+<Tree
+	data={[
+		{ child: "G_r", parent: "",dx:-20},
+		{ child: "a", parent: "G_r"},
+		{ child: "b", parent: "G_r"},
+		{ child: "c", parent: "G_r"},
+		{ child: "x", parent: "c" },
+		{ child: "y", parent: "c" },
+		{ child: "z", parent: "c" },
+		{ child: "n", parent: "b" },
+		{ child: "m", parent: "b" },
+	]}
+/>
+
+
+
+> __~rooted tree~.__ Let ${G = (V,E)}$ be a tree. Then ${G}$ is a tree if, and only if, for all ${v \in V_G,}$ there exists exactly one vertex called a _root_, denoted ${G_r.}$ In other words, given ${v,w \in V,}$ it follows that ${v = G_r}$ and ${w = G_r}$ iff ${v = w.}$
+
+> __~depth~.__ Given a rooted tree ${G}$ with a vertex ${v,}$ the number of edges from the root ${G_r}$ to the vertex ${v}$ is a natural number called _the depth_ of ${v,}$ denoted ${d(v).}$
+
+<Grid cols={2}>
+
+> __~lemma~.__ For all rooted trees ${G,}$ ${d(G_r)=0.}$
+
+~proof~. Let ${G}$ be a rooted tree. By definition, ${G}$ contains only one ${G_r.}$ Because ${G}$ is a tree, there are no edges from ${G_r}$ to itself. Otherwise, ${G}$ would contain a cycle. Hence, the number of edges from ${G_r}$ to ${G_r}$ is 0, and ${d(G_r) = 0.}$ ${\bs}$
+
+</Grid>
+
+> __~height~.__ Given a rooted tree ${G}$ with a vertex ${v,}$ the number of edges on the longest path from ${v}$ to a leaf is a natural number called the _height_ of a node, denoted ${h(v).}$
+
+> __~height of a tree~.__ The height of a tree ${G,}$ denoted ${h(G),}$ is defined as the height of its root node, ${h(G_r).}$
+
+<Grid cols={2}>
+
+> __~lemma~.__ For all rooted trees ${G}$ with a vertex ${v,}$ if ${\deg{(v)}=1,}$ then ${h(v)=0.}$
+
+~proof~. By definition, a vertex with a degree of 1 is a leaf. Suppose ${\deg{(v)}=1}$ and ${h(v) \neq 0.}$ Then there exists a path from ${v}$ to a leaf. I.e., ${v}$ is not a leaf. But this would imply that ${\deg(v) \neq 1,}$ which contradicts our assumption that ${\deg(v)=1.}$ Hence, it cannot be the case that a leaf has a height not equal to 0. ${\bs}$
+
+</Grid>
+
+> __~parent-child~.__ Let ${p}$ and ${c}$ be vertices of a rooted tree ${G.}$ We say that ${p}$ is the _parent_ of ${c}$ and that ${c}$ is the _child_ of ${p}$ if, and only if, ${p}$ is adjacent to ${c,}$ and ${d(c)-d(p)=1.}$ If ${p}$ is a parent of ${c,}$ we shall write ${p \prec c.}$
+
+<Grid cols={2}>
+
+> __~lemma~.__ Let ${G}$ be a rooted tree with vertices ${a}$ and ${b.}$ If ${a \prec b,}$ then ${b \neq G_r.}$
+
+~proof~. Suppose ${a \prec b}$ and ${b = G_r.}$ Then ${d(G_r)-d(a)=1}$ by definition. By the root-depth lemma, we know that ${d(G_r)=0.}$ Thus, ${0-d(a)=1.}$ It follows that ${d(a)=-1.}$ But that cannot be true, given that the depth of a vertex denotes the number of edges from ${G_r}$ to ${a,}$ which, by definition, is a natural number. ${\bs}$
+
+</Grid>
+
+> __~siblings~.__ Let ${a}$ and ${b}$ be vertices of a rooted tree ${G.}$ We say that ${a}$ and ${b}$ are _siblings_ if, and only if, ${p \prec a}$ and ${p \prec b.}$ If ${a}$ and ${b}$ are siblings, we shall write ${a \sib{p} b.}$
+
+> __~children~.__ Let ${a,b,p}$ be vertices of a rooted tree ${G.}$ We call the set
+> 
+> $$
+>		C[p] = \set{v,w \in V_G~:~ v \sib{p} w}
+> $$
+> 
+> the _children_ of ${p.}$ Following this definition, given a vertex ${v,}$ if ${C[v]=\nil,}$ then ${v}$ does not have children, and we say that ${v}$ is _nulliparous_. If ${C[v]\neq \nil,}$ then ${v}$ is a parent, and we say that ${v}$ is _multiparous_. We denote the set of all nulliparous nodes with the notation ${T_N,}$ and the set of all multiparous nodes ${T_M.}$
+
+
+
+> __~ancestor-descendants~.__ Given two vertices ${u}$ and ${v}$ in a rooted tree ${G,}$ if ${u}$ lies on a path from ${v}$ to ${G_r,}$ then ${u}$ is an ancestor of ${v,}$ and ${v}$ is a _descendant_ of ${u.}$ If ${u}$ is an ancestor of ${v,}$ then we write ${u \prec^k v,}$ where ${k \in \nat}$ is the number of edges comprising the path from ${u}$ to ${v,}$ defined as ${k = d(v)-d(u).}$ Where ${k = 1,}$ then ${u}$ is the _parent_ of ${v,}$ and we use the standard notation ${u \prec v.}$
+
+### k-ary Trees
+> __~k-ary tree~.__ A _k-ary tree_ is a tree ${T}$ such that, for any vertex ${v \in V_T,}$ it follows that ${C[v] \le k,}$ where ${k}$ is a positive integer called the _arity_ of ${T.}$
+
+#### Full k-ary Trees
+> __~full k-ary tree~.__ A _k-ary tree_ ${T}$ is _full_ if, and only if, every shoot has exactly ${k}$ children.
+
+<Grid cols={2}>
+
+> __~theorem~.__ Let ${n \in \pint}$ and let ${T}$ be a full k-ary tree. If ${\abs{T_S} = n,}$ then ${\abs{T_\ell} = n(k - 1) + 1}$ and ${\tx{ord}(T) = kn + 1.}$
+
+~proof~. Let ${T}$ be a full k-ary tree with ${n}$ shoots. Then ${\tx{order}(T) = \abs{T_S} + \abs{T_\ell},}$ from our previous lemma. Given that ${T}$ is a tree, every node will either have a parent, or not have a parent. There is exactly one node without a parent — the root ${T_r.}$ Hence, we have ${n + \abs{T_\ell} = x + 1,}$ where ${x}$ is the number of nodes with a parent. Because ${T}$ is a full k-ary tree, it follows that ${x = kn,}$ since every node has exactly ${k}$ children. Thus, we have ${n + \abs{T_\ell} = kn + 1.}$ Subtracting ${n}$ from both sides, we have ${\abs{T_\ell} = kn + 1 - n = n(k-1) + 1.}$ Given that ${\tx{order}(T) = \abs{T_S} + \abs{T_\ell},}$ it follows that 
+${\tx{order}(T)= n + kn + 1 - n = kn + 1.}$
+
+</Grid>
+
+Simply manipulating the formulas from the theorem above, we get several properties. Suppose ${\abs{T_S} = I}$ (the number of internal vertices/shoots), ${\abs{T_\ell}=L}$ (the number of leaves), and ${\tx{order}(T) = N.}$
+
+$$
+	\eqs{
+		L &= I(k-1) + 1 \\[1em]
+		N &= kI +  1 \\[1em]
+		L - I(k-1) &= 1 \\[1em]
+		I &= \dfrac{L - 1}{k-1} \\[1em]
+		I &= \dfrac{N-1}{k} \\[1em]
+		N &= k\ar{\dfrac{L - 1}{k-1}} + 1 \\[1em]
+	}
+$$
+
+Encapsulating these derivations:
+
+> __~properties of full k-ary trees~.__ Let ${T}$ be a full ${k}$-ary tree of arity ${k \in \pint.}$ 
+> 
+> > (1) If ${T}$ has ${s}$ shoots, then ${T}$ has ${s(k-1) + 1}$ leaves.
+> > 
+> > (2) If ${T}$ has ${s}$ shoots, then ${T}$ has ${ks + 1}$ vertices.
+> > 
+> > (3) If ${T}$ has ${\ell}$ leaves, then ${T}$ has ${\dfrac{\ell - 1}{k-1}}$ shoots.
+> > 
+> > (4) If ${T}$ has ${\ell}$ leaves, then ${T}$ has ${k\ar{\dfrac{\ell - 1}{k-1}} + 1}$ vertices.
+> > 
+> > (5) If ${T}$ has ${n}$ vertices, then ${T}$ has ${\dfrac{n-1}{k}}$ shoots.
+
+#### Complete k-ary Trees
+__~definition~.__ A _complete k-ary tree_ is a full ${k}$-ary tree ${T}$ such that, for any leaves ${\ell_1}$ and ${\ell_2,}$ it is true that ${d(\ell_1) = d(\ell_2.)}$ That is, all leaves of ${T}$ have the same depth.
+
+#### Perfect k-ary Trees
+> __~perfect ${k}$-ary tree~.__ A _perfect k-ary tree_ is a ${k}$-ary tree whose shoots have exactly ${k}$ children and whose leaves all have the same depth.
+
+<Grid cols={2}>
+
+> __~lemma~.__ A perfect ${k}$-ary tree of height ${h}$ has ${k^h}$ leaves.
+
+~proof~. Let ${T}$ be a perfect ${k}$-ary tree. Then for each depth ${d_n,}$ there are ${k}$ times as many vertices at depth ${d_n}$ than ${d_{n-1},}$ since every shoot has exactly ${k}$ children. Hence, at a depth ${n}$ there are ${k^n}$ vertices. Therefore, at depth ${n=h}$ (the largest possible depth), there are ${k^h}$ leaves. ${\bs}$
+
+</Grid>
+
+<Grid cols={2}>
+
+> __~lemma~.__ A perfect ${k}$-ary tree of height ${h}$ has ${\dfrac{k^{h+1}-1}{k-1}}$ vertices.
+
+<div>
+
+~proof~. Let ${T}$ be a complete ${k}$-ary tree of height ${h.}$ From the previous lemma, there are ${k^n}$ vertices at each depth. Hence, at depth 0, there is 1 vertex, the root. At depth 1, there are ${k}$ vertices by definition, at depth 2 there are ${k^2}$ vertices, and from the previous lemma, there are ${k^h}$ vertices at depth ${n.}$ Therefore, there are:
+
+$$
+	1 + k + k^2 + k^3 + \ldots + k^h
+$$
+
+vertices. This is the geometric sum:
+
+$$
+	\dsum{j=0}{h}k^j = \dfrac{k^{h-1}-1}{k-1}.~\bs
+$$
+
+</div></Grid>
+
+> __~lemma~.__ Let ${T}$ be a perfect ${k}$-ary tree of ${n}$ vertices. Then the number of leaves in ${T}$ is ${\dfrac{n(k-1)+1}{k}.}$
+
+~proof~. We obtain the lemma directly through elementary algebra. Let ${T}$ be a tree of height ${h,}$ with ${n}$ vertices. From the previous lemma, we know that ${T}$ has ${\frac{k^{h+1}-1}{k-1}}$ vertices. We also know that there are ${k^h}$ leaves, from lemma 0.1.54. It follows that that the number of non-leaf vertices is
+
+$$
+	\dfrac{k^{h+1}-1}{k-1} - k^h.
+$$
+
+Let ${L}$ be the number of leaves. Then:
+
+$$
+	n = \ar{\dfrac{k^{h+1}-1}{k-1} - k^h} + L,
+$$
+
+since the number of vertices ${n}$ of ${T}$ is the sum of the leaf vertices ${L}$ and the non-leaf vertices. Solving for ${L:}$
+
+$$
+	\small
+	\eqs{
+		n &= \ar{\dfrac{k^{h+1}-1}{k-1} - k^h} + L. \\[1em]
+		n &= \dfrac{k^{h+1}-1}{k-1} - k^h + L. \\[1em]
+		L &= n + k^h - \dfrac{k^{h+1}-1}{k-1}. \\[1em]
+		L(k-1) &= n(k-1) + k^h(k-1) - \dfrac{k^{h+1}-1}{\xcancel{k-1}}(\xcancel{k-1}). \\[1em]
+		L(k-1) &= n(k-1) + k^h(k-1) - {k^{h+1} + 1}. \\[1em]
+		L(k-1) &= n(k-1) + k^h(k) - k^h - k^h(k) + 1. \\[1em]
+		L(k-1) &= n(k-1) + \xcancel{k^h(k)} - k^h - \xcancel{k^h(k)} + 1. \\[1em]
+		L(k-1) &= n(k-1) - k^h + 1. \\[1em]
+	}
+$$
+
+We know that ${k^h = L,}$ since a perfect ${k}$-ary tree has ${k^h}$ leaves:
+
+$$
+	\small
+	\eqs{
+		L(k-1) &= n(k-1) - k^h + 1. \\[1em]
+		L(k-1) &= n(k-1) - L + 1. \\[1em]
+		L(k-1) + L &= n(k-1) - L + 1 + L. \\[1em]
+		L(k-1) + L &= n(k-1) + 1. \\[1em]
+		Lk - L + L &= n(k-1) + 1. \\[1em]
+		Lk &= n(k-1) + 1. \\[1em]
+		L &= \dfrac{n(k-1) + 1}{k}.~{\bs} \\[1em]
+	}
+$$
+
+
+
+<Grid cols={2}>
+
+> __~lemma~.__ The height of a perfect ${k}$-ary tree of ${n \ge 1}$ vertices is ${\floor{\log_{k}(n)}.}$
+
+<div>
+
+~proof~. From lemma 0.1.54, there are ${k^h}$ leaves in a perfect ${k}$-ary tree ${T}$ of height ${h.}$ And from the previous lemma, there are ${\frac{n(k-1)+1}{k}}$ leaves in ${T.}$ Therefore:
+
+$$
+	k^h = \dfrac{n(k-1)+1}{k}.
+$$
+
+Solving for ${h:}$
+
+$$
+	\eqs{
+		h &= \log_{k}\ar{\dfrac{n(k-1)+1}{k}}. \\[1em]
+		&= \log_{k}(n(k-1) + 1) - 1. \\
+		&= (\log_{k}(k-1) + \log_{k}(n)) - 1. \\
+	}
+$$
+
+We know that the last step above must be an integer, that the term ${\log_{k}(k-1)}$ is less than 1, and that term ${\log_{k}(n)}$ is not an integer. So, we rewrite the last step as the sum of ${\ceil{\log_{k}(k-1)}}$ (yielding 1) and the floor of ${\log_{k}(n)}$ (some integer):
+
+$$
+	\eqs{
+		h &= (\ceil{\log_{k}(k-1)} + \floor{\log_{k}(n)}) - 1.\\
+		h &= (1 + \floor{\log_{k}(n)}) - 1.\\
+		h &= \floor{\log_{k}(n)}.~{\bs}
+	}
+$$
+</div></Grid>
+
+
+Because all perfect ${k}$-ary trees are full ${k}$-ary trees and complete ${k}$-ary trees, the last lemma establishes bounds on the number of leaves a ${k}$-ary tree of height ${h}$ can have:
+
+> __~lemma~.__ Let ${T}$ be a ${k}$-ary tree with ${n}$ vertices, ${\ell}$ leaves, and a height of ${h.}$ Then the following propositions are true:
+> 
+> > (a) ${h + 1 \le n \le \dfrac{k^{h+1} - 1}{k-1}.}$
+> > 
+> > (b) ${\log_{k}L \le h.}$
+> > 
+> > (c) ${L \le k^h.}$
+
+
+#### Binary Trees
+> __~binary tree~.__ A _binary tree_ ${B}$ is a ${k}$-ary tree of ${k = 2.}$ That is, for any ${v \in V_B,}$ it follows that ${C[v] \le 2.}$
+
+<Grid cols={2}>
+
+> __~lemma~.__ A _full binary tree_ with ${n}$ shoots has ${n + 1}$ leaves and ${2n + 1}$ vertices.
+
+__~proof~.__ Let ${T}$ be a full binary tree. Applying theorem 0.1.49, we have ${\abs{T_\ell} = n(2-1) + 1 = n + 1,}$ and ${\tx{order}(T) = 2n + 1}$ vertices.
+
+</Grid>
+
+
+#### Spanning Trees
+The _spanning tree_ of a tree ${T}$ is a tree that contains all of ${T}$'s vertices, but not necessarily edges.
+
+> __~spanning tree~.__ Given a tree ${G,}$ a _spanning tree_ of ${G,}$ denoted ${t[G],}$ is a tree ${(v_t, e_t),}$ where ${v[t] = V[T]}$ and ${e_s \subseteq E[T].}$
+
+> __~forest~.__ A forest ${F}$ is a set ${\set{T_1, T_2, \ldots, T_n},}$ where each ${T_i}$ is a _tree_ for all ${1 \le i \lt n}$ with ${n \in \nat.}$
+
+> __~spanning forest~.__ Given a tree ${T,}$ the _spanning forest_ of ${T,}$ denoted ${\df{sf}[T],}$ is a set ${\set{t_1, t_2, \ldots, t_n},}$ where each ${t_i}$ is a spanning tree of ${T}$ for all ${1 \le i \lt n}$ with ${n \in \nat.}$
+
+### Graph Operations
+> __~complete graph~.__ A graph ${G = (V,E)}$ is a _complete graph_ if, and only if, for any ${a \in V}$ and any ${b \in V,}$ there exists an edge ${(a,b) \in V.}$ We denote a complete graph with the notation ${G[V]^2.}$
+
+> __~graph complement~.__ Given a graph ${G = (V,E),}$ the _complement_ of ${G,}$ denoted ${\nix{G},}$ is defined as ${\nix{G} = G[E] \smallsetminus G[V]^2.}$
+
+> __~graph union~.__ Given the graph ${G_1 = (V_1,E_1)}$ and ${G_2 = (V_1,E_2),}$ the union of ${G_1}$ and ${G_2}$ is defined as ${G_1 \cup G_2 = E_1 \cup E_2.}$
+
+### Digraphs
+Graphs can be directed or undirected. Directed graphs are also called _digraphs_. For example:
+
+<Graph
+	data={[
+		{ link: ["a", "b"] },
+		{ link: ["b", "c"] },
+		{ link: ["c", "d"] },
+		{ link: ["d", "a"] },
+		{ link: ["d", "e"] },
+		{ link: ["e", "f"] },
+		{ link: ["e", "g"] },
+	]}
+	id={`sample2`} collisionRadius={27}
+	straightEdges={true} isDirected={true}
+	scale={70} width={280} height={150} />
+
+Here, the edges are directed a particular way. By definition, an edge ${(e,g)}$ exists if and only if an edge ${(g,e)}$ exists. The "arrowhead" is determined by a function called the _adjacency function_. This function tells us that a directed edge ${(e,g)}$ exists, but not ${(g,e).}$
+
+> __~digraph~.__ A _digraph_ ${D}$ is an ordered triple ${(V_D, E_D, A_D),}$ where ${V_D}$ is a set of vertices, ${E_D}$ is a set of _directed edges_. The function ${A_D}$ is a mapping called the _arrow function_ of ${D,}$ such that ${A_D : E_D \mapsto V_D \times V_D}$ associates each directed edge with an ordered pair of vertices. Given a directed edge ${(u,v),}$ where ${u}$ and ${v}$ are vertices of ${V_D,}$ we call ${u}$ the edge's _source_, and ${v}$ the edge's _destination_. Given a vertex ${v \in V_D,}$ the number of edges such that ${v}$ is a _source_ is called the _outdegree_ of ${v,}$ denoted ${\df{odeg}(v).}$ The number of edges such that ${v}$ is a _destination_ is called the _indegree_ of ${v,}$ denoted ${\df{indeg}(v).}$
+
+## Adjacency Matrices
+While graph diagrams look pretty, they're not the easiest to draw nor are they the best vehicles for reasoning. Another way to model graphs is with an _adjacency table_ or _adjacency matrix_. For example, below is a graph diagram and its corresponding adjacency matrix.
+
+<Grid cols={2}>
+<Graph
+	data={[
+		{ link: ["a", "b"] },
+		{ link: ["b", "c"] },
+		{ link: ["c", "d"] },
+		{ link: ["d", "e"] },
+		{ link: ["a", "e"] },
+		{ link: ["d", "a"] },
+	]}
+	id={`sample4`} isDirected={true} collisionRadius={40}
+	edgeLength={20} straightEdges={true}
+	scale={90} width={200} height={160}/>
+|       | ${a}$ | ${b}$ | ${c}$ | ${d}$ | ${e}$ |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| ${a}$ | 0     | 1     | 0     | 1     | 1     |
+| ${b}$ | 0     | 0     | 1     | 0     | 0     |
+| ${c}$ | 0     | 0     | 0     | 1     | 0     |
+| ${d}$ | 0     | 0     | 0     | 0     | 1     |
+| ${e}$ | 0     | 0     | 0     | 0     | 0     | 
+</Grid>
+
+The left-most column indicates the _head_ (the starting vertex), and the 
+header row indicates the _tail_ (the ending vertex). A more concise form
+of the adjacency table is an _adjacency matrix_:
+
+$$
+	\mx{
+		0 & 1 & 0 & 1 & 1 \\
+		0 & 0 & 1 & 0 & 0 \\
+		0 & 0 & 0 & 1 & 0 \\
+		0 & 0 & 0 & 0 & 1 \\
+		0 & 0 & 0 & 0 & 0 \\
+	}.
+$$
+
+This should ring some bells: There is, in fact, a connection between graph theory and [linear algebra](./../linear_algebra/gaussian-elimination). We will be seeing some linear algebra applications in these materials.

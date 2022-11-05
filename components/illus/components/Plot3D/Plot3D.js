@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from "react";
 import { svg, canvasHelper, translate } from "../utils";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import { generatePlotPoints } from "./generatePlotPoints/generatePlotPoints";
 import { renderSurface } from "./renderSurface/renderSurface";
 import { colorFunction } from "./colorFunction/colorFunction";
+import { axisBottom, axisLeft, axisTop, scaleLinear, select } from "d3";
 
 export const Plot3D = ({
 	functions = [],
@@ -24,9 +24,6 @@ export const Plot3D = ({
 	xDomain = [-10, 10],
 	yDomain = [-2, 2],
 	zRange = xDomain,
-	renderXAxis = true,
-	renderYAxis = true,
-	renderZAxis = true,
 	xTickCount = 10,
 	yTickCount = 2,
 	zTickCount = 10,
@@ -34,38 +31,34 @@ export const Plot3D = ({
 	const Plot3DFigure = useRef();
 	const _svg = svg(width, height, margins);
 	const xLowerBound = xDomain[0];
-	const yLowerBound = yDomain[0];
 	const zLowerBound = zRange[0];
 	const xUpperBound = xDomain[1];
 	const yUpperBound = yDomain[1];
 	const zUpperBound = zRange[1];
-	const xScale = d3.scaleLinear(
+	const xScale = scaleLinear(
 		[xLowerBound, xUpperBound],
 		[0, _svg.width - margins[2]],
 	);
-	const yScale = d3.scaleLinear([0, yUpperBound], [0, margins[0]]);
-	const zScale = d3.scaleLinear(
+	const yScale = scaleLinear([0, yUpperBound], [0, margins[0]]);
+	const zScale = scaleLinear(
 		[zLowerBound, zUpperBound],
 		[_svg.height, 0],
 	);
-	const xAxis = d3
-		.axisBottom(xScale)
+	const xAxis = axisBottom(xScale)
 		.tickSizeInner(3)
 		.tickSizeOuter(0)
 		.ticks(xTickCount);
-	const yAxis = d3
-		.axisTop(yScale)
+	const yAxis = axisTop(yScale)
 		.tickSizeInner(3)
 		.tickSizeOuter(0)
 		.ticks(yTickCount);
-	const zAxis = d3
-		.axisLeft(zScale)
+	const zAxis = axisLeft(zScale)
 		.tickSizeInner(3)
 		.tickSizeOuter(0)
 		.ticks(zTickCount);
 
 	useEffect(() => {
-		const canvas = d3.select(Plot3DFigure.current).select("g.svgElement");
+		const canvas = select(Plot3DFigure.current).select("g.svgElement");
 		const plot3d = canvas.append("g").attr("class", "plot3d");
 		let _data;
 		let _surface;

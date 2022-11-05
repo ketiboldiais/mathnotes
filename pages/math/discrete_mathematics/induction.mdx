@@ -1,9 +1,9 @@
 # Induction
 
 The proofs we've seen so far are examples of one type of proof, the
-**direct proof**. We now introduce another type of proof, the **indirect
+__direct proof__. We now introduce another type of proof, the **indirect
 proof**. Indirect proofs come in several variants. One such variant is the
-**proof-by-contradiction**.
+__proof-by-contradiction__.
 
 ## Proof-by-contradiction
 
@@ -21,8 +21,8 @@ To prove a proposition ${P}$ is true, we assume that ${P}$ is false
 a falsehood is true (${P}$ is false implies ${P}$ is true). In doing so, we
 prove that it must be the case that ${P}$ is true.
 
-This works because if we can prove that ${\neg P \implies F,}$ then the
-only way for ${\neg P \implies F}$ to be true is if ${\neg P}$ is false.
+This works because if we can prove that ${\neg P \nc F,}$ then the
+only way for ${\neg P \nc F}$ to be true is if ${\neg P}$ is false.
 And if ${\neg P}$ is false, then ${P}$ is true.
 
 Example: Prove that ${\sqrt{2}}$ is irrational. First, let's be clear about
@@ -86,7 +86,7 @@ the member who discovered the proof.
 
 ## The Well-Ordering Principle
 
-The **Well-ordering Principle** states:
+The __Well-ordering Principle__ states:
 
 > __definition__. Every nonempty set of nonnegative integers has a smallest
 > element.
@@ -94,12 +94,12 @@ The **Well-ordering Principle** states:
 This short statement contains numerous implications. First, it's false for
 the empty set ${\emptyset,}$ since the empty set contains no elements.
 Second, it's false for the negative integers. And since it's false for the
-negative integers, it's false for the set of all integers. I.e., ${\ZZ}$ is
-not well ordered. And since it's false for ${\ZZ,}$ it's false for the set
+negative integers, it's false for the set of all integers. I.e., ${\uint}$ is
+not well ordered. And since it's false for ${\uint,}$ it's false for the set
 of all rational numbers, ${\mathbb{Q}.}$ And since it's false for
-${\mathbb{Q},}$ it's false for the set of all real numbers, ${\RR.}$ These
+${\mathbb{Q},}$ it's false for the set of all real numbers, ${\reals.}$ These
 all imply that there's something very special about the nonnegative
-integers, a.k.a. the natural numbers ${\NN.}$[^wop]
+integers, a.k.a. the natural numbers ${\nat.}$[^wop]
 
 [^wop]:
     The well-ordering principle is often shortened to WOP, not to be
@@ -113,20 +113,20 @@ proof, we used a little number theory and algebraic manipulation to
 construct a proof-by-contradiction. In that proof, however, we relied on a
 particular postulate:
 
-> _Postulate_. Let ${m, n \in \ZZ^{+}.}$ Then ${\dfrac{m}{n}}$ can be
+> _Postulate_. Let ${m, n \in \uint^{+}.}$ Then ${\dfrac{m}{n}}$ can be
 > written in _lowest terms_. In other words, ${\dfrac{m}{n}}$ cannot be
 > written as ${\dfrac{m'}{n'},}$ where ${m'}$ and ${n'}$ are positive
 > integers with no common prime factors.
 
 How do we know that this postulate is true? Well, we can prove it with WOP:
 
-**Proof (By Contradiction)**. Let ${m, n \in \ZZ^{+}.}$ Suppose
+__Proof (By Contradiction)__. Let ${m, n \in \uint^{+}.}$ Suppose
 ${\dfrac{m}{n}}$ _cannot_ be written in lowest terms. Further suppose that
 ${A}$ is the set of all positive integers that are numerators of
 ${\dfrac{m}{n}.}$ In other words, ${m \in A.}$ Because ${m \in A,}$ ${A}$
 is nonempty.
 
-Since ${A}$ is nonempty and ${A \subseteq \NN,}$ then by the well-ordering
+Since ${A}$ is nonempty and ${A \subseteq \nat,}$ then by the well-ordering
 principle, ${A}$ contains a smallest integer ${m_0 \in A.}$ Hence, again by
 WOP there exists an integer ${n_0 > 0}$ such that:
 
@@ -156,18 +156,18 @@ terms. ${\blacksquare}$
 
 ## Proof-by-induction
 
-We now turn to another variety of proofs &mdash; **proof-by-induction**.
+We now turn to another variety of proofs &mdash; __proof-by-induction__.
 The concept of induction is actually a predicate itself:
 
 > _Axiom_. Let ${P(n)}$ be a predicate. If ${P(0)}$ is true, and
-> ${\forall n \in \NN : (P(n) \implies P(n + 1))}$ is true, then
-> ${\forall n \in \NN : P(n)}$ is true.
+> ${\forall n \in \nat : (P(n) \nc P(n + 1))}$ is true, then
+> ${\forall n \in \nat : P(n)}$ is true.
 
 Another way of expressing the axiom above: If ${P(0)}$ is true, and if
-${P(0) \implies P(1),}$ and if ${P(1) \implies P(2),}$ all the way up to
+${P(0) \nc P(1),}$ and if ${P(1) \nc P(2),}$ all the way up to
 ${P(n),}$ then ${P(n)}$ is true for any natural number ${n.}$ As an axiom,
 induction is relatively straightforward. If know that ${P(0)}$ is true, and
-we know that ${P(0) \implies P(1),}$ and ${P(1) \implies P(2),}$ all the
+we know that ${P(0) \nc P(1),}$ and ${P(1) \nc P(2),}$ all the
 way up to ${P(n),}$ then it makes sense for ${P(n)}$ to be true for all
 ${n.}$ We can think of this as akin to dominoes falling.
 
@@ -183,7 +183,7 @@ rather than epistemic, context.
 
 Let's see an example. Prove the following:
 
-> ${\forall n \in \NN,}$
+> ${\forall n \in \nat,}$
 >
 > $$
 > 	  1 + 2 + 3 + \ldots + n = \dfrac{n(n + 1)}{2}
@@ -204,17 +204,17 @@ ${i}$ from ${i = 1}$ to ${i = n.}$ Thus, the proposition we are asked to
 prove can be more succinctly expressed as:
 
 $$
-	\forall n \in \NN : \left(\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}\right)
+	\forall n \in \nat : \left(\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}\right)
 $$
 
-The notation above is called a **summation**. There are a number of reasons
+The notation above is called a __summation__. There are a number of reasons
 why use the summation notation. To begin with, if ${n = 1,}$ then the
 expression ${1 + 2 + \ldots + n}$ is ambiguous and confusing. With the
 summation notation, we can simply say the when ${n = 1,}$ then
 ${\sum_{i = 1}^{n} = 1,}$ since the sum of 1 to 1 is simply 1. Similarly,
 if ${n \leq 0,}$ then ${\sum_{i = 1}^{n} = 0.}$ Why? Because there are no
 numbers to sum. We call these two cases, ${n = 0}$ and ${n = 1,}$ the
-**edge cases**.
+__edge cases__.
 
 All this in mind, let us write the proof. The first thing we do is to state
 that the proof will be done by induction. Next step: What is our predicate?
@@ -227,7 +227,7 @@ Let ${P(n)}$ be the proposition that
 ${\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}.}$
 
 Now we begin thinking about the proof. The first thing to analyze is the
-**base case**. Here, we must establish that ${P(0)}$ is true. We saw this
+__base case__. Here, we must establish that ${P(0)}$ is true. We saw this
 earlier. The sum of ${i = 1}$ to 0 of ${i}$ is 0. The proposition is also
 true by algebra:
 
@@ -236,8 +236,8 @@ $$
 $$
 
 Having proved the base case is true, we now must prove the second part, the
-**inductive case**. In this case, we must show: For ${n \geq 0,}$
-${P(n) \implies P(n + 1)}$ is true.
+__inductive case__. In this case, we must show: For ${n \geq 0,}$
+${P(n) \nc P(n + 1)}$ is true.
 
 Now, recall basic logic. How do we show that an implication is true? There
 is only one situation where the implication is false, and that is when
@@ -248,7 +248,7 @@ ${P(n + 1)}$ is true. So, putting together what we have so far:
 Let ${P(n)}$ be the proposition that
 ${\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}.}$ When ${n = 0,}$ then
 ${\sum_{i = 1}^{0} = 0.}$ This is the base case. We now prove the inductive
-case: For ${n \geq 0,}$ ${P(n) \implies P(n + 1).}$
+case: For ${n \geq 0,}$ ${P(n) \nc P(n + 1).}$
 
 Assume ${P(n)}$ is true for purposes of induction. Following this
 assumption, we must prove that
@@ -259,7 +259,7 @@ non-mathematician readers. It seems as if in trying to prove ${P(n),}$ we
 are assuming ${P(n).}$ Isn't this circular? Admittedly, it appears to
 teeter very close. In actuality, it is not at all circular. We are assuming
 ${P(n)}$ to prove the necessary condition of the proposition
-${P(n) \implies P(n + 1).}$ Remember, in mathematics, we write a proof one
+${P(n) \nc P(n + 1).}$ Remember, in mathematics, we write a proof one
 step at a time, from one deduction to the next.
 
 We should also be very clear about what we mean when we say something like
@@ -267,7 +267,7 @@ We should also be very clear about what we mean when we say something like
 saying, "Just pretend for a moment&mdash;for the sake of a
 hypothetical&mdash;that ${x}$ is true." The only purpose of an "Assume
 ${x}$" statement is to obtain a non-hypothetical statement of the form
-${x \implies y.}$ For example, remember how we wrote a
+${x \nc y.}$ For example, remember how we wrote a
 proof-by-contradiction? The same idea is at work here. We want to reach
 some non-hypothetical conclusion: "When we assume ${x,}$ this is what
 happens. And since this is what happens, it must be true that ..."
@@ -296,7 +296,7 @@ Putting this all together:
 Let ${P(n)}$ be the proposition that
 ${\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}.}$ When ${n = 0,}$ then
 ${\sum_{i = 1}^{0} = 0.}$ This is the base case. We now prove the inductive
-case: For ${n \geq 0,}$ ${P(n) \implies P(n + 1).}$
+case: For ${n \geq 0,}$ ${P(n) \nc P(n + 1).}$
 
 Assume ${P(n)}$ is true for purposes of induction. Following this
 assumption, we must prove that
@@ -307,16 +307,16 @@ ${\dfrac{n^2 + n + 2n + 2}{2},}$ which is ${\dfrac{n^2 + 3n + 2}{2}.}$
 Factoring this expression, we have ${\dfrac{(n + 1)(n + 2)}{2}.}$
 
 Thus, we have proved that ${P(n + 1)}$ is true. And since ${P(n + 1)}$ is
-true when ${P(n)}$ is true, the implication ${P(n) \implies P(n + 1)}$
-cannot be false. Therefore, the implication ${P(n) \implies P(n + 1)}$ must
+true when ${P(n)}$ is true, the implication ${P(n) \nc P(n + 1)}$
+cannot be false. Therefore, the implication ${P(n) \nc P(n + 1)}$ must
 be true. Ergo,
-${\forall n \in \NN : \left(\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}\right)}$
+${\forall n \in \nat : \left(\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}\right)}$
 is true. ${\blacksquare}$
 
 Let's do another example. Prove the following:
 
 $$
-	\forall n \in \NN: (3 \space\vert\space n^3 - n)
+	\forall n \in \nat: (3 \space\vert\space n^3 - n)
 $$
 
 Let's first test the predicate:
@@ -336,11 +336,11 @@ $$
 $$
 
 Our base case is true; 3 does in fact divide 0. Now we turn to the
-inductive step: For ${n \geq 0,}$ ${P(n) \implies P(n + 1)}$ is true. More
+inductive step: For ${n \geq 0,}$ ${P(n) \nc P(n + 1)}$ is true. More
 formally:
 
 $$
-	(\forall n \in \NN \mid n \geq 0) : P(n) \implies P(n + 1)
+	(\forall n \in \nat \mid n \geq 0) : P(n) \nc P(n + 1)
 $$
 
 To prove that this is true, we first assume that ${P(n)}$ is true. In other
@@ -380,7 +380,7 @@ $$
 
 We need not always have a base case start at 0. We could have a base case
 ${P(b)}$ and then the induction step
-${\forall n \geq b : P(n) \implies P(n + 1).}$
+${\forall n \geq b : P(n) \nc P(n + 1).}$
 
 Consider the following problem. We have a ${2^n \times 2^n}$ grid, and we
 want to tile it with an L-shaped tile, ${2 \times 2,}$ such that the
@@ -396,7 +396,7 @@ entirety of the grid is filled with one square open:
 It looks like we can from the diagram above. Now we want to prove it for
 all ${n.}$ Here is the proposition:
 
-> ${\forall n \in \NN,}$ there exists a way to tile a ${2^n \times 2^n}$
+> ${\forall n \in \nat,}$ there exists a way to tile a ${2^n \times 2^n}$
 > region with a center square missing.
 
 First, we establish our induction hypothesis: ${P(n) \coloneqq}$
@@ -406,7 +406,7 @@ only have one square, since ${2^0 \times 2^0 = 1.}$ That is the center
 square missing, so ${P(n)}$ is true where ${n = 0;}$ ${P(0)}$ is true.
 
 Now we consider the inductive case: For ${n \geq 0,}$ assume ${P(n)}$ is
-true to verify ${P(n) \implies P(n + 1).}$ Now we must prove that
+true to verify ${P(n) \nc P(n + 1).}$ Now we must prove that
 ${P(n + 1)}$ is true.
 
 Let's consider ${2^{n + 1} \times 2^{n + 1}.}$ It turns out it's very

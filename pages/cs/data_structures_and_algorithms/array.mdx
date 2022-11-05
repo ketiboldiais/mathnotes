@@ -1,0 +1,542 @@
+import { Arr } from "../../../components/hago";
+
+<Head>
+	<title>Arrays</title>
+	<meta name={`description`} content={`Notes on arrays.`}/>
+</Head>
+
+# Arrays
+
+_These notes cover arrays_.
+
+1. [Static Arrays](#static-arrays)
+2. [Costs-benefit Analysis](#costs-benefit-analysis)
+	1. [Insertion](#insertion)
+3. [Dynamic Arrays](#dynamic-arrays)
+4. [Problems](#problems)
+	1. [Deduplication](#deduplication)
+	2. [Sequential Search](#sequential-search)
+	3. [Binary Search](#binary-search)
+	4. [Maximum Value](#maximum-value)
+	5. [Maximum Subarray](#maximum-subarray)
+	6. [Pair Sum](#pair-sum)
+	7. [Pair Product](#pair-product)
+	8. [Stock Timing](#stock-timing)
+	9. [Intersection](#intersection)
+	10. [Five Sort](#five-sort)
+
+## Static Arrays
+
+An array is simply a contiguous block of memory:
+
+<Arr data={[3,6,8,1,9,6]}/>
+
+Each cell is indexed from 0 to ${n-1,}$ where ${n}$ is the number of discrete data objects stored; here, ${n=6.}$ The block of memory can then be treated as an _aggregate_ of scalar data. The size of this block depends on the number of bytes consumed by the scalar data. For example, suppose we declared four arrays, ${A,}$ ${B,}$ ${C,}$ and ${D:}$
+
+$$
+	\eqs{
+		\df{char} ~ & A.\len={12} \\
+		\df{char}^* ~ & B.\len={8} \\
+		\uint ~ & C.\len={6} \\
+		\df{double} ~ & D.\len={5}
+	}
+$$
+
+Each of ${\df{char},}$ ${\df{char}^*,}$ ${\uint,}$ and ${\df{double}}$ has a preset size.
+
+| ~array~ | ~element size~ | ~total size~ | ~start address~ | ~${i^{\tx{th}}}$ element~ |
+| ------- | -------------- | ------------ | --------------- | ------------------------- |
+| ${A}$   | ${1\B}$        | ${12\B}$     | ${a_A}$         | ${a_A + i}$               |
+| ${B}$   | ${8\B}$        | ${64\B}$     | ${a_B}$         | ${a_B + 8i}$              |
+| ${C}$   | ${4\B}$        | ${24\B}$     | ${a_C}$         | ${a_C + 4i}$              |
+| ${D}$   | ${8\B}$        | ${40\B}$     | ${a_D}$         | ${a_D + 8i}$              |
+
+
+Initializing an array is akin to claiming property in RAM. That is, nothing else may touch the contiguous block we've said is ours. The right to claim property, however, isn't exclusively ours — other entities on the system bear the right as well. This means that, at any given moment, we have neighbors: 
+
+$$
+	\begin{array}{c:c:c:c:c:c:c:c}
+		~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hdashline
+		P ~ & 3 & 6 & 8 & 1 & 9 & 6 & Q \\ \hdashline
+		~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\
+	\end{array}
+$$
+
+Above, ${P}$ and ${Q}$ are other programs running separately from ours. Just as they aren't allowed to touch our block of memory, we aren't allowed to touch theirs.
+
+> __~static array~.__ Let ${A}$ be a finite sequence of sets ${\ix{a_0, a_1, \ldots, a_{n-1}},}$ all initially empty, and let ${i}$ be an index. We call ${A}$ a _static array_ if, and only if, the following properties hold. ${A}$ has a _variable length_ ${\ell \in \nat,}$ denoted ${\len{A},}$ corresponding to the cardinality of ${A.}$ If ${i = 0,}$ then ${\rw{A}{0}=a_0}$ is the _first element_, and if ${i = n-1,}$ then ${\rw{A}{n-1}=a_{n-1}}$ is the last element. ${A}$ has a _constant capacity_, denoted ${\capa{A},}$ which restricts ${A}$ as follows:
+
+$$
+	\rw{A}{k} \mapsto
+	\begin{cases}
+			\B + {\omega}k  & \tx{iff}~~{0 \le i \lt \capa{A}} \\
+			\df{undefined}  & \tx{else}
+	\end{cases}
+$$
+
+> where ${\B \in \pint}$ is a constant called the _base address_, ${\omega \in \pint}$ is the _datatype size_, and ${k \in \nat}$ is an index.
+
+## Costs-benefit Analysis
+Say we have some array ${A.}$
+To access some element ${A_i}$, we perform _one_ memory access to read/write the data.
+That is, a ${\bigTheta{1}}$ operation.
+This isn't always the case for connected data structures like linked lists.
+
+### Insertion
+One operation where arrays perform poorly, however, is _insertion_.
+Suppose we're given the following array, with enough space allocated for
+an insertion:
+
+<Arr data={[4,5,7,8,`~`]}/>
+
+We want to insert the value 6 at index 2, currently occupied by 7.
+We start with a pointer to the last valid index.
+Then, so long as ${i}$ is greater than the index we'd like to insert at, we
+_right-shift_ the elements.
+
+<Arr data={[4,5,7,`~`,8]} pointers={{4:`i`}}/>
+<br/>
+<Arr data={[4,5,7,`~`,8]} pointers={{3:`i`}}/>
+<br/>
+<Arr data={[4,5,`~`,7,8]} pointers={{2:`i`}}/>
+
+Once ${i=2,}$ the condition no longer holds. 
+We can now set ${A\ix{i}=6.}$
+
+<Arr data={[4,5,6,7,8]} pointers={{2:`i`}}/>
+
+Below is an algorithm for this operation. For all future discussions, we will employ the operation below as the operation ${A \prec (I,E).}$
+
+<Algo>
+
+__~array-insert~__
+- __Input:__ an array ${A,}$ an index ${I,}$ and an element ${E.}$
+- __Output:__ a mutated ${A,}$ wherein ${A\ix{I}=E.}$
+- __Syntax__: ${A\ix{I} \push E}$
+
+1. __init__
+	1. ${\let{i}{\len{A}}}$
+2. __do__ `start loop body`
+	1. ${\let{A\ix{i}}{A\ix{i-1}}}$
+	2. ${\df{decrement}~i}$
+3. __if__ ${i \gt I}$ ${\goto{1}}$ `end loop body`
+4. __return__ ${A}$
+
+</Algo>
+
+From the algorithm above, we have the following property:
+
+> __~property~.__ Let ${A}$ be a static array with ${\len{A}=n}$ with ${n \in \nat,}$ let ${i}$ be an index, let ${E}$ be an object. Given ${f = A\ix{i} \push E,}$ if ${i = n-1,}$ then ${f \in \bigTheta{1};}$ otherwise, ${f \in \bigTheta{n}.}$
+
+As we'll see later, linked lists handle insertion within ${\bigTheta{1}}$ in the worst case.  Observe further that we assumed the array has enough memory for us to right-shift. Without such memory, we can assume that the right-most element is effectively lost upon shifting.  This reveals both a gift and a curse to arrays: They're _space-deterministic_. Once declared, we cannot go back to the system and ask, "Actually, could you make that size ${x}$?"
+
+## Dynamic Arrays
+_Dynamic arrays_ are one solution to the static array's problem of space-determinism.
+Say we start with the following static array ${A:}$
+
+<Arr data={[5,9,1,`~`,`~`]}/>
+
+When we first declared ${A,}$ it was fixed to a capacity of 3, and we now have just two addresses remaining. The dynamic array's approach is as follows. When we initialize the fourth address, a function allocates a new array ${B}$ with a capacity of ${3+k,}$  writes the contents of ${A}$ into ${B,}$ disclaims ${A,}$ and returns the base address of ${B.}$ In the diagram below, we assume ${k = 3.}$
+
+| ~command~                                                     | ~state~                                         |
+| ------------------------------------------------------------- | ----------------------------------------------- |
+| ${A\ix{3}\gets 13}$                                           | <Arr data={[5,9,1,`~`,`~`]}/>                   |
+| _define new array ${B}$ claiming 3 more addresses than ${A}$_ | <Arr data={[`~`,`~`,`~`,`~`,`~`,`~`,`~`,`~`]}/> |
+| _copy ${A}$ into ${B}$_                                       | <Arr data={[5,9,1,13,`~`,`~`,`~`,`~`]}/>        |
+| _disclaim ${A}$_                                              |                                                 |
+| _return ${B}$_                                                |                                                 |
+
+## Problems
+### Deduplication
+_Given an array ${A}$ with integers stored in non-decreasing order — some of which are duplicated, write an algorithm that returns the first ${n}$ elements of ${A}$ without duplicates_.
+
+<Minutiae>
+
+Consider the following array ${A,}$ whose elements are sorted in non-decreasing order.
+
+<Arr data={[1,2,3,3,4,5,5]}/>
+
+We want to remove duplicates in the array (here, 3 and 5).
+This operation is called _deduplicating_ or _deduping_ ${A.}$
+Let ${L}$ be the length of ${A.}$ If ${L \lt 2,}$ then we return ${A}$
+immediately, since we need at least 2 elements for a duplicate. We then 
+set a pointer ${i}$ on the second element.
+
+<Arr data={[1,2,3,3,4,5,5]} pointers={{1:`i`}}/>
+
+Next, we use a variable ${d}$ to keep track of the last index
+we saw a duplicate. At every case where ${\rw{A}{i} = \rw{A}{i-1}}$ (the current element is the same as its predecessor), we increment ${d.}$ In doing so, we're 
+effectively marking an index where the duplicated element ${\rw{A}{i}}$ should
+go to.
+
+| ~previous state~                                         | ${\rw{A}{i} = \rw{A}{i-1}}$ | ~resulting state~                                        |
+| -------------------------------------------------------- | --------------------------- | -------------------------------------------------------- |
+| <Arr data={[1,2,3,3,4,5,5]} pointers={{1:`i`}}/> ${d=0}$ | false                       | <Arr data={[1,2,3,3,4,5,5]} pointers={{2:`i`}}/> ${d=0}$ |
+| <Arr data={[1,2,3,3,4,5,5]} pointers={{2:`i`}}/> ${d=0}$ | false                       | <Arr data={[1,2,3,3,4,5,5]} pointers={{3:`i`}}/> ${d=0}$ |
+| <Arr data={[1,2,3,3,4,5,5]} pointers={{3:`i`}}/> ${d=0}$ | true                        | <Arr data={[1,2,3,3,4,5,5]} pointers={{4:`i`}}/> ${d=1}$ |
+| <Arr data={[1,2,3,3,4,5,5]} pointers={{4:`i`}}/> ${d=1}$ | false                       | <Arr data={[1,2,3,4,4,5,5]} pointers={{5:`i`}}/> ${d=1}$ |
+| <Arr data={[1,2,3,4,4,5,5]} pointers={{5:`i`}}/> ${d=1}$ | false                       | <Arr data={[1,2,3,4,5,5,5]} pointers={{6:`i`}}/> ${d=1}$ |
+| <Arr data={[1,2,3,4,5,5,5]} pointers={{6:`i`}}/> ${d=1}$ | true                        | <Arr data={[1,2,3,4,5,5,5]} pointers={{6:`i`}}/> ${d=2}$ |
+
+Once the loop is done, we return ${L-d.}$ Here, we get ${L-d=5,}$ corresponding
+to the first ${5}$ elements of ${A}$ without duplicates.
+
+<Algo>
+
+__~dedup~__
+
+- __Argument__: An array of non-decreasing integers ${A,}$ containing duplicates.
+- __Image__: The first ${n}$ elements of ${A}$ without duplicates.
+
+1. __init__
+	1. ${\let{L}{\len{A}}}$
+	2. ${\let{d}{0}}$
+	3. ${\let{i}{1}}$
+2. __do__ `begin loop body`
+	1. __if__ ${\rw{A}{i}=\rw{A}{i-1}}$ __then__
+		1. ${+(d,1)}$
+	3. __else__
+		1. ${\let{\rw{A}{i-d}}{\rw{A}{i}}}$
+3. __if__ ${i \lt L}$ ${\goto{4}}$ `end loop body`
+4. __return__ ${L-d}$
+
+</Algo>
+</Minutiae>
+
+### Sequential Search
+_Write an algorithm that performs sequential search_.
+
+<Minutiae><Algo>
+
+__Algorithm: Sequential search.__
+
+1. ${\let{L}{\len(A)}}$
+2. ${\let{i}{0}}$
+3. __while__ ${i \lt L}$ __do__
+	1. __if__ ${v = A_i}$ __return__ ${i}$
+	2. ${i \inc}$
+4. __return__ ${-1}$
+
+</Algo></Minutiae>
+
+### Binary Search
+_Write an algorithm that performs binary search_.
+
+<Minutiae><Algo>
+
+__Algorithm: Binary search.__
+
+1. __do__
+	1. ${\let{mid}{\dfrac{left + right}{2}}}$
+	2. __if__ ${key = A_{mid}}$ __then return__ ${mid}$
+	3. __else if__ ${key \lt A_{mid}}$ __return__ ${\let{right}{mid-1}}$
+	4. __else__ ${\let{left}{mid + 1}}$
+2. __return__ ${-1}$
+
+</Algo></Minutiae>
+
+
+### Maximum Value
+_Given an array ${A}$ of integers ${A,}$ write a function that returns the largest integer in ${A}$._
+
+<Minutiae>
+
+The standard iterative approach:
+
+<Algo>
+
+__~find-max~__
+
+- __Argument__: _a non-empty array of integers ${A.}$_
+- __Image__: _The largest integer, ${max.}$_
+
+1. __init__
+	1. ${\let{max}{A \ix{0}}}$
+	2. ${\let{i}{1}}$
+	3. ${\let{L}{\len{A}}}$
+2. ${\df{loop a}}$ __if__ ${i \lt L}$ __then__
+	1. __if__ ${A \ix{i} \gt max}$ __then__ ${\let{max}{A \ix{i}}}$
+	2. ${\df{increment }i}$
+	3. __goto__ ${\df{loop a}}$
+3. __return__ ${max}$
+
+</Algo>
+
+As seen above, this algorithm has a worst-case time complexity of ${\bigTheta{n},}$ where ${n}$ is the number of elements. It is, however, memory efficient — ${\bigTheta{1}.}$
+
+</Minutiae>
+
+
+### Maximum Subarray
+_Given an array of integers, find the subarray (containing at least one number) with the largest sum and return its sum.  For example, the array ${[-2,1,-3,4,-1,2,1,-5,4]}$ returns ${6,}$ given that the maximum subarray is ${[4,-1,2,1].}$_
+
+<Minutiae>
+
+Finding the maximum subarray is a problem with many solutions. One solution is _Kadane's algorithm_:
+
+<Algo>
+
+__~kadane's algorithm~__
+
+- __Argument__: _an array of integers_ ${A.}$
+- __Image__: _an integer ${b.}$_
+
+1. __init__
+	1. ${\let{L}{\len{(A)}}}$
+	2. ${\let{b,c}{A_i}}$
+	4. ${\let{i}{0}}$
+2. __while__ ${i \lt L}$ __do__
+	1. ${\let{c}{\max(A_i,c + A_i)}}$
+	2. ${\let{b}{\max(b,c)}}$
+3. __return__ ${b}$
+
+</Algo>
+
+This algorithm runs on ${\bigTheta{n}}$ time. The variable ${c}$ is used to keep track of the current running sum, and the variable ${b}$ is used to keep track of previous running sums (both initially set to the ${A}$'s first element). For each array element ${A_i,}$ we compute ${c + A_i.}$ If ${c + A_i \gt 0,}$ we update ${c}$ to take on the result. Then we compare ${b}$ against ${c.}$ If ${c}$ (the new running sum) is greater than ${b}$ (the previous running sum), we update ${b.}$ The process continues until we reach the last element. The problem: This algorithm, as written, will only work for positive integers. Below is a trace for ${[5,4,-1,7,8].}$
+
+| ${i}$ | ${A_i}$ | ${\max(A_i,c+A_i)}$ | ${c}$ | ${\max(b,c)}$     | ${b}$ |
+| ----- | ------- | ------------------- | ----- | ----------------- | ----- |
+| 1     | 4       | ${\max(4,5+4)}$     | 9     | ${\max{(5,9)}}$   | 9     |
+| 2     | -1      | ${\max(-1,9+(-1))}$ | 8     | ${\max{(9,8)}}$   | 9     |
+| 3     | 7       | ${\max(7,8+7)}$     | 15    | ${\max{(9,15)}}$  | 15    |
+| 4     | 8       | ${\max(8,15+8)}$    | 23    | ${\max{(15,23)}}$ | 23    |
+
+</Minutiae>
+
+
+### Pair Sum
+_Given an array ${A}$ and an integer ${T,}$ write an algorithm that returns a pair of indices whose elements sum to ${T.}$ The indices returned must be unique. For any given ${A,}$ such a pair exists._
+
+<Minutiae>
+
+The approach below uses a hash table, denoted ${H.}$ We use a variabe ${d}$ to keep track of ${T - a,}$ where ${a}$ is an element of the array. At each iteration, we store the pair ${(a,i),}$ where ${i}$ is the index of ${a.}$
+Before we do so, however, we compute ${d = T-a,}$ and check if ${H}$ contains ${d.}$ If it does, then we've found a pair, and return the pair ${(v,i),}$ where ${v}$ is the value associated with the key ${d.}$
+
+Why does this work? Because ${T = a + d,}$ where ${a}$ and ${b}$ are elements of the array ${A.}$ At each iteration, we see ${a,}$ so what we need is a ${T - a = d,}$ where ${a'}$ (the current element at each iteration) is equal to ${d.}$
+
+<Algo>
+
+__~pair sum~__
+
+- __Argument__:
+	- an array of integers ${A.}$
+	- an integer ${T.}$
+- __Image__: a pair ${(n,m) \in \nat \times \nat,}$ corresponding to indices.
+
+1. __init__
+	1. ${\let{L}{\len{A}}}$
+	2. ${\let{H}{\df{new hash-table}}}$
+	3. ${\let{i}{0},}$ ${\let{d}{0}}$
+2. __do__ `start loop body`
+	1. ${\let{d}{T-A\ix{i}}}$
+	2. __if__ ${d \in H}$ __then__
+		1. __return__ ${(H \ix{d}, i)}$
+	3. ${H \push (A \ix{i}, i)}$
+	4. ${\df{increment} ~ i}$
+3. __if__ ${i \lt L}$ __then__ ${\goto{4}}$ `end loop body`
+4. __return__ ${(~~)}$
+
+</Algo>
+
+This approach has both a linear time complexity and a linear space complexity ${\bigO{n},}$ hash table implementation aside.
+
+</Minutiae>
+
+### Pair Product
+_Given an array ${A}$ and an integer ${P,}$ write an algorithm that returns a pair of indices whose elements multiply to the given target. The indices returned must be unique. For any given ${A,}$ such a pair exists, and all elements of ${A}$ are less than ${P.}$_
+
+<Minutiae>
+
+Similar to the [pair sum](#pair-sum) problem, the approach below uses a hash table.
+
+<Algo>
+
+__~pair product~__
+- __Input:__ an array of integers ${A.}$
+- __Output:__ an integer ${P.}$
+
+1. __init__
+	1. ${\let{H}{\df{new hash-table}}}$
+	2. ${\let{L}{\len{A}}}$
+	3. ${\let{i}{0},~~q}$
+2. __do__ `begin loop body`
+	1. __if__ ${(A\ix{i} \neq 0) \land (T \rem A \ix{i} \neq 0)}$ __then__ ${\goto{9}}$
+	2. ${\let{q}{\dfrac{T}{A \ix{i}}}}$
+	3. __if__ ${q \in H}$ __then return__ ${(H \ix{i}, i)}$
+	4. ${H \push (A \ix{i},i)}$
+	5. ${\df{increment} ~ i}$ 
+3. __if__ ${i \lt L}$ __then__ ${\goto{4}}$ `end loop body`
+4. __return__ ${\nil}$
+
+</Algo>
+
+This approach takes ${\bigO{n}}$ time, hash table implementation aside, alongside a ${\bigO{n}}$ space complexity.
+
+</Minutiae>
+
+### Stock Timing
+_Let ${P}$ be an array of prices, where ${P_i}$ is the price of a given stock on the ${\ith{i}}$ day. Write an algorithm below maximizes profit by choosing a single day to buy one stock, and choosing a different day in the future to sell that stock._
+
+<Minutiae>
+
+<Algo>
+
+__Conditions__
+- ${\let{P}{}}$ a non-empty array of prices ${p_i,}$ where ${p \in \ZZ^+}$
+
+1. ${\fun{maxProfit}{P}}$
+2. ${\let{max~profit}{0}}$
+3. ${\let{min~purchase}{P_0}}$
+4. ${\let{L}{}}$ length of prices array
+5. ${\let{i}{0}}$
+6. __while__ ${i \ltn L}$ __do__
+	1. __if__ ${P_i \gtn {min~purchase}}$ __then__
+		1. ${\let{profit}{P_i - min~purchase}}$
+		2. ${\let{max~profit}{\max(profit, max~profit)}}$
+	2. __else__
+		1. ${\let{min~purchase}{P_i}}$
+7. __return__ ${max~profit}$
+
+
+</Algo>
+
+~exhibit~.
+
+$$
+	\ar{7,1,5,3,6,4} \implies 5
+$$
+
+On day 2, the price is 1, and on day 5, the price is 6. Thus, the profit is:
+
+$$
+	6 - 1 = 5
+$$
+
+which is the largest possible profit.
+
+~exhibit~.
+
+$$
+	\ar{7,6,4,3,1} \implies 0
+$$
+
+Here, no transactions are done and the maximum profit is 0.
+
+</Minutiae>
+
+### Intersection
+_Given in two arrays ${A}$ and ${B,}$ as arguments write an algorithm that returns a new array containing elements common to both arrays (i.e., ${A \cap B}$). The order of insertion is irrelevant, and neither ${A}$ nor ${B}$ contain duplicates._
+
+<Minutiae>
+
+A straightforward approach would be use nested loops,
+comparing each element of array ${A}$ against the elements of array ${B.}$
+The implementation is left as an exercise. Such an approach would yield 
+${\bigO{n \by m},}$ where ${n}$ is the length of the first array and ${m}$
+is the length of the second. The space complexity would also yield
+${\bigO{\min\set{n,m}}}$ (the minimum of ${n}$ and ${m}$).
+
+The approach below employs a hash table, keeping the time complexity
+down to ${\bigO{n+m},}$ where ${n}$ corresponds to the amount
+of hash table insertions (assumed to be a constant time operation, barring
+hash table implementation concerns), and ${m}$ corresponds to the amount
+of hash table lookups (again, assumed to be a constant time operation, 
+barring hash table implementation concerns).
+
+<Algo>
+
+__~intersection~__
+
+- __Argument__: an array ${A}$ and an array ${B.}$
+- __Image__: an array ${C,}$ where ${C = A \cap B.}$
+
+1. __init__
+	1. ${\let{L_A}{\len{A}}}$
+	2. ${\let{L_B}{\len{B}}}$
+	3. ${\let{H}{\df{new hash-table}}}$
+	4. ${\let{C}{\df{new array}}}$
+	5. ${\let{i}{0}}$
+2. __do__ `begin loop 1 body`
+	1. ${H \push (A\ix{i},i)}$
+	2. ${\df{increment}~i}$
+3. __if__ ${i \lt L_A}$ __then__ ${\goto{6}}$ `end loop 1 body`
+4. ${\let{i}{0}}$
+5. __do__ `begin loop 2 body`
+	1. __if__ ${B \ix{i} \in H}$ __then__
+		1. ${C \push B \ix{i}}$
+	2. ${\df{increment}~i}$
+6. __if__ ${i \lt L_B}$ __then__ ${\goto{11}}$ `end loop 2 body`
+7. __return__ ${C.}$
+
+</Algo>
+
+While this approach has a linear time complexity, it comes at the cost
+of an increased space complexity. With the straightforward approach, 
+the space complexity was kept to ${\bigO{\min\set{n,m}}.}$ Under the hash table approach, we now have ${\bigO{\min\set{n,m}} + \bigO{\min\set{n,m}}.}$ The constant multiple can be significant at higher scales. Comparing the lengths of the two arrays to determine which array to push hash table elements to can help
+reduce the space consumed by the hash table ${H.}$
+
+</Minutiae>
+
+### Five Sort
+_Given an array integers ${A}$, write an algorithm that rearranges the elements of ${A}$ such that all instances of the integer 5 appear at the end of ${A.}$ The algorithm should perform this operation in-place: Mutate the original array and return the mutated array upon completion. Elements that are not 5 may appear in any order in the output, so long as all 5s are at ${A}$'s end._
+
+<Minutiae>
+
+The trick here is to use a two-pointer approach. We start with a pointer ${i}$ at the start, and a pointer ${j}$ at the end:
+
+<Arr data={[4,5,5,3,1,2,5]} pointers={{0:`i`, 6:`j`}}/>
+
+First, we check if ${j}$ is already pointing at a 5 (${j \to 5}$). In this case, ${j \to 5.}$ So, we decrement ${j}$ (and continue decrementing) until ${j}$ no longer points at a 5 (${j \not \to 5}$).
+
+<Arr data={[4,5,5,3,1,2,5]} pointers={{0:`i`, 5:`j`}}/>
+
+The ${i}$ will move (and continue to move) until ${i \to 5.}$
+
+<Arr data={[4,5,5,3,1,2,5]} pointers={{1:`i`, 5:`j`}}/>
+
+Once we reach the state where ${i \to 5}$ and ${j \not\to 5,}$ we have the two pointers swap their pointees:
+
+<Arr data={[4,`\\red{2}`,5,3,1,`\\red{5}`,5]} pointers={{1:`i`, 5:`j`}}/>
+
+After the swap is done, we decrement ${j}$ and increment ${i.}$
+
+<Arr data={[4,2,5,3,1,5,5]} pointers={{2:`i`, 4:`j`}}/>
+
+Now have ${i \not\to 5}$ and ${j \not\to 5,}$ so we swap.
+
+<Arr data={[4,2,1,3,5,5,5]} pointers={{2:`i`, 4:`j`}}/>
+
+Increment and decrement again:
+
+<Arr data={[4,2,1,3,5,5,5]} pointers={{3:`ij`}}/>
+
+Now we have both pointers at the same index, so we end.
+
+<Algo>
+
+__~five sort~__
+
+- __Argument__: an array ${A.}$
+- __Image__: ${A}$ mutated, such that, for all indices ${n,m \in \nat,}$ if ${A \ix{n}=5}$ and ${A \ix{m}\neq 5,}$ then ${m \lt n.}$
+
+1. __init.__
+	1. ${\let{i}{0}}$
+	2. ${\let{j}{\len {A}}}$
+2. __do__ `start loop body`
+	1. __if__ ${A\ix{i} = 5}$ __then__ ${\df{decrement}~j}$
+	2. __else if__ ${A \ix{i} = 5}$ __then__
+		1. ${A \ix{i} \swap A \ix{j}}$ `swap`
+		2. ${\df{increment}~i}$
+	3. __else__ ${\df{increment}~i}$
+3. __if__ ${i \lt j}$ __then__ ${\goto{3}}$ `end loop body`
+4. __return__ ${A}$
+
+</Algo>
+
+The notion of "continue to move" is encapsulated in the strict branching above. That is, at each iteration, we have three mutually exclusive decisions: decrement ${j,}$ swap and increment ${i,}$ or just increment ${i.}$ Notice the effect of this: We don't reach the state ${i \lt j}$ unless we've _continued to move_.
+
+This algorithm has a linear time complexity, ${\bigO{n},}$ and a constant space complexity, ${\bigO{1}.}$
+
+</Minutiae>
+
+

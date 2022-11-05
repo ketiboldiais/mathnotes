@@ -3,10 +3,10 @@ import { svg } from "../utils/svg/svg";
 import { generateHTreeData } from "./generateHTreeData/generateHTreeData";
 import { insertArrowDefinitions } from "../utils/insertArrowDefinitions/insertArrowDefinitions";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import { attrs } from "../utils/attrs/attrs";
 import { translate } from "../utils/translate/translate";
 import { setValue } from "../utils/setValue/setValue";
+import { linkHorizontal, select, stratify, tree } from "d3";
 
 export const HTree = ({
 	data = [],
@@ -19,34 +19,28 @@ export const HTree = ({
 	fontFamily="system-ui",
 	sibSpace = 1,
 	nSibSpace = 2,
-	edgeLength = null,
 	nodeRadius = 7,
-	nodeFillColor = "#FFF9F9",
-	edgeColor = "#D77FA1",
-	nodeTextColor = "#A68DAD",
+	nodeFillColor = "#fff",
+	edgeColor = "#000",
+	nodeTextColor = "#000",
 	nodeStrokeColor = edgeColor,
 	nodeTextFontSize = "0.7rem",
-	edgeThickness = "1",
-	hideNodeCircles = false,
 }) => {
 	const HTree = useRef();
 	const _svg = svg(width, height, margins);
 	const _data = generateHTreeData(data);
-	let root = d3
-		.stratify()
+	let root = stratify()
 		.id((d) => d.child)
 		.parentId((d) => d.parent)(_data);
-	const diagonal = d3.linkHorizontal().x(d => d.y).y(d => d.x);
-	const treeStructure = d3
-		.tree()
+	const diagonal = linkHorizontal().x(d => d.y).y(d => d.x);
+	const treeStructure = tree()
 		.size([_svg.height, _svg.width])
 		.separation((a, b) => (a.parent === b.parent ? sibSpace : nSibSpace));
 	treeStructure(root);
-	const links = root.links();
 	const nodes = root.descendants();
 
 	useEffect(() => {
-		const canvas = d3.select(HTree.current).select("g.svgElement");
+		const canvas = select(HTree.current).select("g.svgElement");
 		const htree = canvas.append("g").attr("class", "htree");
 		if (isDirected)
 			insertArrowDefinitions(
@@ -60,12 +54,6 @@ export const HTree = ({
 				edgeColor,
 			);
 		const _links = htree.append("g").attr("class", "htree-edges");
-		const _link = _links
-			.selectAll("htree-edge")
-			.data(links)
-			.enter()
-			.filter((d) => !(d.source.data.display || d.target.data.display))
-			.append("path");
 		attrs(_links.selectAll("path"), {
 			class: "htree-edge",
 			fill: "none",
@@ -89,7 +77,6 @@ export const HTree = ({
 			)
 			.attr("transform", (d) => translate(d.y, d.x));
 
-		const nodeCircle = _node.append("circle");
 		attrs(_node.selectAll("circle"), {
 			class: "htree-node-circle",
 			r: nodeRadius,
@@ -98,7 +85,6 @@ export const HTree = ({
 		});
 
 		// add text to the node
-		const nodeText = _node.append("text").text((d) => d.id);
 		attrs(_node.selectAll("text"), {
 			class: "htree-node-text",
 			"font-family": fontFamily,

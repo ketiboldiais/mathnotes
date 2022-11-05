@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { svg } from "../utils/svg/svg";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import { setValue } from "../utils/setValue/setValue";
 import { attrs } from "../utils/attrs/attrs";
 import { insertArrowDefinitions } from "../utils/insertArrowDefinitions/insertArrowDefinitions";
@@ -12,6 +11,7 @@ import { renderBalanceFactors } from "../Tree/renderBalanceFactors/renderBalance
 import { calculateTreeSize } from "../Tree/calculateTreeSize/calculateTreeSize";
 import { generateBinaryTreeData } from "./GenerateBinaryTreeData/generateBinaryTreeData";
 import { className } from "../utils";
+import { select, stratify, tree } from "d3";
 
 export const BinaryTree = ({
 	data = [[]],
@@ -56,19 +56,18 @@ export const BinaryTree = ({
 	const TreeFigure = useRef();
 	const _svg = svg(width, height, margins);
 	const _data = generateBinaryTreeData(data);
-	const root = d3
-		.stratify()
+	const root = stratify()
 		.id((d) => (d.child.val ? d.child.val : d.child))
 		.parentId((d) => (d.parent.val ? d.parent.val : d.parent))(_data);
 	const _edgeLength = setValue(edgeLength, calculateTreeSize(root));
-	const treeStructure = d3
+	const treeStructure = tree()
 		.tree()
 		.size([_svg.width, _edgeLength])
 		.separation((a, b) => (a.parent === b.parent ? 1 : 1.1));
 	treeStructure(root);
 
 	useEffect(() => {
-		const canvas = d3.select(TreeFigure.current).select("g.svgElement");
+		const canvas = select(TreeFigure.current).select("g.svgElement");
 		const tree = canvas
 			.append("g")
 			.attr("class", className.binaryTree.canvas);

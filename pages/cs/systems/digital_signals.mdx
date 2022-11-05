@@ -6,7 +6,7 @@ Before we get to a functioning computer, we must assemble its components.
 Before we assemble its components, we must understand Boolean logic from
 the computer's perspective. And before we understand the computer's
 perspective, we must understand what _bits_ are. And to understand what
-bits are, we must study **signals**.
+bits are, we must study __signals__.
 
 ## What's a Signal?
 
@@ -31,7 +31,7 @@ communication. More complicated messages like
 Nevertheless, China's beacon towers present a straightforward introduction
 to the notion of a _signal_.
 
-Mathematically, a **signal** is just a function ${s(t).}$ What separates it
+Mathematically, a __signal__ is just a function ${s(t).}$ What separates it
 from other functions, however, is what it represents: The variation of some
 _physical quantity_ with respect to some parameter, most commonly _time_.
 Because it measure some physical quantity, the key characteristic of a
@@ -72,15 +72,15 @@ one among a finite set of possible measurements.
 ## Analog versus Digital
 
 The terms _analog_ and _digital_ refer to the signal's codomain. For
-example, the sine function, ${y = \sin(x),}$ is an **analog signal**. Its
-codomain is the interval ${\{ y \in \RR \mid -1 \leq y \leq 1 \}.}$ We
+example, the sine function, ${y = \sin(x),}$ is an __analog signal__. Its
+codomain is the interval ${\{ y \in \reals \mid -1 \leq y \leq 1 \}.}$ We
 classify it as an analog signal because it can output infinitely many
 signals &mdash; there are infinitely many real numbers between ${-1}$ and
 ${1.}$
 
 <Plot functions={[{ f: (x) => Math.sin(x), color: "firebrick" }]} />
 
-A **digital signal**, however, restricts the codomain to a subset of the
+A __digital signal__, however, restricts the codomain to a subset of the
 analog signal's codomain. For example, consider the function:
 
 $$
@@ -88,7 +88,7 @@ $$
 $$
 
 Where ${f,}$ the _frequency_, is ${1,}$ and ${t}$ is the time. This
-function results in a **square wave** whose graph appears as:
+function results in a __square wave__ whose graph appears as:
 
 <Plot
 	functions={[
@@ -118,7 +118,7 @@ two &mdash; ${0}$ or ${1}$ &mdash; we enter a world where pretty much
 everything is black and white, true or false. This greatly reduces
 complexity, because now we can model everything with a switch
 
-This single switch is called a **bit**. Using enough of these bits, we can
+This single switch is called a __bit__. Using enough of these bits, we can
 implement Boolean and arithmetic operations. And from these basic
 operations, we can emulate _memory_, all the way up to a full-fledged,
 functioning computer.

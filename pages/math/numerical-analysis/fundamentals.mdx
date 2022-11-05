@@ -1,0 +1,177 @@
+import { Plot } from "../../../components/hago/";
+
+<Head>
+	<title>Numeric Analysis Intro</title>
+	<meta name={`description`} content={`Introductory notes on numeric analysis.`}/>
+</Head>
+
+# Fundamentals
+
+_This is the first note on numerical analysis_.
+
+## Evaluating Polynomials
+
+Suppose we're given the polynomial ${p(x)=-2x^4 + 9x^3 + 2x^2 - 7x + 4.}$ The graph of ${p(x)}$ appears as follows:
+
+<Plot
+	data={[{f:(x)=>(-2*x**4) + (9*x**3) + (2*x**2) - (7*x) + 4}]}
+	domain={[-5,10]}
+	range={[-40,100]}
+	ticks={0}
+	scale={60}
+/>
+
+How might we evaluate this polynomial for some inputs ${x=-2?}$ The naive approach is to simply compute this as is:
+
+```bash
+let px = -2*(-2)**4 + 9*(-2)**3 + 2*(-2)**2 - 7*(-2)**1 + 4
+```
+
+Simple enough. We get the output: ${-58.}$ Now suppose we're asked to perform several evaluations: ${x_0 = -2, x_1 = 17, x_2 = 4.}$ We could perform them one at a time:
+
+
+```bash
+let px0 = -2*(-2)**4 + 9*(-2)**3 + 2*(-2)**2 - 7*(-2)**1 + 4
+let px1 = -2*(17)**4 + 9*(17)**3 + 2*(17)**2 - 7*(17)**1 + 4
+let px2 = -2*(4)**4 + 9*(4)**3 + 2*(4)**2 - 7*(4)**1 + 4
+```
+
+Here, we get `px0=-78`, `px1=-122362`, and `px2=152`. There's some repetitive code appearing here, so we might want to store the inputs in some variable ${x:}$
+
+```bash
+let x = -2;
+let px0 = -2*(x)**4 + 9*(x)**3 + 2*(x)**2 - 7*(x)**1 + 4
+x = 17;
+let px1 = -2*(x)**4 + 9*(x)**3 + 2*(x)**2 - 7*(x)**1 + 4
+x = 4;
+let px2 = -2*(x)**4 + 9*(x)**3 + 2*(x)**2 - 7*(x)**1 + 4
+```
+
+Again, we get the same answers. The polynomial remains the same, so let's just put it in a function:
+
+```bash
+function px(x) {
+	return -2*(x)**4 + 9*(x)**3 + 2*(x)**2 - 7*(x)**1 + 4;
+}
+let px0 = px(-2);
+let px1 = px(17);
+let px2 = px(4);
+```
+
+Instead of storing these outputs in a single variable, perhaps we ought to store them in an array:
+
+```bash
+function px(x) {
+	return -2*(x)**4 + 9*(x)**3 + 2*(x)**2 - 7*(x)**1 + 4;
+}
+let pxs = [px(-2), px(17), px(4)];
+```
+We can make this even more generic by defining the function `px` to take on an array of `x` values:
+
+```bash
+function px(xs:integer[]) {
+	let out = [];
+	for (let i = 0; i < xs.length; i++) {
+		let x = xs[i];
+		out.push(-2*(x)**4 + 9*(x)**3 + 2*(x)**2 - 7*(x)**1 + 4);
+	}
+	return out;
+}
+let pxs = px([-2, 17, 4]);
+```
+
+There are infinitely man polynomials, so we might like to make our `px` function more generic. Rather than using hardcoded constants, let's make pass an array of constants: 
+
+```bash
+function px(xs:number[],cs:number[]) {
+	let out = [];
+	for (let i = 0; i < xs.length; i++) {
+		let x = xs[i];
+		out.push(cs[0]*(x)**4 + cs[1]*(x)**3 + cs[2]*(x)**2 + cs[3]*(x)**1 + cs[4]);
+	}
+	return out;
+}
+let pxs = px([-2, 17, 4],[-2,9,2,-7,4]);
+```
+As is, we're limited to four terms. Moreover, we're hardcoding the indices. Can we get around this? If we think about it a bit more carefully, we'd see that a polynomial is really an accumulation of sums:
+
+```bash
+function px(xs:number[],cs:number[]) {
+	let out = [];
+	for (let i = 0; i < xs.length; i++) {
+		let x = xs[i];
+		let C = cs[4];
+		C = C + cs[3]*(x)**1;
+		C = C + cs[2]*(x)**2;
+		C = C + cs[1]*(x)**3;
+		C = C + cs[0]*(x)**4;
+		out.push(C);
+	}
+	return out;
+}
+let pxs = px([-2, 17, 4],[-2,9,2,-7,4]);
+```
+To make things clearer, let's reverse the order the constants are placed. Instead of `[-2,9,2,-7,4]`, we write `[4,-7,2,9,-2]`:
+
+```bash
+function px(xs:number[],cs:number[]) {
+	let out = [];
+	let xsLength = xs.length;
+	for (let i = 0; i < xsLength; i++) {
+		let x = xs[i];
+		let C = cs[0];
+		C = C + cs[1]*(x)**1;
+		C = C + cs[2]*(x)**2;
+		C = C + cs[3]*(x)**3;
+		C = C + cs[4]*(x)**4;
+		out.push(C);
+	}
+	return out;
+}
+let pxs = px([-2, 17, 4],[4,-7,2,9,-2]);
+```
+And in actuality, the constant term can be expressed as `C = cs[0]*(x)**0`. That is, ${Cx^0:}$
+
+```bash
+function px(xs:number[],cs:number[]) {
+	let out = [];
+	for (let i = 0; i < xs.length; i++) {
+		let x = xs[i];
+		let C = cs[0]*(x)**0;
+		C = C + cs[1]*(x)**1;
+		C = C + cs[2]*(x)**2;
+		C = C + cs[3]*(x)**3;
+		C = C + cs[4]*(x)**4;
+		out.push(C);
+	}
+	return out;
+}
+let pxs = px([-2, 17, 4],[4,-7,2,9,-2]);
+```
+Of course, this now means we need an inner for loop. We'll get rid of the `x**0`, as that was purely for illustrative purposes:
+
+```bash
+function px(xs:number[],cs:number[]) {
+	let out = [];
+	for (let i = 0; i < xs.length; i++) {
+		let x = xs[i];
+		let C = cs[0];
+		for (let j = 1; j < cs.length; j++) {
+			C = C + cs[j]*(x)**j;
+		}
+		out.push(C);
+	}
+	return out;
+}
+let pxs = px([-2, 17, 4],[4,-7,2,9,-2]);
+```
+
+What's the time complexity for this function? Suppose we have ${n}$ variables and ${m}$ constants. We have a step for the `out` initialization (1). Another step for the `i` initialization (1). The first for loop checks its condition ${n+1}$ times, and increments ${n}$ times (${2n + 1}$). Each loop has two initilizations (2) and a push (1). Then we have the second loop. One step for the initialization (1), ${m + 1}$ steps for the check and ${m}$ steps for the increment (${2m + 1}$), and one step for the `C` update (1). After all of that, we have a return (1). Putting it all together:
+
+$$
+	\eqs{
+		t(n,m) &= (1 + (2n+1)(3))((2m+1)(1+1)) + 1 \\
+					 &= (6n+4)(4m+2) + 1 \\
+					 &= 24nm + 12n + 16m + 9
+	}
+$$

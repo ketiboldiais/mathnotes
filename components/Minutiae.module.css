@@ -1,35 +1,58 @@
 .container button {
 	font-family: var(--serif);
+	font-variant: small-caps;
 	background-color: inherit;
 	border: none;
+}
+.container {
+	margin: -1%;
+	margin-bottom: 1%;
 }
 .testingContainer div { display: block; }
 .container > button {
 	font-size: 0.95em;
 	color: rgb(142, 174, 184);
+	margin: 0;
 }
 .container button:hover { cursor: pointer; }
-.container > div { margin: 10%; }
+.container > div {
+	margin: 10%;
+}
 .containerCloseButton {
-	font-size: 1.3em;
+	font-size: 1.5em;
+	color: var(--powder);
 	float: right;
 	font-family: "Fira Code";
 	position: sticky;
 	top: 0;
 }
-.contentActive { display: none; }
+.contentActive {
+	display: none;
+}
 .contentInactive {
 	background-color: var(--background-color);
-	box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.5);
-	border: solid thin lightgrey;
-	z-index: 20;
+	box-shadow:0px 7px 10px rgba(0, 0, 0, 0.5);
+	border:solid thin lightgrey;
+	z-index:20;
 	position:fixed;
-	overflow-y: scroll;
-	overscroll-behavior:none;
-	width: 80%;
+	overflow-y:scroll;
+	overscroll-behavior:contain;
+	width: 82%;
 	height: 80%;
 	top:50;
 	left:0;
 	bottom:0;
 }
-.contentBody { padding: 1em; }
+.contentBody {
+	padding: 3em;
+	padding-top: 4em;
+}
+@media (max-width:500px) {
+	.contentInactive {
+		top:0;
+		height: 70%;
+	}
+	.contentBody {
+		padding:1em;
+	}
+}

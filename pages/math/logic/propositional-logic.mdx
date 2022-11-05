@@ -1,1073 +1,802 @@
 import { Plot as Plot2 } from "../../../components/illus/components/Plot/Plot";
 
-<head>
-	<title>FOL</title>
-	<description>Notes on first order logic.</description>
-</head>
+<Head>
+	<title>First-order Logic</title>
+	<meta name={`description`} content={`Notes on first-order logic.`}/>
+</Head>
 
-# First-order Logic
+# Logic
 
-This chapter provides notes on first-order logic.
+_This note covers first-order logic._
 
-<div className="outline">
-
-1. [Primitives](#primitives)
-2. [Propositional Alphabet](#propositional-alphabet)
-3. [Definition of a Proposition](#definition-of-a-proposition)
-4. [Compound Propositions](#compound-propositions)
-5. [Propositional Formulas](#propositional-formulas)
+1. [Introduction](#introduction)
+	1. [Axioms and Models](#axioms-and-models)
+	2. [Consistency](#consistency)
+2. [Primitives](#primitives)
+	1. [Propositions](#propositions)
+3. [Boolean Functions](#boolean-functions)
 	1. [Negation](#negation)
-	2. [Double Negatives](#double-negatives)
-	3. [Conjunction](#conjunction)
-		1. [Expression: But](#expression-but)
-	4. [Negated Conjunction](#negated-conjunction)
-	5. [Inclusive Disjunction](#inclusive-disjunction)
-	6. [Negated Inclusive Disjunction](#negated-inclusive-disjunction)
-	7. [Exclusive Disjunctions](#exclusive-disjunctions)
-	8. [Evaluation Order](#evaluation-order)
-6. [Logical Equivalence](#logical-equivalence)
-7. [De Morgan's Laws](#de-morgans-laws)
-8. [Tautology](#tautology)
-9. [Contradictions](#contradictions)
-10. [Conditional Propositions](#conditional-propositions)
-	1. [When Is a Conditional False?](#when-is-a-conditional-false)
-11. [Implications as Logical Disjunctions](#implications-as-logical-disjunctions)
-12. [Negative Implications](#negative-implications)
-13. [The Contrapositive](#the-contrapositive)
-	1. [The Converse](#the-converse)
-	2. [The Inverse](#the-inverse)
-	3. [Equivalence of Converse and Inverse](#equivalence-of-converse-and-inverse)
-14. [Idiom: Only If](#idiom-only-if)
-15. [The Biconditional](#the-biconditional)
-16. [Common Equivalences](#common-equivalences)
+	2. [Disjunction](#disjunction)
+	3. [Denial](#denial)
+	4. [Conjunction](#conjunction)
+	5. [Incompatibility](#incompatibility)
+	6. [Implication](#implication)
+	7. [Non-implication](#non-implication)
+	8. [Converse Implication](#converse-implication)
+	9. [Converse Non-implication](#converse-non-implication)
+	10. [Biconditional](#biconditional)
+	11. [Exclusive Disjunction](#exclusive-disjunction)
+	12. [Table Summary](#table-summary)
+4. [Models](#models)
+5. [Predicates](#predicates)
 
-</div>
+## Introduction
+Symbolic logic, fundamentally, is a _sanity check_. Human critique points out the imperfections in the entities we create — whether that entity is hardware, software, a novel, proof, art, music, and so on. Before the critique stage, there are various application-specific tools we might use: Focus groups, stress tests, debuggers, spell-check, statistics, etc. All of these tools, however, require us to create either a complete prototype or some component of the entity. None of them work without our placing time and effort into instantiation. The only tool unshackled to this requirement is _symbolic logic_. This liberty is both a gift and a curse. Of all the knowledge domains, logic is the most unforgiving, totalitarian, and treacherous. Its resident propositions and theorems are creators at genesis. And as creators, they both giveth and taketh away: Logic may enlight the darkest abodes of reasoning, but it may equally set them ablaze. The primary question of logic: How do we control this fire? Answering this question is the study of logic.
 
-_First-order logic (FOL)_ is the field of logic most people are familiar with.
-It's the kind of logic we'd encounter in a "Logic 101" course, and it's the
-logic most heavily used in mathematics. We begin first with _propositional
-logic_.
+### Axioms and Models
+We begin by defining a model.
+
+> __~definition: model~.__ A collection of objects and relations betwen the objects in the collection.
+
+~example~. ${\text{model}=\set{\tx{apples}, \tx{peaches}, \tx{apples and peaches are round}}}$
+
+~example~. ${\text{model}=\set{a,b,c,d \lt b, c \lt d}.}$
+
+> __~definition: axiom~.__ A true statement about a model.
+
+> __~definition: axiomatic system~.__ A collection of axioms.
+
+~example~.
+
+$$
+	\tx{model}:\lset{\ax{
+		\tx{objects}&:& \lset{\tx{herrings},\tx{birds}} \\
+		\tx{relations}&:& \lset{\tx{birds are not herrings}} \\
+	}} \\[1em]
+	\lset{\ax{
+		\tx{axioms}&:& \lset{\tx{all herrings are red},~\tx{all birds are spies}} \\
+	}}
+$$
+
+> __~inference rule~.__ A procedure that takes an axiom and returns another axiom. By convention, we call the return value of an inference rule a _theorem_.
+
+$$
+	\tx{model}:\lset{\ax{
+		\tx{objects}&:& \lset{\tx{herrings},\tx{birds}} \\
+		\tx{relations}&:& \lset{\tx{birds are not herrings}} \\
+	}} \\[1em]
+	\lset{\ax{
+		\tx{axioms}&:& \lset{\tx{all herrings are red},~\tx{all birds are spies}} \\
+		\tx{inference rules}&:& \lset{\tx{all $x$ are $y$, all $y$ are $z$, then all $x$ are $z$}}} \\
+	}
+$$
+
+> __~theory~.__ A collection of axioms and inference rules.
+
+$$
+	\tx{model}:\lset{\ax{
+		\tx{objects}&:& \lset{\tx{herrings},\tx{birds}} \\
+		\tx{relations}&:& \lset{\tx{birds are not herrings}} \\
+	}} \\[1em]
+	\tx{theory}: \lset{\ax{
+		\tx{axioms}&:& \lset{\tx{all herrings are red},~\tx{all birds are spies}} \\
+		\tx{inference rules}&:& \lset{\tx{all $x$ are $y$, all $y$ are $z$, then all $x$ are $z$}}} \\
+	}
+$$
+
+### Consistency
+There are several benchmarks we can use to evaluate theories.
+
+> __~definition: consistency~.__ A theory is _consistent_ if, and only if, for any axiom ${a,}$ and for any inference rule ${f,}$ ${f}$ returns exactly one of ${(a,t)}$ or ${(a,\tx{not} ~ t)}$ where ${t}$ is a theorem. Otherwise, a theory is _inconsistent_.
+
+The definition of consistency introduces an interesting challenge for theories. If we have too many axioms, we increase the risk of an inconsistency. If we have too few axioms, we underconstrain the theory, and we either have to do much more work to apply it to models, or remain content with its reduced utility.
+
+Much of mathematics relies on theories that others have gone through the trouble of error checking and debugging. A particularly popular theory is set theory (which itself comes in a wide variety), but there are alternatives: lambda calculus, object calculus, second-order arithmetic, category theory, etc. 
 
 ## Primitives
+Before we study logic formally, let's set some ground rules. Because of how low-level logic is, there's a tendency to plunge down an all too familiar sequence: What is ${x}$? ${x}$ is ${y.}$ What is ${y?}$ ${y}$ is ${z.}$ What is ${z?}$ ${z}$ is ${z' \ldots}$ While such questions are important and interesting, we need this sequence to converge. In logic and mathematics, we avoid infinite regression by using _primitive notions_ — a concept that is not defined in terms of previously-defined concepts. We have to start somewhere, and if we aren't starting at the same place, well, we'll just have to go our separate ways. Our first primitive notion is a _symbol_:
 
-Before we study logic formally, let's set some ground rules. Because of how
-low-level logic is, there's a tendency to plunge down an all too familiar
-sequence:
+> __~symbol~.__ A _symbol_ is a drawing or mark perceptible by sight or sound.
 
-> What is ${x}$? ${x}$ is ${y.}$
->
-> What is ${y?}$ ${y}$ is ${z.}$
->
-> What is ${z?}$ ${z}$ is ${z'.}$
->
-> ${\vdots}$
-
-While such questions are important and interesting, we need this sequence to
-converge as a sanity check. In logic and mathematics, we avoid infinite
-regression by using _primitive notions_ — a concept that is not defined in terms
-of previously-defined concepts. We have to start somewhere, and if we aren't
-starting at the same place, well, we'll just have to go our separate ways.
-
-Our first primitive notion is a _symbol_:
-
-<dfn>
-
-__~symbol.~__ A _symbol_ is a drawing or mark perceptible by sight.
-
-</dfn>
-
-For example, all of the following are symbols:
+~example~. All of the following are symbols:
 
 $$
   \iff~~9~~\land~~~\lor~~\in \\
-  P~~~Q~~~\implies~~~\infty~~\Sigma~~ \\
+  P~~~Q~~~\nc~~~\infty~~\Sigma~~ \\
   \neg~~\{~~+~~-~~!~~?~~0~~ \\
-  x~~~(~~<~~\pi~~\sqrt{}~~\int\\
+  x~~~(~~<~~\pi~~\sqrt{}~~\uint\\
   {\bf A}~~f~~\lxor~~\div~y~~~] \\
 $$
 
-From the primitive notion of a symbol, we can construct our first definition.
+We gather symbols into a collection called an _alphabet_.
 
-<dfn>
+> __~alphabet~.__ A finite set of symbols is called an _alphabet_, which we may arbitrarily denote as ${\Sigma}$. 
 
-__~alphabet~.__ A finite set of symbols is called an _alphabet_, denoted
-${\Sigma}$. 
+~example~. the set ${\set{0,1}}$ is an alphabet of two symbols, ${0}$ and ${1.}$
 
-</dfn>
+~example~. The alphabet ${\set{0,1,2,3,4,5,6,7,8,9}}$ is an alphabet of 10 symbols. This particular alphabet is called the _Hindu-Arabic numerals_, and each element of the set is called a _digit_.
 
-For example, the set:
+> __~string~.__ A _string_ ${\sigma}$ of length ${n}$ is an ${n}$-tuple:
+> 
+> $$
+> 	(a_i : {(i \neq n \nc i + 1) \land (1)})
+> $$
+> 
+> where each ${a_i}$ is a member of some alphabet ${\Sigma.}$ That is, ${a_i \in \Sigma.}$ There exists a unique string where ${n=0,}$ which we call the _empty string_, denoted ${\lambda.}$ We say that the first symbol ${a_0}$ in ${\sigma}$ is the _first letter_ and the last symbol ${a_n}$ is the _last letter_. The set of all strings on the alphabet ${\Sigma}$ is the disjoint union:
+> 
+> $$
+> 	\Sigma^* = \bigsqcup\limits_{n} A^n.
+> $$
 
-$$
-  \set{0,1}
-$$
+When we want to explicitly refer to a string divorced of all connotations, we will use question marks. For example, to denote the string _cookie_, we write ${\string{\text{cookie}}.}$ To denote the string 2518 we write: ${\string{2518}.}$
 
-is an alphabet of two symbols, ${0}$ and ${1.}$ The alphabet:
+> __~concatenation~.__ Given the strings ${a = (a_1,\ldots,a_n)}$ and
+> ${b=(b_1,\ldots,b_m)}$ on an alphabet ${\Sigma,}$ the concatenation ${ab \in
+> \Sigma^*}$ is defined as:
+> 
+> $$
+> 	ab = a_1, \ldots, a_mb_1, \ldots, b_n
+> $$
+> 
+> Thus, we say that ${ab}$ is a string on ${\Sigma}$ of length ${m + n.}$ We define concatenation to be associative: ${(ab)c = a(bc)}$ for all ${a,b,c \in \Sigma^*.}$ We define the empty string ${\lambda}$ to be the identity element: ${\lambda a = a = a \lambda.}$ And we define concatenation to have two-sided cancellation: If ${ab=ac,}$ then ${b=c,}$ and if ${ac = bc,}$ then ${a=b.}$
 
-$$
-  \set{0,1,2,3,4,5,6,7,8,9}
-$$
+### Propositions
+We begin by defining our propositional alphabet:
 
-is an alphabet of 10 symbols. This particular alphabet is called the
-_Hindu-Arabic numerals_, and each element of the set is called a _digit_. Having
-defined what an alphabet is, here is our next definition:
+> __~definition~.__ The set ${\Sigma}$ is the alphabet
+> 
+> $$
+> 	\Sigma = \set{\top, \bot, \neg, \lor, \land} \cup \tav
+> $$
+> 
+> where ${\tav}$ is a set containing all the Hindu-Arabic numerals, all the lower-case Greek letters, all the upper-case Greek letters, all the lower-case Roman letters, and all the upper-case Roman letters. Given an element of ${\tav,}$ we call such an element an _atom_, for which ${\top}$ or ${\bot}$ are assumed to be bound. The symbol ${\top}$ is read _true_. The symbol ${\bot}$ is read _false_. The symbol ${\neg}$ is read _not_. The symbol ${\lor}$ is read _or_. The symbol ${\land}$ is read _and_.
 
-<dfn>
+> __~definition~.__ Let ${\Sigma}$ be the alphabet ${\tav \cup \set{\top,~\bot,~\neg,~\lor,~\land}.}$ A _proposition_ ${\s}$ is a string on ${\Sigma}$ for which there exists a sequence ${(a_n) = \ax{a_1,\ldots,a_n}}$ with ${n \in \pint,}$ such that ${\s = S.}$ For each ${k \in \set{1,\ldots,n},}$ either ${\s_k \in \Sigma}$ or there are ${i,j \in \set{i,\ldots,k-1}}$ such that ${\s_k}$ is a member of the set of concatenations ${\set{\neg \s_i, \lor \s_i \s_j, \land \s_i, \s_j}.}$ We denote the set of propositions on ${\sigma}$ with the notation ${\df{prop}(\Sigma).}$
 
-__string.__ A _string_ ${\sigma}$ of length ${n}$ is an ${n}$-tuple:
+In short, the definition provides that a word is a string consisting only of symbols from our alphabet ${\Sigma,}$ with at least one of the following properties:
 
-$$
-	\sigma = (a_0, a_1, a_2, \ldots, a_{n-1})
-$$
+1. ${\s}$ is an atom.
+2. ${\s}$ is ${\top.}$
+3. ${\s}$ is ${\bot.}$
+4. Where ${p}$ and ${q}$ are propositions, ${\s}$ is one of the propositions ${\neg p,}$ ${\lor pq,}$ or ${\land pq.}$ 
 
-where each ${a_i}$ is a member of some alphabet ${\Sigma.}$ That is, ${a_i \in
-\Sigma.}$ There exists a unique string where ${n=0,}$ which we call the _empty
-string_, denoted ${\lambda.}$ We say that the first symbol ${a_0}$ in ${\sigma}$
-is the _first letter_ and the last symbol ${a_n}$ is the _last letter_. The set
-of all strings on the alphabet ${\Sigma}$ is the disjoint union:
+> __~lemma~.__ Let ${\set{x,y} \subseteq \df{prop}(\sigma).}$ If ${\len(x) = 1,}$ then ${x \in \set{\top,\bot}.}$ If ${\len(x) \gt 1,}$ then ${x_0 \in \set{\neg, \lor, \land}.}$ If ${x_0 = \neg,}$ then ${x = \neg y.}$ If ${x_0 = \lor,}$ then there exists a unique pair ${(x,y)}$ such that ${x = \lor x y.}$ If ${x_0 = \land,}$ then there exists a unique pairs ${(x,y)}$ such that ${x = \land x,y.}$
 
-$$
-	\Sigma^* = \bigsqcup\limits_{n} A^n.
-$$
+We're going to delay this lemma's proof until a later section. For now, note that we've defined propositions in prefix notation — ${\land pq}$ and ${\lor pq.}$ The benefit to prefix notation is that it follows naturally from our definitions. The cost, however, is readability. As such, we adopt the following convention without apology or compromise:
 
-</dfn>
+> __~convention~.__ Given a string ${\land ab,}$ we may denote the string as ${a \land b,}$ and given a string ${\lor ab,}$ we may denote the string as ${a \lor b.}$ Purely for readability, we may distinguish strings by inserting an abscissa before the first symbol in the string and by inserting an ordinate after the last symbol in the string, where the abscissa and ordinate belong to a an ordered pair from the set ${(\set{,}),(\ix{,}),(\px{,}).}$
 
-When we want to explicitly refer to a string divorced of all connotations, we
-will use question marks. For example, to denote the string "cookie", we write:
+We now state two primitive propositions.
 
-$$
-	\string{\tt{cookie}}
-$$
-
-to denote the string 2518 we write:
-
-$$
-	\string{2518}
-$$
-
-Next, we define a method for combining strings.
-
-<dfn>
-
-__concatenation.__ Given the strings ${a = (a_1,\ldots,a_n)}$ and
-${b=(b_1,\ldots,b_m)}$ on an alphabet ${\Sigma,}$ the concatenation ${ab \in
-\Sigma^*}$ is defined as:
+__~or-proposition~.__ Let ${i,n \in \pint.}$ By the recursion theorem,
 
 $$
-	ab = a_1, \ldots, a_mb_1, \ldots, b_n
+	\bigvee\limits_{i=1}^{n} p_i = p_1 \lor \ldots \lor p_n = \case{
+		\bot &\if ~ n = 0. \\
+		p_1 &\if ~ n = 1. \\
+		p_1 \lor p_2 &\if ~ n = 2. \\
+		\bigvee\limits_{i=1}^{n}~ p_{i-1} \lor p_i &\if ~ n \gt 2. \\
+	}
 $$
 
-Thus, we say that ${ab}$ is a string on ${\Sigma}$ of length ${m + n.}$ We define concatenation to be associative: ${(ab)c = a(bc)}$ for all ${a,b,c \in \Sigma^*.}$ We define the empty string ${\lambda}$ to be the identity element: ${\lambda a = a = a \lambda.}$ And we define concatenation to have two-sided cancellation: If ${ab=ac,}$ then ${b=c,}$ and if ${ac = bc,}$ then ${a=b.}$
-
-</dfn>
-
-## Propositional Alphabet
-
-We begin by stating the first few symbols of our alphabet:
+__~and-proposition~.__ Let ${i,n \in \pint.}$ By the recursion theorem,
 
 $$
-	\set{\top~~~\bot~~~\neg~~~\lor~~~\land}
+	\bigwedge\limits_{i=1}^{n} p_i = p_1 \land \ldots \land p_n = \case{
+		\top &\if ~ n = 0. \\
+		p_1 &\if ~ n = 1. \\
+		p_1 \land p_2 &\if ~ n = 2. \\
+		\bigwedge\limits_{i=1}^{n}~ p_{i-1} \land p_i &\if ~ n \gt 2. \\
+	}
 $$
 
-These symbols are given the following meanings:
+Alongside the definitions above, we adopt the following conventions.
 
-<div className="numbered">
+> __~convention~.__ Let ${p,q,r \in \df{prop}(\Sigma).}$ Then by convention, we adopt the following notations:
+> 
+> $$
+> 	\eqs{
+> 		&p \lnand q& &\as& &\neg{p}\lor\neg{q}& \\
+> 		&p \lnor q& &\as& &\neg{p}\land\neg{q}& \\
+> 		&p \nc q& &\as&  &\neg p\lor q& \\
+> 		&p \not\nc q& &\as&  &\neg(p \nc q)& \\
+> 		&p \cn q& &\as&  &q \nc p& \\
+> 		&p \not\cn q& &\as&  &\neg(q \nc p)& \\
+> 		&p \iff q& &\as& &(p \cn q) \land (p \nc q)& \\
+> 		&p \lxor q& &\as&  &\neg(p\iff q)& \\
+> 	}
+> $$
+> where the notation ${\as}$ denotes ${\string{is defined as.}}$
 
-| Symbol    | Meaning |
-| --------- | ------- |
-| ${\top}$  | true    |
-| ${\bot}$  | false   |
-| ${\neg}$  | not     |
-| ${\lor}$  | or      |
-| ${\land}$ | and     |
+## Boolean Functions
+> __~definition~.__ A _Boolean function_ is a function ${t:\Sigma \mapsto \set{0,1}.}$ The function ${t}$ is extended to ${\hat{t}: \df{prop}(\Sigma) \mapsto \set{0,1}}$ provided all of following rules are complied with:
+> 
+> > ${\small{(\tx{i})}~}$ ${\hat{t}(\top)=1.}$
+> > 
+> > ${\small{(\tx{ii})}~}$ ${\hat{t}(\bot)=0.}$
+> > 
+> > ${\small{(\tx{iii})}~}$ ${\hat{t}(\neg p)= 1 - \hat{t}(p).}$
+> >
+> > ${\small{(\tx{iv})}~}$ ${\hat{t}(p \lor q) = \max{\set{\hat{t}(p),~\hat{t}(q)}}.}$
+> >
+> > ${\small{(\tx{v})}~}$ ${\hat{t}(p \land q) = \min{\set{\hat{t}(p),~\hat{t}(q)}}.}$
+> 
+> Purely for readability, we may write ${t}$ in lieu of ${\hat{t}.}$
 
-</div>
-
-These first few symbols are called _propositional connectives_. Next, we denote
-a set ${ּ\tav}$ where each symbol in ${\tav}$ is a _propositional atom_. For
-now, ${\tav}$ comprises the Hindu-Arabic numerals, and the Latin and Greek
-letters, lower and uppercase. The symbol ${\tav}$ is the Hebrew letter _tav_.
-
-## Definition of a Proposition
-
-With the basic constructions, we define a proposition as follows.
-
-<dfn>
-
-__proposition.__ Let ${\Sigma}$ be the alphabet ${\tav \sqcup \set{\top,~\bot,~\neg,~\lor,~\land}.}$ A proposition is a string ${w}$ on ${\Sigma,}$ for which there exists a sequence ${\seq{s_1,\ldots,s_n},}$ where ${n \geq 1,}$ such that ${w = s_n.}$ For each ${k \in \set{1,\ldots,n},}$ either ${w_k \in \Sigma}$ or there are ${i,j \in \set{i,\ldots,k-1}}$ such that ${w_k}$ is a member of the set of concatenations ${\set{\neg w_i, \lor w_i w_j, \land w_i, w_j}.}$ We denote the set of propositions on ${\Sigma}$ as ${\tt{Prop}(\Sigma).}$
-
-</dfn>
-
-This definition seems awfully rigid, but it can't be helped (we're defining
-something that underlies all of mathematics). Fortunately, outside of the
-definition box, we can take a breather and look at things informally. In short,
-the definition says, a proposition is a string consisting only of symbols from
-our alphabet ${\Sigma,}$ which we defined as:
-
-$$
-	\tav \sqcup \set{\top,~\bot,~\neg,~\lor,~\land}.
-$$
-
-That is, the disjoint union of the set of propositional atoms and the set of
-propositional connectives. That string, however, isn't just any string. It's a
-string ${\P}$ with at least one of the following properties:
-
-1. ${\P}$ is an atom.
-2. ${\P}$ is ${\top.}$
-3. ${\P}$ is ${\bot.}$
-4. Where ${p,q \in \tt{Prop}(\Sigma),}$ ${\P}$ is one of the propositions ${\neg p,}$ ${\lor pq,}$ or ${\land pq.}$ 
-
-Note that we've defined our propositions in prefix notation — ${\land pq}$ and
-${\lor pq.}$ The benefit to prefix notation is that it follows naturally from
-our definitions. The cost, however, is readability. As such, we adopt the
-following convention without apology or compromise: Given a string ${\land ab,}$
-we may also write ${a \land b,}$ and given a string ${\lor ab,}$ we may also
-write ${a \lor b.}$
-
-## Compound Propositions
-
-Propositions can be connected with _logical connectives_ to create
-_compound propositions_. For example, the propositions "$x$ is less than
-_or_ equal to 4" and "$s$ is a member of $A$ but not a member of $B$" are
-examples of compound propositions.
-
-Importantly, to form compound propositions, the connected propositions must have
-set truth values. In other words, we cannot connect propositions that do not
-already have the assigned values of _true_ or _false_. 
-
-## Propositional Formulas
-
-Just as the proposition "${x}$ plus ${y}$ equals one" can be translated to ${x +
-y =1,}$ the proposition "If ${p}$ then ${q}$" can be expressed symbolically as: 
-
-$$
-	p \implies q
-$$
-
-The expression above is called a _propositional formula_. It consists of the
-_propositional variables_ ${p}$ and ${q,}$ and the logical operator
-${\implies.}$ Let's see what logical operators we have available.
+We now proceed to proving various propositions about the Boolean functions.
 
 ### Negation
 
-The operator ${\neg}$ is called _logical negation_. It takes a single
-proposition as an operand, and returns the opposite of the operand's truth
-value. Here's its truth table:
+<Grid cols={2}>
 
-| $p$ | ${\neg p}$ |
-| --- | ---------- |
-| T   | F          |
-| F   | T          |
+> __~tnot lemma~.__ If ${t(p)=1,}$ then ${t(\neg p)=0.}$
+> 
+> ~proof~. Let ${p=\top.}$ Then ${t(p)=1,}$ and ${t(\neg p)=1-t(p)=1-1=0.}$ ${\ws}$
 
-Computer science often refers to the logical negation as the _not-expression_. A
-helpful way to think about the negation (and all the other logical operators) is
-in terms of sets.
+> __~fnot lemma~.__ If ${t(p)=0,}$ then ${t(\neg p)=1.}$
+> 
+> ~proof~. Let ${p=\bot.}$ Then ${t(\neg p)=1-t(p)=1-t(\bot)=1-0=1.}$ ${\ws}$
 
-<Plot2
-	geo={[
-		{type:"rectangle",xy:[0,0],w:20,h:12,class:"yellowRectangle"},
-		{type:"circle",xy:[0, 0],r:5,class:"redCircle"}, 
-		{type:"label",id:"\\neg p",xy:[-9.25, 5.5],fontSize:2.5},
-		{type:"label",id:"p",xy:[-0.5,1],fontSize:2.5},
-	]}
-	marginTop={0}
-	marginBottom={0}
-	noAxes={true}
-	scale={40}
-	id={"logical_not"}
-/>
+> __~not-truth table~.__ Let ${x=t(p).}$ Then the table below contains all the possible mappings of ${x.}$
+> 
+> | ${x}$ | ${\neg x}$ |
+> | ----- | ---------- |
+> | 0     | 1          |
+> | 1     | 0          |
 
-When we denote a proposition as ${p,}$ we effectively create a set called ${p.}$
-If the proposition is true, it exists inside this set ${p.}$ If a proposition is
-false, it exists outside the set ${p.}$
+</Grid>
 
+### Disjunction
 
-### Double Negatives
+<Grid cols={2}>
 
-The __double negative property__ provides that, given a proposition $p$,
-the negation of the negation of $p$ is simply $p$. We can see this to be
-the case from the truth table for ${\neg (\neg p)}$:
+> __~torf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \lor q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ Then ${t(a \lor b)=\max\set{1,0}=1.}$ ${\ws}$
 
-| $p$ | ${\neg p}$ | ${\neg (\neg p)}$ |
-| --- | ---------- | ----------------- |
-| T   | F          | T                 |
-| F   | T          | F                 |
+> __~fort lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \lor q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ Then ${t(a \lor b)=\max\set{0,1}=1.}$ ${\ws}$
+
+> __~tort lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \lor q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ Then ${t(a \lor b)=\max\set{1,1}=1.}$ ${\ws}$
+
+> __~forf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \lor q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ Then ${t(a \lor b)=\max\set{0,0}=0.}$ ${\ws}$
+
+> __~or-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \lor b.}$
+> 
+> | ${a}$ | ${b}$ | ${a \lor b}$  |
+> | ----- | ----- | ------------- |
+> | 0     | 0     | 0             |
+> | 1     | 0     | 1             |
+> | 0     | 1     | 1             |
+> | 1     | 1     | 1             |
+
+</Grid>
+
+### Denial
+
+<Grid cols={2}>
+
+> __~tnorf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \lnor q)=0.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ Then ${\neg a=0}$ by the ~tnot lemma~, and ${\neg b=1}$ by the ~fnot lemma~. By definition, ${a \lnor b = \neg a \land \neg b.}$ Therefore, ${a \lnor b = 0 \land 1 = 0}$ by the ~fat lemma~. ${\ws}$
+
+> __~fnort lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \lnor q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ Then ${\neg a = 1}$ by the ~fnot lemma~, and ${\neg b = 0}$ by the ~tnot lemma~. By definition, ${a \lnor b = \neg a \land \neg b.}$ Therefore, ${a \lnor b = 1 \land 0 = 0}$ by the ~torf lemma~. ${\ws}$
+
+> __~fnorf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \lnand q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ Then by the ~tnot lemma~, ${\neg a = 1}$ and ${\neg b = 1.}$ By definition, ${a \lnor b = \neg a \land \neg b.}$ Therefore, ${a \lnand b = 1 \land 1 = 1}$ by the ~tat lemma~. ${\ws}$
+
+> __~tnort lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \lnor q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ Then by the ~fnot lemma~, ${\neg a=0}$ and ${\neg b=0.}$ By definition, ${a \lnor b = \neg a \land \neg b.}$ Therefore, ${a \lnor b = 0 \land 0 = 0}$ by the ~faf lemma~. ${\ws}$
+
+> __~nand-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \lnor b.}$
+> 
+> | ${a}$ | ${b}$ | ${a \lnor b}$ |
+> | ----- | ----- | ------------- |
+> | 0     | 0     | 1             |
+> | 1     | 0     | 0             |
+> | 0     | 1     | 0             |
+> | 1     | 1     | 0             |
+
+</Grid>
 
 ### Conjunction
 
-The logical connective ${\land}$ is called the _conjunction_. If ${p}$ and ${q}$
-are propositions, then the conjunction of ${p}$ and ${q}$ is "${p}$ _and_
-${q}$," denoted ${p \land q.}$ As a truth table:
+<Grid cols={2}>
 
-| ${p}$ | ${q}$ | ${p \land q}$ |
-| ----- | ----- | ------------- |
-| T     | T     | T             |
-| T     | F     | F             |
-| F     | T     | F             |
-| F     | F     | F             |
-
-From a set theory perspective, the conjunction is a way of expressing the idea
-that some object is in both ${A}$ and ${B.}$
-
-<Plot2
-	geo={[
-		{type: "rectangle",
-			xy: [0, 0],
-			w: 20,
-			h: 12,
-			class: "yellowRectangle"},
-		{ type: "circle", xy: [-2, 0], r: 5, class: "blueCircle" },
-		{ type: "circle", xy: [2, 0], r: 5, class: "redCircle" },
-		{ type: "label", id: "\\Omega", xy: [-9.25, 5.5], fontSize: 2.3 },
-		{ type: "label", id: "A \\cap B", xy: [-1.5, 1], fontSize: 1.5 },
-		{ type: "label", id: "A", xy: [-6, 2], fontSize: 1.5 },
-		{ type: "label", id: "B", xy: [5, 2], fontSize: 1.5 },
-	]}
- marginTop={0}
- marginBottom={0}
- noAxes={true}
- scale={40}
- id={"logical_and"}
-/>
-
-In computer science, the conjunction is often referred to as the
-_and-expression_. 
-
-#### Expression: But
-
-The word _but_ is just another word for _and_ in logic. For example, consider
-the proposition
-
-
-> $\string{\tt{It is not hot but it is sunny.}}$
-
-From the perspective of propositional logic, this proposition is no different from saying
-
-> $\string{\tt{It is not hot and it is sunny.}}$
-
-Encapsulating the component propositions to variables:
-
-> ${h = \string{\tt{It is hot.}}}$
->
-> ${s = \string{\tt{It is sunny.}}}$ 
- 
-In propositional logic, we express this proposition as
-
-$$
-	\neg h \land s.
-$$
-
-### Negated Conjunction
-
-One of the most important propositional formulas in real-world logic
-applications is the _negated conjunction_. In natural language, the negated
-conjunction often takes the form:
-
-$$
-	\string{\tt{not $p$ and $q$}}
-$$
-
-This is a bit ambiguous in propositional logic — are we saying ((not $p$) _and_
-($q$)), or are we saying (not $p$ _and_ not $q$)? In most everyday usage, it's
-the latter:
-
-$$
-	\string{\tt{not $p$ and not $q$}}
-$$
-
-Thus, as a propositional formula, we have:
-
-$$
-	\neg(p \land q)
-$$
-
-In computer science, this is propositional formula is often called a
-_nand-expression_. As we'll see later, it turns out that if a system has the
-nand-expression as a primitive, the system can derive all of the other logical
-connectives.
-
-### Inclusive Disjunction
-
-The logical connective OR is the _logical disjunction_. Let $p$ and $q$ be
-propositions. The disjunction of $p$ and $q$ is "$p$ OR $q$," denoted
-${p \lor q.}$ If, and only if, $p$ is true, $q$ is true, or both $p$ and
-$q$ are true, then ${p \lor q}$ is true. Otherwise, if both $p$ and $q$ are
-false, then ${p \lor q}$ is false.
-
-As a truth table:
-
-| $p$ | $q$ | ${p \lor q}$ |
-| --- | --- | ------------ |
-| T   | T   | T            |
-| T   | F   | T            |
-| F   | T   | T            |
-| F   | F   | F            |
-
-Note that this definition of OR differs from our more common usage of _or_,
-which generally denotes "one or the other, but not both." This common usage
-of _or_ is called the __exclusive or__. In mathematics and computer
-science, we use the __inclusive or__ by default &mdash; "one or the other,
-or both." When the _exclusive or_ is used, mathematicians and computer
-scientists will make it explicit with sentence structures such as "$A$ or
-$B$ but not both," or, occassionally, "Either $A$ or $B$." The _exclusive
-or_ (XOR) is covered in later sections.
-
-### Negated Inclusive Disjunction
-
-The negation of a disjunction is called the _negated disjunction_. In everyday language, it often takes the form _neither ${x}$ nor ${y.}$_
-
-<dfn>
-
-__negated disjunction.__ Let ${p}$ and ${q}$ be propositions. Then:
-
-$$
-	\neg p \land \neg q	
-$$
-
-is the _negated disjunction_ of ${p}$ and ${q,}$ read "Neither ${p}$ nor ${q.}$"
-We may also express the negated disjunction as:
-
-$$
-	\neg p \lnor q.
-$$
-
-</dfn>
-
-In computer science, the negated disjunction is often called a _nor-expression_.
-
-### Exclusive Disjunctions
-
-The logical connective XOR, is the _exclusive disjunction_ (the _exlusive
-or_). Given propositions $p$ and $q$, the exlusive disjunction of $p$ and
-$q$ is "Either $p$ or $q$," or "$p$ or $q$ but not both." It is denoted
-${p \oplus q}$.
-
-The proposition ${p \oplus q}$ is true if, and only if, $p$ is true or $q$
-is true, but not both. If (a) both $p$ and $q$ are true, or (b) both $p$
-and $q$ are false, then ${p \oplus q}$ is false.
-
-| $p$ | $q$ | ${p \oplus q}$ |
-| --- | --- | -------------- |
-| T   | T   | F              |
-| T   | F   | T              |
-| F   | T   | T              |
-| F   | F   | F              |
-
-Note that ${p \oplus q}$ is the same proposition as
-${(p \lor q) \land \neg (p \land q).}$ We can verify this with a truth
-table:
-
-| $p$ | $q$ | ${p \lor q}$ | ${p \land q}$ | ${\neg (p \land q)}$ | ${(p \lor q) \land \neg (p \land q)}$ | ${p \oplus q}$ |
-| --- | --- | ------------ | ------------- | -------------------- | ------------------------------------- | -------------- |
-| T   | T   | T            | T             | F                    | F                                     | F              |
-| T   | F   | T            | F             | T                    | T                                     | T              |
-| F   | T   | T            | F             | T                    | T                                     | T              |
-| F   | F   | F            | F             | T                    | F                                     | F              |
-
-
-### Evaluation Order
-
-Compound propositions themselves can be connect to form more complicated
-expressions:
-
-$$
-	\neg p \lor q \\
-	(\neg p \lor q) \land \neg (p \lor q) \\
-	\neg ((p \land q) \lor (p \land (p \lor \neg q)))
-$$
-
-When evaluating these more complicated expressions, we follow a convention
-called the _Boolean order of operations_:
-
-1. Parenthesized expressions are evaluated first, following these rules.
-2. Negations are evaluated second.
-3. Conjunctions are performed third.
-4. Inclusive/exclusive disjunctions are performed last.
-
-An interesting thing to note is that this is purely a convention. We could have
-used an entirely different order, but this is the order most people have agreed
-on.
-
-## Logical Equivalence
-
-The propositions "2 is greater than 1" and "1 is less than 2" are two
-different ways of saying the same thing. This is because of the definitions
-of the words &#8220;greater than&#8221; and &#8220;less than.&#8221; Both
-propositions, together, can only be: (1) both true, or (2) both false. In
-other words, if the propositions were connected with a logical connective and
-evaluated in a truth table, their truth values would be identical.
-
-For example, suppose $p$ and $q$ are propositions. The compound
-propositions ${p \land q}$ and ${q \land p}$ have the same truth values:
-
-| ${p}$ | ${q}$ | ${p \land q}$ | ${q \land p}$ |
-| ----- | ----- | ------------- | ------------- |
-| T     | T     | T             | T             |
-| T     | F     | F             | F             |
-| F     | T     | F             | F             |
-| F     | F     | F             | F             |
-
-When two _proposition forms_ have the same truth values, we say that they
-are _logically equivalent_. More formally, two proposition forms are
-logically equivalent if, and only if, they have identical truth values
-for each possible substitution of propositions for their proposition variables.
-The logical equivalence of proposition forms $p$ and $q$ is denoted by
-writing ${p \equiv q.}$
-
-Because of logical equivalence, there are logical properties we can use in all
-situations. We will explore some tactics for evaluating logical equivalences
-once we've covered conditonals.
-
-## De Morgan's Laws
-
-Consider the following proposition:
-
-> Apples are red and sweet.
-
-As we know, this is a compound proposition:
-
-> (1) Apples are red.
+> __~taf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \land q) = 0.}$
 > 
-> (2) Apples are sweet.
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ Then ${t(a \land b)=\min\set{1,0}=0.}$ ${\ws}$
 
-For the proposition to be false, one or both of (1) and (2) must be false. That is,
-
-> Apples are _not_ red _and_ sweet.
+> __~fat lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \land q) = 0.}$
 > 
-> Apples are red _and not_ sweet
->
-> Apples are _not_ red _and_ are _not_ sweet.
- 
-These propositions can be reduced to a single proposition:
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ ${t(a \land b)=\min\set{0,1}=0.}$ ${\ws}$
 
-> Apples are _not_ red _or_ are _not_ sweet."
+> __~tat lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \land q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ Then ${t(a \land b)=\min\set{1,1}=1.}$ ${\ws}$
 
-Similarly, consider the proposition:
+> __~faf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \land q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ Then ${t(a \land b)=\min\set{0,0}=0.}$ ${\ws}$
 
-> Apples are red _or_ green.
- 
-Like the previous proposition, this is a compound proposition consisting of two
-propositions:
+> __~and-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \land b.}$
+> 
+> | ${a}$ | ${b}$ | ${a \land b}$ |
+> | ----- | ----- | ------------- |
+> | 0     | 0     | 0             |
+> | 1     | 0     | 0             |
+> | 0     | 1     | 0             |
+> | 1     | 1     | 1             |
 
-> (1) Apples are red
->
-> (2) Apples are green.
+</Grid>
 
-Thus, for the compound proposition to be false, both (1) and (2) must be false,
-since a disjunction is false if, and only if, both of its component
-propositions are false. The negation then is:
+### Incompatibility
 
-> Apples are _not_ red _and_ are _not_ green.
+<Grid cols={2}>
 
-De Morgan's laws formalize this reduction. The negation of a conjunction is
-logically equivalent to a disjunction, where each component proposition is
-_negated_. The negation of a disjunction is logically equivalent to a
-conjunction where each component proposition is _negated_.
+> __~tnandf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \lnand q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ Then ${\neg a = 0}$ by the ~tnot lemma~, and ${\neg b = 1}$ by the ~fnot lemma~. By definition, ${a \lnand b = \neg a \lor \neg b.}$ Therefore, ${a \lnand b = 0 \lor 1 = 1}$ by the ~fort lemma~. ${\ws}$
 
-<dfn>
+> __~fnandt lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \lnand q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ Then ${\neg a = 1}$ by the ~fnot lemma~, and ${\neg b = 0}$ by the ~tnot lemma~. By definition, ${a \lnand b = \neg a \lor \neg b.}$ Therefore, ${a \lnand b = 1 \lor 0 = 1}$ by the ~torf lemma~. ${\ws}$
 
-__de morgan's laws.__ Let ${p}$ and ${q}$ be propositions. Then:
+> __~fnandf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \lnand q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ Then by the ~tnot lemma~, ${\neg a = 1}$ and ${\neg b = 1.}$ By definition, ${a \lnand b = \neg a \lor \neg b.}$ Therefore, ${a \lnand b = 1 \lor 1 = 1}$ by the ~tort lemma~. ${\ws}$
 
-$$
+> __~tnandt lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \lnand q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ Then by the ~fnot lemma~, ${\neg a = 0}$ and ${\neg b = 0.}$ By definition, ${a \lnand b = \neg a \lor \neg b.}$ Therefore, ${a \lnand b = 0 \lor 0 = 0}$ by the ~tort lemma~. ${\ws}$
 
-	\eqs{
-		& \neg (p \land q) \equiv \neg p \lor \neg q \\[1em]
-		& \neg (p \lor q) \equiv \neg p \land \neg q
-	}
-	
-$$
+> __~nand-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \lnand b.}$ ${\ws}$
+> 
+> | ${a}$ | ${b}$ | ${a \lnand b}$ |
+> | ----- | ----- | -------------- |
+> | 0     | 0     | 1              |
+> | 1     | 0     | 1              |
+> | 0     | 1     | 1              |
+> | 1     | 1     | 0              |
 
-</dfn>
+</Grid>
 
-A truth table demonstrates the logical equivalences:
 
-| $p$ | $q$ | ${\neg p}$ | ${\neg q}$ | ${p \land q}$ | ${\neg (p \land q)}$ | ${\neg p \lor \neg q}$ |
-| --- | --- | ---------- | ---------- | ------------- | -------------------- | ---------------------- |
-| T   | T   | F          | F          | T             | F                    | F                      |
-| T   | F   | F          | T          | F             | T                    | T                      |
-| F   | T   | T          | F          | F             | T                    | T                      |
-| F   | F   | T          | T          | F             | T                    | T                      |
+### Implication
+Logical implication takes the form _if ${p}$ then ${q,}$ which we denote as ${p \nc q.}$ We call ${p}$ the _sufficient condition_ and ${q}$ the _necessary condition_. In natural language, the logical implication manifests itself in a variety of forms:
 
-The negation of a disjunction is often written in the form of _neither nor_.
-Consider the proposition
+<div className={`col2`}>
 
-> Cats are sympathetic or lively.
+- if ${x}$ then ${y}$
+- ${x}$ is sufficient for ${y}$
+- if ${x,}$ ${y}$
 
-The negated proposition is:
+<br/>
 
-> Cats are _not_ sympathetic and are _not_ lively.
+- ${y}$ when ${x}$
+- a necessary condition for ${x}$ is ${y}$
+- ${y}$ unless ${\neg x}$
 
-Style, not logic, leads to the more common form:
+<br/>
 
-> Cats are _neither_ sympathetic _nor_ lively.
-
-## Tautology
-
-A _tautology_ is a propositional formula that always reduces to true, regardless
-of its component propositions's truth values. A proposition whose form is a
-tautology is called a _tautological proposition_.  For example, consider the
-proposition:
-
-> Beijing is the capital of China _or_ Beijing is _not_ the capital of China.
-
-Let's suppose: 
-
-$$
-	p = \text{Beijing is the capital of China.}
-$$
-
-As a propositional formula:
-
-
-$$
-	p \lor \neg p
-$$
-
-As a truth table:
-
-| $p$ | $\neg p$ | ${p \lor \neg p}$ |
-| --- | -------- | ----------------- |
-| T   | F        | T                 |
-| F   | T        | T                 |
-
-We see that ${p \lor \neg p}$ will always be true, regardless of what truth
-values are assigned to $p$. Thus, we say that ${p \lor \neg p}$ is a tautology:
-
-$$
-	\top (p \lor \neg p)
-$$
-
-The symbol $\top$ is called the _verum_ symbol, and means "always true".
-
-## Contradictions
-
-In contrast to the tautology, a _contradiction_ is a propositional formula that
-always reduces to _false_, regardless of the truth values of the individual
-propositions substituted for the propositional form's variables. For
-example, consider the proposition:
-
-> Dogs are cute and dogs are not cute.
-
-Suppose:
-
-$$
-	d = \text{Dogs are cute.}
-$$
-	
-	
-As a propositional formula:
-
-$$
-	d \land \neg d.
-$$
-
-
-As a truth table:
-
-| $d$ | $\neg d$ | ${d \land \neg d}$ |
-| --- | -------- | ------------------ |
-| T   | F        | F                  |
-| F   | T        | F                  |.
-
-We see that ${d \land \neg d}$ is always false, regardless of the truth value of
-${d}$. Thus, we say that ${d \land \neg d}$ is a contradiction. We
-denote this fact with the logical notation:
-
-$$
-	\bot (d \land \neg d)
-$$
-
-The symbol ${\bot}$ is the _falsum_ symbol, and means "always false."
-
-## Conditional Propositions
-
-When we reason _from_ a hypothesis to a _conclusion_, we make a
-_deduction_. This act is embodied in the proposition:
-
-$$
-	\tt{If ${p}$ then ${q.}$}
-$$
-
-We call this proposition a _conditional_ and we denote it as:
-
-$$
-	\large p \implies q
-$$
-
-The symbol ${\implies}$ is a logical connective just like ${\land}$, ${\lor}$, ${\neg}$, etc. The proposition ${p}$ is called the _sufficient condition_, and the proposition ${q}$ is called the _necessary condition_.[^implies_note].
-
-[^implies_note]:
-    In the order of operations, the logical connective ${\implies}$ is
-    performed last.
-
-### When Is a Conditional False?
-
-Consider the following proposition:
-
-> If Paris picks Hera, then there will be no war.
-
-When is this proposition false? It is false if, and only if, Paris picks Hera and there is a war (i.e., the sufficient condition is true and the necessary condition is false). Otherwise, the conditional ${p \implies q}$ is true.
-
-| ${p}$ | ${q}$ | ${p \implies q}$ |
-| ----- | ----- | ---------------- |
-| T     | T     | T                |
-| T     | F     | F                |
-| F     | T     | T                |
-| F     | F     | T                |
-
-If a conditional proposition's necessary condition is true
-because its sufficient condition is false, we say that the proposition is
-_vacuously true_. For example, consider the proposition:
-
-> If one is less than zero, then one plus one is two.
-
-Clearly, the sufficient condition is false, and the necessary condition is true.
-The proposition, however, is vacuously true. To see why we vacuous truth sense,
-let's consider a logical equivalence of an implication. 
-
-## Implications as Logical Disjunctions
-
-The conditionals is logically equivalent to disjunctions. In fact, this is
-apparent from every day speech. Consider the proposition:
-
-> Either you study or you receive poor grades.
-
-Let's rewrite this symbolically using the following variables:
-
-| Variable   | Signified                          |
-| ---------- | ---------------------------------- |
-| ${\neg p}$ | ${{\tt{you study}}}$               |
-| ${p}$      | ${{\tt{you do not study}}}$        |
-| ${q}$      | ${{\tt{you receive poor grades}}}$ |
-
-Using the variables above, we have the propositional formula:
-
-$$
-	(\neg p) \lor q
-$$
-
-Now consider the proposition is:
-
-> If you do not study, then you receive poor grades.
-
-Symbolically:
-
-$$
-	s \implies r.
-$$
-
-Let's look at their truth tables.
-
-| $p$ | $q$ | ${\neg p}$ | ${p \implies q}$ | ${(\neg p) \lor q}$ |
-| --- | --- | ---------- | ---------------- | ------------------- |
-| T   | T   | F          | T                | T                   |
-| T   | F   | F          | F                | F                   |
-| F   | T   | T          | T                | T                   |
-| F   | F   | T          | T                | T                   |
-
-Both ${p \implies q}$ and ${\neg p \lor q}$ have the same truth values;
-they are logically equivalent.Similarly, if ${q \implies p,}$ then
-${(q \implies p) \equiv ((\neg q) \lor p).}$
-
-| $q$ | $p$ | ${\neg q}$ | ${q \implies p}$ | ${(\neg q) \lor p}$ |
-| --- | --- | ---------- | ---------------- | ------------------- |
-| T   | T   | F          | T                | T                   |
-| T   | F   | F          | F                | F                   |
-| F   | T   | T          | T                | T                   |
-| F   | F   | T          | T                | T                   |
-
-Accordingly, we have the following logical equivalence:
-
-<dfn>
-
-__lemma__. Given propositions ${p}$ and ${q,}$
-
-$$
-	p \implies q \equiv q \lor (\neg p)
-$$
-
-or
-
-$$
-	p \implies q \equiv (\neg p) \lor q
-$$
-
-</dfn>
-
-## Negative Implications
-
-Let's take a closer look at that equivalence ${(p \implies q) \equiv (\neg p \lor q).}$ If we negate both sides, we get:
-
-$$
-	\neg (p \implies q) \equiv \neg ((\neg p) \lor q).
-$$
-
-Applying De Morgan's laws,
-
-$$
-	\neg (p \implies q) \equiv \neg ((\neg p) \lor q).
-$$
-
-By the double negative law, we have
-
-$$
-	\neg (p \implies q) \equiv p \land (\neg q).
-$$
-
-Therefore, it follows that
-
-$$
-	\neg (p \implies q) \equiv (p \land \neg q).
-$$
-
-In other words, the negation of _if ${p}$ then ${q}$_ is
-_${p}$ and not ${q}$_. Let's see an example.
-
-> If I timely submit my assignment, I will not lose points.
->
-> I timely submit my assignment, but I lose points.
-
-For those fond of Victorian horror:
-
-> If Dracula is a man, then Dracula is human.
->
-> Dracula is a man but not human.
-
-Accordingly, we have the following theorem:
-
-<dfn>
-
-__lemma__. Given propositions ${p}$ and ${q,}$
-
-$$
-  \neg (p \implies q) ~~ \equiv ~~ \neg q \lor (\neg p) ~~ \equiv ~~ (\neg q) \land p.
-$$
-
-</dfn>
-
-## The Contrapositive
-
-A particularly useful equivalence is that between a conditonal and its
-_contrapositive_. Consider the proposition: 
-
-> If I go to class, then I will attend lecture.
- 
-The contrapositive of this proposition is:
-
-> If I do not attend lecture, then I do not go to class.
-
-<dfn>
-
-__contrapositive.__ Let ${p}$ and ${q}$ be propositions. Then
-
-$$
-	p \implies q ~~\equiv~~ \not q \implies \not p
-$$
-
-We call the proposition ${\not q \implies \not p}$ the _contrapositive_ of ${p
-\implies q.}$
-
-</dfn>
-
-We can verify the logical equivalence claimed with a proof table. Suppose ${a}$
-and ${b}$ are propositions:
-
-| $a$ | $b$ | ${\neg b}$ | ${\neg a}$ | ${a \implies b}$ | ${\neg b \implies \neg a}$ |
-| --- | --- | ---------- | ---------- | ---------------- | -------------------------- |
-| T   | T   | F          | F          | T                | T                          |
-| T   | F   | T          | F          | F                | F                          |
-| F   | T   | F          | T          | T                | T                          |
-| F   | F   | T          | T          | T                | T                          |.
-
-The fact that a conditional's contrapositive is logically equivalent to the
-conditional is a valuable asset. Often, proving a conditional proposition's
-contrapositive is much easier than proving the conditional proposition
-itself.
-
-### The Converse
-
-The _converse_ of a proposition is formed when the proposition's
-necessary and sufficient conditions are switched:
-
-| Proposition                            | Converse                               |
-| -------------------------------------- | -------------------------------------- |
-| If Bo is a horse, then Bo is a mammal. | If Bo is a mammal, then Bo is a horse. |
-
-<dfn>
-
-__converse.__ Let ${p}$ and ${q}$ be propositions. Then the converse of ${p \implies q}$ is the proposition
-
-$$
-	q \implies p.
-$$
-
-We may also denote the converse as
-
-$$
-	p \impliedby q
-$$
-
-which is read as "${q}$ is implied by ${p}$."
-
-</dfn>
-
-It's very important to understand that the converse of a conditional is not
-logically equivalent to the conditional. We can see that this is true with a
-truth table. Let ${p}$ and ${q}$ be propositions:
-
-| $p$ | $q$ | ${p \implies q}$ | ${q \implies p}$ |
-| --- | --- | ---------------- | ---------------- |
-| T   | T   | T                | T                |
-| T   | F   | F                | T                |
-| F   | T   | T                | F                |
-| F   | F   | T                | T                |
-
-We will revisit the converse when we examine another propositional formula
-called the biconditional.
-
-### The Inverse
-
-When we negate the sufficient and necessary conditions of conditional
-proposition while keeping their order in place, we get the conditional's
-_inverse_.
-
-<dfn>
-
-__inverse.__ Let ${p}$ and ${q}$ be propositions. Then the _inverse_ of ${p \implies q}$ is
-
-$$
-	\neg q \implies \neg p
-$$
-
-</dfn>
-
-For example:
-
-| Proposition                                              | Inverse                                                            |
-| -------------------------------------------------------- | ------------------------------------------------------------------ |
-| If Sam entered the home, then she is guilty of burglary. | If Sam did not enter the home, then she is not guilty of burglary. |
-
-Like the converse, the inverse of a conditional is not logically equivalent
-to the conditional:
-
-| $p$ | $q$ | ${\neg p}$ | ${\neg q}$ | ${p \implies q}$ | ${(\neg p) \implies (\neg q)}$ |
-| --- | --- | ---------- | ---------- | ---------------- | ------------------------------ |
-| T   | T   | F          | F          | T                | T                              |
-| T   | F   | F          | T          | F                | T                              |
-| F   | T   | T          | F          | T                | F                              |
-| F   | F   | T          | T          | T                | T                              |
-
-### Equivalence of Converse and Inverse
-
-Although both the converse and inverse of a conditional are not logically
-equivalent to the conditional, the converse of a conditional is logically
-equivalent to the inverse of a conditional, and vice versa.
-
-| $p$ | $q$ | ${\neg p}$ | ${\neg q}$ | ${p \implies q}$ | ${q \implies p}$ | ${(\neg p) \implies (\neg q)}$ |
-| --- | --- | ---------- | ---------- | ---------------- | ---------------- | ------------------------------ |
-| T   | T   | F          | F          | T                | T                | T                              |
-| T   | F   | F          | T          | F                | T                | T                              |
-| F   | T   | T          | F          | F                | F                | F                              |
-| F   | F   | T          | T          | F                | T                | T                              |
-
-## Idiom: Only If
-
-The idiom _only if_ introduces a necessary condition. In other words,
-when we say "A only if B", we are saying "If A occurs, B MUST occur;" that
-is, "If b does not occur, a does not occur."
-
-Formally, given propositions $a$ and $b$, the proposition "$a$ only if $b$"
-is denoted as:
-
-$$
-	a \implies b
-$$
-
-or, equivalently,
-
-$$
-	(\neg b) \implies (\neg a)
-$$
-
-## The Biconditional
-
-A _biconditional proposition_ (a "biconditional") is a conditional
-proposition where both component propositions are the necessary and
-sufficient conditions. The biconditional most often takes the form "$p$ if,
-and only if, $q$". The words _if and only if_ are sometimes abbreviated:
-
-$$
-	\string{\tt{iff}}
-$$
-
-We will follow this convention. The biconditional ${p \iff q}$ is true if both
-$p$ and $q$ have the same true values and is false if $p$ and $q$ have opposite
-truth values. The biconditional has the truth table:
-
-| $p$ | $q$ | ${p \iff q}$ |
-| --- | --- | ------------ |
-| T   | T   | T            |
-| T   | F   | F            |
-| F   | T   | F            |
-| F   | F   | T            |
-
-Consider the following truth table:
-
-| $p$ | $q$ | ${p \implies q}$ | ${q \implies p}$ | ${p \iff q}$ | ${(p \implies q) \land (q \implies p)}$ |
-| --- | --- | ---------------- | ---------------- | ------------ | --------------------------------------- |
-| T   | T   | T                | T                | T            | T                                       |
-| T   | F   | F                | T                | F            | F                                       |
-| F   | T   | T                | F                | F            | F                                       |
-| F   | F   | T                | T                | T            | T                                       |
-
-Observe that the biconditional "$p$ iff $q$" is logically equivalent to
-"$p$ if $q$ and $q$ if $p$." In other words, the biconditional is logically
-equivalent to the conjunction of the conditional and its converse.
-Symbolically:
-
-$$
-	(p \iff q) \equiv ((p \implies q) \land (q \implies p))
-$$
-
-This is helpful result. Biconditionals are much easier to prove or work
-with when they are reduced to the conditional and its converse.
-
-## Common Equivalences
-
-The table below provides some helpful logical equivalences.
-
-<div className={`numbered`}>
-
-|                           |                                         |             |                                            |
-| ------------------------- | --------------------------------------- | ----------- | ------------------------------------------ |
-| ~and-identity~            | ${p \land \top}$                        | ${\equiv}$  | ${p}$                                      |
-| ~or-identity~             | ${p \lor \bot}$                         | ${\equiv}$  | ${p}$                                      |
-| ~tautological domination~ | ${p \lor \top}$                         | ${\equiv}$  | ${\top}$                                   |
-| ~falsehood~               | ${p \land \bot}$                        | ${\equiv}$  | ${\bot}$                                   |
-| ~or-indempotency~         | ${p \lor p}$                            | ${\equiv}$  | ${p}$                                      |
-| ~and-indempotency~        | ${p \land p}$                           | ${\equiv}$  | ${p}$                                      |
-| ~double negation~         | ${\neg (\neg p)}$                       | ${\equiv}$  | ${p}$                                      |
-| ~or-commutativity~        | ${p \lor q}$                            | ${\equiv}$  | ${q \lor p}$                               |
-| ~and-commutativity~       | ${p \land q}$                           | ${\equiv}$  | ${q \land p}$                              |
-| ~or-association~          | ${(p \lor q) \lor r}$                   | ${\equiv}$  | ${ p \lor (q \lor r)}$                     |
-| ~and-association~         | ${(p \land q) \land r}$                 | ${\equiv}$  | ${p \land (q \land r)}$                    |
-| ~or-distribution~         | ${p \lor (q \land r)}$                  | ${\equiv}$  | ${(p \lor q) \land (p \lor r)}$            |
-| ~and-distribution~        | ${p \land (q \land r)}$                 | ${\equiv}$  | ${(p \land q) \lor (p \land r)}$           |
-| ~or-absorption~           | ${p \lor (p \land q)}$                  | ${\equiv}$  | ${p}$                                      |
-| ~and-absorption~          | ${p \land (p \lor q)}$                  | ${\equiv}$  | ${p}$                                      |
-| ~natural tautology~       | ${p \lor (\neg p)}$                     | ${\equiv}$  | ${\top}$                                   |
-| ~natural contradiction~   | ${p \land (\neg p)}$                    | ${\equiv}$  | ${\bot}$                                   |
-| ~conditional-reduction~   | ${p \implies q}$                        | ${\equiv}$  | ${\neg p \lor q}$                          |
-| ~contrapositive~          | ${p \implies q}$                        | ${\equiv}$  | ${\neg q \implies \neg p}$                 |
-| ~or-reduction~            | ${p \lor q}$                            | ${\equiv}$  | ${\neg p \implies q}$                      |
-| ~and-reduction~           | ${p \land q}$                           | ${\equiv}$  | ${\neg(p \implies \neg q)}$                |
-| ~negated conditional~     | ${\neg(p \implies q)}$                  | ${\equiv}$  | ${p \land \neg q}$                         |
-| ~conditional conjunction~ | ${(p \implies q) \land (p \implies r)}$ | ${\equiv}$  | ${p \implies (q \land r)}$                 |
-|                           | ${(p \implies r) \land (q \implies r)}$ | ${\equiv}$  | ${(p \lor q) \implies r}$                  |
-| ~conditional disjunction~ | ${(p \implies q) \lor (p \implies r)}$  | ${\equiv}$  | ${p \implies (q \lor r)}$                  |
-|                           | ${(p \implies r) \lor (q \implies r)}$  | ${\equiv}$  | ${(p \land q) \implies r}$                 |
-| ~biconditional reduction~ | ${p \iff q}$                            | ${\equiv}$  | ${(p \implies q) \land (q \implies p)}$    |
-|                           | ${p \iff q}$                            | ${\equiv}$  | ${\neg p \iff \neg q}$                     |
-|                           | ${p \iff q}$                            | ${\equiv}$  | ${(p \land q) \lor (\neg p \land \neg q)}$ |
-| ~biconditional negation~  | ${\neg(p \iff q)}$                      | ${ \equiv}$ | ${p \iff \neg q}$                          |
+- ${x}$ implies ${y}$
+- ${x}$ only if ${y}$
+- ${y}$ whenever ${x}$
+- ${y}$ follows from ${x}$
 
 </div>
+
+The only instance where an implication is false is when the sufficient condition is true and the necessary condition is false: ${\tx{true}\nc\tx{false}.}$ Outside of this case, the implication is _always true_.
+
+<Grid cols={2}>
+
+> __~timpf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \nc q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ Then ${\neg a = 0}$ by the ~tnot lemma~. By definition, ${a \nc b = \neg a \lor b = 0 \lor 0 = \max\set{0,0}=0.}$ ${\ws}$
+
+> __~fimpt lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \nc q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ Then ${\neg a = 1}$ by the ~fnot lemma~. By definition, ${a \nc b = \neg a \lor b = 1 \lor 1 = \max\set{1,1}=1.}$ ${\ws}$
+
+> __~timpt lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \nc q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ Then ${\neg a = 0}$  by the ~tnot lemma~. By definition, ${a \nc b = \neg a \lor b = 0 \lor 1 = \max\set{0,1}=1.}$ ${\ws}$
+
+> __~fimpf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \nc q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ Then ${\neg a = 1}$  by the ~fnot lemma~. By definition, ${a \nc b = \neg a \lor b = 1 \lor 0 = \max\set{1,0}=1.}$ ${\ws}$
+
+> __~if-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \nc b.}$
+> 
+> | ${a}$ | ${b}$ | ${a \nc b}$ |
+> | ----- | ----- | ----------- |
+> | 0     | 0     | 1           |
+> | 1     | 0     | 0           |
+> | 0     | 1     | 1           |
+> | 1     | 1     | 1           |
+
+</Grid>
+
+### Non-implication
+
+<Grid cols={2}>
+
+> __~tninf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \not\nc q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ Then ${a \nc b = 1 \nc 0 = 0}$ by the ~timpf lemma~. By definition, ${a \not\nc b = \neg(a \nc b) = \neg(0)}$ by the ~fnot lemma,~ ${\neg(0)=1.}$ ${\ws}$
+
+> __~fnint lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \nc q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ Then ${a \nc b = 0 \nc 1 = 1}$ by the ~fimpt lemma~. By definition, ${a \not\nc b = \neg(a \nc b) = \neg(1)}$ by the ~fnot lemma~ ${\neg(1)=0.}$ ${\ws}$
+
+> __~tnint lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \nc q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ Then ${a \nc b = 1 \not\nc 1 = 1}$ by the ~timpt lemma~. By definition, ${a \not\nc b = \neg(a \nc b) = \neg(1)}$ by the ~fnot lemma~ ${\neg(1)=0.}$ ${\ws}$
+
+> __~fninf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \not\nc q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ Then ${a \nc b = 0 \nc 0 = 1}$ by the ~fimpf lemma~. By definition, ${a \not\nc b = \neg(a \nc b) = \neg(1)}$ by the ~fnot lemma~ ${\neg(1)=0.}$ ${\ws}$
+
+> __~non-implication-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \not\nc b.}$
+> 
+> | ${a}$ | ${b}$ | ${a \not\nc b}$ |
+> | ----- | ----- | --------------- |
+> | 0     | 0     | 0               |
+> | 1     | 0     | 1               |
+> | 0     | 1     | 0               |
+> | 1     | 1     | 0               |
+
+</Grid>
+
+### Converse Implication
+
+<Grid cols={2}>
+
+> __~tcvf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \cn q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ By definition, ${t(p \cn q)=t(q \nc p).}$ By the ~fimpt lemma~, ${t(q \nc p)=t(0 \nc 1)=1=t(p \cn q).}$ ${\ws}$
+
+> __~fcvt lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \cn q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ By definition, ${t(p \cn q)=t(q \nc p).}$ By the ~timpf lemma~, ${t(q \nc p)=t(1 \nc 0)=0=t(p \cn q).}$ ${\ws}$
+
+> __~tcvt lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \cn q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ By definition, ${t(p \cn q)=t(q \nc p).}$ By the ~timpt lemma~, ${t(q \cn p)=t(1 \nc 1)=1=t(p\cn q).}$ ${\ws}$
+
+> __~fcvf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \cn q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ By definition, ${t(p \cn q)=t(q \nc p).}$ By the ~fimpf lemma~, ${t(q \cn p)=t(0 \nc 0)=1=t(p\cn q).}$ ${\ws}$
+
+> __~converse-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \cn b.}$
+> 
+> | ${a}$ | ${b}$ | ${a \cn b}$ |
+> | ----- | ----- | ----------- |
+> | 0     | 0     | 1           |
+> | 1     | 0     | 1           |
+> | 0     | 1     | 0           |
+> | 1     | 1     | 1           |
+
+</Grid>
+
+### Converse Non-implication
+
+<Grid cols={2}>
+
+> __~tncvf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \not\cn q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ Then ${a \cn b = 1 \cn 0 = 1}$ by the ~timpf lemma~. By definition, ${a \not\cn b = \neg(a \cn b) = \neg(1)=0}$ by the ~fnot lemma~ ${\ws}$
+
+> __~fncvt lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \not\cn q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ Then ${a \cn b = 0 \cn 1 = 0}$ by the ~timpf lemma~. By definition, ${a \not\cn b = \neg(a \cn b) = \neg(0)=1}$ by the ~fnot lemma~ ${\ws}$
+
+> __~fncvf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \not\cn q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ Then ${a \cn b = 0 \cn 0 = 1}$ by the ~timpf lemma~. By definition, ${a \not\cn b = \neg(a \cn b) = \neg(1) = 0}$ by the ~fnot lemma~ ${\ws}$
+
+> __~tncvt lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \not\cn q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ Then ${a \cn b = 1 \cn 1 = 1}$ by the ~timpf lemma~. By definition, ${a \not\cn b = \neg(a \cn b) = \neg(1) = 0}$ by the ~fnot lemma~ ${\ws}$
+
+> __~non-implication-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \not\nc b.}$
+> 
+> | ${a}$ | ${b}$ | ${a \not\nc b}$ |
+> | ----- | ----- | --------------- |
+> | 0     | 0     | 0               |
+> | 1     | 0     | 0               |
+> | 0     | 1     | 1               |
+> | 1     | 1     | 0               |
+
+</Grid>
+
+### Biconditional
+
+<Grid cols={2}>
+
+> __~fbf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \iff q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ Then ${a \nc b = 0 \nc 0 = 1}$ by the ~fimpf lemma~, and ${a \cn b = 0 \cn 0 = 1}$ by the ~tcvt lemma~. By definition, ${a \iff b = (a \nc b) \land (a \cn b).}$ Therefore, ${a \iff b = 1 \land 1 = 1}$ by the ~tat lemma~. ${\ws}$
+
+> __~tbf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \iff q) = 0.}$ ${\ws}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ Then ${a \nc b = 1 \nc 0 = 0}$ by the ~timpf lemma~, and ${a \cn b = 0 \cn 1 = 0}$ by the ~tcvt lemma~. By definition, ${a \iff b = (a \nc b) \land (a \cn b).}$ Therefore, ${a \iff b = 0 \land 0 = 0}$ by the ~faf lemma~. ${\ws}$
+
+> __~fbt lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \iff q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ Then ${a \nc b = 0 \nc 1 = 1}$ by the ~fimpt lemma~, and ${a \cn b = 0 \cn 1 = 0}$ by the ~fcvt lemma~. By definition, ${a \iff b = (a \nc b) \land (a \cn b).}$ Therefore, ${a \iff b = 1 \land 0 = 0}$ by the ~taf lemma~. ${\ws}$
+
+> __~tbt lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \iff q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ Then ${a \nc b = 1 \nc 1 = 1}$ by the ~timpt lemma~, and ${a \cn b = 1 \cn 1 = 1}$ by the ~tcvt lemma~. By definition, ${a \iff b = (a \nc b) \land (a \cn b).}$ Therefore, ${a \iff b = 1 \land 1 = 1}$ by the ~taf lemma~. ${\ws}$
+
+> __~biconditional-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \iff b.}$
+> 
+> | ${a}$ | ${b}$ | ${a \iff b}$ |
+> | ----- | ----- | ------------ |
+> | 0     | 0     | 1            |
+> | 1     | 0     | 0            |
+> | 0     | 1     | 0            |
+> | 1     | 1     | 1            |
+
+</Grid>
+
+
+### Exclusive Disjunction
+
+<Grid cols={2}>
+
+> __~txorf lemma~.__ If ${t(p)=1}$ and ${t(q)=0,}$ then ${t(p \lxor q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=0.}$ Then ${a \iff b = 1 \iff 0 = 0}$ by the ~tbf lemma~. By definition, ${a \lxor b = \neg(a \iff b).}$ Therefor, ${a \lxor b = \neg(0) = 1}$ by the ~tnot lemma~. ${\ws}$
+
+> __~fxort lemma~.__ If ${t(p)=0}$ and ${t(q)=1,}$ then ${t(p \lxor q) = 1.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=1.}$ Then ${a \iff b = 0 \iff 1 = 0}$ by the ~fbt lemma~. By definition, ${a \lxor b = \neg(a \iff b).}$ Therefor, ${a \lxor b = \neg(0) = 1}$ by the ~tnot lemma~. ${\ws}$
+
+> __~fxorf lemma~.__ If ${t(p)=0}$ and ${t(q)=0,}$ then ${t(p \lxor q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=0}$ and let ${b=t(q)=0.}$ Then ${a \iff b = 0 \iff 0 = 1}$ by the ~fbt lemma~. By definition, ${a \lxor b = \neg(a \iff b).}$ Therefor, ${a \lxor b = \neg(1) = 0}$ by the ~fnot lemma~. ${\ws}$
+
+> __~txort lemma~.__ If ${t(p)=1}$ and ${t(q)=1,}$ then ${t(p \lxor q) = 0.}$
+> 
+> ~proof~. Let ${a=t(p)=1}$ and let ${b=t(q)=1.}$ Then ${a \iff b = 1 \iff 1 = 1}$ by the ~fbt lemma~. By definition, ${a \lxor b = \neg(a \iff b).}$ Therefor, ${a \lxor b = \neg(1) = 0}$ by the ~fnot lemma~. ${\ws}$
+
+> __~xor-truth table~.__ Let ${a = t(p)}$ and let ${b = t(q).}$ Then the table below contains all the possible mappings of ${a \lxor b.}$
+> 
+> | ${a}$ | ${b}$ | ${a \lxor b}$ |
+> | ----- | ----- | ------------- |
+> | 0     | 0     | 0             |
+> | 1     | 0     | 1             |
+> | 0     | 1     | 1             |
+> | 1     | 1     | 0             |
+
+</Grid>
+
+### Table Summary
+
+> | ${a}$ | ${b}$ | ${\neg a}$ | ${a \lor b}$ | ${a \land b}$ | ${a \lnand b}$ | ${a \lnor b}$ | ${a \nc b}$ | ${a \cn b}$ | ${a \not\nc b}$ | ${a \not\cn b}$ | ${a \iff b}$ | ${a \lxor b}$ |
+> | ----- | ----- | ---------- | ------------ | ------------- | -------------- | ------------- | ----------- | ----------- | --------------- | --------------- | ------------ | ------------- |
+> | 0     | 0     | 1          | 0            | 0             | 1              | 1             | 1           | 1           | 0               | 0               | 1            | 0             |
+> | 1     | 0     | 0          | 1            | 0             | 1              | 0             | 0           | 1           | 1               | 0               | 0            | 1             |
+> | 0     | 1     | 1          | 1            | 0             | 1              | 0             | 1           | 0           | 0               | 1               | 0            | 1             |
+> | 1     | 1     | 0          | 1            | 1             | 0              | 0             | 1           | 1           | 0               | 0               | 1            | 0             |
+
+## Models
+Recall that a model is a set of sentences in a language that are _all true_.
+
+> __~definition~.__ Let ${A \subseteq \df{prop}(\Sigma),}$ and let ${t: \Sigma \mapsto \set{0,1}.}$ Iff, for all propositions ${p \in A,}$ it follows that ${t(p)=1,}$ then we say that ${t}$ is a _model_ of ${A.}$ If, for every model of ${A,}$ it follows that ${t(p)=1,}$ then we say that ${p}$ is a _tautological consequence_ of ${A,}$ and write:
+>
+> $$
+> 	A \models p.
+> $$
+
+## Predicates
+Below are the basic rules of predicates we will want to formalize rigorously. Specifically, we seek to formally define what it means for an object to be "under consideration."
+
+<Grid cols={2}>
+
+> __~quantification~.__ The notation ${\P(x)}$ denotes: _the ${x}$ under consideration has the property ${\P.}$_
+
+> __~universal quantification~.__ The notation ${\forall x \P(x)}$ denotes: _every ${x}$ under consideration has the property ${\P.}$_ That is, the conjunction:
+>
+> $$
+> 	\bigwedge\limits_{i=1}^{n} \P(x_i) = \P(x_1) \land \P(x_2) \land \ldots \land \P(x_n).
+> $$
+
+> __~existential confirmation~.__ The notation ${\neg\forall x \P(x)}$ denotes: _not all ${x}$ under consideration have the property ${\P.}$_ We may also write ${\not\forall x \P(x).}$
+
+> __~existential quantification~.__ The notation ${\exists x \P(x)}$ denotes: _there exists an ${x}$ under consideration that has the property ${\P.}$_ That is, the disjunction:
+>
+> $$
+> 	\bigvee\limits_{i=1}^{n} \P(x_i) = \P(x_1) \lor \P(x_2) \lor \ldots \lor \P(x_n).
+> $$
+
+> __~universal denial~.__ The notation ${\neg\lex x \P(x)}$ denotes: _there does not exist an ${x}$ under consideration that has the property ${\P.}$_ We may also write ${\lnex x \P(x).}$
+
+> __~uniqueness quantifier~.__ The notation ${!\lex x \P(x)}$ denotes: _there exists exactly one ${x}$, among all ${x}$s under consideration, that has the property ${\P.}$_
+
+</Grid>
+
+Alongside the definitions above, we have the following lemmas.
+
+<Grid cols={2}>
+
+> __~lemma~.__ ${\forall x \ix{\P(x) \land \Q(x)} \equiv \forall x \P(x) \land \forall x \Q(x).}$
+>
+> ~proof~. The expression ${\forall x \ix{\P(x) \land \Q(x)}}$ is equivalent to:
+> 
+> $$
+> 	\ix{\P(x_1) \land \Q(x_1)} \land 
+> 	\ldots \land
+> 	\ix{\P(x_n) \land \Q(x_n)}
+> $$
+> 
+> The expression ${\forall x \P(x) \land \forall x \Q(x)}$ is equivalent to:
+>
+> $$
+> 	\ix{\P(x_1) \land \ldots \land \P(x_n)} \land
+> 	\ix{\Q(x_1) \land \ldots \land \Q(x_n)},
+> $$
+> 
+> which is equivalent to:
+> 
+> $$
+> 	{\P(x_1) \land \ldots \land \P(x_n)} \land
+> 	{\Q(x_1) \land \ldots \land \Q(x_n)},
+> $$
+> 
+> and by the commutativity of ${\land:}$
+> 
+> $$
+> 	\P(x_1) \land \Q(x_1) \land \ldots \land \P(x_n) \land \Q(x_n)
+> $$
+> 
+> By the associativity of ${\land}$ we have
+> 
+> $$
+> 	\ix{\P(x_1) \land \Q(x_1)} \land \ldots \land \ix{\P(x_n) \land \Q(x_n)}.
+> $$
+
+> __~lemma~.__ ${\lex x \ix{\P(x) \lor \Q(x)} \equiv \lex x \P(x) \lor \lex x \Q(x).}$
+>
+> ~proof~. The expression ${\lex x \ix{\P(x) \lor \Q(x)}}$ is equivalent to:
+> 
+> $$
+> 	\ix{\P(x_1) \lor \Q(x_1)} \lor
+> 	\ldots \lor
+> 	\ix{\P(x_n) \lor \Q(x_n)}
+> $$
+> 
+> The expression ${\lex x \P(x) \lor \lex x \Q(x)}$ is equivalent to:
+>
+> $$
+> 	\ix{\P(x_1) \lor \ldots \lor \P(x_n)} \lor
+> 	\ix{\Q(x_1) \lor \ldots \lor \Q(x_n)},
+> $$
+> 
+> which is equivalent to:
+> 
+> $$
+> 	{\P(x_1) \lor \ldots \lor \P(x_n)} \lor
+> 	{\Q(x_1) \lor \ldots \lor \Q(x_n)},
+> $$
+> 
+> and by the commutativity of ${\lor:}$
+> 
+> $$
+> 	\P(x_1) \lor \Q(x_1) \lor \ldots \lor \P(x_n) \lor \Q(x_n)
+> $$
+> 
+> By the associativity of ${\lor}$ we have
+> 
+> $$
+> 	\ix{\P(x_1) \lor \Q(x_1)} \lor \ldots \lor \ix{\P(x_n) \lor \Q(x_n)}.
+> $$
+
+> __~lemma~.__ ${\neg\forall x \P(x) \equiv \lex x \neg \P(x).}$
+>
+> ~proof~. By definition, ${\neg \forall x \P(x)}$ is equivalent to:
+>
+> $$
+> 	\neg(\P(x_1) \land \ldots \land \P(x_n)).
+> $$
+> 
+> By the ~naeon lemma~, we have:
+> 
+> $$
+> 	\neg\P(x_1) \lor \ldots \lor \neg\P(x_n).
+> $$
+> 
+> By definition, ${\lex x \neg \P(x)}$ is equivalent to:
+> 
+> $$
+> 	\neg \P(x_1) \lor \ldots \lor \neg \P(x_n).
+> $$
+>
+> Therefore, it follows that
+> 
+> $$
+> 	\neg \forall x \P(x) \equiv \neg \P(x_1) \lor \ldots \lor \neg \P(x_n) \equiv \lex x \neg \P(x).
+> $$
+
+> __~lemma~.__ ${\neg\lex x \P(x) \equiv \forall x \neg \P(x).}$
+>
+> ~proof~. By definition, ${\neg \lex x \P(x)}$ is equivalent to:
+>
+> $$
+> 	\neg(\P(x_1) \lor \ldots \lor \P(x_n)).
+> $$
+> 
+> By the ~noean lemma~, we have:
+> 
+> $$
+> 	\neg\P(x_1) \land \ldots \land \neg\P(x_n).
+> $$
+> 
+> By definition, ${\forall x \neg \P(x)}$ is equivalent to:
+> 
+> $$
+> 	\neg \P(x_1) \land \ldots \land \neg \P(x_n).
+> $$
+>
+> Therefore, it follows that
+> 
+> $$
+> 	\neg \lex x \P(x) \equiv \neg \P(x_1) \land \ldots \land \neg \P(x_n) \equiv \forall x \neg \P(x).
+> $$
+
+> __~lemma~.__ ${\neg\forall{x}\ix{\P(x)\nc\Q(x)}\equiv\lex{x}\ix{\P(x)\land\neg\Q(x)}.}$
+>
+> ~proof~. By definition, ${\neg\forall x \ix{\P(x) \nc \Q(x)}}$ is equivalent to:
+>
+> $$
+> 	\neg\ar{\ix{\P(x_1)\nc\Q(x_1)} \land \ldots \land \ix{\P(x_1)\nc\Q(x_1)}}.
+> $$
+> 
+> The negation of this conjunction is equivalent to:
+> 
+> $$
+> 	\neg\ix{\P(x_1)\nc\Q(x_1)} \lor \ldots \lor \neg\ix{\P(x_1)\nc\Q(x_1)}.
+> $$
+> 
+> Negating each implication, we get
+> 
+> $$
+> 	\ix{\P(x_1)\land\neg\Q(x_1)} \lor \ldots \lor \ix{\P(x_n)\land\neg\Q(x_n)},
+> $$
+> 
+> which is equivalent to the expression ${\lex{x}{\ix{\P(x) \land\neg\Q(x)}}.}$
+
+> __~lemma~.__ ${\neg\lex{x}\ix{\P(x)\nc\Q(x)}\equiv\forall{x}\ix{\P(x)\land\neg\Q(x)}.}$
+>
+> ~proof~. By definition, ${\neg\lex{x}\ix{\P(x) \nc \Q(x)}}$ is equivalent to:
+>
+> $$
+> 	\neg\ar{\ix{\P(x_1)\nc\Q(x_1)} \lor \ldots \lor \ix{\P(x_1)\nc\Q(x_1)}}.
+> $$
+> 
+> The negation of this disjunction is equivalent to:
+> 
+> $$
+> 	\neg\ix{\P(x_1)\nc\Q(x_1)} \land \ldots \land \neg\ix{\P(x_1)\nc\Q(x_1)}.
+> $$
+> 
+> Negating each implication, we get
+> 
+> $$
+> 	\ix{\P(x_1)\land\neg\Q(x_1)} \land \ldots \land \ix{\P(x_n)\land\neg\Q(x_n)},
+> $$
+> 
+> which is equivalent to the expression ${\forall{x}{\ix{\P(x) \land\neg\Q(x)}}.}$
+
+</Grid>

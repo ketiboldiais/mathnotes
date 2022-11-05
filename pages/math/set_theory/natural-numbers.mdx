@@ -1,0 +1,925 @@
+<Head>
+	<title>Number Construction</title>
+	<meta name={`description`} content={`Notes on natural numbers.`}/>
+</Head>
+
+# Number Construction
+
+This chapter covers notes on constructing numbers.
+
+<div className={`outline`}>
+
+1. [Preliminaries](#preliminaries)
+	1. [The Axiom of Infinity](#the-axiom-of-infinity)
+2. [The Peano Axioms](#the-peano-axioms)
+3. [The Recursion Theorem](#the-recursion-theorem)
+4. [Operations on Naturals](#operations-on-naturals)
+	1. [Addition](#addition)
+		1. [Associative Law of Addition](#associative-law-of-addition)
+		2. [Commutativity of Addition](#commutativity-of-addition)
+	2. [Comparison Relations](#comparison-relations)
+	3. [Multiplication](#multiplication)
+		1. [Commutativity of Multiplication](#commutativity-of-multiplication)
+		2. [Distributivity of Multiplication over Addition](#distributivity-of-multiplication-over-addition)
+		3. [Associativity of Multiplication](#associativity-of-multiplication)
+5. [Integers](#integers)
+6. [The Rationals](#the-rationals)
+
+</div>
+
+## Preliminaries
+
+There are many ways to define the natural numbers, but for this chapter, we'll
+use the _Von Neumann definition_.
+
+### The Axiom of Infinity
+
+Before we see that definition, we define a special set called the
+_successor set_.
+
+<dfn>
+
+__successor.__ Let ${S}$ be a set. Then
+
+$$
+	S^+ = S \cup \set{S}
+$$
+
+is the set obtained by adjoining ${S}$ to the elements of ${S,}$ called the _successor_ of ${S.}$
+
+</dfn>
+
+Suppose we represented the empty set with the symbol ${0.}$
+
+$$
+	0 := \nil
+$$
+
+Note that this is an antisymmetric relation. We're not saying that ${0}$ _is_ ${\nil,}$ nor are we saying that ${\nil}$ _is_ ${0.}$ We're merely stating that the symbol ${0}$ is a representation of ${\nil.}$ Now, using the successor set, we can construct a set that looks like the following:
+
+$$
+\lset{
+	\small
+	\eqs{
+		& 0 = \nil \\
+		& 0^+ = \set{\nil} \\
+		& (0^+)^+ = \set{\nil, \set{\nil}} \\
+		& ((0^+)^+)^+ = \set{\nil, \set{\nil}, \set{\nil, \set{\nil}}} \\
+		& ~~~~ \vdots
+	}
+}
+$$
+
+The problem, however, is that ellipsis. With what we have so far, we have no premise, or reason, that allows us to say that we _can_ continue the pattern above. Put differently, if someone asked us: "How do you know that your pattern will continue forever? Who's to say that it won't stop?" we'd have no good answer.  Obviously, we can't tell our interrogator "Well why don't you list them out and see if I'm wrong." That's far too rude. We can achieve a similar effect — more politely — with an axiom.
+
+<dfn>
+
+__axiom of infinity.__ There exists a set ${\omega,}$ called the _inductive set_, containing ${0}$ and the successor of each of its elements.
+
+</dfn>
+
+With this axiom established, we can now end the interrogation with a definition:
+
+<dfn>
+
+__natural numbers.__ Let ${0 := \nil}$ and ${S}$ be the successor 
+${S(a) = a \cup \set{a}}$ for every set ${a.}$ By the axiom of infinity, there
+are subsets of the inductive set ${\omega}$ which contain ${0,}$ are closed
+under ${S,}$ and are themselves inductive. If one such subset ${B}$ is an
+arbitrary successor set, then ${\omega \cap B}$ is also an arbitrary successor.
+Hence, the intersection of all inductive sets is still an inductive set. We call
+this intersection the _natural numbers_, which may be visualized as:
+
+$$
+	\lset{
+		\small
+		\eqs{
+			& \nil \\
+			& \set{\nil} \\
+			& \set{\nil,\set{\nil}} \\
+			& \set{\nil,\set{\nil,\set{\nil}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil}}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil}}}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil}}}}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil}}}}}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil}}}}}}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil}}}}}}}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil}}}}}}}}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil}}}}}}}}}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil}}}}}}}}}}}} \\
+			& \set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil,\set{\nil}}}}}}}}}}}}} \\
+			& \vdots
+		}
+	}.
+$$
+
+</dfn>
+
+In short, we're using the axiom of infinity to implement the natural numbers _inductively_. We define ${0}$ as the empty set, and then for each natural number ${n,}$ we have the definition ${S(n) := n \cup \set{n}.}$ Because the axiom of infinity tells us that there is a set ${\omega}$ that contains (i) the empty set, and (ii) for all ${x \in \omega,}$ we have ${x \cup \set{x} \in \omega,}$ the set of natural numbers ${\nat}$ is merely an intersection of all the subsets of ${\omega.}$ And since ${\nat}$ is an intersection, it is, in fact, a set (as opposed to a _class_).
+
+## The Peano Axioms
+
+To nail the coffin completely, we take a closer look at what exactly the set of
+natural numbers is. From the definition of the successor set, we get the first
+two Peano axioms:
+
+<dfn>
+
+__peano axiom i.__ ${0 \in \omega.}$
+
+__peano axiom ii.__ ${n \in \omega \nc n^+ \in \omega}$
+
+</dfn>
+
+Next, we know that if a set ${S}$ is a subset of ${\omega}$ and ${S}$ is a
+successor set, then ${S = \omega.}$ This gives us the third Peano axiom:
+
+<dfn>
+
+__peano axiom iii.__ If ${S \subset \omega,}$ ${0 \in S,}$ and ${n^+ \in S}$
+whenever ${n \in S,}$ then ${S = \omega.}$
+
+</dfn>
+
+The third axiom follows simply from the definition of the successor set. As it
+turns out, the third Peano axiom is also known as the _Principle of Mathematical
+Induction_ — that given the set ${S}$ we just described, there is always a
+minimal element. Next, we know that since ${0}$ represents the empty set, it cannot be the case that any successor is ${0,}$ since the successor, by definition, is a union of an element and a set — i.e., not empty, and therefore, not zero. This yields the fourth axiom:
+
+<dfn>
+
+__peano axiom iv.__ For all ${n \in \omega,}$ ${n^+ \neq 0.}$
+
+</dfn>
+
+Now, suppose we defined the set ${S}$ as follows:
+
+> ${n \in S}$ if, and only if:
+>
+> ${~~~}$ (1) ${n \in \omega~~~}$ _and_
+>
+> ${~~~}$ (2) ${\forall x \in n \ix{ n \not\subset x}}$
+
+That is, ${S}$ is the set of all ${n}$ that are not subsets of themselves. Since
+${0}$ is not a subset of any of its elements (it's the empty set), it follows
+that ${0 \in S.}$ What if, say, ${n \in S?}$ Well, from the definition above, we
+have ${n \in \omega,}$ which means that ${n \not\subset n,}$ and ${n \notin n.}$ It follows, then, that ${n^+}$ (the successor of ${n}$) is not a subset of ${n}$ — ${n^+ \subset n.}$ But ${n^+}$ must be in there somewhere, otherwise ${n \notin \omega.}$ The only other set ${n^+}$ can be a subset of is ${x.}$ But if ${n^+ \subset x,}$ then ${n \subset x,}$ and because ${n \subset S,}$ it must be the case that ${x \notin n.}$ Thus, it cannot be the case that ${n^+ \not\subset n,}$ and ${n^+ \not\subset x \in n.}$ This yields the following lemma:
+
+<dfn>
+
+__peano lemma i.__ For all ${n \in S,}$ ${n \not\subset n.}$
+
+</dfn>
+
+Next, suppose we defined the set ${S}$ as follows:
+
+> ${n \in S}$ if, and only if,
+>
+> ${~~~}$ (1) ${n \in \omega}$ _and_
+>
+> ${~~~}$ (2) ${\forall x \in n \ix{x \subset n}}$
+
+It's true that ${0 \in S.}$ Now let's consider ${n \in S.}$ If ${x \in
+n^+,}$ then we have two cases: Either (a) ${x \in n,}$ or (b) ${x = n.}$ For
+case (a), since ${n \in S,}$ it follows that ${x \in n}$ from our definition.
+And since ${n \in S,}$ it follows that ${x \subset n^+.}$ Case (b) is trivial —
+if ${x=n,}$ we have ${x=n \in S,}$ and since ${x=n \in S,}$ ${x=n \subset n^+.}$
+This yields the following lemma:
+
+<dfn>
+
+__peano lemma ii.__ For all ${n \in S,}$ ${n \subset n^+.}$
+
+</dfn>
+
+Now suppose that ${n,m \in S}$ and ${n^+ = m^+}$ (the successor of ${n}$ is the
+same set as the successor of ${m}$). This means there are two cases:
+
+1. Since ${n \in n^+,}$ it follows that ${n \in m^+,}$ and either ${n \in m}$ or ${n = m.}$
+2. Since ${m \in m^+,}$ it follows that ${m \in n^+,}$ and either ${m \in n,}$ or ${m = n.}$
+
+Suppose ${n \neq m.}$ Then it must be the case that ${n \in m}$ and ${m \in n.}$
+From the second lemma, it follows that ${n \in n.}$ But this would then mean
+that ${n \subset n,}$ which contradicts the first lemma. This yields the fifth
+Peano axiom:
+
+<dfn>
+
+__peano axiom v.__ If ${n,m \in \omega}$ and ${n^+ = m^+,}$ then ${n = m.}$
+
+</dfn>
+
+The Peano axioms define the set ${S}$ as the natural numbers ${\nat.}$ Given the
+set ${\nat,}$ we can construct the integers ${\uint,}$ the rationals ${\rat,}$ the reals ${\reals,}$ and the complex numbers ${\com.}$
+
+## The Recursion Theorem
+
+Say we had some set ${X.}$ We just constructed the natural numbers, so let's consider the Cartesian product ${\nat \times X.}$ Suppose there's some collection ${\Nn}$ with the following properties:
+
+1. ${\Nn}$ is a collection of all the subsets ${A}$ of ${\nat \times X,}$ with ${n \in \nat.}$
+2. There exists a function ${f: X \to X,}$ with ${a \in X.}$
+3. ${\Nn}$ contains a tuple ${(0,a) \in \Nn.}$
+4. If ${(n,x) \in \Nn,}$ then ${(n^+, f(x)) \in \Nn.}$
+
+From the two properties above, it follows that ${\Nn \neq \nil.}$ And since ${\Nn}$ is a nonempty collection of sets, there exists an intersection of all the subsets. We'll denote that intersection ${u.}$ Since all of the subsets of ${\nat \times X}$ are sets of tuples, it follows that ${u}$ is a set of tuples.
+
+Since ${(0,a) \in \Nn,}$ it follows that there is exactly one ${(0,a) \in u.}$ Why? Because if there wasn't just one ${(0,a) \in u,}$ it follows that there's another ${(0,b) \in u,}$ where ${a \neq b.}$ That is, ${u}$ contains two tuples ${(0,a)}$ and ${(0,b).}$ If we excluded the ${(0,b),}$ then we'd have two outcomes. First, we'd still have ${(0,a),}$ since ${a \neq b.}$ Second, excluding ${(0,b)}$ means that ${u \rid \set{(0,b)}}$ is the smallest set in ${\Nn.}$ But this can't be true, because ${u}$ is the smallest set in ${\Nn.}$
+
+Is there exactly one ${(n,x) \in u?}$ Well, if ${(n,x) \in u,}$ then ${(n^+,f(x)) \in u}$ by property 4. And if ${(n,x)}$ was not unique, then there must be some ${(n^+,y) \in u}$ where ${y \neq f(x).}$ Otherwise, we'd violate property 4. Say we excluded ${(n^+,y).}$ This gives us the set ${u \rid \set{(n^+,y)}.}$ Because ${n^+ \neq 0,}$ this smaller set still contains ${(0,a).}$ But if the smaller set contains ${(0,a),}$ then it must also contain some tuple of the form ${(k^+,f(k)),}$ again by property 4. If turns out that ${k = n,}$ then it must be the case that the smaller set contains ${(n^+,f(x)),}$ because we said that ${y \neq f(x).}$ If ${k \neq n,}$ then the smaller set contains ${(k^+,f(k))}$ anyway, because ${m^+ \neq n^+.}$ These cases (${k=n}$ or ${k \neq n}$) cannot be true, because both imply ${u \rid \set{(n^+,y)} \in \Nn.}$ This contradicts the fact that ${u}$ is smallest set in ${\Nn.}$ Therefore, there is exactly one ${(n,x) \in u.}$
+
+What can we conclude from these findings? From property 1, the giant collection ${\Nn}$ contains functions from ${\nat}$ to some set ${X.}$ Now, if we had an element ${a \in X}$ and a function ${f: X \to X,}$ then there's a function ${u: \nat \to X}$ where ${u(0) = a}$ and ${u(n^+) = f(u(n))}$ for every ${n \in \nat.}$ Why? Because there's always a subset of ${\Nn,}$ call it ${S,}$ where ${(n,x) \in u,}$ for at most one ${x.}$ That subset ${S}$ has the property where if ${0 \in S,}$ then ${n \in S,}$ then ${n^+ \in S.}$ This conclusion is called the _Recursion Theorem_.
+
+<dfn>
+
+__recursion theorem__. Let ${a \in X}$ and ${f: X \mapsto X.}$ Then there exists a function ${u: \nat \mapsto X}$ such that ${u(0) = a}$ and ${u(n^+) = f(u(n))}$ for all ${n \in \nat.}$
+
+</dfn>
+
+The recursion theorem is what allows us to construct _recursive definitions_. For example, suppose we were told that a function ${f}$ is defined as
+
+$$
+	f(0), f(f(0)), f(f(f(0))), f(f(f(f(0)))), \ldots.
+$$
+
+This is a function defined in terms of a previous application of the function, starting at some known base case. The Principle of Induction, on its own, does not allow us to create these definitions. Why? Because we have no reason to believe, with induction alone, that the function ${f}$ even exists. Induction says nothing about existence. Indeed, this is a drawback of inductive proofs, and it's why many mathematicians find them unsatisfying — they do not yield new theorems. This illustrates a key point in mathematics, and more broadly, logic: There's a difference between describing an object (e.g., proving its properties with induction) and establishing the object's existence.
+
+## Operations on Naturals
+
+Having established the natural numbers, we now want to establish their arithmetic. We begin with addition.
+
+### Addition
+
+The recursion theorem is precisely what allows us to define addition. Before we do so, let's quickly review the notion of a successor:
+
+<dfn>
+
+__successor.__ For each ${n \in \nat,}$ there exists exactly one natural number called the _successor of ${n,}$_ denoted ${n^+,}$ for which the following properties are true: 
+
+1. ${n^+ \neq 0.}$
+2. If ${n^+ = m^+,}$ then ${n = m.}$
+3. If ${n = 0,}$ then we denote ${n^+}$ as ${1.}$
+
+</dfn>
+
+Here is the definition of addition:
+
+<dfn>
+
+__addition.__
+By the recursion theorem, to every pair ${(x,y) \in \nat \times \nat,}$ there exists a unique function ${+}$ that assigns exactly one natural number such that:
+
+1. ${+(x,0) \mapsto x}$ for every ${x \in \nat.}$
+2. ${+(x,y^+) \mapsto (+(x,y))^+}$ for every ${x,y \in \nat.}$
+
+We denote the assigned natural number as ${x + y.}$
+
+</dfn>
+
+Suppose we're given ${+(x,0^+).}$ Then by property (2), we have ${+(x,0^+) = (+(x,0^+))^+.}$ Recall that we denote the successor ${0^+}$ with the symbol 1. So, we have ${+(x,1) = (+(x,0))^+.}$ And since ${+(x,0) = x,}$ we have ${+(x,1) = x^+.}$ What this means, then, is that the successor of any natural number ${x \in \nat}$ can be expressed as ${x + 1.}$ We now join the rest of society: Whenever we write ${x + 1}$ with ${x \in \nat,}$ we mean the _successor_ of ${x.}$ Since ${+(x,0) \mapsto x,}$ we get the following properties: 
+
+<dfn>
+
+__lemma.__ Given ${x \in \nat,}$ ${x + 0 = x.}$
+
+__lemma.__ ${0 + 1 = 1.}$
+
+</dfn>
+
+The second property is quite remarkable, because it's in line with the fourth Peano axiom: For all ${n \in \omega, n^+ \neq 0.}$ Thus, ${1 + 1 \neq 0.}$ 
+To make things clearer, we ought to state the Peano axioms entirely with our new
+notation for the succesor.
+
+<dfn>
+
+__axiom.__ ${0 \in \nat.}$
+
+__axiom.__ If ${n \in \nat,}$ then ${n + 1 \in \nat.}$
+
+__axiom.__ For all ${n \in \nat,}$ ${n + 1 \neq 0.}$
+
+</dfn>
+
+Having established addition, we can move forward to establishing a few other properties.
+
+Given ${n,m \in \nat,}$ if ${n \neq m,}$ then ${n + 1 \neq m + 1.}$ This is just the contrapositive of the fourth Peano Axiom: If ${n,m \in \nat,}$ then ${n \neq m}$ implies ${n^+ \neq m^+.}$
+
+<dfn>
+
+__axiom.__ Given ${n,m \in \nat,}$ if ${n \neq m,}$ then ${n + 1 \neq m + 1.}$
+
+</dfn>
+
+Next, given ${n \in \nat,}$ it must be the case that ${n + 1 \neq n.}$ Why? Suppose ${n + 1 = n.}$ If ${n = 0,}$ then ${0 + 1 = 0.}$ But that can't be true, since we've already established that ${0 + 1 = 1.}$ So it must be the case that ${n + 1 \neq n.}$
+
+<dfn>
+
+__lemma.__ Given ${n,m \in \nat,}$ ${n + 1 \neq n.}$
+
+</dfn>
+
+We'll state the contrapositive of the third property explicitly as well:
+
+<dfn>
+
+__lemma.__ Given ${n,m \in \nat,}$ if ${n + 1 = m + 1,}$ then ${n = m.}$
+
+</dfn>
+
+Suppose we have some ${n \in \nat}$ with ${n \neq 0.}$ It follows that ${n + 1 \in \nat,}$ since ${n + 1}$ is simply ${n}$'s successor. If we let ${x = n + 1,}$ then ${x \in \nat.}$ And since ${x = n + 1,}$ it cannot be the case that ${x = 1,}$ since ${n \neq 0.}$ (It also can't be the case that ${x = 0,}$ since the successor of a natural number is never ${0.}$) Thus, we have the following:
+
+<dfn>
+
+__lemma.__ For each ${x \in \nat}$ with ${x \neq 0}$ and ${x \neq 1,}$ there exists an ${n}$ such that ${x = n + 1}$ and ${n \neq 0.}$
+
+</dfn>
+
+
+#### Associative Law of Addition
+
+From the definition of addition, we know that given ${a,b \in \nat,}$ there exists a natural number ${a + b \in \nat.}$ Addition also tells us that ${(a + b) + 0 = a + b,}$ and ${b + 0 = b.}$ Thus, we have:
+
+$$
+	a + b = (a + b) + 0 = a + (b + 0) = a + b. 
+$$
+
+Might it be true that ${(a + b) + c = a + (b + c)}$ for all ${a,b,c \in \nat?}$ Well, let's suppose it's true. Then it must be the case that:
+
+$$
+	(a + b) + c + 1 \in \nat.
+$$
+
+Let ${x = c + 1.}$ Then by the definition of addition, we have:
+
+$$
+	(a + b) + x = ((a + b) + x) + 1.
+$$
+
+Since we assumed that ${(a + b) + c = a + (b + c)}$ is true, it follows that for the righthand side, ${((a + b) + x) + 1 = (a + (b + x)) + 1.}$ Therefore:
+
+
+$$
+	\eqs{
+		(a + b) + x &= ((a + b) + x) + 1. \\
+		&= (a + (b + x)) + 1.
+	}
+$$
+
+From the definition of addition, know that ${a + (b + x) = (a + (b + x)) + 1.}$ Thus, we get:
+
+$$
+	\eqs{
+		(a + b) + x &= ((a + b) + x) + 1. \\
+		&= (a + (b + x)) + 1. \\
+		&= a + (b + x).
+	}
+$$
+
+Given that ${x = c + 1,}$ it follows that ${(a + b) + c = a + (b + c)}$ for all ${a,b,c \in \nat.}$
+
+<dfn>
+
+__associativity of addition.__
+${\forall a,b,c \in \nat:}$ ${(a + b) + c = a + (b + c).}$
+
+</dfn>
+
+
+
+#### Commutativity of Addition
+
+From the definition of addition, we know that ${0 + 0 = 0 = 0 + 0.}$ Is ${0 + k
+= k + 0?}$ Suppose it's true that ${0 + k = k + 0.}$ Then let ${k' = k + 1,}$ the successor of ${k.}$ From the definition of addition, we know that ${(0 + k') = (0 + k)'.}$ Thus, we have:
+
+$$
+	\eqs{
+		0 + k' &= (0 + k)'. \\
+	}
+$$
+
+Then, we assumed that ${0 + k = k + 0,}$ we have:
+
+$$
+	\eqs{
+		0 + k' &= (0 + k)'. \\
+		&= (k + 0)'. \\
+	}
+$$
+
+By the definition of addition, we know that ${k + 0 = k.}$ Therefore, we have:
+
+$$
+	\eqs{
+		0 + k' &= (0 + k)'. \\
+		&= k'. \\
+	}
+$$
+
+And since ${k' + 0 = k',}$ we have:
+
+$$
+	\eqs{
+		0 + k' &= (0 + k)'. \\
+		&= k' + 0. \\
+	}
+$$
+
+This gives us the first property of commutativity:
+
+<dfn>
+
+__commutativity of zero on addition.__ ${\forall n \in \nat: n + 0 = n = 0 + n.}$
+
+</dfn>
+
+Say we had ${a,b \in \nat,}$ with ${b = a + 1,}$ the successor of ${a.}$ Is it the case that ${(a + 1) + b = (a + b) + 1?}$ Well, suppose ${(a + 1) + b \neq (a + b) + 1.}$ If ${a = 0,}$ it follows that:
+
+$$
+	(0 + 1) + b \neq (0 + b) + 1.
+$$
+
+We know that the successor of ${0}$ is ${1,}$ and that ${0 + b = b}$ following the commutativity of zero on addition. Therefore:
+
+$$
+	1 + b \neq b + 1.
+$$
+
+We said that ${a = 0,}$ and that ${b = a + 1,}$ the successor of ${a,}$ which means ${b = 1:}$
+
+$$
+	1 + 0 \neq 0 + 1.
+$$
+
+The initial assumption that ${(a + 1) + b \neq (a + b) + 1}$ cannot be true. We know that the successor of ${0}$ is ${1,}$ and that ${1 + 0 = 1,}$ by the law of commutativity on zero. Given an ${n \in \nat,}$ it must be true that ${(a + 1) + b = (a + b) + 1.}$
+
+<dfn>
+
+__commutatitivty of successor on addition.__ ${\forall a,b \in \nat: (a + 1) + b = (a + b) + 1.}$
+
+</dfn>
+
+Might it be the case that for any ${m,n \in \nat,}$ ${m + n = n + m?}$ Well, it's certainly true if ${n = 0.}$ Let's assume it's true for all ${m,n \in \nat.}$ From the commutativity of a successor on addition, we know know that:
+
+$$
+	(n + 1) + m = (n + m) + 1.
+$$
+
+Because we assumed that ${m + n = n + m,}$ we have:
+
+$$
+	\eqs{
+		(n + 1) + m &= (n + m) + 1. \\
+		&= (m + n) + 1.
+	}
+$$
+
+Clearly, ${(n + 1) + m = (m + n) + 1}$ is true, per the commutativity of a successor on addition. Therefore, we have:
+
+<dfn>
+
+__commutativity of addition.__ ${\forall n,m \in \nat: n + m = m + n.}$
+
+</dfn>
+
+Commutativity is a valuable property, but it also means that we must keep a close eye on it. In particular, we ought to establish that ${y = x + y}$ if, and only if, ${x = 0}$ for all ${y \in \nat.}$ This proposition consists of two claims:
+
+$$
+			(x = 0) \nc (x + y = y). \\
+			(x + y = y) \nc (x = 0).
+$$
+
+The second claim is straightforward to check. Suppose ${x + y \neq y,}$ ${x = 0,}$ and ${y}$ is some arbitrary natural number. Then we'd have ${0 + y \neq y.}$ But this violates the commutativity of zero on addition, so it must be true that ${(x + y = y) \nc (x = 0).}$ Now to the first claim. Suppose ${(x = 0) \nc (x + y \neq y).}$ The contrapositive of this assumption is that ${(x + y = y) \nc (x \neq 0).}$ But we just verified that ${(x + y = y) \nc (x = 0).}$ The first claim must therefore be true. Thus, we have the following:
+
+<dfn>
+
+__lemma.__ For all ${y \in \nat,}$ ${y = x + y}$ if, and only if, ${x = 0.}$
+
+</dfn>
+
+We should also establish that given ${x,y,z \in \nat,}$ if ${y \neq z,}$ then ${x + y \neq x + z.}$ We'll use induction for this one. First, consider the case of some fixed ${y,z \in \nat.}$ If ${y \neq z,}$ we know that their successors aren't equal either: ${y' \neq z'.}$ And since ${y' \neq z',}$ we have ${1 + y \neq 1 + z.}$ And since ${1 \in \nat,}$ we know that the proposition holds for the base case — a fixed ${y \in \nat}$ and a fixed ${z \in \nat.}$ Let's prove it for any natural number ${x \in \nat.}$ Suppose its true that if ${y \neq z,}$ then ${x + y \neq x + z.}$ It follows that ${(x + y)' \neq (x + z)'.}$ Because addition is commutative on successors, we know that ${x' + y \neq x' + z.}$ Since ${x \in \nat,}$ ${x' \in \nat,}$ and the proposition holds for all ${x \in \nat.}$
+
+<dfn>
+
+__lemma.__ For all ${x,y,z \in \nat,}$ if ${y \neq z,}$ then ${x + y \neq x + z.}$
+
+</dfn>
+
+### Comparison Relations
+
+Having established addition, we should establish that ${\nat}$ is ordered. To do so, we have to return to using strictly set theory symbols. For a set to have some notion of ordering, we must have method of comparing its elements. For the natural numbers, this is done with the following definition:
+
+<dfn>
+
+__comparable.__ Given ${m,n \in \nat,}$ we say that ${m}$ and ${n}$ are _comparable_ if at least one of these cases is true: (a) ${m \in n,}$ (b) ${m = n,}$ or (c) ${n \in m.}$
+
+</dfn>
+
+Suppose that for each ${n \in \nat,}$ there exists a set ${S(n)}$ comprising all the ${m \in \nat}$ that satisfy at least one of the cases in the definition. That is, all the ${m \in \nat}$ that are comparable to ${n}$ are contained in the set ${S(n).}$ Now let's say that ${S}$ is the set of all ${n}$ where ${S(n) = \nat.}$ This implies that ${S = \nat.}$ Clearly, ${0 \in S,}$ because ${S(0)}$ contains the set of all ${n}$ that are comparable to ${0:}$ Given an ${m \in \nat,}$ it's impossible for ${m \in 0,}$ because ${0 := \nil,}$ so either ${m = 0}$ or ${0 \in m,}$ which satisfies the definition. Because ${m \in S(0),}$ it follows that ${m^+ \in S(0),}$ which means that ${S(0) = \nat.}$ That's the base case, where ${n = 0.}$ Now let's show that if ${S(n) = \nat,}$ it follows that ${S(n^+) = \omega.}$ We know that ${0 \in S(n^+),}$ because ${n^+ \in S(0).}$ Suppose that ${m \in S(n^+).}$ Then either ${n^+ \in m,}$ or ${n^+ = m,}$ or ${m \in n^+,}$ per the definition. If it's ${m \in n^+,}$ then either ${m = n}$ or ${m \in n.}$ Consider the last case, ${m \in n.}$ Because we assumed that ${m \in S(n^+),}$ we know that ${m^+ \in S(n^+),}$ since ${m \in \nat.}$ This means that we have either ${n \in m^+,}$ ${n = m^+,}$ or ${m^+ \in n.}$ The first case, ${n \in m^+,}$ cannot occur. Why? Because if ${n \in m^+,}$ then either ${n \in m}$ or ${n = m,}$ which means that ${n \subset m.}$ And that cannot be true, because no natural number is a subset of its elements. What about the case where ${n^+ \in m}$ or ${n^+ = m?}$ Well, if ${n^+ \in m,}$ then ${n^+ = m^+,}$ and if ${n^+ = m,}$ then ${n^+ = m^+.}$ And the cases where ${n = m^+}$ and ${m^+ \in n?}$ Both of these cases imply that ${m^+ \in n^+.}$ All of this leads to the following:
+
+<dfn>
+
+__theorem.__ Let ${m,n \in \nat}$ with ${m \neq n.}$ Then it must be true that: ${(m \in n) \iff (m \subset n)}$. Because it is always the case that either ${m \in n,}$ ${m = n,}$ or ${n \in m,}$ we adopt the following conventions: If it is known that ${m \in n,}$ we write ${m \lt n.}$ If it is known that ${m \notin n,}$ we write ${m \ge n.}$ If it is known that ${n \in m,}$ we write ${m \gt n.}$ And if it is known that ${n \notin m,}$ we write ${m \le n.}$
+
+</dfn>
+
+From the theorem above, we can make a few observations. (A) First, if ${m = n,}$ then ${n \notin m}$ and ${m \notin n.}$ (B) Second, if ${m \in n,}$ then ${n \notin m,}$ since no natural number is a subset of itself. (C) Third, if ${n \in m,}$ then ${m \notin n,}$ again because no natural number is a subset of itself. Putting it all together:
+
+$$
+	\eqs{
+		&\df{(a):}~~ (m = n) \nc (m \notin n \land n \notin m) \\	
+		&\df{(b):}~~ (m \in n) \nc (n \notin m) \\	
+		&\df{(c):}~~ (n \in m) \nc (m \notin n) \\	
+	}
+$$
+
+Examining each of these cases, it's clear that they can never occur at the same time. If (A) is true, then (B) and (C) are false. If (B) is true, then (A) is false because ${m \in n}$ and (C) is false. If (C) is true, then (A) is again false because ${n \in m,}$ and (B) is false.
+
+<dfn>
+
+__theorem.__ Let ${m,n \in \nat.}$ Then exactly one of the following is true:
+
+1. ${m \lt n.}$
+2. ${m = n.}$
+3. ${m \gt n.}$
+
+
+</dfn>
+
+We can state some properties about the comparison properties. Suppose ${a,b,c \in \nat.}$ If ${a \lt b,}$ and ${b \lt c,}$ is it the case that ${a \lt c?}$ Let's assume it's not the case: ${a \lt b}$ and ${b \lt c}$ and ${a \nless c.}$ If ${a \nless c,}$ then ${c \le a.}$ So either ${c = a}$ or ${c \lt a.}$ If ${c = a,}$ then ${b \lt a.}$ But this contradicts our assumption that ${a \lt b.}$ Perhaps ${c \lt a}$ then? If ${c \lt a,}$ then it must be true that ${c \subset a.}$ But from the definition of the ${\lt}$ sign, we know that if ${b \lt c}$ and ${a \lt b}$ imply that ${b \subset c}$ and ${a \subset b.}$ Can it be true that ${c \subset a \subset b \subset c?}$ No. It must be the case that ${a \lt c.}$
+
+<dfn>
+
+__transitivity of lesser.__ Given ${a,b,c \in \nat,}$ if ${a \lt b}$ and ${b \lt c,}$ it follows that ${a \lt b \lt c.}$
+
+</dfn>
+
+### Multiplication
+
+Here is the definition of multiplication:
+
+<dfn>
+
+__multiplication.__
+By the recursion theorem, to every pair ${(x,y) \in \nat \times \nat,}$ there exists a unique function ${\times}$ that assigns exactly one natural number such that:
+
+1. ${\times(x,0) \mapsto 0}$ for every ${x \in \nat.}$
+2. ${\times(x,y^+) \mapsto \times(x, y + x)}$ for every ${x,y \in \nat.}$
+
+We denote the assigned natural number as ${x \times y,}$ or equivalently, ${xy.}$
+
+</dfn>
+
+Notice that this is structurally the same definition as that of addition. Other than the different function symbol ${\times,}$ the key difference is that ${x \times 0}$ maps to ${0,}$ and that ${x \times y^+}$ maps to ${x \times y+x.}$
+
+The first property we should prove is the commutativity of zero on multiplication. This will make our lives easier for the other proofs. We claim that ${x \times 0 = 0 = 0 \times x.}$ We'll prove this with induction. Our base case is ${x = 0.}$ In that case, ${0 \times 0 = 0 = 0 \times 0.}$ This is true by definition. Now we prove it holds our claim holds for ${x \in \nat.}$ We claim that if ${x \times 0 = 0 \times x}$ is true, then ${(x + 1) \times 0 = 0 \times (x + 1).}$
+
+By the definition of multiplication, we know 
+that ${0 \times (x + 1) = (0 \times (x + 0)) + 0.}$ Therefore, we have:
+
+$$
+	\eqs{
+		0 \times (x + 1) &= (0 \times x) + 0 \\
+	}
+$$
+
+Since we assumed that ${x \times 0 = 0 \times x}$ (our induction hypothesis), we have:
+
+
+$$
+	\eqs{
+		0 \times (x + 1) &= (0 \times x) + 0 \\
+		&= 0 + 0
+	}
+$$
+
+By the definition of natural addition, we know that ${0 + 0 = 0.}$ By the definition of natural multiplication, we have ${(x + 1) \times 0 = 0.}$ Therefore, it must be true that ${0 \times (x + 1) = 0 = (x + 1) \times 0.}$
+
+<dfn>
+
+__zero element.__ ${\forall n \in \nat:}$ ${n \times 0 = 0 = 0 \times n.}$
+
+</dfn>
+
+We should state clearly that there's an identity element for multiplication, ${1.}$ This follows directly from the definition of multiplication. We know that 1 is the successor of 0. So, given ${x \times 1,}$ we must have ${x \times (0 + 1).}$ It must also be the case that ${n \times 1 = 1 \times n.}$ If it weren't, then we'd have ${0 \times 1 \neq 0 \times 1}$ when ${n = 0,}$ which violates the zero element rule.
+
+<dfn>
+
+__identity element.__ ${\forall n \in \nat: n \times 1 = n = 1 \times n.}$
+
+</dfn>
+
+#### Commutativity of Multiplication 
+
+Is it true that ${xy = yx}$ for any ${x,y \in \nat?}$ It's certainly true when ${x=1,}$ by the identity element. We have ${y \times 1 = y,}$ and ${1 \times y = y.}$ Suppose ${x \in \nat,}$ and ${xy = yx}$ is true. Then by the definition of addition, ${xy + y = yx + y = yx^+.}$ And by the definition of multiplication, we have ${x^+y = xy + y.}$ Thus, we have ${x^+y=yx^+.}$ It follows that ${xy = yx}$ for all ${x,y \in \nat.}$
+
+<dfn>
+
+__commutativity of multiplication.__ ${\forall a,b \in \nat: a \by b = b \by a.}$
+
+</dfn>
+
+#### Distributivity of Multiplication over Addition
+
+Suppose ${x,y \in \nat.}$ We claim that ${x(y+z)=xy+xz.}$ First, suppose ${z=1.}$ Then we'd have ${x(y+1) = xy^+ = xy + x = xy + x \by 1.}$ Which is true. Therefore, the claim is true for the case where ${z = 1.}$ Now suppose we select an arbitrary ${z.}$ Assume that ${x(y+z)=xy+xz}$ is true. If it is true, then we have:
+
+$$
+	\eqs{
+		x(y+z^+) &= x((y+z)^+)  \\
+		&= x(y+z) + x \\
+		&= (xy+xz) + x \\
+		&= xy + (xz + x) \\
+		&= xy + xz^+.
+	}
+$$
+
+It follows that ${x(y+z) = xy + xz}$ for all ${x,y,z \in \nat.}$
+
+<dfn>
+
+__distributivity of multiplication.__ ${\forall a,b,c \in \nat: a(b+c) = ab + ac.}$
+
+</dfn>
+
+#### Associativity of Multiplication
+
+We claim that ${(xy)z = x(yz)}$ for all ${x,y,z \in \nat.}$ First, suppose ${z  = 1.}$ Then ${(xy) \by 1 = xy = x(y \by 1).}$ This is true. No suppose ${z}$ is some arbitrary natural number. Assume ${(xy)z = x(yz)}$ is true. Then we have:
+
+$$
+	\eqs{
+		(xy)z^+ &= (xy)z + xy \\
+		&= x(yz) + xy \\
+		&= x(yz + y) \\ 
+		&= x(yz^+).
+	}
+$$
+
+Clearly, ${(xy)z = x(yz)}$ for all ${x,y,z \in \nat.}$
+
+<dfn>
+
+__associativity of multiplication.__ ${\forall a,b,c \in \nat: a(bc) = b(ac).}$
+
+</dfn>
+
+## Integers
+
+The natural numbers, truly, are a remarkable construct. But they're inherently limited: We have no way of solving equations like ${x + 1 = 0}$ and ${x + 5 = 3.}$ The former cannot be solved because no successor is 0 by definition, and the latter cannot be solved because no natural number is a subset of its elements, which implies that ${3}$ cannot be a successor of ${5.}$
+We need another construct.
+
+One idea is to define the integers as _solutions_ to the equation ${x + b = a,}$ where ${x,b,a \in \nat.}$ This avoids violating our established definitions and propositions, because it's cast entirely in terms of the naturals. An integer, then, is an ordered pair ${(a,b)}$ which we may denote as ${a - b.}$ The problem with this idea, however, is that it's overbroad — different equations can have the same solutions. For example, ${x+1=2}$ and ${x+3=4}$ have the same solution ${1.}$ However, because we defined the solutions as tuples, the ${x}$ in ${x+1=2}$ is the tuple ${(1,2),}$ which we denote as ${2-1,}$ and the ${x}$ in ${x+3=4}$ is the tuple ${(3,4),}$ which we denote as ${4-3.}$ Because these are different tuples, we have ${2-1 \neq 4-3.}$ That's not what we want.
+
+What we can do is establish that the tuples solving these equations are all the same. We'll start by establishing some notation.
+
+<dfn>
+
+__notation.__ Let ${m,n \in \nat.}$ Then the notation ${m - n}$ denotes a pair ${(m,n) \in \nat \times \nat.}$
+
+</dfn>
+
+Now a definition:
+
+<dfn>
+
+__definition.__ Let ${\sim}$ be a relation on ${\nat \times \nat.}$ The relation ${m - n \sim p - q}$ is true if and only if ${m + q = n + p.}$
+
+</dfn>
+
+From the definition above, we can infer a few things. First, we have ${m - n \sim m - n,}$ since ${m + n = m + n}$ by the definition of addition. Thus:
+
+<dfn>
+
+__lemma i.a.__ Given ${m,n \in \nat,}$ it follows ${m - n \sim m - n.}$ That is, the relation ${\sim}$ is reflexive.
+
+</dfn>
+
+
+Second, if by the commutative property of addition, we have ${n + p = m + q.}$ It follows that ${p - q \sim m - n.}$
+
+<dfn>
+
+__lemma i.b.__ Given ${m,n,p,q \in \nat,}$ if ${m - n \sim p - q,}$ then ${p - q \sim m - n.}$ That is, the relation ${\sim}$ is symmetric.
+
+</dfn>
+
+Third, say we had six natural numbers, ${m,n,p,q,r,s.}$ Now suppose we had ${m - n \sim p - q}$ and ${p - q \sim r - s.}$ This implies that:
+
+$$
+	\eqs{
+		m + q &= n + p, \\
+		p + s &= q + r.
+	}
+$$
+
+Since all six numbers are natural numbers, we know that ${(m + s) + q}$ is a natural number, since the successor of a natural number is a natural number. Using the laws we already have:
+
+$$
+	\eqs{
+		(m + s) + q &= m + (s + q) ~~~~~ \text{by associativity of addition} \\
+		&= m + (q + s) ~~~~~ \text{by commutativity of addition} \\
+		&= (m + q) + s ~~~~~ \text{by associativity of addition} \\
+		&= (n + p) + s ~~~~~ \text{since $m + q = n + p$} \\
+		&= n + (p + s) ~~~~~ \text{by associativity of addition} \\
+		&= n + (q + r) ~~~~~ \text{since $p + s = q + r$} \\
+		&= n + (r + q) ~~~~~ \text{by commutativity of addition} \\
+		&= (n + r) + q ~~~~~ \text{by associativity of addition} \\
+	}
+$$
+
+
+Since ${(m + s) + q = (n + r) + q,}$ we know that ${m + s = n + r.}$ Which means that, if ${m - n \sim p - q}$ and ${p - q \sim r - s,}$ it follows that ${m - n \sim r - s.}$
+
+<dfn>
+
+__lemma i.c.__ Given ${m,n,p,q,r,s \in \nat,}$ if ${m - n \sim p - q,}$ and ${p - q \sim r - s,}$ then ${m - n \sim r - s.}$ That is, the relation ${\sim}$ is symmetric.
+
+</dfn>
+
+Because of ~lemma i.a.~, ~lemma i.b.~, and ~lemma i.c.~, the relation ${~}$ is reflexive, symmetric, and transitive. Therefore, the relation ${\sim}$ is an _equivalence_ relation.
+
+<dfn>
+
+__theorem.__ For all natural numbers ${a,b,c,d,}$ if and only if ${a + d = b + c,}$ then the pair of natural numbers represented by ${a - b}$ is equivalent to the pair represented by ${c - d.}$
+
+</dfn>
+
+What we've essentially done is define ${a - b}$ as denoting a pair ${(a,b)}$ where ${a,b \in \nat.}$ But more importantly, we've established that we can verify whether a given pair is equivalent to ${a - b.}$ In other words, by the recursion theorem, given ${a,b,c,d \in \nat,}$ there exists an equivalence class of ordered pairs:
+
+$$
+	[(a,b)]_{\equiv} := [(a,b) \equiv (c,d) \iff (a + d = b + c)].
+$$
+
+Because the set of natural numbers always has a unique member 0, every equivalence class ${[(a,b)]_{\equiv}}$ has a unique member of the form ${(n,0),}$ ${(0,n),}$ or both at once, where ${n \in \nat.}$ Gathering all of these classes into a set, we have:
+
+$$
+	\lset{\ldots, [(0,3)]_{\equiv}, [(0,2)]_{\equiv}, [(0,1)]_{\equiv}, [(0,0)_{\equiv}], [(0,0)]_{\equiv}, [(1,0)]_{\equiv}, [(2,0)]_{\equiv}, [(3,0)]_{\equiv}, \ldots}.
+$$
+
+Following our notation, each member of this set corresponds to:
+
+$$
+	\lset{\ldots, [0-3], [0-2], [0-1], [0-0], [0-0], [1-0], [2-0], [3-0], \ldots}.
+$$
+
+By convention, we denote classes of the form ${[(n,0)]}$ as ${n,}$ and classes of the form ${[(0,n)]}$ as ${-n.}$ That is, their solution forms:
+
+$$
+	\lset{\ldots, -3, -2, -1, -0, 0, 1, 2, 3, \ldots}.
+$$
+
+Now, to embed the natural numbers in this set, we define (by the recursion theorem) a function that maps each natural number ${n \in \nat}$ to a subset of ${\uint:}$ the subset ${[(n,0)].}$ Thus, we have ${0 \mapsto 0, 1 \mapsto 1, 2 \mapsto 2,}$ and so on. This allows us to say that the natural numbers are a subset of this set of equivalent classes. We might notice something funny. There's a ${-0?}$ Indeed, there is! But only because of how we've defined the integers: Each member of the set (an integer) is a set of equivalence classes of mappings — there are always two symbols. However, the natural number 0 has a very special property: ${0 + n = 0 = n + 0.}$ As such, ${-0}$ and ${0}$ are no different. Thus, we adopt another convention to denote the set:
+
+$$
+	[(a,b)] :=
+	\begin{cases}
+		a - b ~ & \if a \ge b \\
+		-(b-a) ~& \else
+	\end{cases}
+$$
+
+This gives us the set we're all familiar with, which we denote more concisely as ${\uint:}$
+
+$$
+	\uint := \set{\ldots, -3, -2, -1, 0, 1, 2, 3, \ldots}
+$$
+
+More explicitly:
+
+<dfn>
+
+__integers.__ The set ${\uint}$ is defined as the disjoint union ${\uint^- \dup \set{0} \dup \uint^+,}$ where ${\uint^-}$ is the set of all equivalence classes ${[(0,a)]_{\equiv},}$ where ${\uint^+}$ is the set of all equivalence classes ${[(a,0)]_{\equiv},}$ and where the equivalence ${\equiv}$ is defined as ${x + m = y + n}$ given ${(x,y), (n,m) \in \nat \times \nat.}$ By definition, ${\nat \subset \uint.}$ 
+
+</dfn>
+
+Operations on the integers are defined as follows:
+
+<dfn>
+
+__integer addition.__ Let ${a,b \in \uint.}$ Then
+
+$$
+	a + b = [(m,n)]_{\equiv} + [(p,q)]_{\equiv} = [(m+p,n+q)]_{\equiv}
+$$
+
+where ${m,n,p,q \in \nat.}$
+
+</dfn>
+
+Now, we have to make sure that this operation is well-defined, because we're adding equivalence classes here, rather than the usual natural numbers. Fortunately, we can do so quickly. First, let's consider the base case ${(m,n) \equiv (m,n),}$  and ${(p,q) \equiv (p,q).}$ Then we have:
+
+$$
+	m + n = m + n ~~~ \text{and} ~~~ p + q = p + q.
+$$
+
+Both true. Now let's suppose ${(m,n) \equiv (m^+,n^+)}$ and ${(p,q) \equiv (p^+,q^+).}$ Then we have:
+
+$$
+	m + n^+ = m^+ + n ~~~ \text{and} ~~~ p + q^+ = p^+ + q.
+$$
+
+According to our definition of addition, we have:
+
+$$
+	m^+ + p^+ + n + q = n^+ + q^+ + m + p.
+$$
+
+Integer addition is well defined. Note that because of this definition, subttraction comes naturally. The same verification must be done for multiplication:
+
+<dfn>
+
+__integer multiplication.__ Let ${a,b \in \uint.}$ Then
+
+$$
+	a \by b = [(m,n)]_{\equiv} \by [(p,q)]_{\equiv} = [(mp + nq, np + mq)]_{\equiv}
+$$
+
+where ${m,n,p,q \in \nat.}$
+
+</dfn>
+
+## The Rationals
+
+From number theory, the ${/}$ operation, called division, is defined as follows:
+
+<dfn>
+
+__division.__ Let ${a,b \in \uint.}$ Then ${a/b}$ is defined if and only if there exists a ${q \in \uint}$ such that ${a = bq + r}$ with ${0 \le r \lt b.}$
+
+</dfn>
+
+This is a nice definition, since it allows us to solve equations like ${2x + 1 = 5.}$ Here, there is a ${q \in \uint,}$ the integer ${2.}$ Unfortunately, we can't solve ${2x = 1.}$ Why? Because there is no ${q \in \uint}$ that satisfies ${2x = 1.}$ This means that we need a special set of numbers that _can_ solve this equation. Since we want to solve equations involving ${\uint,}$ we need all of the usual integer operations to work on this new set. We'll also want its members to be ordered. The last thing we want is reinventing over a thousand years of mathematics. What we want is a number of the form
+
+$$
+	\dfrac{a}{b}.
+$$
+
+This allows us to use the cancellation law of addition on the integers. For example, given ${2x = 1,}$ the solution would be a number from this set, denoted ${\frac{1}{2}.}$
+
+$$
+	\cancel{2} \by \dfrac{1}{\cancel{2}} = 1.
+$$
+
+Sound familiar? Indeed, this is precisely what we did when we wanted
+to define subtraction. We defined a set of equivalence classes. Once again, we'll have to define what the symbol ${\frac{\phantom{a}}{\phantom{b}}}$ means. Otherwise, it'd be ambiguous. A good first attempt is to define ${\frac{a}{b}}$ as a tuple ${(a,b)}$ that belongs to some relation ${R \subseteq \uint \times \uint.}$ This is permissible, since ${a \in \uint}$ and ${b \in \uint.}$ If we just left it at this, however, we'd run into a problem. Since we're allowing _any_ integer to form this tuple, we can have
+
+$$
+	\dfrac{1}{0}.
+$$
+
+But if there is a number ${1/0,}$ it follows that:
+
+$$
+	\eqs{
+		\cancel{0} \by \dfrac{1}{\cancel{0}} &= 1 \by 0. \\
+		1 &= 0.
+	}
+$$
+
+Not good. So, we can't allow the ${b}$ in the tuple ${(a,b)}$ to be 0. So, we'll have to adjust the codomain to ${\uint \rid 0}$ (the integers excluding 0). This gives us our first working definition:
+
+$$
+	\dfrac{a}{b} \iff (a,b) \in R \subseteq (\uint \times \uint \rid 0)
+$$
+
+This is pretty good. We've defined what ${\frac{a}{b}}$ means purely in terms some relation. But, we've got a problem. Recall that tuple equality is defined as ${(a,b) = (c,d) \iff (a = c \land b = d).}$ Suppose we're given the following equations: ${2x - 1 = 0,}$ and ${4x - 2 = 0.}$ Since both these equations are equal to ${0,}$ have:
+
+$$
+	\eqs{
+		4x - 2 &= 2x - 1. \\
+		4x - 2 - 2x &= - 1. \\ 
+		2x - 2 &= -1. \\ 
+		2x &= -1 + 2. \\
+		2x &= 1. \\
+		x &= \frac{1}{2}.
+	}
+$$
+
+So, the solution for both equations is ${x = \frac{1}{2}.}$ If we solved them individually, we get the following:
+
+<Grid cols={2}>
+
+$$
+	\eqs{
+		2x - 1 &= 0. \\
+		2x &= 1. \\
+		x &= \frac{1}{2}. \\
+	}
+$$
+
+$$
+	\eqs{
+		4x - 2 &= 0. \\
+		4x &= 2. \\
+		x &= \frac{2}{4}.
+	}
+$$
+
+</Grid>
+
+We're getting two different tuples. If ${2x - 1 = 0,}$ then we get the tuple ${(1,2).}$ But if ${4x - 2 = 0,}$ we get the tuple ${(2,4).}$ Those are two different tuples, but we just saw that both equations should return the same tuple ${(1,2).}$ So how do we ensure that ${(1,2)}$ is the same as ${(2,4)?}$ Clearly, they aren't the same under tuple equality. This is the precisely the kind of problem we wanted to avoid when we constructed the integers. Thus, we again define the rationals as equivalence classes.
+
+<dfn>
+
+__rationals.__ Let ${(a,b), (c,d) \in \uint \times \uint.}$ The set ${\rat}$ is defined as the set of all equivalence classes ${[(a,b)]_{\equiv},}$ such that ${ad \equiv bc}$ and ${b \neq 0.}$ If ${[(a,b)] \in \rat,}$ we may denote it as ${\dfrac{a}{b}.}$
+
+</dfn>
+
+The construction of the reals is left to the [notes on real analysis](./../real_analysis/preface).

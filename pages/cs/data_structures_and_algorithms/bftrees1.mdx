@@ -1,0 +1,75 @@
+import {Tree} from "../../../components/illus/components/Tree/Tree";
+
+<Grid cols={2} rows={2}>
+<Tree data={[
+	{ child: "a", parent: "" },
+	{ child: "b", parent: "a" },
+	{ child: "c", parent: "a" },
+	{ child: "d", parent: "b" },
+	{ child: "e", parent: "b" },
+	{ child: "f", parent: "c" },
+	{ child: "g", parent: "c", display: "none" }]}
+	markHeight={true}
+	tighten={30}
+	scale={100}
+	id={`ff2`}
+	label={`Tree A`}
+	margins={[10,30,20,30]}
+	labelOffsetY={20}
+/>
+<Tree
+	data={[
+		{ child: "a", parent: "" },
+		{ child: "b", parent: "a" },
+		{ child: "c", parent: "a" },
+		{ child: "d", parent: "b" },
+		{ child: "e", parent: "b", display: "none" },
+		{ child: "f", parent: "c", display: "none" },
+		{ child: "g", parent: "c" },
+	]}
+	markHeight={true}
+	tighten={30} scale={100}
+	id={`ff1`}
+	label={`Tree B`}
+	margins={[10,30,20,30]}
+	labelOffsetY={20}
+/>
+<Tree
+	data={[
+		{ child: "a", parent: "" },
+		{ child: "b", parent: "a" },
+		{ child: "c", parent: "a" },
+		{ child: "d", parent: "b" },
+		{ child: "e", parent: "b", display: "none" },
+		{ child: "h", parent: "d" },
+		{ child: "i", parent: "d", display: "none" },
+	]}
+	markHeight={true}
+	edgeLength={100}
+	tighten={30} scale={100}
+	id={`ff3`}
+	label={`Tree C`}
+	margins={[10,30,20,30]}
+	labelOffsetY={20}
+/>
+<Tree
+	data={[
+		{ child: "a", parent: "" },
+		{ child: "b", parent: "a" },
+		{ child: "c", parent: "a" },
+		{ child: "d", parent: "b" },
+		{ child: "e", parent: "b", display: "none" },
+		{ child: "h", parent: "d", display: "none" },
+		{ child: "i", parent: "d" },
+		{ child: "j", parent: "i" },
+		{ child: "k", parent: "i", display: "none" },
+	]}
+	markHeight={true}
+	edgeLength={100}
+	tighten={30} scale={100}
+	id={`ff45`}
+	label={`Tree D`}
+	margins={[10,30,20,30]}
+	labelOffsetY={20}
+/>
+</Grid>

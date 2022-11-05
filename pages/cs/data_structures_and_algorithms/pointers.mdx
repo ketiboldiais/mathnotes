@@ -1,11 +1,11 @@
 # Pointers
 
 We can think of pointers as a special kind of variable. More formally, a
-**pointer** is a variable—a number—that stores an address in RAM. That
+__pointer__ is a variable—a number—that stores an address in RAM. That
 address could be the address of a location in memory where specific data is
 stored, or it could be an address to some random piece of data. To tighten
 this definition, we assume the following: There are two categories of
-variables—(1) a **data variable** and (2) an **address variable**. A data
+variables—(1) a __data variable__ and (2) an __address variable__. A data
 variable stores a particular piece of data. An address variable stores a
 particular memory address.
 
@@ -114,7 +114,7 @@ variable, it really is just a name for an address in memory. In this case,
 `0x7ffee97c6180`. That address, however, stores an address in memory, the
 address behind `x`. So what's going on with `*p`? This is where we have to
 distinguish betwen `p` and `*p`. The variable `p` stores an address.
-However, writing `*p` is called a **dereference**. In other words, `*p`
+However, writing `*p` is called a __dereference__. In other words, `*p`
 tells the compiler to retrieve the value stored in the address stored in
 `p`. In sum: When we first use `*p`, we are declaring the pointer. When we
 use `*p` in subsequent code, we are _dereferencing_ that pointer.
@@ -246,7 +246,7 @@ will at some point collide with the stack, and we are greeted with a **heap
 overflow**. We never want heap overflows—the end result is the program
 crashing.
 
-Because of this issue, we must always **de-allocate** memory we've
+Because of this issue, we must always __de-allocate__ memory we've
 instructed the compiler to allocate. We can think of this as sort
 "clearing" the memory we've allocated.[^clearingnote]
 
@@ -788,7 +788,7 @@ uninitialized pointer.
 ## References
 
 This discussion on pointers presents an ideal segue to
-**references**—aliases to variables. To understanding how this works,
+__references__—aliases to variables. To understanding how this works,
 examine the output of the following code:
 
 ```cpp
@@ -966,7 +966,7 @@ In other words, the parameter `n` has become an alias of `x`, and `x` is
 the identifier for the memory address storing `5`. Thus, when we modify
 `n`, we also modify `x`.
 
-The moment we've declared a reference, it is bound to its **referee**—the
+The moment we've declared a reference, it is bound to its __referee__—the
 variable the reference references. For example, observe the output below:
 
 ```cpp

@@ -3,14 +3,14 @@ import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
 
 # Heaps
 
-The notes below concern the **heap** data structure and its variants.
+The notes below concern the __heap__ data structure and its variants.
 Importantly, everything that applies to trees applies to heaps.
 
 ## Binary Heap
 
 The most basic and common variant of the heap data structure is the
-**binary heap**. There are two subvariants &mdash; the **min binary heap**
-(**minBH**, the tree to the left), and the **max binary heap** (**maxBH**,
+__binary heap__. There are two subvariants &mdash; the __min binary heap__
+(__minBH__, the tree to the left), and the __max binary heap__ (__maxBH__,
 the tree to the right).
 
 <BinaryTree
@@ -31,8 +31,8 @@ the tree to the right).
 	]}
 />
 
-In a **maxBH**, the parent nodes are _always greater_ than the child nodes.
-The inverse is true for the **minBH** &mdash; the parent nodes are _always
+In a __maxBH__, the parent nodes are _always greater_ than the child nodes.
+The inverse is true for the __minBH__ &mdash; the parent nodes are _always
 smaller_ than the child nodes. As their names imply, for both the maxBH and
 minBH, each node can have at most two children.
 
@@ -242,7 +242,7 @@ left-child of a node has the form:
 
 <figure>$$ 2n + 1 $$</figure>
 
-where ${n \in \ZZ^{+}.}$ From number theory, this implies that the number
+where ${n \in \uint^{+}.}$ From number theory, this implies that the number
 will always be odd. Accordingly, the left child of a given node in a binary
 heap will always have an odd number index when placed in an array via
 breadth-first traveral. Second, we see that the index of a given node's
@@ -250,13 +250,13 @@ right-child has the form:
 
 <figure>$$ 2(n+1) $$</figure>
 
-where ${n \in \ZZ^{+}.}$ Given that ${n}$ is a positive integer, the closure
+where ${n \in \uint^{+}.}$ Given that ${n}$ is a positive integer, the closure
 property of the positive integers implies that the index can be expressed
 as:
 
 <figure>$$ 2k $$</figure>
 
-where ${k \in \ZZ^{+}.}$ And again from number theory, this implies that the
+where ${k \in \uint^{+}.}$ And again from number theory, this implies that the
 right-child's index will always be an even number. Accordingly, the
 right-child of a given node in a binary heap will always have an even
 number index when placed in an array via breadth-first traversal.

@@ -1,35 +1,24 @@
 import type { NextPage } from 'next'
+import Conventions from "./appendix/conventions.mdx";
 import Head from "next/head";
 
 const Home: NextPage = () => {
-  return (
-    <div>
+	return (
+		<div>
 			<Head>
-				<title>Sublimis</title>
-				<meta name={"keywords"} content={"math and cs notes"} />
+				<title>Math Notes</title>
 			</Head>
-			<h1>Math/CS Notes</h1>
+			<h1>Notes</h1>
 			<p>
-				This is a collection of some math and CS notes I&#39;ve taken over the
-				years. The collection comprises two volumes, Review of Computer
-				Science and Review of Mathematics. These two volumes are then
-				divided into topics (corresponding to a course I&#39;ve taken),
-				articles (a topic in that course), sections, subsections, and so
-				on. Click the Index button above to navigate.
+				This is a collection of some math, logic, and CS notes I&#39;ve taken over the years. The collection comprises two volumes, Review of Computer Science and Review of Mathematics. These two volumes are then divided into topics (corresponding to a course I&#39;ve taken), articles (a topic in that course), sections, subsections, and so on. The Index button above provides a table of contents.
 			</p>
 			<p>
-				If errors, inaccuracies, or front-end bugs are found, please email
-				me at koldiais@gmail.com. I keep a running list of errata that, so
-				far, has stayed fairly short. That said, I don&#39;t catch everything.
-				So, if you see something, say something.
+				The sections below define the conventions and styles I adopt throughout the notes. If a particular syntactic structure, idiom, morpheme, glyph, or symbol is unclear, return to this page for reference. These are personal conventions. They should not be treated as standards or assumed to be common place.
 			</p>
-			<p>
-				<a href={"https://ketiboldiais.com/"}>
-					Ketib
-				</a>
-			</p>
+			<p><a href={"https://ketiboldiais.com/"}>Ketib</a></p>
+			<Conventions />
 		</div>
-  )
+	)
 }
 
 export default Home

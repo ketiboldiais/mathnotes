@@ -1,10 +1,5 @@
 import {LinkedList} from "../../../components/illus/components/LinkedList/LinkedList";
 
-<head>
-	<title>Compilers</title>
-	<description>Notes on compilers.</description>
-</head>
-
 # Compilers
 
 <q>
@@ -61,10 +56,10 @@ language, varieties of Assembly, or for some languages, machine code. This
 is a key point to keep in mind. Generally, compilers fall into three
 categories:
 
-1. **Two-tiered compilers** are compilers that take source code inputs and
+1. __Two-tiered compilers__ are compilers that take source code inputs and
    return virtual machine code outputs. The virtual machine code outputs
    then translated by the relevant virtual machine into machine code.
-2. **Single-tiered compilers** are compilers that take source code inputs
+2. __Single-tiered compilers__ are compilers that take source code inputs
    and output straight to either the system's Assembly language or the
    system's machine language.
 
@@ -84,12 +79,12 @@ Most compilers — two- or single-tiered — have the following anatomy:
 
 From the diagram, we see that a compiler consists of three main components:
 
-1. A **tokenizer**,
-2. A **parser**, and
-3. A **code generator**.
+1. A __tokenizer__,
+2. A __parser__, and
+3. A __code generator__.
 
 The first two components are encapsulated in a larger module called the
-**syntax analyzer**. We begin by considering the tokenizer.
+__syntax analyzer__. We begin by considering the tokenizer.
 
 ## The Tokenizer
 
@@ -109,12 +104,12 @@ so on. To create meaning, a language can a particular character a meaning
 (e.g., the symbol `<` has the meaning "less than"), or a group of the
 characters meaning (e.g., the grouping `if` marks the introduction of a
 sufficient condition). In the world of programming languages, these basic
-units — a character or group of characters — are called **tokens**.
+units — a character or group of characters — are called __tokens__.
 
 > _Informal Definition_. A _token_ is a string of characters that has a
 > meaning.
 
-The language can further classify these tokens into **token types**. For
+The language can further classify these tokens into __token types__. For
 example, a simple language might have the following token types:
 
 1. keywords,
@@ -153,7 +148,7 @@ struct-like output; and in the third, a jagged array.
 
 Broadly, a tokenizer is program the performs the following:
 
-1. abstracts the compiler input as a **token stream**,
+1. abstracts the compiler input as a __token stream__,
 2. ensures the token stream continues flowing so long as there are inputs,
    and
 3. supply the current token value and type, and
@@ -187,14 +182,14 @@ she hates brussels sprouts
 
 Now it makes sense. Programming languages are the same way. For the
 language to convey meaning, it must have rules for how tokens should be
-arranged. The set of all these rules is called the language's **grammar**.
+arranged. The set of all these rules is called the language's __grammar__.
 
 > _Informal Definition_. A _grammar_ is a set of rules for how tokens must
 > be arranged to create valid language constructs.
 
 #### Describing Grammar
 
-A grammar consists of **grammatical rules**. To help us describe a
+A grammar consists of __grammatical rules__. To help us describe a
 grammatical rule, we'll use a simple notation system before graduate on to
 a more formal system called _Backus-Naur Form_.
 
@@ -204,12 +199,12 @@ define a small subset of the English language as follows:
 
 $$
 \begin{aligned}
-	&\seq{sentence}: \seq{nounPhrase} \seq{verbPhrase} \\
-	&\seq{nounPhrase}: \seq{determiner?} \seq{noun} \\
-	&\seq{verbPhrase}: \seq{verb} \seq{nounPhrase} \\
-	&\seq{noun}: \tt{apple} | \tt{he} | \tt{she} | \tt{bananas} | \ldots \\
-	&\seq{verb}: \tt{ate} | \tt{shared} | \tt{loves} | \tt{grows} | \ldots \\
-	&\seq{determiner}: \tt{the} | \tt{to} | \tt{my} | \tt{a} | \ldots \\
+	&\ix{sentence}: \ix{nounPhrase} \ix{verbPhrase} \\
+	&\ix{nounPhrase}: \ix{determiner?} \ix{noun} \\
+	&\ix{verbPhrase}: \ix{verb} \ix{nounPhrase} \\
+	&\ix{noun}: \text{apple} | \text{he} | \text{she} | \text{bananas} | \ldots \\
+	&\ix{verb}: \text{ate} | \text{shared} | \text{loves} | \text{grows} | \ldots \\
+	&\ix{determiner}: \text{the} | \text{to} | \text{my} | \text{a} | \ldots \\
 \end{aligned}
 $$
 
@@ -225,10 +220,10 @@ he shared the bananas
 From the simple notation, we see that grammatical rules fall under two
 broad categories:
 
-1. **Terminal rules** are rules where the right hand side defines only
+1. __Terminal rules__ are rules where the right hand side defines only
    constants. The name terminal is descriptive — it's the end of the road
    when we break down a language's construct.
-2. **Non-terminal rules** are all other rules in the language. These are
+2. __Non-terminal rules__ are all other rules in the language. These are
    rules that can be further decomposed into simpler constructs, all the
    way down to terminal rules.
 
@@ -337,7 +332,7 @@ constant : a decimal number
 op : '+' | '-' | '=' | '>' | '<'
 ```
 
-The compiler uses these rules to determine if we have **syntax errors**.
+The compiler uses these rules to determine if we have __syntax errors__.
 For example, from the rules above, we can determine that this expression is
 valid in the language:
 
@@ -369,7 +364,7 @@ if x < 0 {
 ```
 
 Here, we're missing the tokens `(` and `)`. How does the compiler know
-we've violated a grammatical rule? Through the **parser**.
+we've violated a grammatical rule? Through the __parser__.
 
 ## Parsing
 
@@ -469,7 +464,7 @@ machine level:
 
 For a sufficiently complex language, these properties can comprise a great
 amount of data. For most modern compilers, that data is handled with a
-**symbol table**.
+__symbol table__.
 
 ### Symbol Tables
 
@@ -526,8 +521,8 @@ current object. The rest of the symbol table is as we'd expect:
 Because symbol tables can grow very large, languages like Java and C#
 generate symbol tables at two levels:
 
-1. At the class-level (called **class-level symbol tables**), and
-2. at the subroutine-level (called **subroutine-level symbol tables**)
+1. At the class-level (called __class-level symbol tables__), and
+2. at the subroutine-level (called __subroutine-level symbol tables__)
 
 Once the classes or subroutines are no longer needed, the symbol tables are
 forgotten. This ensures that the symbol tables do not consume an inordinate
@@ -546,7 +541,7 @@ has, the the more expressive it is, but at the cost of efficiency.
 ### The Code Writer
 
 The program responsible for creating and updating the symbol table is the
-**codewriter**. To do so, the codewriter must do two things:
+__codewriter__. To do so, the codewriter must do two things:
 
 1. Handle variable declarations, and
 2. Handle variable usage

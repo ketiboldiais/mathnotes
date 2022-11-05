@@ -1,6 +1,6 @@
 # Interrupts
 
-This article covers notes on **interrupts** — events that break the normal
+This article covers notes on __interrupts__ — events that break the normal
 pipeline of instructions fed to the CPU.
 
 Say we're on our laptop and want to read a news article on some webpage.
@@ -29,7 +29,7 @@ the computer's _exception control flow_.
 ## Mechanisms
 
 Importantly, interrupts aren't some low-level concept. They exist at every
-level of the computer system. At the lowest level are **exceptions**. These
+level of the computer system. At the lowest level are __exceptions__. These
 are direct changes to the system's control flow. For example, when our
 laptop runs out battery. Some of us may have noticed that when a computer
 screen dies and we quickly plug in the power source immediately after, we
@@ -37,7 +37,7 @@ find that the computer hasn't died entirely. We're back where we left off
 (but it may take the computer some time to get back up to speed). This is
 possible because of some exception mechanism.
 
-At the higher levels, we have **context switches**. Operating system
+At the higher levels, we have __context switches__. Operating system
 exceptions that allow us to go from apps like Word to Chrome to some notes
-app very quickly. **Signals** are exception mechanisms that we, as
+app very quickly. __Signals__ are exception mechanisms that we, as
 programmers, can use to interrupt the system.

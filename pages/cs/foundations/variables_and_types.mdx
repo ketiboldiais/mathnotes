@@ -1,4 +1,11 @@
+<Head>
+   <title>Variables and Types</title>
+   <meta name={`description`} content={`Notes on variables and types.`}/>
+</Head>
+
 # Variables & Types
+
+<div className={"outline"}>
 
 1. [Constants](#constants)
 2. [Types](#types)
@@ -11,9 +18,10 @@
 5. [Modifying Variables](#modifying-variables)
 6. [Type Safety](#type-safety)
 7. [Why "Primitive" Type?](#why-primitive-type)
-8. [Strongly-typed v. Weakly-typed Languages](#strongly-typed-v-weakly-typed-languages)
+8. [The Special Case of Char](#the-special-case-of-char)
+9. [Strongly-typed v. Weakly-typed Languages](#strongly-typed-v-weakly-typed-languages)
    1. [Why are there are so many types?](#why-are-there-are-so-many-types)
-9. [Operators](#operators)
+10. [Operators](#operators)
    1. [Addition](#addition)
    2. [Subtraction](#subtraction)
    3. [Multiplication](#multiplication)
@@ -30,16 +38,18 @@
    14. [Logical AND](#logical-and)
    15. [Logical OR](#logical-or)
    16. [Logical NOT](#logical-not)
-10. [Idioms](#idioms)
-    1. [Bitwise Operators](#bitwise-operators)
-11. [Naming](#naming)
-12. [Library Methods & APIs](#library-methods--apis)
+11. [Idioms](#idioms)
+   1. [Bitwise Operators](#bitwise-operators)
+12. [Naming](#naming)
+13. [Library Methods & APIs](#library-methods--apis)
+
+</div>
 
 Programs need data. To give our programs that data, they must be stored
 somewhere in memory. But before we store any data in Java, we must tell
 Java beforehand that you are going to store data. To do so, we need
-**variables**—an entity that holds a data type value. In Java, every
-variable has a **name** and a **data type**.[^note_data_type]
+__variables__—an entity that holds a data type value. In Java, every
+variable has a __name__ and a __data type__.[^note_data_type]
 
 ```java
 // Declare variable named c of type char
@@ -53,14 +63,14 @@ boolean isPresent;
 ```
 
 [^note_data_type]:
-    A **data type** is a finite set of values and the operations on those
+    A __data type__ is a finite set of values and the operations on those
     values. For example, the data type `int` consists of values: integers
     ${-2^{31}}$ to ${2^{31}-1.}$ And it consists of operations: addition,
     subtraction, multiplication, division, comparison, etc.
 
 In the example above, there are _comments_, denoted by two forward slashes
-(`//`). Every other statement is called a **declaration**. The left side is
-the variable's **type**, and the right side the variable's **name**. Simply
+(`//`). Every other statement is called a __declaration__. The left side is
+the variable's __type__, and the right side the variable's __name__. Simply
 put, variable declaration is the act of creating a variable.
 
 In programming, a comment is a statement ignored by the compiler. Because
@@ -74,8 +84,8 @@ identical to the actual code (since that would simply be a waste of space).
 
 A brief note on terminology: There are different kinds of variables in
 Java. Variables that store primitive type values are called **primitive
-variables** (or, **primitive constants**). Variables that store objects are
-called **object references**. With an object reference, the variable
+variables__ (or, __primitive constants**). Variables that store objects are
+called __object references__. With an object reference, the variable
 doesn't actually hold the object—it instead holds a reference to the
 object.
 
@@ -119,7 +129,7 @@ At a very high level overview, the RAM can be understood as:
 		"https://res.cloudinary.com/sublimis/image/upload/v1653527635/cs/ram_allocation_mzcjee.svg"
 	}
 	caption={"RAM Allocation"}
-	width={"100"}
+	width={"80"}
 	imwidth={"703"}
 	imheight={"269"}
 />
@@ -134,19 +144,19 @@ type can never change. For example, when write `int x;` the variable `x`
 will always store some value of type `int`. That value may change later,
 but the variable's type `int` can never be changed to `double` or `char`.
 Because of this trait—the prohibition of changing a variable's type after
-declaration—Java is described as a **statically-typed language** (i.e., the
+declaration—Java is described as a __statically-typed language__ (i.e., the
 language's types are "static").[^typing_note]
 
 [^typing_note]:
-    The other end of the spectrum are the **dynamically-typed languages**
+    The other end of the spectrum are the __dynamically-typed languages__
     like JavaScript; in these languages, a variable can store an integer,
     then later store a Boolean, then later store a string. Furthermore,
-    type checking is done at runtime—**dynamic type checking**.
+    type checking is done at runtime—__dynamic type checking__.
 
 Whenever we compile Java source code, the `javac` compiler will check all
 of our source code to ensure we are complying with Java's type-checking
 rules. Because type checking is done at compile time, we say that Java
-employs a **static type checking** system.
+employs a __static type checking__ system.
 
 With few exceptions relating to scope—in Java, once you have declared a
 variable name of a particular type, you cannot redeclare it later down the
@@ -167,7 +177,7 @@ Even if the last example worked, it would be a stark example of _dirty
 code_, poor programming hygiene. How will our future selves or other coders
 tell the two apart?
 
-In Java, there are eight **primitive data types**. All other data in Java
+In Java, there are eight __primitive data types__. All other data in Java
 is represented by some combination of these eight primitive types. The
 types fall into four broad categories:
 
@@ -214,13 +224,13 @@ Let's consider the data type `byte`. As its name implies, a `byte` can only
 hold 8 bits. With 8 bits, we can represent ${2^n}$ unique bit patterns,
 starting from ${00000000_{[0]}}$ (0 in decimal) through ${01111111_{[0]}}$
 (127 in decimal). Hang on. Why is is there ${0}$ there? Shouldn't it be
-${01111111_{[0]}}$ (128)? That ${0}$ is called the **sign bit**. If the
+${01111111_{[0]}}$ (128)? That ${0}$ is called the __sign bit__. If the
 number is positive, the sign bit is ${0,}$ and if it's negative, the sign
 bit is ${1.}$
 
 The next question, however, is how does the computer _store_ negative
 integers? For example, if we wrote ${-5,}$ how does the computer go from
-this literal to binary? The answer is through **two's-complement**. The
+this literal to binary? The answer is through __two's-complement__. The
 idea is fairly straightforward. Let's start with the number ${5,}$ stored
 in a `byte`, and work our way to negative ${5.}$ First, we represent the
 number ${5}$ in binary:
@@ -229,7 +239,7 @@ $$
 	00000101_{[0]}
 $$
 
-Next, we take what we call the **one's-complement**. Essentially, we,
+Next, we take what we call the __one's-complement__. Essentially, we,
 invert, or change, all of the digits into their opposites:
 
 $$
@@ -242,7 +252,7 @@ $$
 	\begin{align*} 11111010_{[0]} \\ + 00000001_{[0]} \\ \hline 11111011_{[0]} \end{align*}
 $$
 
-This result, ${11111011_{[0]},}$ is called **two's-complement**. Notice
+This result, ${11111011_{[0]},}$ is called __two's-complement__. Notice
 that we now have a ${1}$ as the sign-bit. This is a negative number, but
 it's not ${-5,}$ as read. We need the ${5.}$ To get the ${5,}$ we simply
 take the two's-complement of ${11111011_{[0]},}$ while keeping the sign bit
@@ -309,7 +319,7 @@ we can represent any data that a computer can work with.
 ## Initialization
 
 Once we have declared a variable, we can assign it data. In doing so, we
-**initialize** the variable (we give the variable an _initial_ value):
+__initialize__ the variable (we give the variable an _initial_ value):
 
 ```java
 // declaration
@@ -324,10 +334,10 @@ long weightBlueWhale = 330000;
 ```
 
 In the example above, notice that we can declare and initialize variables
-in one line. This is called **inline-initialization**.
+in one line. This is called __inline-initialization__.
 
 Note that every statement in Java ends with a semicolon (;). Java is a
-**semicolon-delimited language**. To use variables in Java, they _must_ be
+__semicolon-delimited language__. To use variables in Java, they _must_ be
 initialized:
 
 ```java
@@ -342,7 +352,7 @@ System.out.println(x);
 1 error
 ```
 
-A **literal** is the Java source code representation of a data type value.
+A __literal__ is the Java source code representation of a data type value.
 The number or value we explicitly assign to a variable is called a literal.
 In programs, there are values that change as the program runs; an
 _incrementer_ or _accumulator_, for example. Literals are those values that
@@ -350,7 +360,7 @@ are not computed; they are explicitly written. They might be manipulated,
 but the value we explicitly wrote always appears directly in our source
 code.
 
-The opposite of a literal is an **expression**. An expression is a
+The opposite of a literal is an __expression__. An expression is a
 combination of literals, variables, and operations that Java must
 _evaluate_ to produce a single value. We can also think of the expression
 as the Java source code representation of a computation.
@@ -456,13 +466,291 @@ all be represented by numbers. The numeric data types
 numbers. But what about `char` and `boolean`? Well, `boolean` is simply a
 binary value—we can represent `false` with `0` and `true` with `1`.
 
-`char` is more interesting. In programming, English characters have a
-corresponding numeric code called an **ASCII code**, found in the ASCII
-table. Because each letter is encoded in ASCII with numbers, they too can
-be represented as numbers. ASCII has generally gone along the wayside,
-replaced by the much larger UNICODE enconding system. This is due to ASCII
-encoding only English characters—obviously English isn't the only language
-we speak.
+## The Special Case of Char
+
+In the early days of computing, the only characters necessary for
+computation were unaccented English characters (along with constructs like
+the linefeed, bell, and whitespace). All of these symbols—128 in
+total—formed the character set _ASCII_ (American Standard Code for
+Information Interchange).
+
+Because there were 128 ASCII characters, the integers from 0 to 127 were
+used to represent each character. Because the highest possible integer
+representation is 127—in binary, ${111~1111_{[2]}}$—seven bits were
+sufficient for representing all 128 characters. However, by the time ASCII
+was developed, the smallest possible unit in computer memory a user could
+reference was a byte (eight bits). Accordingly, ASCII characters—in C and
+C++, `char` values—take up 1 byte of memory. Because of this allocation,
+ASCII's users and developers found themselves with an additional bit. And
+with eight bits, the integers 128$ to 255 were available for mapping—users
+now had access to 256 possible characters.
+
+The result was a lost-in-translation situation of painful magnitude.
+Governments, companies, independent developers, and users were coming up
+with their own ways of using the extra bit (i.e., the other 128 available
+integers). Documents, code, and data sent from one entity to the next could
+not be read because of conflicting standards.
+
+Responding to the discord, IBM introduced __code pages__—systems mapping
+values to characters in an encoding system. In IBM's code pages, the
+integers 0 through 127 were always mapped to the ASCII characters, and the
+integers 128 to 255 (called the __extended codes__) were mapped to some
+language variation of the user's choice. For example, with code page 437,
+the extended codes were mapped to characters specific to IBM computers:
+diactritics (accented letters), icons, and system-specific symbols. For
+code page 737, the extended codes mapped to Greek letters, and for code
+page 826, the extended codes mapped to Turkish letters. With multiple code
+pages, users could simply swap code pages as needed. The mathematician
+might work predominantly with the Greek letter code page, but when reading
+a German paper, she could switch to the German code page. All 256
+characters (the 128 original ASCII characters and the 128 additional
+characters from a code page) constitute an **extended ASCII character
+set**.
+
+Because every ASCII encoding requires exactly 1 byte, we say that ASCII
+uses a __fixed-width encoding system__. This is a good point to clarify an
+important distinction: There's a difference between the character set
+(ASCII set) and the character set's __encoding system__ (ASCII encoding).
+The encoding system is the way the characters in the set are represented in
+memory. In extended ASCII, characters are encoded as eight-bit character
+codes, as we stated earlier.
+
+As the internet grew, consumers recognized that eight bits, 256 characters,
+were insufficient. And rightly so—the average Chinese user demands about
+7000 characters for expressive use (from roughly 50000 possible
+characters). As exchanging text between systems—rather than entire systems
+or parts of the systems themselves—became prevalent, a paradigm shift in
+the encoding community occured. Rather than thinking of a character as a
+symbol with one, specified representation in computer memory, we think of a
+character as a concept that can be represented in multiple ways. In
+practice, we call the former paradigm a __fixed-width encoding system__,
+and the latter a __variable-width encoding system__.
+
+For example, the letter `A` in ASCII encoding employs the former paradigm.
+It is always represented as:
+
+$$
+	\texttt{A} \to \texttt{0100 0001}
+$$
+
+Under the new paradigm, we map each character to a concept. That concept,
+called a __code point__, can then be deciphered by the computer in whatever
+way it sees fit (using more bits or bytes as necessary):[^hexnumbernote]
+
+$$
+	\texttt{A} \to \texttt{U+0001}
+$$
+
+[^hexnumbernote]: The number `0001` is a hexadecimal number.
+
+The character set employing this new paradigm is called
+__Unicode__.[^unicodenote] Above, the symbol `U+0001` is a code point. The
+code point is simply a number associated with a particular idea. That idea
+could be a letter, a mathematical symbol, a numeral, whitespace, tab, or an
+emoji. How that number is deciphered and stored as bits is up to the
+computer. As of the time of this writing, Unicode (now at version 14.0) has
+${144~697}$ ideas mapped, with ${1~112~064}$ code points in reserve.
+
+[^unicodenote]:
+    The name "Unicode" is a morphological blending of _unique_, _unified_,
+    _universal_, and _encoding_.
+
+This entire discussion reveals a critical point when working with strings:
+There's no such thing as "plain text." Instructing a computer to change
+some `int` value to "plain text" is akin to asking the bureau de change,
+"Convert these dollars to currency." The only way a computer can separate
+`1` from `"1"` is if we explicitly provide the encoding encoding system to use.
+And it's considered best practice to explicitly define encoding whenever
+possible because there are multiple encoding systems:
+
+1. In _ASCII_, the characters are encoded as a sequence of 7 bits. This is
+   a fixed-width encoding system, so only 128 characters can be
+   represented. The characters mapped to the integers 0 to 31 are
+   non-printable characters, while the characters from 32 to 127 comprise
+   the printable characters often called "plain text."
+
+2. Like ASCII, _Extended ASCII_ is a fixed-width encoding system, but with
+   mappings for the additional 128 characters (really, all characters
+   beyond the original 128). The name "extended ASCII" is informal. This is
+   just ASCII, but with characters encoded as a sequence of 8 bits and the
+   user providing some additional encodings (whether that's through a
+   personal code page or another system, like Unicode) for additional
+   numbers.
+
+3. _OEM Code Pages_ or _IBM Code Pages_ are fixed-width encoding systems
+   for the additional 128 characters resulting from the unused eighth bit
+   in ASCII. As such, characters in this encoding system are encoded as a
+   sequence of 8 bits. There are multitudes of code pages, mapping the
+   additional 128 characters to various symbols depending on language,
+   field, country, or computer system.
+
+4. The _ANSI Code Pages_ are Microsoft's equivalent to the IBM and OEM code
+   pages, so characters here are also encoded as a fixed-width sequence of
+   8 bits. Contrary to popular belief, these pages were never standardized
+   by ANSI (the _American National Standards Institute_, a private
+   non-profit aimed at standardization). Microsoft intended to standardize
+   one of their pages through ANSI and prepended to draft's title "ANSI",
+   but no such standardization occurred.
+
+5. _UTF-8_, _UTF-16_, and _UTF-32_ are the most common systems used to
+   convert Unicode code points to bits. Remember, Unicode is a system
+   mapping concepts to code points; this process is distinct from
+   converting the code points to bits.
+
+The number `U+1F60A` is a code point. The letter `U` stands for _Unicode_
+and the number `1F60A` is a hexadecimal number. To convert this code point
+into bits, the computer system looks for the encoding system we've defined.
+In Unicode, these systems are called __Unicode Translation Formats__ (hence
+"UTF"). Importantly, the number following UTF (e.g., the 8 in UTF-8) does
+not specify how many bits the code point is translated into. Instead, it
+specifies the _size_ of each code unit from translating the hexadecimal
+number. Thus, in UTF-8, the Unicode code point (the magic number `1F60A`)
+is stored in memory as a sequence of 8-bits. Hence, every code point `0` to
+`7f` (0 to 127 in decimal—the ASCII characters) is stored in exactly 1
+byte. Code points beyond that are stored using 2, 3, or 4 bytes. Similarly,
+in UTF-32, the code units resulting from translating the code point are
+stored as sequences of 32 bits, and for UTF-16, a sequence of 16 bits.
+
+Note how we said that UTF-8, UTF-16, and UTF-32 are the most common
+options. We say this because Unicode can be encoded through a wide variety
+of encoding systems: UTF-7, UCS, UCS-2 (now obsolete), ASCII, and many
+others. These other encoding systems continue to exist because the
+operations of other standards necessitate their use. For example, the
+standard for URL encoding is set by RFC 1738, which effectively provides
+that only a subset of the original ASCII characters can be used: We can't
+use non-printable characters and we can't use any of these characters:
+
+|      |     |     |     |     |     |              |
+| ---- | --- | --- | --- | --- | --- | ------------ |
+| `""` | `<` | `>` | `#` | `{` | `}` | `sp` (space) |
+| `\|` | `^` | `\` | `~` | `[` | `]` | `\``         |
+
+If any of the characters above are used directly (i.e., maybe our directory
+name has a space, resulting in a space in the URL), an encoding algorithm
+is used:
+
+1. Find the ISO 8859-1 code point for the illegal character.
+2. Convert the code point to two hexadecimal characters.
+3. Append a percentage sign, `%`, to the front of the two hex characters.
+
+For example, the single whitespace character is an illegal character under
+RFC 1738. Applying the algorithm above, the whitespace is replaced with a
+`%20`. Thus, when we see a `%20` in a URL, we immediately know that
+whoever, or whatever, created that URL included a whitespace, inadvertently
+or otherwise. Similar algorithms exist for when we use characters that
+cannot be encoded. The _replacement character_ &thinsp; � &thinsp; is often
+used to replace characters that cannot be encoded.
+
+In sum, whenever we work with strings, it's important to always keep the
+encoding system in the back of our minds. This can be particularly helpful
+when analyzing and designing string algorithms:
+
+<div className={"numbered"}>
+	<table>
+		<thead>
+			<tr>
+				<th>Encoding System</th>
+				<th>Lengths</th>
+				<th>Memory Consumption</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>_ASCII_</td>
+				<td>A sequence of 7 bits.</td>
+				<td>Constant memory consumption; essentially 1 byte.</td>
+			</tr>
+			<tr>
+				<td>_"Extended ASCII"_</td>
+				<td>A sequence of 8 bits.</td>
+				<td>Constant memory consumption: 1 byte.</td>
+			</tr>
+			<tr>
+				<td>_UTF-7_</td>
+				<td>A sequence of 7 bits.</td>
+				<td>Constant memory consumption; essentially 1 byte.</td>
+			</tr>
+			<tr>
+				<td>_IBM/OEM Code Maps_</td>
+				<td>A sequence of 8 bits.</td>
+				<td>Constant memory consumption: 1 byte.</td>
+			</tr>
+			<tr>
+				<td>_ANSI Code Maps_</td>
+				<td>A sequence of 8 bits.</td>
+				<td>Constant memory consumption: 1 byte.</td>
+			</tr>
+			<tr>
+				<td>_ISO 8859_</td>
+				<td>A sequence of 8 bits.</td>
+				<td>Constant memory consumption: 1 byte.</td>
+			</tr>
+			<tr>
+				<td>_UTF-8_</td>
+				<td>Each code unit is a sequence of 8 bits.</td>
+				<td>
+					Variable memory consumption; a character can take up 1, 2, 3, or 4
+					bytes. At a minimum, a character is 1 byte.
+				</td>
+			</tr>
+			<tr>
+				<td>_UTF-16_</td>
+				<td>
+					Each code unit is a sequence of 16 bits. The smallest possible
+					memory consumption is 2 bytes, the largest is 4 bytes.
+				</td>
+				<td>
+					Variable memory consumption; a character can take up 2, 3, or 4
+					bytes. At a minimum, a character is 2 bytes.
+				</td>
+			</tr>
+			<tr>
+				<td>_UTF-32_</td>
+				<td>A sequence of 32 bits.</td>
+				<td>Constant memory consumption: 4 bytes.</td>
+			</tr>
+			<tr>
+				<td>_UCS-2_ (obsolete)</td>
+				<td>A sequence of 16 bits.</td>
+				<td>Constant memory consumption: 2 bytes.</td>
+			</tr>
+			<tr>
+				<td>_UCS-4_ (obsolete)</td>
+				<td>A sequence of 32 bits.</td>
+				<td>Constant memory consumption: 4 bytes.</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+To simplify our algorithms, we will be working almost exclusively with
+ASCII, where every character takes up 1 byte of memory. This will allow us
+to explore some of the limitations of such algorithms when a different
+encoding system is used. Because the original ASCII characters are widely
+used, it's helpful to memorize the following facts:
+
+1. The uppercase letters `A` through `Z` are mapped to the integers in the
+   range ${[65, 90].}$
+
+2. The lower case letters `a` through `z` are mapped to the integers in the
+   range ${[97, 122].}$
+
+3. The uppercase letters come "before" the lower case letters in terms of
+   their integer equivalents.
+
+4. The numerals `0` through `9` are mapped to the integers in the range
+   ${[48, 57].}$
+
+5. The ranges of integers ${[32, 47],}$ ${[58, 64],}$ ${[91, 96],}$ and
+   ${[123, 127]}$ map to special characters like `()` and `/`.
+
+6. The range of integers ${[0, 31]}$ map to _control characters_ (these are
+   non-printable characters).
+
+7. The integer ${32}$ is mapped to whitespace.
+
+8. The integer ${10}$ is mapped to linefeed (i.e., the result of hitting
+   enter on the keyboard; a new line).
 
 ## Strongly-typed v. Weakly-typed Languages
 
@@ -571,7 +859,7 @@ class Overflow {
 Why isn't the console displaying `356`? Because the type `byte` is
 restricted to exactly 1 byte—it can only store integers up to 256. Once we
 go beyond `256`, go back to `0`. In programming, this is called
-**overflow**. We can prevent encountering overflows by testing for the
+__overflow__. We can prevent encountering overflows by testing for the
 type's `MIN_VALUE` and `MAX_VALUE`.
 
 ## Operators
@@ -731,7 +1019,7 @@ Examining this use of the modulus operator, we can see that we can
 generalize this pattern even more—write `x % 3`, and we check if `x` is a
 multiple 3, `x % 4`, a multiple of 4, `x % 11` a multiple of 11, and so on.
 
-In computer science, this is an example of a **idiom**. An idiom is just a
+In computer science, this is an example of a __idiom__. An idiom is just a
 programming pattern. In this case, we have some pattern `${x}$ % ${n}$`,
 where ${x}$ is some variable, and `${n}$` is a positive integer. Learning
 and recognizing idioms is a core skill in programming; with it, we can
@@ -794,7 +1082,7 @@ and the bitwise `NOT`, `~`,
 
 ## Naming
 
-A **name**, or more formally, an **identifier**, is a sequence of
+A __name__, or more formally, an __identifier__, is a sequence of
 characters in source code used to label a particular entity (for example, a
 variable). In Java, names must begin with either Unicode letters and
 digits, the dollar sign (`$`), or the underscore (`_`). By convention,
@@ -864,7 +1152,7 @@ In the examples above, we wrote the following:
 System.out.print(/* some expression or value */)
 ```
 
-This is a **library method**—a method provided by the Java library. There
+This is a __library method__—a method provided by the Java library. There
 are numerous library methods in Java; methods for mathematics, printing,
 input and output, etc. Because of how many library methods there are, we
 will not list and explain them all at once. Instead, we will use and

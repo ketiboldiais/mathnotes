@@ -7,11 +7,6 @@ import {
 	Mem,
 } from "../../../components/hago";
 
-<head>
-	<title>x86 Assembly</title>
-	<description>Notes on x86 Assembly</description>
-</head>
-
 # x86 Assembly
 
 <div className="outline">
@@ -63,8 +58,8 @@ back as the Intel 8086, first introduced in 1978. Despite the instruction
 set's size, only a small subset of the instructions are actually used and
 seen by most programs.
 
-The x86 is **CISC processor (complex instruction set computer)**. This is
-in contrast to **RISC processors (reduced instruction set computer)**. RISC
+The x86 is __CISC processor (complex instruction set computer)__. This is
+in contrast to __RISC processors (reduced instruction set computer)__. RISC
 processors have a very simple instruction set, where all the instructions
 are of uniform size, and the addressing modes are limited. CISC processors,
 on the other hand, have variable length instructions and numerous
@@ -143,24 +138,24 @@ BHA (Butt Head Astronomer).
 
 There are four key parts to an Assembly program:
 
-1. **The program counter** — the address of the next instruction. On
+1. __The program counter__ — the address of the next instruction. On
    x86-64, this is called `RIP`.
-2. **Register file** — a collection of heavily-used program data.
-3. **Condition codes** — a code indicating the status of the most recent
+2. __Register file__ — a collection of heavily-used program data.
+3. __Condition codes__ — a code indicating the status of the most recent
    arithmetic or logical operation.
-4. **data memory** — a byte-addressable array containing user data.
-5. **program memory** — a byte-addressable array containing instructions.
-6. **stack** — a stack data structure to support subroutines/procedures.
+4. __data memory__ — a byte-addressable array containing user data.
+5. __program memory__ — a byte-addressable array containing instructions.
+6. __stack__ — a stack data structure to support subroutines/procedures.
 
 ## x86 Assembly Program Data Types
 
 Assembly code has a small set of data types:
 
-1. An **integer type** of 1, 2, 4, or 8 bytes. This data type applies to
+1. An __integer type__ of 1, 2, 4, or 8 bytes. This data type applies to
    data values and addresses (untyped pointers).
-2. A **floating point type** of 4, 8, or 10 bytes.
-3. **SIMD vector data types** of 8, 16, 32, or 64 bytes.
-4. A **code type**, covering byte sequences that encode a series of
+2. A __floating point type__ of 4, 8, or 10 bytes.
+3. __SIMD vector data types__ of 8, 16, 32, or 64 bytes.
+4. A __code type__, covering byte sequences that encode a series of
    instructions.
 
 Importantly, none of the bolded terms in the list are actually understood
@@ -287,26 +282,26 @@ Where the register names allow us to store data, _operations_ allow us to
 perform actions on that data. In x86, instructions can be categorized as
 follows:
 
-- **Address instructions**
+- __Address instructions__
   - These are instructions for transferring data between memory and the
     processor registers. There are two kinds of addressing instructions:
-    1. **Load instructions** are instructions to load data from the memory
+    1. __Load instructions__ are instructions to load data from the memory
        into the register.
-    2. **Store instructions** are instructions to store register data into
+    2. __Store instructions__ are instructions to store register data into
        memory.
-- **Arithmetic instructions**
+- __Arithmetic instructions__
   - These are instructions for performing arithmetic functions on register
     or memory data.
-- **Control instructions**
+- __Control instructions__
   - These are instructions to transfer control between subroutines. There
     are three kinds of control instructions:
-    1. **Direct unconditional jumps** are instructions to immediately
+    1. __Direct unconditional jumps__ are instructions to immediately
        execute another instruction.
-    2. **Indirect unconditional jumps** are instructions to immediately go
+    2. __Indirect unconditional jumps__ are instructions to immediately go
        to the address containing the instruction.
-    3. **Direct conditional jumps** are instructions to execute another
+    3. __Direct conditional jumps__ are instructions to execute another
        instruction only if some condition is true.
-    4. **Indirect conditional jumps** are instructions to go to an address
+    4. __Indirect conditional jumps__ are instructions to go to an address
        containing an instruction only if some condition is true.
 
 ## Moving Data
@@ -314,7 +309,7 @@ follows:
 Moving data in x86 Assembly has the grammar:
 
 $$
-	\mm{movq} \seq{source} \seq{destination}
+	\texttt{movq} \ix{source} \ix{destination}
 $$
 
 The instruction `movq` is a shortening of "move quad", corresponding to
@@ -342,7 +337,7 @@ ${source}$ and ${destination}$ can be one of the following types:
 
 3.  A memory type, which is a sequence of 8 consecutive bytes of memory at
     an address given by the register. These arguments are used in the
-    context of an **addressing mode**. The simplest example of a memory
+    context of an __addressing mode__. The simplest example of a memory
     type argument:
 
         ```nasm
@@ -409,7 +404,7 @@ Now the address `4` is stored in the register `%rdx`.
 
 At the Assembly level, memory is viewed as a giant array of bytes. For
 illustrative purposes, we'll refer to this array with the variable
-${\mm{RAM}.}$
+${\texttt{RAM}.}$
 
 <Mem
 	data={[
@@ -434,7 +429,7 @@ Because it's an array, when we want to access a particular piece of data in
 memory, we can index into memory:
 
 $$
-   \mm{RAM[}i\mm{]}
+   \texttt{RAM[}i\texttt{]}
 $$
 
 What can we pass as a value for ${i?}$ It depends on the **addressing
@@ -457,7 +452,7 @@ processor registers, and (b) holds a memory address's numeric value. Thus,
 in normal addresing mode, we have:
 
 $$
-   \mm{RAM[}R_n\mm{]}
+   \texttt{RAM[}R_n\texttt{]}
 $$
 
 For example, when we write the instruction:
@@ -469,13 +464,13 @@ movq (%rcx), %rax
 the notational equivalent is:
 
 $$
-   \mm{RAM[\%rcx]}
+   \texttt{RAM[\%rcx]}
 $$
 
 Suppose the register `%rcx` holds the value `0x100`. The notation is thus:
 
 $$
-   \mm{RAM[0x100]}
+   \texttt{RAM[0x100]}
 $$
 
 which translates to, "Read the memory location indexed 0x100". If the
@@ -495,16 +490,16 @@ int c = *p + 1; // address 0xk in memory holds (value at 0xi) + 1
 
 In displacement addressing, ${i = R_n + D,}$ where (a) ${R_n}$ is one of
 the exis sixteen registers, (b) ${R_n}$ holds a memory address value, and
-(c) ${D \in \NN}$ is an offset value. Putting it all together, we have:
+(c) ${D \in \nat}$ is an offset value. Putting it all together, we have:
 
 $$
-   \mm{RAM[} R_n + D  \mm{]}
+   \texttt{RAM[} R_n + D  \texttt{]}
 $$
 
 In Assembly, the corresponding syntax takes the form:
 
 $$
-   \mm{movq $D$($R_n$), $R_i$}
+   \texttt{movq $D$($R_n$), $R_i$}
 $$
 
 For example, if we wrote:
@@ -543,7 +538,7 @@ facts about registers in x86. By convention, when we write a function in a
 language like C:
 
 $$
-   \mm{$type$ $f$(arg1, arg2, ..., arg$n$)}
+   \texttt{$type$ $f$(arg1, arg2, ..., arg$n$)}
 $$
 
 the first six function arguments are stored in the following registers:
@@ -566,7 +561,7 @@ The _general addressing mode_ in the x86 is a generalization of the
 previous addressing modes we discussed. It takes the form:
 
 $$
-   \mm{RAM[$R_b$ + ($S \times R_i$) + $D$]}
+   \texttt{RAM[$R_b$ + ($S \times R_i$) + $D$]}
 $$
 
 where:
@@ -580,7 +575,7 @@ where:
 In Assembly, this formula is expressed with the syntax:
 
 $$
-   \mm{D($R_b$, $R_i$, $S$)}
+   \texttt{D($R_b$, $R_i$, $S$)}
 $$
 
 For example, suppose the register `%rdx` contained the address `0xf000`,
@@ -600,7 +595,7 @@ A particularly useful instruction in x86 is the `leaq` instruction. The
 syntax:
 
 $$
-   \mm{leaq $Src$,$R_n$}
+   \texttt{leaq $Src$,$R_n$}
 $$
 
 The ${Src}$ is an address mode expression, and the $R_n$ is some register.
@@ -615,15 +610,15 @@ common operations are:
 
 | Instruction                | Computation              |
 | -------------------------- | ------------------------ |
-| $$\mm{addq $src$,$dst$}$$  | ${dst = dst + src}$      |
-| $$\mm{subq $src$,$dst$}$$  | ${dst = dst - src}$      |
-| $$\mm{imulq $src$,$dst$}$$ | ${dst = dst \times src}$ |
-| $$\mm{salq $src$,$dst$}$$  | ${dst = dst \bls src}$   |
-| $$\mm{sarq $src$,$dst$}$$  | ${dst = dst \brs src}$   |
-| $$\mm{shrq $src$,$dst$}$$  | ${dst = dst \brs src}$   |
-| $$\mm{xorq $src$,$dst$}$$  | ${dst = dst \bxor src}$  |
-| $$\mm{andq $src$,$dst$}$$  | ${dst = dst \band src}$  |
-| $$\mm{orq $src$,$dst$}$$   | ${dst = dst \bor src}$   |
+| $$\texttt{addq $src$,$dst$}$$  | ${dst = dst + src}$      |
+| $$\texttt{subq $src$,$dst$}$$  | ${dst = dst - src}$      |
+| $$\texttt{imulq $src$,$dst$}$$ | ${dst = dst \times src}$ |
+| $$\texttt{salq $src$,$dst$}$$  | ${dst = dst \bls src}$   |
+| $$\texttt{sarq $src$,$dst$}$$  | ${dst = dst \brs src}$   |
+| $$\texttt{shrq $src$,$dst$}$$  | ${dst = dst \brs src}$   |
+| $$\texttt{xorq $src$,$dst$}$$  | ${dst = dst \bxor src}$  |
+| $$\texttt{andq $src$,$dst$}$$  | ${dst = dst \band src}$  |
+| $$\texttt{orq $src$,$dst$}$$   | ${dst = dst \bor src}$   |
 
 At the CPU level, these operations are performed as we saw in earlier
 sections. Adders, multiplexors, demultiplexors, combinations of the three
@@ -651,8 +646,8 @@ necessary for branching:
 3. `ZF` (the _zero flag register_), and
 4. `OF` (the _overflow flag register_).
 
-These four registers are called **condition code registers**, or, more
-abstractly, **condition codes**. Given the condition code registers are
+These four registers are called __condition code registers__, or, more
+abstractly, __condition codes__. Given the condition code registers are
 only 1 bit wide, each register can only be either 1 or 0.
 
 Everytime we perform an arithmetic operation, the condition code registers
@@ -730,7 +725,7 @@ The comparison operators in high-level code are ultimately executed by the
 processor using the condition code registers. To understand how, recall
 this basic property in real analysis:
 
-> **property**. Let ${a,b,S \in \RR.}$ The following properties hold:
+> __property__. Let ${a,b,S \in \reals.}$ The following properties hold:
 >
 > 1.  ${s = 0 \iff (a-b) = 0 \iff a = b \iff b = a}$
 > 2.  ${s > 0 \iff  (a-b) > 0 \iff  a > b \iff b < a}$
@@ -739,10 +734,10 @@ this basic property in real analysis:
 In Assembly, the comparison operators take the form:
 
 $$
-	\mm{cmpq} a,b
+	\texttt{cmpq} a,b
 $$
 
-where ${a,b \in \ZZ.}$ When we execute the command above, we are actually
+where ${a,b \in \uint.}$ When we execute the command above, we are actually
 computing:
 
 $$
@@ -771,7 +766,7 @@ One unusual instruction related to branching should be mentioned — the
 `test` instruction. This instruction takes the form:
 
 $$
-   \mm{testq}~~src2,src1
+   \texttt{testq}~~src2,src1
 $$
 
 This instruction is equivalent to computing `src1 & src2` without setting a
@@ -801,7 +796,7 @@ took one operand.
 The `set𝑥` instructions take the following form:
 
 $$
-   \mm{set$x$}~~destination
+   \texttt{set$x$}~~destination
 $$
 
 In short, the instruction works as follows:
@@ -916,7 +911,7 @@ absolute_difference:
 </Grid>
 
 There are a few new constructs here. First, the `absolute_difference` and
-`.L4` are called **labels**. They're used to demarcate the points in the
+`.L4` are called __labels__. They're used to demarcate the points in the
 Assembly program to jump to. Second, the `ret` (_return_) keyword is used
 to exit out of the labeled block of code and get back to whatever
 instruction was supposed to execute next in the normal sequence.
@@ -981,7 +976,7 @@ To illustrate how these instructions work, consider the switch statement,
 supported in many languages like C:
 
 $$
-   \mm{val = $test$ ? $then$ : $else$}
+   \texttt{val = $test$ ? $then$ : $else$}
 $$
 
 where ${test}$ is some Boolean condition, and ${then}$ and ${else}$ are
@@ -1091,24 +1086,24 @@ right and Assembly to the left):
 
 $$
 \begin{aligned}
-   &\mm{do}~\{ \\
+   &\texttt{do}~\{ \\
    &~~~~statement_1 \\
    &~~~~statement_2 \\
    &~~~~\vdots \\
    &~~~~statement_n \\
-   &\}~~\mm{while}~~(test)
+   &\}~~\texttt{while}~~(test)
 \end{aligned}
 $$
 
 $$
 \begin{aligned}
-   &\mm{LoopLabel:}\\
+   &\texttt{LoopLabel:}\\
    &~~~~instruction_1 \\
    &~~~~instruction_2 \\
    &~~~~\vdots \\
    &~~~~instruction_n \\
-   &~~~\mm{if}~~(test) \\
-   &~~~~~~~~\mm{goto}~~\mm{LoopLabel}
+   &~~~\texttt{if}~~(test) \\
+   &~~~~~~~~\texttt{goto}~~\texttt{LoopLabel}
 \end{aligned}
 $$
 
@@ -1128,7 +1123,7 @@ labels:
 
 $$
 \begin{aligned}
-   &\mm{while}~(test)~\{ \\
+   &\texttt{while}~(test)~\{ \\
    &~~~~statement_1 \\
    &~~~~statement_2 \\
    &~~~~\vdots \\
@@ -1139,16 +1134,16 @@ $$
 
 $$
 \begin{aligned}
-   &\mm{goto TestLabel}\\
-   &\mm{LoopLabel:}\\
+   &\texttt{goto TestLabel}\\
+   &\texttt{LoopLabel:}\\
    &~~~~instruction_1 \\
    &~~~~instruction_2 \\
    &~~~~\vdots \\
    &~~~~instruction_n \\
-   &\mm{TestLabel}: \\
-   &~~~~\mm{if}~~(test)\\
-   &~~~~~~\mm{goto}~~\mm{LoopLabel}\\
-   &\mm{DoneLabel}: \\
+   &\texttt{TestLabel}: \\
+   &~~~~\texttt{if}~~(test)\\
+   &~~~~~~\texttt{goto}~~\texttt{LoopLabel}\\
+   &\texttt{DoneLabel}: \\
 \end{aligned}
 $$
 
@@ -1161,7 +1156,7 @@ instructions. In C, the general form of a for-loop is:
 
 $$
    \begin{aligned}
-      &\mm{for}~~(init;~~test;~~update)~~\{ \\
+      &\texttt{for}~~(init;~~test;~~update)~~\{ \\
       &~~~~~statement_1; \\
       &~~~~~statement_2; \\
       &~~~~~~~\vdots \\
@@ -1182,19 +1177,19 @@ In Assembly form:
 
 $$
    \begin{aligned}
-      &\mm{initialize the counter} \\
-      &\mm{if}~~!(test) \\
-      &~~~~\mm{goto DoneLabel} \\
-      &\mm{LoopLabel:} \\
+      &\texttt{initialize the counter} \\
+      &\texttt{if}~~!(test) \\
+      &~~~~\texttt{goto DoneLabel} \\
+      &\texttt{LoopLabel:} \\
       &~~~~statement_1 \\
       &~~~~statement_2 \\
       &~~~~\vdots \\
       &~~~~statement_n \\
-      &\mm{update} \\
-      &\mm{if}~~(test) \\
-      &~~~~\mm{goto LoopLabel} \\
-      &\mm{DoneLabel:} \\
-      &~~~~\mm{return} \\
+      &\texttt{update} \\
+      &\texttt{if}~~(test) \\
+      &~~~~\texttt{goto LoopLabel} \\
+      &\texttt{DoneLabel:} \\
+      &~~~~\texttt{return} \\
    \end{aligned}
 $$
 
@@ -1208,13 +1203,13 @@ In C, switch statments take the form:
 
 $$
    \begin{aligned}
-      &\mm{switch}(x)~~\{ \\
-      &~~~~\mm{case}(val_0): \\
+      &\texttt{switch}(x)~~\{ \\
+      &~~~~\texttt{case}(val_0): \\
       &~~~~~~~~block_0 \\
-      &~~~~\mm{case}(val_1): \\
+      &~~~~\texttt{case}(val_1): \\
       &~~~~~~~~block_1 \\
       &~~~~\vdots \\
-      &~~~~\mm{case}(val_{n-1}): \\
+      &~~~~\texttt{case}(val_{n-1}): \\
       &~~~~~~~~block_{n-1} \\
       &\}
    \end{aligned}
@@ -1238,7 +1233,7 @@ In Assembly: Using the same condition codes we saw earlier, if one of the
 cases returns `true`, we execute the instruction:
 
 $$
-   \mm{goto *JTab[$x$]}
+   \texttt{goto *JTab[$x$]}
 $$
 
 This instruction encapsulates the instructions:
@@ -1342,13 +1337,13 @@ int g(int i) {
 As simple as this high-level source code appears, implementing the ability
 to call functions is non-trivial — it consists of three key mechanisms:
 
-1. **A mechanism for passing control**. When we a call a function, we have
+1. __A mechanism for passing control__. When we a call a function, we have
    to get to the first instruction for that function, execute it all the
    way through, and then get back to the point we made the call.
-2. **A mechanism for passing data**. Functions can take arguments, and
+2. __A mechanism for passing data__. Functions can take arguments, and
    those arguments are usually passed from _outside_ the function.
    Functions can also return values. We need a way to move data around.
-3. **A mechanism for managing memory**. Functions should be able to
+3. __A mechanism for managing memory__. Functions should be able to
    allocate memory during their execution. That memory should also be
    deallocated once the function has finished executing. This is especially
    important for recursive functions.
@@ -1356,7 +1351,7 @@ to call functions is non-trivial — it consists of three key mechanisms:
 All of these mechanisms are implemented through machine instructions. And
 like any library, there are many ways to complete those implementations.
 The decisions behind making making those implementations make up the
-instruction set's **application binary interface (ABI)**.
+instruction set's __application binary interface (ABI)__.
 
 ### The Stack
 
@@ -1379,7 +1374,7 @@ addresses, where each address identifies a particular byte of memory:
 />
 
 To help manage such a large amount of memory, the addresses are organized
-into certain regions, called **memory regions**. There are many different
+into certain regions, called __memory regions__. There are many different
 regions, but we for now, we're just going to think about the stack:
 
 <Stack data={["stack", " ", "code", " "]} scale={50} />
@@ -1409,11 +1404,11 @@ and `pop`.
 The push instruction has the form:
 
 $$
-   \mm{pushq}~R_n
+   \texttt{pushq}~R_n
 $$
 
 where ${R_n}$ is a register. When we write the instruction
-${\mm{pushq}~R_n,}$ the following operations occur:
+${\texttt{pushq}~R_n,}$ the following operations occur:
 
 1. The operand inside ${R_n}$ is fetched.
 2. The value inside `%rsp` (the address of the current top of the stack) is
@@ -1469,11 +1464,11 @@ $$
 To remove a value from the stack, x86 provides the `pop` instruction:
 
 $$
-   \mm{popq}~D_n
+   \texttt{popq}~D_n
 $$
 
 where ${D_n}$ is (usually) a register, but may also be some other
-destination in memory. When the ${\mm{popq}~D_n}$ instruction is executed,
+destination in memory. When the ${\texttt{popq}~D_n}$ instruction is executed,
 the following operations occur in sequence:
 
 1. The value at the address inside `%rsp` is read.
@@ -1859,8 +1854,8 @@ f(n) =
 \begin{cases}
 \begin{aligned}
 
-x~~~~ &\tt{if}~~n = b \\
-f(n \to b)~~~~ &\tt{else} \\
+x~~~~ &\text{if}~~n = b \\
+f(n \to b)~~~~ &\text{else} \\
 
 \end{aligned}
 \end{cases}
@@ -1884,8 +1879,8 @@ f_0(n) =
 \begin{cases}
 \begin{aligned}
 
-x~~~~ &\tt{if}~~n = b \\
-f_n(n \to b)~~~~ &\tt{else} \\
+x~~~~ &\text{if}~~n = b \\
+f_n(n \to b)~~~~ &\text{else} \\
 
 \end{aligned}
 \end{cases}
@@ -2071,7 +2066,7 @@ And when make a recursive call, we see the same:
 
 As we can see, if the recusive calls contain local variables, those will
 result in new allocations. If there are too many recursive calls, we get a
-**stack overflow** (often presented as the runtime error "maximum stack
+__stack overflow__ (often presented as the runtime error "maximum stack
 size exceeded"). Assuming the base case for `h()` is reached, we might get
 something that looks like this:
 
@@ -2123,15 +2118,15 @@ Inside the stack frame, we have something that looks like the following:
 
 The ellipses indicate are used to indicate further stack elements
 corresponding to that particular kind of data. Importantly, all of the data
-from `argument 1` to the `return address` is the **caller frame** — the
+from `argument 1` to the `return address` is the __caller frame__ — the
 frame of the caller that called the function. Everything from the optional
-`old %rbp` up to the next `return address` is called the **callee frame** —
+`old %rbp` up to the next `return address` is called the __callee frame__ —
 the frame of the function called.
 
 ### Caller- v. Callee-saved
 
 Recall: When a function `𝑓` calls a function `𝑔`, we say that `𝑓` is the
-**caller** , and `𝑔` is the **callee**. Now suppose that both `𝑓` and `𝑔`
+__caller__ , and `𝑔` is the __callee__. Now suppose that both `𝑓` and `𝑔`
 both want to use some register ${R_n,}$ say the register `%rdx`. Because
 there's one, and only one `%rdx`, if `𝑓` uses `%rdx` and stores something
 in there, when `𝑔` later uses `%rdx`, they'd overwrite whatever `𝑓` stored
@@ -2143,9 +2138,9 @@ registers, there's the threat of a single procedure hogging too many of the
 registers. This threat is addressed through _register saving conventions_.
 There are two such conventions:
 
-1. **Caller saved** - The _caller_ saves temporary values in its frame
+1. __Caller saved__ - The _caller_ saves temporary values in its frame
    before the call.
-2. **Callee saved** - The _callee_ saves temporary values in its frame
+2. __Callee saved__ - The _callee_ saves temporary values in its frame
    before using the register, and restores the values before returning
    control to the caller.
 
@@ -2208,9 +2203,9 @@ responsibility to save and restore that data before it returns control to
 
 ## Glossary
 
-- **architecture** - The set of all binary instructions understood by a
+- __architecture__ - The set of all binary instructions understood by a
   processor. Also called the _instruction set architecture (ISA)_.
-- **machine code** - The binary, byte-level programs executed by a
+- __machine code__ - The binary, byte-level programs executed by a
   processor.
-- **assembly code** - The textual representation of machine code.
-- **microarchitecture** - The implementation of an architecture.
+- __assembly code__ - The textual representation of machine code.
+- __microarchitecture__ - The implementation of an architecture.

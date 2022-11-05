@@ -1,0 +1,2194 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+import {Tree} from "../../../components/illus/components/Tree/Tree";
+
+<Head>
+	<title>Graph Algorithms</title>
+	<meta name={`description`} content={`Notes on graph algorithms.`}/>
+</Head>
+
+# Graph Algorithms
+
+_This note presents a broad overview of graph-related algorithms._
+
+1. [Preliminaries](#preliminaries)
+	1. [General Algorithm Descriptions](#general-algorithm-descriptions)
+	2. [Common Problem Patterns](#common-problem-patterns)
+2. [Adjacency Matrices](#adjacency-matrices)
+3. [Adjacency Lists](#adjacency-lists)
+4. [Edge Lists](#edge-lists)
+5. [Implementation Tradeoffs](#implementation-tradeoffs)
+6. [Best and Worst Cases](#best-and-worst-cases)
+7. [Adjacency List Generation](#adjacency-list-generation)
+8. [Traversal](#traversal)
+	1. [Depth-first Traversal on Adjacency Lists](#depth-first-traversal-on-adjacency-lists)
+		1. [Iterative Acyclic Graph Depth-first Traversal](#iterative-acyclic-graph-depth-first-traversal)
+		2. [Recursive Acyclic Graph Depth-first Traversal](#recursive-acyclic-graph-depth-first-traversal)
+		3. [General Depth-first Traversal](#general-depth-first-traversal)
+	2. [Depth-first Traversal on Adjacency Matrices](#depth-first-traversal-on-adjacency-matrices)
+	3. [Breadth-first Traversal on Adjacency Lists](#breadth-first-traversal-on-adjacency-lists)
+	4. [Breadth-first Traversal on Adjacency Matrices](#breadth-first-traversal-on-adjacency-matrices)
+	5. [BFT Spanning Tree](#bft-spanning-tree)
+9. [Previsit & Postvisit Functions](#previsit--postvisit-functions)
+
+Problems that involve relationships between many different things are often best modeled in terms of a _graph._ Graph algorithms pervade modern life: Maps, web links, circuits, schedules, matching, computer networks, road systems, program structures, company hierarchies, are just a few examples. In fact, _trees_ and _linked lists_ are just graphs. Any connected data structure is the realization of a mathematical graph. The most common graphs in computer science, however, _simple graphs_.
+
+## Preliminaries
+> __graph.__ A graph ${G}$ is a structure ${(V_G, E_G),}$ where ${V_G}$ is a set of distinct objects called _vertices_ or _nodes_, and ${E_G \subseteq V_G \times V_G}$ is a set of distinct pairs called _edges_ such that, if ${v \in V_G,}$ then ${(v,v) \notin E_G.}$ For all edges ${(a,b) \in E_G,}$ we may denote an edge with a variable ${e = (a,b)}$ and describe it as, "The edge _connecting_ ${a}$ and ${b.}$"
+
+Later, we will include more operations (e.g., operations on vertices).  Importantly, a practical API would also include some method of removing parallel edges. We will define these operations more elaborately as we proceed. In analyzing graph algorithms, we assume that ${\card{V}/\card{E}}$ — the proportion of vertices to edges for some graph ${G=(V,E)}$ — is bounded above by a some constant ${C \in \reals.}$ For this first section, we'll only be working with sets of edges. An edge is defined as follows.
+
+The graph definitions provided previously are abstractions of implementation details. Accordingly, it's at our discretion how the implementation should be handled. For some algorithms, we might want an edge implementation, in which case we will use the following definition.
+
+<Obj>
+
+- __structure__ ${\df{edge}}$ __contains__
+	1. ${\var}$ ${\tx{head}}$
+	2. ${\var}$ ${\tx{tail}}$
+	3. ${\df{new edge}(d_1, d_2):\ar{\var \mapsto \df{edge}}}$
+		1. ${\let{out}{\df{malloc}(\df{sizeof}~\df{edge})}}$
+		2. ${\let{out[\tx{head}]}{\df{malloc}(\df{sizeof}~d_1)}}$
+		3. ${\let{out[\tx{tail}]}{\df{malloc}(\df{sizeof}~d_1)}}$
+		4. __return__ ${out}$
+- __end__
+
+</Obj>
+
+
+### General Algorithm Descriptions
+
+> __~common graph algorithms~.__ Let ${G = (V_G, E_G)}$ be a graph, let ${v}$ and ${w}$ denote vertices in ${V_G,}$ and let ${e}$ denote an edge in ${E_G.}$
+
+> > __~reachability~.__ Given vertices ${v}$ and ${w,}$ an algorithm that returns 0 if there exists a sequence of edges beginning with the vertex ${v}$ and ending at ${w.}$
+
+> > __~shortest path algorithm~.__ Given all possible paths ${v}$ and ${w,}$ an algorithm that returns the shortest path between ${v}$ and ${w.}$
+
+> > __~longest path~.__ Given all possible paths ${v}$ and ${w,}$ an algorithm that returns the longest path between ${v}$ and ${w.}$
+
+> > __~cycle detection~.__ ${G}$ contains a _cycle_ if, and only if, there exists path ${T=(v_1, e_1, v_2, \ldots, v_{n-1}, e_{n-1}, v_n),}$ where ${v_1 = v_n}$ and ${v_1}$ is the only repeated vertex. A _cycle detection_ algorithm returns 1 if ${G}$ contains a cycle, and 0 otherwise. A graph that contains a cycle is called a _cyclic graph_. A graph that contains no cycles is called an _acyclic graph_.
+
+> > __~euler tour detection~.__ An _Euler tour_ is a cycle of ${G}$ that contains each edge ${e \in E_G}$ exactly once. An Euler tour algorithm returns 1 if ${G}$ contains an Euler tour, and 0 otherwise.
+
+> > __~hamilton tour~.__ A _Hamilton tour_ is a cycle of ${G}$ that contains each vertex ${v \in V_G}$ exactly once. An _Hamilton tour algorithm_ returns 1 if ${G}$ contains a Hamilton tour, and 0 otherwise.
+
+> > __~connectivity algorithm~.__ An algorithm that returns 1 if every vertex ${v \in V_G}$ can be connected to at least one other vertex, and 0 otherwise.
+
+> > __~minimum spanning tree algorithm~.__ An algorithm that returns a subgraph of ${G}$ such that every vertex ${v \in V_G}$ is connected to at least one other vertex, and ${\nil}$ otherwise.
+
+> > __~biconnectivity algorithm~.__ An algorithm that returns a vertex ${v}$ if the deletion of ${v}$ results in clusters of ${G.}$
+
+> > __~planarity algorithm~.__ An algorithm that returns 1 if ${G}$ can be drawn without edges crossing on another, and 0 otherwise.
+
+> > __~isomorphism algorithm~.__ Given two adjacency lists representing two graphs ${G_1}$ and ${G_2}$ respectively, an algorithm that returns 1 if ${G_1}$ and ${G_2}$ are the same graph, and 0 otherwise.
+ 
+
+
+
+
+
+### Common Problem Patterns
+Whenever we work with graphs, we want
+to always ask the following set of questions:
+
+1. Is the graph directed or undirected?
+2. Are the edges weighted?
+3. Is the graph sparse or dense?
+4. Should we use an adjacency matrix, adjacency list, edge list, or some other structure?
+
+Additionally, it's helpful to spot some common
+problem patterns that are squarely in the domain
+of graph theory.
+
+> __~shortest path problem~.__ Given a graph ${G}$ with vertices ${a}$ and ${b,}$ find the shortest path from ${a}$ to ${b.}$
+
+The shortest path problem is addressed by numerous algorithms. For unweighted graphs, we have breadth-first search and depth-first search. For weighted graphs, we have Dijkstra's Algorithm, A*, the list goes on. All of these algorithms
+have different tradeoffs. Some problems, however, ask us to just find _a path_.
+
+> __~connectivity problem~.__ Given a graph ${G}$ with vertices ${a}$ and ${b,}$ is there a path between ${a}$ and ${b?}$
+
+This problem appears benign on its face, until we're asked to find a path between two nodes among millions of interconnections.
+
+> __~negative cycle problem~.__ Given a weighted graph ${G,}$ is there a negative cycle?
+
+A negative cycle occurs when an edge has a negative value. This can lead to wrong computations involving edge weights. This is particularly problematic, given the fact that the results of those computations are often used as intermediary results for other graph algorithms (e.g., a shortest path solution). In other applications, negative cycles are desirable. For example, FOREX trading applications have a particular interest in these cycles, as negative edge weights can be interpreted as measures of risk reduction. To common algorithms for this problem are the Bellman-Ford Algorithm and the Floyd-Warshall Algorithm. 
+
+> __~strong-connectivity problem~.__ Let ${D}$ be a directed graph with ${C_0, C_1, \ldots, C_{k-1}}$ self-contained cycles with ${i,k \in \nat.}$ For all self-contained cycles ${C_i,}$ is there directed path from a vertex ${v \in C_i}$ to every other vertex ${w \in C_i?}$ 
+
+The strong-connectivity problem usually arises as an intermediary problem in implementing some of the algorithms mentioned thus far. Popular solutions include Tarjan's Algorithm and Kosaraju's Algorithm.
+
+> __~traveling salesman problem~.__ Given a weighted graph ${^{w}G = (V,E),}$ what is the shortest Hamiltonian cycle of ${^wG?}$
+
+In plain English: We're given a list of addresses. The addresses are separated by varying distances — some are closer to others, others farther. Our task: Visit every address exactly once, then return to the address we started on. What's the shortest route to accomplishing this task correctly? This problem is NP-hard. Some common algorithms include the Held-Karp Algorithm, Branch-and-bound, and many approximation algorithms.
+
+> __~edge-cutting problem~.__ Let ${i, n, k \in \nat,}$ where ${n \lt k,}$ and a graph ${G = (V,E)}$ with ${n}$ clusters. Suppose ${E = \set{e_1, e_2, \ldots, e_n}}$ and that ${E \smallsetminus \set{e_i}}$ implies ${n \gt k.}$ What is the value of ${i?}$
+
+> __~vertex-cutting problem~.__ Let ${i, n, k \in \nat,}$ where ${n \lt k,}$ and a graph ${G = (V,E)}$ with ${n}$ clusters. Suppose ${V = \set{v_1, v_2, \ldots, v_n}}$ and that ${V \smallsetminus \set{v_i}}$ implies ${n \gt k.}$ What is the value of ${i?}$
+
+When we remove an edge from some graph ${G,}$ we potentially end up with two or more clusters of ${G.}$ The edge-cutting problem asks which edge, when removed, causes the number of clusters to increase beyond some tolerance maximum ${k \in \nat.}$ Edges that causes this increase are called _bridges_. 
+
+The vertex-cutting problem is similar to the edge-cutting problem, but the focus here is on cutting edges. The question then, is, which vertex, if cut, would cause an increase to the tolerance maximum ${k?}$ Vertices that cause these increases are called _articulation points_. Both the edge- and vertex-cutting problems are particularly important because they reveal bottlenecks and vulnerabilities in a given graph.
+
+> __~minimum spanning tree problem~.__ Let ${W = (V,E)}$ be a weighted graph with a total edge weight ${T.}$ Let ${S = \set{w_1, w_2, \ldots, w_n,}}$ be a set of graphs such that for all ${i,n \in \nat:i \le n,}$ each ${w_i}$ is a graph with the vertex set ${v_i = V}$ and an edge set ${e_i \subseteq E}$ and a total edge weight ${t_i.}$ Construct the graph ${w_i \in S}$ such that ${t_i = \min\set{t_1, t_2, \ldots, t_n}.}$
+
+In plain English: We're given a weighted graph ${W.}$ We want to create a version of ${W}$ that includes all its vertices, but with the smallest possible total weight (the sum of all the edge weights in ${W}$). Common algorithms for this problem include Kruskal's Algorithm, Prim's Algorithm, and Boruvka's Algorithm.
+
+
+
+
+
+
+
+
+
+## Adjacency Matrices
+One approach is to use an _adjacency matrix_, a nested Boolean array.
+
+<Grid cols={2}>
+<Graph
+	data={[
+		{ link: ["a", "b"] },
+		{ link: ["b", "c"] },
+		{ link: ["c", "d"] },
+		{ link: ["d", "e"] },
+		{ link: ["a", "e"] },
+		{ link: ["d", "a"] },
+		{ link: ["b", "f"] },
+	]}
+	id={`sample4`}
+	collisionRadius={20}
+	isDirected={true}
+	straightEdges={true}
+	scale={100}
+	width={200}
+	height={120}
+	margins={[10,0,0,0]}
+/>
+
+|       | ${a}$ | ${b}$ | ${c}$ | ${d}$ | ${e}$ |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| ${a}$ | 0     | 1     | 0     | 1     | 1     |
+| ${b}$ | 0     | 0     | 1     | 0     | 0     |
+| ${c}$ | 0     | 0     | 0     | 1     | 0     |
+| ${d}$ | 0     | 0     | 0     | 0     | 1     |
+| ${e}$ | 0     | 0     | 0     | 0     | 0     |
+| ${f}$ | 0     | 1     | 0     | 0     | 0     |
+
+</Grid>
+
+Here, the leftmost column represents the edge sources, and the topmost row
+represents destinations.  The edge ${(d,a),}$ for example, connects vertex ${d}$
+(the source) and vertex ${a}$ (the destination), so we mark the corresponding
+cell as ${1.}$
+
+As is usually the case with nested arrays, there are costs and benefits to this
+approach. As nested arrays, adjacency matrices are Simple to implement
+and maintain (and are conducive to linear algebra applications). They're also
+particularly efficient, compared to other approaches, for _dense_ graphs.
+Moreover, for weighted graphs, the time complexity of edge weight lookup is
+${\bigO{1}.}$ On the other hand, instantiating the structure takes ${(\card
+V)^2}$ time, and if ${\card V}$ is small enough, memory allocation calls will
+likely predominate. They also require ${\bigTheta{V^2}}$ space, and iteration
+takes ${\bigTheta{V^2}}$ time.
+
+## Adjacency Lists
+An alternative approach is to use an _adacency list_: Use a connected data structure (typically, a _hash table_), where each key is a node (the _source-nodes_ of an edge), and each value is an array of nodes (the _end-nodes_ of the edges). The nodes contained in each array are the _neighbors_ of the key node.
+
+<Grid cols={2}>
+<Graph
+	data={[
+		{ link: ["a", "b"] },
+		{ link: ["b", "c"] },
+		{ link: ["c", "d"] },
+		{ link: ["a", "c"] },
+	]}
+	id={`sample5`}
+	collisionRadius={20}
+	edgeLength={25}
+	isDirected={true}
+	straightEdges={true}
+	scale={100}
+	width={200}
+	height={60}
+/>
+$$
+	{\eqs{
+		a~&\mapsto~\ix{b,c} \\
+		\hdashline
+		b~&\mapsto~\ix{c}   \\
+		\hdashline
+		c~&\mapsto~\ix{d}   \\
+		\hdashline
+		d~&\mapsto~\ix{a}   \\
+	}}
+$$
+</Grid>
+
+In general: Adjacency lists are particularly space efficient for for _space graphs_. On the other hand, they become much less space efficient for denser graphs because of their connected nature. In contrast to the adjacency matrix, iterating over is much faster, but because edges are represented as key-array pairs, we have an edge weight lookup of ${\bigO{E}.}$ Adjacency lists are also slightly more complicated to implement and maintain, and aren't nearly as conducive to linear algebra applications as adjacency matrices.
+
+## Edge Lists
+Yet another representation is the _edge list_. This is
+little more than a list (or array) of edges:
+
+$$
+	[(a,b), (a,c), (b,c), (c,d), (d,a)].
+$$
+
+As we can likely tell, this approach is rarely used in practice.
+There isn't any notion of ordering, and edge lookup comes
+at ${\bigO{n}.}$ That said, they're often used as auxiliary data
+structures for certain algorithms, and we'll seem repeatedly.
+
+## Implementation Tradeoffs
+Below are comparisons of the various structures for some basic operations.
+
+| Operation        | Check if ${(a,b)}$ is an edge in the graph ${G.}$ |
+| ---------------- | ------------------------------------------------- |
+| Adjacency Matrix | ${\bigTheta{1}}$                                  |
+| Edge List        | ${\bigTheta{E}}$                                  |
+| Adjacency List   | ${\bigTheta{\deg{a}}}$ or ${\bigTheta{\deg{b}}}$  |
+
+| Operation        | List all edges     |
+| ---------------- | ------------------ |
+| Adjacency Matrix | ${\bigTheta{V^2}}$ |
+| Edge List        | ${\bigTheta{E}}$   |
+| Adjacency List   | ${\bigTheta{E}}$   |
+
+| Operation        | List all neighbors of a vertex ${v}$ |
+| ---------------- | ------------------------------------ |
+| Adjacency Matrix | ${\bigTheta{V}}$                     |
+| Edge List        | ${\bigTheta{E}}$                     |
+| Adjacency List   | ${\bigTheta{\deg{v}}}$               |
+
+
+## Best and Worst Cases
+The worst possible graph we can work with is a _complete graph_. That is, a graph where every vertex has an edge to every other vertex. This results in ${\abs{E} = \abs{V}^2.}$ Graphs with a ratio ${D=\abs{V^2}/E}$ (called the graph's _density_) that are close to 1 are called _dense graphs_. Graphs with a smaller ${D \lt 1}$ are called _sparse graphs_. The sparser a graph is, the less time it will take to process, and the denser, the more. For example, below is one example of a dense graph.
+
+<Graph data={[
+	{link: [1,2]},
+	{link: [1,3]},
+	{link: [1,4]},
+	{link: [1,5]},
+	{link: [1,6]},
+	{link: [1,7]},
+	{link: [1,8]},
+	{link: [1,9]},
+	{link: [1,10]},
+	{link: [1,11]},
+	{link: [1,12]},
+	{link: [2,3]},
+	{link: [2,4]},
+	{link: [2,5]},
+	{link: [2,6]},
+	{link: [2,7]},
+	{link: [2,8]},
+	{link: [2,9]},
+	{link: [2,10]},
+	{link: [2,11]},
+	{link: [2,12]},
+	{link: [3,4]},
+	{link: [3,5]},
+	{link: [3,6]},
+	{link: [3,7]},
+	{link: [3,8]},
+	{link: [3,9]},
+	{link: [3,10]},
+	{link: [3,11]},
+	{link: [3,12]},
+	{link: [4,5]},
+	{link: [4,6]},
+	{link: [4,7]},
+	{link: [4,8]},
+	{link: [4,9]},
+	{link: [4,10]},
+	{link: [4,11]},
+	{link: [4,12]},
+	{link: [5,6]},
+	{link: [5,7]},
+	{link: [5,8]},
+	{link: [5,9]},
+	{link: [5,10]},
+	{link: [5,11]},
+	{link: [5,12]},
+	{link: [6,7]},
+	{link: [6,8]},
+	{link: [6,9]},
+	{link: [6,10]},
+	{link: [6,11]},
+	{link: [6,12]},
+	{link: [7,8]},
+	{link: [7,9]},
+	{link: [7,10]},
+	{link: [7,11]},
+	{link: [7,12]},
+	{link: [8,9]},
+	{link: [8,10]},
+	{link: [8,11]},
+	{link: [8,12]},
+	{link: [9,10]},
+	{link: [9,11]},
+	{link: [9,12]},
+	{link: [10,11]},
+	{link: [10,12]},
+	{link: [11,12]},
+]}
+	collisionRadius={9}
+	repulsion={0.4}
+	nodeRadius={2}
+	edgeLength={5}
+	straightEdges={true}
+	scale={30}
+	fontSize={0.25}
+	width={100}
+	height={80}
+/>
+
+## Adjacency List Generation
+Having seen one application, let's consider an algorithm that generates an adjacency list for a simple graph, given an array of edges.
+
+<Algo>
+
+__~adjacency-list~__
+- __Argument__: An array ${E=\ix{e_0,\ldots,e_{n-1}}}$ of ${n}$ edges, where each ${e_i}$ is an array ${\ix{a,b}}$ coresponding to an edge with the data object vertices ${a}$ and ${b.}$
+- __Image__: A hashmap ${G,}$ representing a simple graph.
+- __Syntax__: ${\lex\df{simplegraph}}$
+
+1. __function__ ${\df{adjlist}(\tx{edgelist})}$
+	1. ${\let{G}{\df{new hashmap}}}$
+	2. ${\let{L}{\len{\tx{edgelist}}}}$
+	4. __for__ ${\let{i}{0}, ~ i \lt \len{E}, ~ i\texttt{++}}$
+		1. ${\let{key}{\tx{edgelist}\ix{i}\ix{0}}}$
+		2. ${\let{val}{\tx{edgelist}\ix{i}\ix{1}}}$
+		3. __if__ ${key \in G}$ __then__ ${\let{G\ix{key}}{\df{push}~val}}$
+			1. __else__ ${\let{G\ix{key}}{\df{new array}}}$
+		5. __if__ ${val \in G}$ __then__ ${\let{G\ix{val}}{\df{push}~key}}$
+			1. __else__ ${\let{G\ix{val}}{\df{new array}}}$
+	5. __return__ ${G}$
+
+</Algo>
+
+The algorithm above generates an adjacency list upon receiving a (nested) array of edges. For example, below is a sample set of edges, its corresponding adjacency list, and a graph visualization. The algorithm above has a runtime complexity of order ${\bigO{n},}$ and a space complexity of order ${\bigO{n}.}$
+
+<Grid cols={2}>
+
+$$
+	\footnotesize
+	E=\mx{
+		\ix{i,j} & \ix{k,i} \\
+		\ix{m,k} & \ix{k,l} \\
+		\ix{o,n} & \no{\ix{o,n}}
+	}
+$$
+
+$$
+	\footnotesize
+	H=\lset{\ax{
+		i &\mapsto& \ix{j,k} \\
+		j &\mapsto& \ix{i} \\
+		k &\mapsto& \ix{i,m,l} \\
+		m &\mapsto& \ix{k} \\
+		l &\mapsto& \ix{k} \\
+		o &\mapsto& \ix{n} \\
+		n &\mapsto& \ix{o} \\
+	}}
+$$
+
+</Grid>
+
+The corresponding graph:
+
+
+<Graph data={[
+	{link: [`i`,`j`]},
+	{link: [`k`,`i`]},
+	{link: [`m`,`k`]},
+	{link: [`k`,`l`]},
+	{link: [`o`,`n`]},
+]}
+id={`algen1`}
+collisionRadius={17}
+repulsion={0.4}
+edgeLength={15}
+straightEdges={true}
+scale={30}
+width={160}
+height={100}
+/>
+
+Whenever we generate adjacency lists for simple graphs, there are a number of points to keep in mind: First, we _must_ watch for cycles. Consider, for example, a graph that looks like the following:
+
+
+<Graph data={[
+	{link: [`i`,`j`]},
+	{link: [`j`,`k`], class:`red`},
+	{link: [`k`,`i`]},
+	{link: [`m`,`k`]},
+	{link: [`k`,`l`]},
+	{link: [`o`,`n`]},
+]}
+id={`algen2`}
+collisionRadius={17}
+repulsion={0.4}
+edgeLength={15}
+straightEdges={true}
+scale={30}
+width={150}
+height={90}
+margins={[0,0,0,0]}
+/>
+
+Above, we've included an edge ${\ix{j,k}.}$ This subtle change introduces a _loop_. And where there are loops, there are infinite descents. We will have to consider this danger whenever we work with simple graphs. The second point to relates to edges like ${\ix{o,n}.}$ In the path traces earlier, we hinted at the most common guard against both these problems — marking nodes as visited. We examine this guard in the next section.
+
+## Traversal
+There are two ways to traverse a graph: (1) __depth-first traversal (DFT)__ and (2) __breadth-first traversal (BFT)__. We'll begin with a visual overview of how the two algorithms work before examining the algorithms.
+
+<Grid cols={2}>
+<Graph data={[
+	{link:[1,2]},
+	{link:[2,3],class:`red`},
+	{link:[3,4],class:`red`},
+	{link:[4,1],class:`red`},
+	{link:[3,{id:5,class:`on`}],class:`red`},
+	{link:[5,6],class:`red`},
+	{link:[6,4],class:`red`},
+	{link:[2,7]},
+	{link:[7,8]},
+	{link:[8,3],class:`red`},
+	{link:[8,9]},
+	{link:[9,5],class:`red`},
+	{link:[6,11],class:`red`},
+	{link:[11,12]},
+	{link:[12,5],class:`red`},
+	{link:[12,13]},
+	{link:[13,9]},
+	{link:[7,14]},
+	{link:[14,15]},
+	{link:[15,8]},
+	{link:[15,16]},
+	{link:[16,9]},
+	{link:[16,17]},
+	{link:[17,13]},
+	{link:[6,18],class:`red`},
+	{link:[18,19]},
+	{link:[19,11]},
+	{link:[18,20]},
+	{link:[20,4],class:`red`},
+	{link:[20,21]},
+	{link:[21,1]},
+	{link:[22,17]},
+	{link:[22,23]},
+	{link:[23,13]},
+	{link:[23,24]},
+	{link:[24,12]},
+	{link:[24,25]},
+	{link:[25,11]},
+	{link:[25,26]},
+	{link:[26,19]},
+	{link:[21,99]},
+	{link:[99,27]},
+	{link:[27,20]},
+	{link:[27,28]},
+	{link:[28,18]},
+	{link:[28,29]},
+	{link:[29,19]},
+	{link:[29,30]},
+	{link:[30,26]},
+]} id={`bvd1`}
+collisionRadius={5} edgeLength={4}
+straightEdges={true} scale={100}
+width={250} height={250}/>
+<Graph data={[
+	{link:[1,2],class:`red`},
+	{link:[2,3],class:`red`},
+	{link:[3,4]},
+	{link:[4,1]},
+	{link:[3,{id:5,class:`on`}],class:`red`},
+	{link:[5,6]},
+	{link:[6,4]},
+	{link:[2,7]},
+	{link:[7,8]},
+	{link:[8,3]},
+	{link:[8,9]},
+	{link:[9,5]},
+	{link:[6,11]},
+	{link:[11,12]},
+	{link:[12,5]},
+	{link:[12,13]},
+	{link:[13,9]},
+	{link:[7,14]},
+	{link:[14,15],class:`red`},
+	{link:[15,8]},
+	{link:[15,16],class:`red`},
+	{link:[16,9]},
+	{link:[16,17],class:`red`},
+	{link:[17,13]},
+	{link:[6,18]},
+	{link:[18,19]},
+	{link:[19,11]},
+	{link:[18,20]},
+	{link:[20,4]},
+	{link:[20,21]},
+	{link:[21,1],class:`red`},
+	{link:[22,17],class:`red`},
+	{link:[22,23],class:`red`},
+	{link:[23,13]},
+	{link:[23,24],class:`red`},
+	{link:[24,12]},
+	{link:[24,25],class:`red`},
+	{link:[25,11]},
+	{link:[25,26],class:`red`},
+	{link:[26,19]},
+	{link:[21,99],class:`red`},
+	{link:[99,27],class:`red`},
+	{link:[27,20]},
+	{link:[27,28],class:`red`},
+	{link:[28,18]},
+	{link:[28,29],class:`red`},
+	{link:[29,19]},
+	{link:[29,30],class:`red`},
+	{link:[30,26],class:`red`},
+]} id={`bvd2`}
+collisionRadius={5}
+edgeLength={4}
+straightEdges={true}
+scale={100}
+width={250}
+height={250}/>
+
+$$
+	\tx{breadth-first}
+$$
+
+$$
+	\tx{depth-first}
+$$
+
+</Grid>
+
+Another way to see how the two traversal methods differ is to examine their partial traversals of a lattice. Below, both traversals start at 5. BFT's traversal spread outs — hence its name _breadth-first_. In contrast, DFT's traversal runs along a path as far as it can — hence its name _depth-first_.
+
+### Depth-first Traversal on Adjacency Lists
+DFT has a time complexity of order ${\bigO{V+E}.}$ The algorithm itself is often used as an auxiliary, so it's often used on its own. Instead, it's often augmented to another algorithm — searching, counting, deleting, etc. The name "depth first" stems from the fact that the algorithm _plunges_ into the graph — it goes to the deepest edge it can take. Of course, with graphs, we don't necessarily have the notion of "depth." Accordingly, a depth first search is somewhat of a misnomer when applied to graphs — under the hood, the algorithm goes to whatever edge comes next. It's primary driver is a check: Has this node been visited? If the node has been visited, the algorithm _backtracks_.
+
+
+<table className={`trace`}>
+<tbody>
+<tr>
+<td width={`50%`}>For tracking, we'll fill in the node we're currently on green. After a node is visited, we'll fill the visited node grey. First, we pick any node to start. We'll start with the node ${\set{0}.}$ Whenever we visit a node, we will push its neighbors onto a _stack_. Here, there is only one neighbor, so we push 9: ${\ix{9}.}$</td>
+<td><Graph data={[ {link:[{id:0,class:`on`},9]}, {link:[1,8]}, {link:[9,8]}, {link:[8,7]}, {link:[7,10]}, {link:[10,11]}, {link:[11,7]}, {link:[7,6]}, {link:[7,3]}, {link:[3,2]}, {link:[3,5]}, {link:[6,5]}, {link:[12]}, ]} id={`dfs1`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200} /></td>
+</tr>
+<tr>
+<td>We mark ${\set{0}}$ visited and pop our stack. We get ${9}$ back. So, we visit ${\set{9}.}$ We push ${\set{9}}$'s neighbors onto the stack: ${\ix{8}.}$</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`on`}]},
+	{link:[1,8]},
+	{link:[9,8]},
+	{link:[8,7]},
+	{link:[7,10]},
+	{link:[10,11]},
+	{link:[11,7]},
+	{link:[7,6]},
+	{link:[7,3]},
+	{link:[3,2]},
+	{link:[3,5]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs2`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>Mark ${\set{9}}$ visited and pop the stack. We get back ${\set{8},}$ so we go that vertex, and push its neighbors onto the stack: ${\ix{1,7}.}$</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`on`}]},
+	{link:[1,8]},
+	{link:[8,7]},
+	{link:[7,10]},
+	{link:[10,11]},
+	{link:[11,7]},
+	{link:[7,6]},
+	{link:[7,3]},
+	{link:[3,2]},
+	{link:[3,5]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs3`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>Again, pop the stack. We get 7. Visit 7 and push its neighbors onto the stack: ${\ix{1,6,3,11,10}.}$</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`off`}]},
+	{link:[1,8]},
+	{link:[8,{id:7,class:`on`}]},
+	{link:[7,10]},
+	{link:[10,11]},
+	{link:[11,7]},
+	{link:[7,6]},
+	{link:[7,3]},
+	{link:[3,2]},
+	{link:[3,5]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs4`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>We pop the stack and get ${\set{10}.}$ Visit.</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`off`}]},
+	{link:[1,8]},
+	{link:[8,{id:7,class:`off`}]},
+	{link:[7,{id:10,class:`on`}]},
+	{link:[10,{id:11}]},
+	{link:[11,7]},
+	{link:[7,6]},
+	{link:[7,3]},
+	{link:[3,2]},
+	{link:[3,5]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs5`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>Same process: Pop and we get ${\set{11},}$ so we go there.</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`off`}]},
+	{link:[1,8]},
+	{link:[8,{id:7,class:`off`}]},
+	{link:[7,{id:10,class:`off`}]},
+	{link:[10,{id:11,class:`on`}]},
+	{link:[11,7]},
+	{link:[7,6]},
+	{link:[7,3]},
+	{link:[3,2]},
+	{link:[3,5]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs6`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>This is where things get interesting. We only have one option, ${\set{7}.}$ But remember, we don't want to "revisit" nodes. So, we __backtrack__ to ${\set{7}.}$ To denote backtracking, we'll fill the nodes beige and the edges red. Backtracking to 7, we still have edges to choose.</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`off`}]},
+	{link:[1,8]},
+	{link:[8,{id:7,class:`on`}]},
+	{link:[7,{id:10,class:`red`}],class:`red`},
+	{link:[10,{id:11,class:`red`}],class:`red`},
+	{link:[11,7]},
+	{link:[7,6]},
+	{link:[7,3]},
+	{link:[3,2]},
+	{link:[3,5]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs7`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>Back at 7, we still have edges to choose. We pick ${\set{3}.}$</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`off`}]},
+	{link:[1,8]},
+	{link:[8,{id:7,class:`off`}]},
+	{link:[7,{id:10,class:`red`}],class:`red`},
+	{link:[10,{id:11,class:`red`}],class:`red`},
+	{link:[11,7]},
+	{link:[7,6]},
+	{link:[7,{id:3,class:`on`}]},
+	{link:[3,2]},
+	{link:[3,5]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs8`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>We pick another node arbitrarily. We'll go ${\set{2}.}$</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`off`}]},
+	{link:[1,8]},
+	{link:[8,{id:7,class:`off`}]},
+	{link:[7,{id:10,class:`red`}],class:`red`},
+	{link:[10,{id:11,class:`red`}],class:`red`},
+	{link:[11,7]},
+	{link:[7,6]},
+	{link:[7,{id:3,class:`off`}]},
+	{link:[3,{id:2,class:`on`}]},
+	{link:[3,5]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs9`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>We hit a deadend, so we backtrack to ${\set{3}}$ and pick another node. We only have one option, ${\set{5},}$ so we visit that node.</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`off`}]},
+	{link:[1,8]},
+	{link:[8,{id:7,class:`off`}]},
+	{link:[7,{id:10,class:`red`}],class:`red`},
+	{link:[10,{id:11,class:`red`}],class:`red`},
+	{link:[11,7]},
+	{link:[7,6]},
+	{link:[7,{id:3,class:`off`}]},
+	{link:[3,{id:2,class:`red`}],class:`red`},
+	{link:[3,{id:5,class:`on`}]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs10`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>Now visit ${\set{6}.}$</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`off`}]},
+	{link:[1,8]},
+	{link:[8,{id:7,class:`off`}]},
+	{link:[7,{id:10,class:`red`}],class:`red`},
+	{link:[10,{id:11,class:`red`}],class:`red`},
+	{link:[11,7]},
+	{link:[7,{id:6,class:`on`}]},
+	{link:[7,{id:3,class:`off`}]},
+	{link:[3,{id:2,class:`red`}],class:`red`},
+	{link:[3,{id:5,class:`off`}]},
+	{link:[6,5]},
+	{link:[12]},
+]} id={`dfs11`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+<tr>
+<td>We can't visit ${\set{7}}$ since we've already visited that node, so we backtrack to ${\set{8}.}$ Once we're there, the only node we can visit is ${\set{1}.}$ Visting that node, we've traversed the entire graph.</td>
+<td>
+<Graph data={[
+	{link:[{id:0,class:`off`},{id:9,class:`off`}]},
+	{link:[9,{id:8,class:`off`}]},
+	{link:[{id:1,class:`on`},8]},
+	{link:[8,{id:7,class:`red`}],class:`red`},
+	{link:[7,{id:10,class:`red`}],class:`red`},
+	{link:[10,{id:11,class:`red`}],class:`red`},
+	{link:[11,7]},
+	{link:[7,{id:6,class:`off`}]},
+	{link:[7,{id:3,class:`red`}],class:`red`},
+	{link:[3,{id:2,class:`red`}],class:`red`},
+	{link:[3,{id:5,class:`red`}],class:`red`},
+	{link:[6,5],class:`red`},
+	{link:[12]},
+]} id={`dfs12`} collisionRadius={20} edgeLength={30} straightEdges={true} scale={100} width={200} height={200}/>
+</td>
+</tr>
+</tbody>
+</table>
+
+#### Iterative Acyclic Graph Depth-first Traversal
+The algorithm below operates on a graph implemented as the following adjacency list, corresponding graph is displayed alongside. The adjacency list is a hash table wherein each key is a _vertex_ mapped to an _array_. Below is an iterative implementation of the algorithm.
+
+<Algo>
+
+__~depth-first-traverse (iterative)~__
+- __Argument__: ${G,}$ a pointer to a graph, ${f,}$ function ${f}$ operating on the data stored in the vertex, and ${S,}$ the vertex to start on (a key in the hash table).
+- __Image__: The output of ${f.}$
+
+1. __function__ ${\df{dft}(G,S)}$
+	1. __init__
+		1. ${\let{\tx{stack}}{\df{push}~S}}$
+		2. ${\let{v}{\nil}}$ _variable to store current vertex_
+		3. ${\let{n}{\nil}}$ _variable to store neighbors_
+	3. __while__ ${\tx{stack} \neq \nil}$ _while stack is nonempty_
+		1. ${\let{v}{\df{pop}~\tx{stack}}}$ _pop and save_
+		2. ${f(v)}$ _process vertex data_
+		3. __for each__ ${n \in G\ix{v}}$ _each element of ${v}$'s array_
+			1. ${\let{\tx{stack}}{\df{push}}~{n}}$
+
+</Algo>
+
+Suppose the function ${f}$'s procedure is to print each node's data. We would see:
+
+$$
+	(a~c~e~b~d~f).
+$$
+
+We can verify that this is the correct sequence by examining the ${G}$'s drawing. With depth-first traversal, we should so a sequence where we completely traverse in one direction to a dead-end, before changing directions. In this case, the traversal sequence is correct. We traverse all the way down to ${e}$ before we begin traversing from ${b.}$ Notice that because DFT uses a stack, it's conducive to recursion: Rather than using an instantiated stack, we may simply use the system's call stack.
+
+#### Recursive Acyclic Graph Depth-first Traversal
+Below is a recursive implementation.
+
+<Algo>
+
+__~depth-first-traverse (recursive)~__
+- __Argument__: ${G,}$ a pointer to a graph, a function ${f}$ operating on the data stored in the vertex, and ${S,}$ the vertex to start on (a key in the hash table).
+- __Image__: The output of ${f.}$
+
+1. __function__ ${\df{dft}(G,v)}$
+	1. ${f(v)}$ _process vertex data_
+	2. __for each__ ${n \in G\ix{v}}$ __do__ _each element ${n}$ of ${v}$'s array_
+		1. ${\df{dft}(G,n)}$ _recurse_
+
+</Algo>
+
+Here, we'd see the traversal sequence:
+
+$$
+	(a~b~d~f~c~e).
+$$
+
+Again, this is the correct traversal sequence. We completely traverse in one direction before traversing in another direction. The two approaches yield different traversal sequences merely because of underlying mechanics.
+
+#### General Depth-first Traversal
+The general versions of BFT and DFT employ a simple ${\df{explore}}$ procedure:
+
+<Algo>
+
+> __~explore~.__ Let ${G}$ be a nonempty graph, represented as an adjacency list. The function ${\df{explore}}$ takes a non-empty set of edges ${E,}$ a vertex ${v}$ comprising ${E,}$ and a hash table ${visited,}$ then visits each vertex comprising ${E}$ exactly once.
+
+1. __function__ ${\df{explore}(vertex,visited,E):}$
+	1. ${\let{{visited}\ix{v}}{\df{true}}}$
+	2. __for each__ ${(v,w) \in E}$
+		1. __if__ ${{visited}\ix{w}=\df{false}}$ __then__ ${\df{explore}(w,visited,E)}$
+
+</Algo>
+
+The algorithm above only works if we actually pass an edge set ${E.}$ We need an even more general DFT algorithm:
+
+<Algo>
+
+> __~general dft~.__ Let ${G}$ be a nonempty graph, represented as an adjacency list. The function ${\df{dfn}}$ will traverse every vertex of ${G.}$
+
+1. __function__ ${\df{dft}(G):}$
+	1. __init__ ${\let{visited}{\df{new set}}}$
+	2. __function__ ${\df{explore}(v):}$
+		1. ${\let{visited}{\df{insert}(v)}}$
+		2. __for each__ ${n \in G\ix{v}}$
+			1. __if__ ${v \notin visited}$ __then__ ${\df{explore}(n)}$
+	3. __return__ ${\df{explore}(G)}$
+
+</Algo>
+
+### Depth-first Traversal on Adjacency Matrices
+Below is an algorithm for depth-first traversal on an adjacency matrix.
+
+<Algo>
+
+> __~adjacency matrix depth-first traversal~.__ Let ${G}$ be an adjacency matrix, representing a graph. The function ${\df{dftm}}$ traverses ${G.}$
+
+- __Argument__: ${G,}$ a pointer to an adjacency matrix, representing a graph, and ${f,}$ a function operating on the data of each vertex.
+- __Image__: ${\ran{f}}$
+
+1. __function__ ${\df{dftm}(G,f)}$
+	1. ${\let{visited}{\df{new set}}}$
+	2. __function__ ${\df{explore}(row,col)}$
+		1. __if__ ${row \lt 0}$ __or__
+			1. ${col \lt 0}$ __or__
+			2. ${\len{G}\le row}$ __or__
+			3. ${\len{G\ix{0}} \le col}$
+			4. __then__ __return__ false
+		2. __if__ ${G\ix{row}\ix{col}=1}$ __and__ ${\ix{row,col} \notin visited}$ __then__
+			1. ${\let{visited}{\df{insert}(\ix{row,col})}}$
+			2. ${\df{explore}(row-1,col)}$
+			3. ${\df{explore}(row+1,col)}$
+			4. ${\df{explore}(row,col-1)}$
+			5. ${\df{explore}(row,col+1)}$
+		3. __return__ true
+	3. __for__ ${\let{row}{0}, ~ row \lt \len{G}, ~ row\texttt{++}}$
+		1. __for__ ${\let{col}{0}, ~ col \lt \len{G\ix{0}}, ~ col\texttt{++}}$
+			1. __if__ ${\df{explore(row,col)}}$ __then__ ${f(\ix{row,col})}$
+	4. __return__
+</Algo>
+
+### Breadth-first Traversal on Adjacency Lists
+Breadth-first traversal is modeled with the flowchart below. The variable ${G}$ denotes an adjacency list representing some graph. The variable ${V}$ denotes a set ADT. Depending on the language, this may be implemented as a weak hashmap or a red-black tree. ~slang~ employs a hashmap. The variable ${S}$ denotes a starting vertex (a key in ${G}$).
+
+<Grid cols={2}>
+<Algo>
+
+1. __function__ ${\df{bft}(G,S)}$
+	1. ${\let{V}{\df{new set}}}$
+	2. ${\let{Q}{\df{new queue}}}$
+	3. ${{Q}\mc{\df{enqueue}(S)}}$
+	4. ${{V}\mc{\df{insert}(S)}}$
+	5. __while__ ${Q \neq \nil}$
+		1. ${\let{u}{Q\mc\df{dequeue}\px{~}}}$
+		2. __for__ ${\let{i}{0},~ i \lt \len{G\ix{v}},~i\pl\pl}$
+			1. ${\let{v}{G\ix{v}\ix{i}}}$
+			1. __if__ ${v \notin V}$ __then__
+				1. ${{V}\mc{\df{insert}(v)}}$
+				2. ${{Q}\mc{\df{enqueue}(v)}}$
+	6. __return__
+
+</Algo>
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1667417223/algodiagrams/bft-adjacency-list_qrjohk.svg"}
+	imwidth={"420"}
+	imheight={"532"}
+	caption={"bft-adjacency-list"}
+	width={"70"}
+	marginTop={'4%'}
+/>
+</Grid>
+
+Consider the following graph ${G}$ alongside its adjacency list representation.
+
+<Grid cols={2}>
+$$
+	G \gets \lset{\ax{
+		f &\mapsto& \ix{g,~i} \\
+		g &\mapsto& \ix{h\no{,~i}} \\
+		h &\mapsto& \ix{j\no{,~i}} \\
+		i &\mapsto& \ix{g,k} \\
+		j &\mapsto& \ix{i\no{,~i}} \\
+		k &\mapsto& \ix{\no{i,}\no{~i}}
+	}}
+$$
+<Graph data={[
+	{link: ['f','g']},
+	{link: ['f','i']},
+	{link: ['g','h']},
+	{link: ['h','j']},
+	{link: ['i','g']},
+	{link: ['i','k']},
+]}
+wh={[230,120]}
+tx={-12}
+fontSize={0.5}
+isDirected={true}
+id={`bft112-1`}
+/>
+</Grid>
+
+
+
+A breadth-first traversal of ${G}$ generates the traversal sequence ${\px{f-g-i-h-k-j}.}$ This is the correct sequence, per the trace below.
+
+<table className={`trace`}>
+<tbody>
+<tr>
+<td width={`50%`}>
+We assume ${S = f.}$ We enqueue ${f}$ and insert ${f}$ into the visited set, ${V.}$
+
+$$
+	Q = \px{f} \\
+	V = \set{f}
+$$
+</td>
+<td>
+<Graph data={[
+	{link: ['f','g']},
+	{link: ['f','i']},
+	{link: ['g','h']},
+	{link: ['h','j']},
+	{link: ['i','g']},
+	{link: ['i','k']},
+]}
+wh={[230,120]}
+tx={-12}
+fontSize={0.5}
+isDirected={true}
+id={`bft112-2`}
+/>
+</td>
+</tr>
+<tr>
+<td>
+Now we dequeue ${Q.}$ This results in ${u = f.}$ The act of dequeuing amounts to visiting ${f.}$ We then enqueue all of the neighbors of ${f.}$ These are the elements of the array mapped to the key ${f}$ in ${G.}$ We insert each of these neighbors to ${V.}$
+
+$$
+	Q = \px{\xcancel{f},g,i} \\
+	V = \set{f,g,i}
+$$
+</td>
+<td>
+<Graph data={[
+	{link: [{id:'f',class:'on'},'g']},
+	{link: ['f','i']},
+	{link: ['g','h']},
+	{link: ['h','j']},
+	{link: ['i','g']},
+	{link: ['i','k']},
+]}
+wh={[230,120]}
+tx={-12}
+fontSize={0.5}
+isDirected={true}
+id={`bft112-3`}
+/>
+</td>
+</tr>
+<tr>
+<td>
+Dequeue ${Q.}$ Now ${u = g.}$ Enqueue all of ${g}$'s neighbors and insert them into ${V.}$
+
+$$
+	Q = \px{\xcancel{f},\xcancel{g},i,h} \\
+	V = \set{f,g,i,h}
+$$
+</td>
+<td>
+<Graph data={[
+	{link: [{id:'f',class:'off'},{id:'g',class:'on'}]},
+	{link: ['f','i']},
+	{link: ['g','h']},
+	{link: ['h','j']},
+	{link: ['i','g']},
+	{link: ['i','k']},
+]}
+wh={[230,120]}
+tx={-12}
+fontSize={0.5}
+isDirected={true}
+id={`bft112-4`}
+/>
+</td>
+</tr>
+<tr>
+<td>
+Dequeue ${Q.}$ Now ${u = i.}$ Enqueue all of ${i}$'s neighbors and insert them into ${V.}$ Here, we only enqueue ${k,}$ since ${g}$ is already in ${V.}$ Notice that this ensures we do not revisit ${g.}$
+
+$$
+	Q = \px{\xcancel{f},\xcancel{g},\xcancel{i},h,k} \\
+	V = \set{f,g,i,h,k}
+$$
+</td>
+<td>
+<Graph data={[
+	{link: [{id:'f',class:'off'},{id:'g',class:'off'}]},
+	{link: ['f',{id:'i',class:'on'}]},
+	{link: ['g','h']},
+	{link: ['h','j']},
+	{link: ['i','g']},
+	{link: ['i','k']},
+]}
+wh={[230,120]}
+tx={-12}
+fontSize={0.5}
+isDirected={true}
+id={`bft112-5`}
+/>
+</td>
+</tr>
+<tr>
+<td>
+Dequeue ${Q.}$ Now ${u = h.}$ Enqueue all of ${h}$'s neighbors and insert them into ${V.}$
+
+$$
+	Q = \px{\xcancel{f},\xcancel{g},\xcancel{i},\xcancel{h},k,j} \\
+	V = \set{f,g,i,h,k,j}
+$$
+</td>
+<td>
+<Graph data={[
+	{link: [{id:'f',class:'off'},{id:'g',class:'off'}]},
+	{link: ['f',{id:'i',class:'off'}]},
+	{link: ['g',{id:'h',class:'on'}]},
+	{link: ['h','j']},
+	{link: ['i','g']},
+	{link: ['i','k']},
+]}
+wh={[230,120]}
+tx={-12}
+fontSize={0.5}
+isDirected={true}
+id={`bft112-6`}
+/>
+</td>
+</tr>
+<tr>
+<td>
+Dequeue ${Q.}$ Now ${u = k.}$ ${k}$ has no neighbors, so we insert nothing into visited and enqueue nothing.
+
+$$
+	Q = \px{\xcancel{f},\xcancel{g},\xcancel{i},\xcancel{h},\xcancel{k},j} \\
+	V = \set{f,g,i,h,k,j}
+$$
+</td>
+<td>
+<Graph data={[
+	{link: [{id:'f',class:'off'},{id:'g',class:'off'}]},
+	{link: ['f',{id:'i',class:'off'}]},
+	{link: ['g',{id:'h',class:'off'}]},
+	{link: ['h','j']},
+	{link: ['i','g']},
+	{link: ['i',{id:'k',class:'on'}]},
+]}
+wh={[230,120]}
+tx={-12}
+fontSize={0.5}
+isDirected={true}
+id={`bft112-7`}
+/>
+</td>
+</tr>
+<tr>
+<td>
+Dequeue ${Q.}$ Now ${u = j.}$ ${j}$ has no neighbors, so we insert nothing into visited and enqueue nothing.
+
+$$
+	Q = \px{\xcancel{f},\xcancel{g},\xcancel{i},\xcancel{h},\xcancel{k},\xcancel{j}} \\
+	V = \set{f,g,i,h,k,j}
+$$
+</td>
+<td>
+<Graph data={[
+	{link: [{id:'f',class:'off'},{id:'g',class:'off'}]},
+	{link: ['f',{id:'i',class:'off'}]},
+	{link: ['g',{id:'h',class:'off'}]},
+	{link: ['h',{id:'j',class:'on'}]},
+	{link: ['i','g']},
+	{link: ['i',{id:'k',class:'off'}]},
+]}
+wh={[230,120]}
+tx={-12}
+fontSize={0.5}
+isDirected={true}
+id={`bft112-8`}
+/>
+</td>
+</tr>
+<tr>
+<td>
+The queue is empty. We've finished our traversal. Examining the order of the elements in ${V,}$ we see the expected sequence.
+
+$$
+	Q = \px{\xcancel{f},\xcancel{g},\xcancel{i},\xcancel{h},\xcancel{k},\xcancel{j}} \\
+	V = \set{f,g,i,h,k,j}
+$$
+</td>
+<td>
+<Graph data={[
+	{link: [{id:'f',class:'off'},{id:'g',class:'off'}]},
+	{link: ['f',{id:'i',class:'off'}]},
+	{link: ['g',{id:'h',class:'off'}]},
+	{link: ['h',{id:'j',class:'off'}]},
+	{link: ['i','g']},
+	{link: ['i',{id:'k',class:'off'}]},
+]}
+wh={[230,120]}
+tx={-12}
+fontSize={0.5}
+isDirected={true}
+id={`bft112-9`}
+/>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+### Breadth-first Traversal on Adjacency Matrices
+Below is one implementation of the algorithm. We've forgone some optimizations to keep maintain readability.
+
+<Algo>
+
+> __~adjacency matrix bft~.__ Let ${G}$ be an adjacency matrix representing an undirected graph. The function ${\df{bftm}}$ visits every vertex of ${G}$ through the procedure below.
+
+- __Argument__: ${G,}$ an adjacency matrix.
+- __Image__: ${\nil}$
+
+1. __function__ ${\df{bftm}(G):}$
+	1. ${\let{{visited}}{\df{new set}}}$
+	2. ${\let{{queue}}{\df{new queue}}}$
+	3. __function__ ${\df{explore}(r,c)}$
+		1. ${\let{queue}{\df{enqueue}~\ix{r,c}}}$
+		2. __while__ ${queue \neq \nil}$
+			1. ${\let{edge}{\df{dequeue}~Q}}$
+			2. ${\let{r}{edge\ix{0}}}$, ${\let{c}{edge\ix{1}}}$
+			3. ${\let{rinbound}{0 \lt r \le \len{G}}}$
+			4. ${\let{cinbound}{0 \lt c \le \len{G\ix{0}}}}$
+			5. __if__ ${\neg rinbound \lor \neg cinbound}$ __then__ ${\tx{continue}}$
+			6. __if__ ${\ix{r,c} \notin visited}$ __and__ ${G\ix{r}\ix{c}=1}$ __then__
+				1. ${\let{visited}{\df{insert}~\ix{r,c}}}$
+				2. ${\let{queue}{\df{enqueue}~\ix{r+1,c}}}$
+				3. ${\let{queue}{\df{enqueue}~\ix{r,c+1}}}$
+				4. ${\let{queue}{\df{enqueue}~\ix{r-1,c}}}$
+				5. ${\let{queue}{\df{enqueue}~\ix{r,c-1}}}$
+	4. __for let__ ${\let{i}{0}, ~ ~ ~ i \lt \len{G}, ~ ~ ~ i\texttt{++}}$
+		1. __for let__ ${\let{j}{0}, ~ ~ ~ j \lt \len{G\ix{0}}, ~ ~ ~ j\texttt{++}}$
+			1. __if__ ${\ix{i,j} \notin visited}$ __then__ ${\df{explore}(i,j)}$
+	5. __return__ ${\nil}$
+	
+</Algo>
+
+Below is a trace.
+
+<table>
+<tbody>
+<tr>
+<td width={`35%`}>
+This is the current state, a graph with the following vertex and edge set:
+
+$$
+	E = \set{0,1,2,3,4} \\[1em]
+	V = \lset{\ax{
+		\set{0,1}&\set{1,2} \\
+		\set{1,3}&\set{2,3} \\
+		\set{1,4}&\set{0,4}
+	}}
+$$
+
+Following the loop, our first pair is ${\ix{0,0}.}$ We're just starting out, so we know that ${\ix{0,0}}$ is not in the ${visited}$ set. Then we call ${\df{explore}(0,0).}$ We enqueue ${\ix{0,0}}$ followed by a dequeue:
+
+$$
+	queue = \px{\ix{0,0}} \\
+	queue = \px{~} \\
+	\ix{r,c} = \df{dequeue}~queue = \ix{0,0}
+$$
+
+then dequeue. Now we have ${r=0}$ and ${c=0.}$ Indexing, we get ${G\ix{0}\ix{0}=1,}$ so we enter the visit branch. We add ${\ix{0,0}}$ to ${visited,}$ and enqueue all of its neighbors:
+
+$$
+	visited = \set{\ix{0,0}} \\[1em]
+	queue = \ar{\ax{
+		\ix{1,0} \\
+		\ix{0,1} \\
+		\ix{-1,0} \\
+		\ix{0,-1}
+	}}
+$$
+
+Back to the while-guard, we have ${queue \neq \nil,}$ so we stay in the ${\df{explore}}$ function. We dequeue again:
+
+$$
+	visited = \set{\ix{0,0}} \\[1em]
+	queue = \ar{\ax{
+		\ix{1,0} \\
+		\ix{0,1} \\
+		\ix{-1,0} \\
+		\ix{0,-1}
+	}}
+$$
+
+</td>
+<td width={`30%`}>
+$$
+r = 0 ~~ c = 0 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \yd{1} & 1 & 1 & 0 & 0 ~ \\
+	1 & 1 & 1 & 1 & 1 & 0 ~ \\
+	2 & 1 & 0 & 1 & 0 & 0 ~ \\
+	3 & 0 & 1 & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'on'},1]},
+		{link:[2,1]},
+		{link:[0,2]},
+		{link:[1,3]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat1`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Back to the while-guard, we have ${queue \neq \nil,}$ so we stay in the ${\df{explore}}$ function. We dequeue again:
+
+$$
+	visited = \set{\ix{0,0}} \\[1em]
+	queue = \ar{\ax{
+		\sout{\ix{1,0}} \\
+		\ix{0,1} \\
+		\ix{-1,0} \\
+		\ix{0,-1}
+	}} \\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{1,0}
+$$
+
+We visit the vertex ${1,}$ add ${\ix{1,0}}$ to ${visited,}$ and enqueue all of one's neighbors.
+
+
+$$
+	visited = \set{\ix{0,0},\ix{1,0}} \\[1em]
+	queue = \ar{\ax{
+		\ix{0,1} \\
+		\ix{-1,0} \\
+		\ix{0,-1} \\
+		\ix{2,0} \\
+		\ix{1,1} \\
+		\ix{0,0} \\
+		\ix{1,-1}
+	}}
+$$
+
+</td>
+<td width={`30%`}>
+$$
+r = 1 ~~ c = 0 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & 1 & 1 & 0 & 0 ~ \\
+	1 & \yd{1} & 1 & 1 & 1 & 0 ~ \\
+	2 & 1 & 0 & 1 & 0 & 0 ~ \\
+	3 & 0 & 1 & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'off'},{id:1,class:'on'}]},
+		{link:[2,1]},
+		{link:[0,2]},
+		{link:[1,3]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat2`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Back to the while-guard. We have ${queue \neq \nil,}$ so again we stay in the ${\df{explore}}$ function. Dequeue ${queue:}$
+
+$$
+	queue = \ar{\ax{
+		\sout{\ix{0,1}} \\
+		\ix{-1,0} \\
+		\ix{0,-1} \\
+		\ix{2,0} \\
+		\ix{1,1} \\
+		\ix{0,0} \\
+		\ix{1,-1}
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{0,1}
+$$
+
+We have ${G\ix{0}\ix{1}=1,}$ and ${\ix{0,1} \notin visited,}$ so we enter the visit branch. Notice that this essentially brings us back to the vertex 0. We place ${\ix{0,1}}$ in visited, and enqueue all the neighbors reachable via ${0.}$
+
+$$
+	visited = \set{\ix{0,0},\ix{1,0},\ix{0,1}} \\[1em]
+	queue = \ar{\ax{
+		\ix{-1,0} \\
+		\ix{0,-1} \\
+		\ix{2,0} \\
+		\ix{1,1} \\
+		\ix{0,0} \\
+		\ix{1,-1} \\
+		\ix{1,1} \\
+		\ix{0,2} \\
+		\ix{-1,1} \\
+		\ix{0,0}
+	}}
+$$
+
+To speed things up a bit, we see that the next two edges have negative indices. This is where the ${rowinbound}$ and ${colinbound}$ variables step in. Because these conditions will bind to ${\tx{false},}$ these two edges will be dequeued without visitation. So, we have:
+
+$$
+	visited = \set{\ix{0,0},\ix{1,0},\ix{0,1}} \\[1em]
+	queue = \ar{\ax{
+		\ix{2,0} \\
+		\ix{1,1} \\
+		\ix{0,0} \\
+		\ix{1,-1} \\
+		\ix{1,1} \\
+		\ix{0,2} \\
+		\ix{-1,1} \\
+		\ix{0,0}
+	}}
+$$
+
+</td>
+<td width={`30%`}>
+$$
+r = 0 ~~ c = 1 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \yd{1} & 1 & 0 & 0 ~ \\
+	1 & \wd{1} & 1 & 1 & 1 & 0 ~ \\
+	2 & 1 & 0 & 1 & 0 & 0 ~ \\
+	3 & 0 & 1 & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'on'},{id:1,class:'off'}]},
+		{link:[2,1]},
+		{link:[0,2]},
+		{link:[1,3]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat3`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Back to the while-guard. We have ${queue \neq \nil,}$ so again we stay in the ${\df{explore}}$ function. Dequeue ${queue:}$
+
+$$
+	queue = \ar{\ax{
+		\sout{\ix{2,0}} \\
+		\ix{1,1} \\
+		\ix{0,0} \\
+		\ix{1,-1}
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{2,0}
+$$
+
+We have ${G\ix{2}\ix{0}=1,}$ and ${\ix{2,0} \notin visited,}$ so we enter the visit branch. We add ${\ix{2,0}}$ to ${visited,}$ and enqueue all the reachable neighbors:
+
+
+$$
+	visited = \lset{
+		\ax{
+			\ix{0,0} & \ix{1,0} \\
+			\ix{0,1} & \ix{2,0}
+	}} \\[1em]
+	queue = \ar{\ax{
+		\ix{1,1} \\
+		\ix{0,0} \\
+		\ix{1,-1} \\
+		\ix{1,1} \\
+		\ix{0,2} \\
+		\ix{-1,1} \\
+		\ix{0,0} \\
+		\ix{3,0} \\
+		\ix{2,1} \\
+		\ix{1,0} \\
+		\ix{2,1} \\
+	}}
+$$
+
+</td>
+<td width={`30%`}>
+$$
+r = 2 ~~ c = 0 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \wd{1} & 1 & 0 & 0 ~ \\
+	1 & \wd{1} & 1 & 1 & 1 & 0 ~ \\
+	2 & \yd{1} & 0 & 1 & 0 & 0 ~ \\
+	3 & 0 & 1 & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'off'},{id:1,class:'off'}]},
+		{link:[{id:2,class:'on'},1]},
+		{link:[0,2]},
+		{link:[1,3]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat4`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Control returns to the while-guard. We have ${queue \neq \nil,}$ so control remains with the ${\df{explore}}$ function. Dequeue ${queue:}$
+
+$$
+	queue = \ar{\ax{
+		\sout{\ix{1,1}} \\
+		\ix{0,0} \\
+		\ix{1,-1} \\
+		\ix{1,1} \\
+		\ix{0,2} \\
+		\ix{-1,1} \\
+		\ix{0,0} \\
+		\ix{3,0} \\
+		\ix{2,1} \\
+		\ix{1,0} \\
+		\ix{2,1} \\
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{1,1}
+$$
+
+We have ${G\ix{1}\ix{1}=1,}$ and ${\ix{1,1} \notin visited,}$ so we enter the visit branch. We add ${\ix{1,1}}$ to ${visited,}$ and enqueue all the reachable neighbors. The edges ${\ix{1,1},}$ ${\ix{0,0},}$ ${\ix{1,-1},}$ and ${\ix{1,1}}$ again have all been visited, so we cross them out below to indicate that they will all be dequeued without visitation.
+
+
+$$
+	visited = \lset{
+		\ax{
+			\ix{0,0} & \ix{1,0} \\
+			\ix{0,1} & \ix{2,0} \\
+			\ix{1,1} & ~
+	}} \\[1em]
+	queue = \ar{\ax{
+		\sout{\ix{1,1}} \\
+		\sout{\ix{0,0}} \\
+		\sout{\ix{1,-1}} \\
+		\sout{\ix{1,1}} \\
+		\ix{0,2} \\
+		\ix{-1,1} \\
+		\ix{0,0} \\
+		\ix{3,0} \\
+		\ix{2,1} \\
+		\ix{1,0} \\
+		\ix{2,1} \\
+		\ix{2,1} \\
+		\ix{1,2} \\
+		\ix{0,1} \\
+		\ix{1,0} \\
+	}}
+$$
+</td>
+<td width={`30%`}>
+$$
+r = 1 ~~ c = 1 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \wd{1} & 1 & 0 & 0 ~ \\
+	1 & \wd{1} & \yd{1} & 1 & 1 & 0 ~ \\
+	2 & \wd{1} & 0 & 1 & 0 & 0 ~ \\
+	3 & 0 & 1 & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'off'},{id:1,class:'off'}]},
+		{link:[{id:2,class:'on'},1]},
+		{link:[0,2]},
+		{link:[1,3]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat5`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Control returns to the while-guard. We have ${queue \neq \nil,}$ so control remains with the ${\df{explore}}$ function. Dequeue ${queue:}$
+
+$$
+	queue = \ar{\ax{
+		\ix{0,2} \\
+		\ix{-1,1} \\
+		\ix{0,0} \\
+		\ix{3,0} \\
+		\ix{2,1} \\
+		\ix{1,0} \\
+		\ix{2,1} \\
+		\ix{2,1} \\
+		\ix{1,2} \\
+		\ix{0,1} \\
+		\ix{1,0} \\
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{0,2}
+$$
+
+We have ${G\ix{0}\ix{2}=1,}$ and ${\ix{0,2} \notin visited,}$ so we enter the visit branch. We add ${\ix{0,2}}$ to ${visited,}$ and enqueue all the reachable neighbors. Once more, we will cross out the edges that will be dequeued without visitation for expediency.
+
+
+$$
+	visited = \lset{
+		\ax{
+			\ix{0,0} & \ix{1,0} & \ix{0,1} \\
+			\ix{2,0} & \ix{1,1} & \ix{0,2}
+	}} \\[1em]
+	queue = \ar{\ax{
+		\sout{\ix{-1,1}} \\
+		\sout{\ix{0,0}} \\
+		\sout{\ix{3,0}} \\
+		\sout{\ix{2,1}} \\
+		\sout{\ix{1,0}} \\
+		\sout{\ix{2,1}} \\
+		\sout{\ix{2,1}} \\
+		{\ix{1,2}} \\
+		{\ix{0,1}} \\
+		{\ix{1,0}} \\
+		{\ix{1,2}} \\
+		{\ix{0,3}} \\
+		{\ix{-1,2}} \\
+		{\ix{0,1}} \\
+	}}
+$$
+</td>
+<td width={`30%`}>
+$$
+r = 0 ~~ c = 2 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \wd{1} & \yd{1} & 0 & 0 ~ \\
+	1 & \wd{1} & \wd{1} & 1 & 1 & 0 ~ \\
+	2 & \wd{1} & 0 & 1 & 0 & 0 ~ \\
+	3 & 0 & 1 & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'on'},{id:1,class:'off'}]},
+		{link:[{id:2,class:'off'},1]},
+		{link:[0,2]},
+		{link:[1,3]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat6`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Control returns to the while-guard. We have ${queue \neq \nil,}$ so control remains with the ${\df{explore}}$ function. Dequeue ${queue:}$
+
+$$
+	queue = \ar{\ax{
+		\sout{\ix{1,2}} \\
+		{\ix{0,1}} \\
+		{\ix{1,0}} \\
+		{\ix{1,2}} \\
+		{\ix{0,3}} \\
+		{\ix{-1,2}} \\
+		{\ix{0,1}} \\
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{1,2}
+$$
+
+We have ${G\ix{1}\ix{2}=1,}$ and ${\ix{1,2} \notin visited,}$ so we enter the visit branch. We add ${\ix{1,2}}$ to ${visited,}$ and enqueue all the reachable neighbors. We cross out the edges that will be dequeued without visitation for expediency.
+
+
+$$
+	visited = \lset{
+		\ax{
+			\ix{0,0} & \ix{1,0} & \ix{0,1} \\
+			\ix{2,0} & \ix{1,1} & \ix{0,2} \\
+			\ix{2,1} & \ix{1,2} & ~
+	}} \\[1em]
+	queue = \ar{\ax{
+		\sout{\ix{0,1}} \\
+		\sout{\ix{1,0}} \\
+		\sout{\ix{1,2}} \\
+		\sout{\ix{0,3}} \\
+		\sout{\ix{-1,2}} \\
+		\sout{\ix{0,1}} \\
+		{\ix{2,2}} \\
+		{\ix{1,3}} \\
+		{\ix{0,2}} \\
+		{\ix{1,1}} \\
+	}}
+$$
+</td>
+<td width={`30%`}>
+$$
+r = 1 ~~ c = 2 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \wd{1} & \wd{1} & 0 & 0 ~ \\
+	1 & \wd{1} & \wd{1} & \yd{1} & 1 & 0 ~ \\
+	2 & \wd{1} & 0 & 1 & 0 & 0 ~ \\
+	3 & 0 & 1 & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'off'},{id:1,class:'on'}]},
+		{link:[{id:2,class:'off'},1]},
+		{link:[0,2]},
+		{link:[1,3]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat7`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Control returns to the while-guard. We have ${queue \neq \nil,}$ so control remains with the ${\df{explore}}$ function. Dequeue ${queue:}$
+
+$$
+	queue = \ar{\ax{
+		\sout{\ix{2,2}} \\
+		{\ix{1,3}} \\
+		{\ix{0,2}} \\
+		{\ix{1,1}} \\
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{2,2}
+$$
+
+We have ${G\ix{2}\ix{2}=1,}$ and ${\ix{2,2} \notin visited,}$ so we enter the visit branch. We add ${\ix{2,2}}$ to ${visited,}$ and enqueue all the reachable neighbors. We cross out the edges that will be dequeued without visitation for expediency.
+
+
+$$
+	visited = \lset{
+		\ax{
+			\ix{0,0} & \ix{1,0} & \ix{0,1} \\
+			\ix{2,0} & \ix{1,1} & \ix{0,2} \\
+			\ix{2,1} & \ix{1,2} & \ix{2,2}
+	}} \\[1em]
+	queue = \ar{\ax{
+		\sout{\ix{2,2}} \\
+		{\ix{1,3}} \\
+		{\ix{0,2}} \\
+		{\ix{1,1}} \\
+		{\ix{3,2}} \\
+		{\ix{2,3}} \\
+		{\ix{1,2}} \\
+		{\ix{2,1}} \\
+	}}
+$$
+</td>
+<td width={`30%`}>
+$$
+r = 2 ~~ c = 2 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \wd{1} & \wd{1} & 0 & 0 ~ \\
+	1 & \wd{1} & \wd{1} & \wd{1} & 1 & 0 ~ \\
+	2 & \wd{1} & 0 & \yd{1} & 0 & 0 ~ \\
+	3 & 0 & 1 & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'off'},{id:1,class:'off'}]},
+		{link:[{id:2,class:'on'},1]},
+		{link:[0,2]},
+		{link:[1,3]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat8`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Control returns to the while-guard. We have ${queue \neq \nil,}$ so control remains with the ${\df{explore}}$ function. Dequeue ${queue:}$
+
+$$
+	queue = \ar{\ax{
+		\sout{\ix{1,3}} \\
+		{\ix{0,2}} \\
+		{\ix{1,1}} \\
+		{\ix{3,2}} \\
+		{\ix{2,3}} \\
+		{\ix{1,2}} \\
+		{\ix{2,1}} \\
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{1,3}
+$$
+
+We have ${G\ix{1}\ix{3}=1,}$ and ${\ix{1,3} \notin visited,}$ so we enter the visit branch. We add ${\ix{1,3}}$ to ${visited,}$ and enqueue all the reachable neighbors. We cross out the edges that will be dequeued without visitation for expediency. Notice that this effectively empties the queue.
+
+
+$$
+	visited = \lset{
+		\ax{
+			\ix{0,0} & \ix{1,0} & \ix{0,1} \\
+			\ix{2,0} & \ix{1,1} & \ix{0,2} \\
+			\ix{2,1} & \ix{1,2} & \ix{2,2} \\
+			\ix{1,3} & ~ & ~
+	}} \\[1em]
+	queue = \ar{\ax{
+		\sout{\ix{0,2}} \\
+		\sout{\ix{1,1}} \\
+		\sout{\ix{3,2}} \\
+		\sout{\ix{2,3}} \\
+		\sout{\ix{1,2}} \\
+		\sout{\ix{2,1}} \\
+		\sout{\ix{2,3}} \\
+		\sout{\ix{1,4}} \\
+		\sout{\ix{0,3}} \\
+		\sout{\ix{1,2}} \\
+	}}
+$$
+</td>
+<td width={`30%`}>
+$$
+r = 1 ~~ c = 3 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \wd{1} & \wd{1} & 0 & 0 ~ \\
+	1 & \wd{1} & \wd{1} & \wd{1} & \yd{1} & 0 ~ \\
+	2 & \wd{1} & 0 & \wd{1} & 0 & 0 ~ \\
+	3 & 0 & 1 & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'off'},{id:1,class:'on'}]},
+		{link:[{id:2,class:'off'},1]},
+		{link:[0,2]},
+		{link:[1,3]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat9`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+The queue is now empty, so we exit out of ${\df{explore}}$ and head back to the callee loop. At this point, the ${visited}$ has grown substantially, and we make no calls to ${\df{explore}}$ for the entirey of ${i=2.}$ So, we skip to ${i=3.}$ There, we have ${G\ix{3}{0}=0,}$ we proceed to the next 1, ${G\ix{3}\ix{1}.}$ The queue starts anew:
+
+$$
+	queue = \ar{\ax{
+		{\ix{3,1}} \\
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{3,1}
+$$
+
+We have ${G\ix{3}\ix{1}=1,}$ and ${\ix{3,1} \notin visited.}$ Enter the visit branch, add ${\ix{3,1}}$ to ${visited,}$ and enqueue all the reachable neighbors. Crossing out all the nodes dequeued without visitation, we are left with an empty queue.
+
+
+$$
+	visited = \lset{
+		\ax{
+			\ix{0,0} & \ix{1,0} & \ix{0,1} \\
+			\ix{2,0} & \ix{1,1} & \ix{0,2} \\
+			\ix{2,1} & \ix{1,2} & \ix{2,2} \\
+			\ix{1,3} & \ix{3,1} & ~
+	}} \\[1em]
+	queue = \ar{\ax{
+		\sout{\ix{4,1}}\\
+		\sout{\ix{3,2}}\\
+		\sout{\ix{2,1}}\\
+		\sout{\ix{3,0}}\\
+	}}
+$$
+</td>
+<td width={`30%`}>
+$$
+r = 3 ~~ c = 1 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \wd{1} & \wd{1} & 0 & 0 ~ \\
+	1 & \wd{1} & \wd{1} & \wd{1} & \wd{1} & 0 ~ \\
+	2 & \wd{1} & 0 & \wd{1} & 0 & 0 ~ \\
+	3 & 0 & \yd{1} & 0 & 1 & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'off'},{id:1,class:'off'}]},
+		{link:[{id:2,class:'off'},1]},
+		{link:[0,2]},
+		{link:[1,{id:3,class:'on'}]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat10`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+The queue is now empty, so we exit out of ${\df{explore}}$ and head back to the callee loop. At ${j=2,}$ we have ${G\ix{3}{2}=0,}$ we make no calls. We skip to ${\ix{3,3}.}$ This edge hasn't been processed, so we call ${\df{explore},}$ starting ${queue}$ anew:
+
+$$
+	queue = \ar{\ax{
+		\sout{\ix{3,3}} \\
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{3,3}
+$$
+
+We have ${G\ix{3}\ix{3}=1,}$ and ${\ix{3,3} \notin visited.}$ Enter the visit branch, add ${\ix{3,3}}$ to ${visited,}$ and enqueue all the reachable neighbors. Crossing out all the nodes dequeued without visitation, we are left with an empty queue.
+
+$$
+	visited = \lset{
+		\ax{
+			\ix{0,0} & \ix{1,0} & \ix{0,1} \\
+			\ix{2,0} & \ix{1,1} & \ix{0,2} \\
+			\ix{2,1} & \ix{1,2} & \ix{2,2} \\
+			\ix{1,3} & \ix{3,1} & \ix{3,3}
+	}} \\[1em]
+	queue = \ar{\ax{
+		{\ix{4,3}} \\
+		{\ix{3,4}} \\
+		{\ix{2,3}} \\
+		{\ix{3,2}} \\
+	}}
+$$
+</td>
+<td width={`30%`}>
+$$
+r = 3 ~~ c = 3 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \wd{1} & \wd{1} & 0 & 0 ~ \\
+	1 & \wd{1} & \wd{1} & \wd{1} & \wd{1} & 0 ~ \\
+	2 & \wd{1} & 0 & \wd{1} & 0 & 0 ~ \\
+	3 & 0 & \wd{1} & 0 & \wd{1} & 1 ~ \\
+	4 & 0 & 0 & 0 & 1 & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'off'},{id:1,class:'off'}]},
+		{link:[{id:2,class:'off'},1]},
+		{link:[0,2]},
+		{link:[1,{id:3,class:'on'}]},
+		{link:[4,3]},
+	]}
+	id={`bftadmat11`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+The queue is not empty, so we stay in ${\df{explore}.}$ We know the drill.
+
+$$
+	queue = \ar{\ax{
+		\sout{\ix{4,3}} \\
+		{\ix{3,4}} \\
+		{\ix{2,3}} \\
+		{\ix{3,2}} \\
+	}}\\[1em]
+	\ix{r,c} = \df{dequeue}~queue = \ix{4,3}
+$$
+
+We have ${G\ix{4}\ix{3}=1,}$ and ${\ix{4,3} \notin visited.}$ Enter the visit branch, add ${\ix{4,3}}$ to ${visited,}$ and enqueue all the reachable neighbors. Crossing out all the nodes dequeued without visitation, we are left with an empty queue.
+
+
+$$
+	visited = \lset{
+		\ax{
+			\ix{0,0} & \ix{1,0} & \ix{0,1} \\
+			\ix{2,0} & \ix{1,1} & \ix{0,2} \\
+			\ix{2,1} & \ix{1,2} & \ix{2,2} \\
+			\ix{1,3} & \ix{3,1} & \ix{3,3} \\
+			\ix{4,3} & ~ & ~
+	}} \\[1em]
+	queue = \ar{\ax{
+		{\ix{3,4}} \\
+		{\ix{2,3}} \\
+		{\ix{3,2}} \\
+		{\ix{5,3}} \\
+		{\ix{4,4}} \\
+		{\ix{3,3}} \\
+		{\ix{4,2}} \\
+	}}
+$$
+
+We leave the last two elements as an exercise for the reader.
+
+</td>
+<td width={`30%`}>
+$$
+r = 4 ~~ c = 3 \\[1em]
+\begin{array}{c:c}
+	~ & 0 & 1 & 2 & 3 & 4 ~ \\ \hdashline
+	0 & \wd{1} & \wd{1} & \wd{1} & 0 & 0 ~ \\
+	1 & \wd{1} & \wd{1} & \wd{1} & \wd{1} & 0 ~ \\
+	2 & \wd{1} & 0 & \wd{1} & 0 & 0 ~ \\
+	3 & 0 & \wd{1} & 0 & \wd{1} & 1 ~ \\
+	4 & 0 & 0 & 0 & \yd{1} & 1 ~ \\
+\end{array}
+$$
+<Graph data={[
+		{link:[{id:0,class:'off'},{id:1,class:'off'}]},
+		{link:[{id:2,class:'off'},1]},
+		{link:[0,2]},
+		{link:[1,{id:3,class:'off'}]},
+		{link:[{id:4,class:'on'},3]},
+	]}
+	id={`bftadmat12`}
+	collisionRadius={15}
+	edgeLength={20}
+	straightEdges={true}
+	scale={100}
+	width={90}
+	height={110}
+/>
+</td>
+</tr>
+</tbody>
+</table>
+
+A word of caution: In the above pseudocode, we're inserting an array into a set data structure. Some languages call these _weak maps_, and implement them in a variety of ways: red-black trees, AVL trees, or a weak hash table. Accordingly, these languages (e.g., Java and JavaScript) will either (1) use the array's reference as a key, or (2) convert the array into a string, and use that string as a key. In the former case, it's imperative that the array be converted to a string. In the latter case, it's imperative that the stringified-array take the form ${\string{i,j}}$. Notice the use of a comma. The comma is necessary because simply writing ${\string{ij}}$ will not account for multidigit indices. For example, suppose the pair were ${\ix{13,2}.}$ Simply writing ${\string{ij}}$ would result in ${\string{132}.}$ If we then indexed into this string, we'd get ${\string{132}\ix{0}=1}$ and ${\string{132}\ix{1}=3.}$ These are the wrong indices. Using a comma allows us to split the string with ${\string{,}.}$
+
+### BFT Spanning Tree
+We can also visualize BFT in terms of its _breadth-first spanning tree_:
+
+<Tree data={[
+	{child: `a`, parent:``},
+	{child: `b`, parent:`a`},
+	{child: `c`, parent:`a`},
+	{child: `d`, parent:`b`},
+	{child: `f`, parent:`d`},
+	{child: `e`, parent:`c`},
+]}
+scale={50}
+/>
+
+Notice that the sequence follows the familiar _level-order traversal_ associated with trees. Our traversal begins by enqueuing ${a:}$
+
+| Queue      | Visit | Visited |
+| ---------- | ----- | ------- |
+| ${\px{a}}$ |       |         |
+
+Then we dequeue the queue and visit ${a:}$
+
+| Queue      | Visit | Visited |
+| ---------- | ----- | ------- |
+| ${\px{a}}$ |       |         |
+| ${\px{~}}$ | ${a}$ |         |
+
+Then we enqueue all of ${a}$'s neighbors:
+
+| Queue        | Visit | Visited |
+| ------------ | ----- | ------- |
+| ${\px{a}}$   |       |         |
+| ${\px{~}}$   | ${a}$ |         |
+| ${\px{b,c}}$ |       | ${a}$   |
+
+Now we visit the first neighbor queued (recall that a queue is first-in-first out):
+
+
+| Queue        | Visit | Visited |
+| ------------ | ----- | ------- |
+| ${\px{a}}$   |       |         |
+| ${\px{~}}$   | ${a}$ |         |
+| ${\px{b,c}}$ |       | ${a}$   |
+| ${\px{c}}$   | ${b}$ | ${a}$   |
+
+Then we visit ${b,}$ followed by enqueuing all of its neighbors:
+
+
+| Queue        | Visit | Visited      |
+| ------------ | ----- | ------------ |
+| ${\px{a}}$   |       |              |
+| ${\px{~}}$   | ${a}$ |              |
+| ${\px{b,c}}$ |       | ${\ar{a}}$   |
+| ${\px{c}}$   | ${b}$ | ${\ar{a}}$   |
+| ${\px{c,d}}$ |       | ${\ar{a,b}}$ |
+
+Next, visit ${c,}$ followed by ${e,}$ and so on:
+
+| Queue        | Visit | Visited              |
+| ------------ | ----- | -------------------- |
+| ${\px{a}}$   |       |                      |
+| ${\px{~}}$   | ${a}$ |                      |
+| ${\px{b,c}}$ |       | ${\ar{a}}$           |
+| ${\px{c}}$   | ${b}$ | ${\ar{a}}$           |
+| ${\px{c,d}}$ |       | ${\ar{a,b}}$         |
+| ${\px{d}}$   | ${c}$ | ${\ar{a,b}}$         |
+| ${\px{d,e}}$ |       | ${\ar{a,b,c}}$       |
+| ${\px{e}}$   | ${d}$ | ${\ar{a,b,c}}$       |
+| ${\px{e,f}}$ |       | ${\ar{a,b,c,d}}$     |
+| ${\px{f}}$   | ${e}$ | ${\ar{a,b,c,d}}$     |
+| ${\px{f}}$   |       | ${\ar{a,b,c,d,e}}$   |
+| ${\px{~}}$   | ${f}$ | ${\ar{a,b,c,d,e}}$   |
+| ${\px{~}}$   |       | ${\ar{a,b,c,d,e,f}}$ |
+
+For _simple graphs_, the visit sequence need not ${\ar{a,b,c,d,e,f}.}$ The traversal sequence for this graph, however, will be ${\ar{a,b,c,d,e,f},}$ as we've dictated that the graph is an acyclic digraph. Had we started the traversal on, say, ${f,}$ we'd get back nothing, since the array ${f}$ maps to is empty. Thus, for digraphs, where we start our traversal for breadth-first search _does matter_, because the edges are directed. We can't travel against the edge directions. This is apparent if we simply look at the algorithm's implementation. If we start at ${f,}$ then our queue begins with ${f.}$ We dequeue ${f,}$ and then begin enqueuing all of its neighbors. But ${f}$ has no neighbors. So, the queue's length remains 0 after we dequeued ${f,}$ and the algorithm terminates. As we'll see later, we don't have the same problem with undirected graphs (what we're referring to as _simple graphs_), but that comes with a different set of problems.
+
+Additionally: It goes without saying that unlike DFT, the BFT algorithm is _not_ conducive to recursion. In fact, any recursive implementation of the BFT algorithm is wholly impractical, so we won't present any such implementation here. The reason being, recursion, by nature, relies on last-in-first-out — a stack. A recursive implementation of BFT requires fighting against this idea because of BFT's queue-based principle.
+
+## Previsit & Postvisit Functions
+In the general DFT algorithm, there are two points of interest which we've marked below in red:
+
+<Algo>
+
+1. __function__ ${\df{dft}(G):}$
+	1. __init__ ${\let{visited}{\df{new set}}}$
+	2. __function__ ${\df{explore}(v):}$
+		1. ${\let{visited}{\df{insert}(v)}}$
+		1. ${\red{\df{previsit}(v)}}$
+		2. __for each__ ${n \in G\ix{v}}$
+			1. __if__ ${v \notin visited}$ __then__ ${\df{explore}(n)}$
+		1. ${\red{\df{postvisit}(v)}}$
+	3. __return__ ${\df{explore}(G)}$
+
+</Algo>
+
+The ${\df{previsit}}$ function is what it sounds like — we perform some procedure _before_ visiting a node. Antithetically, the ${\df{postvisit}}$ function performs some procedure _after_ we visit a node. Suppose both the ${\df{previsit}}$ and ${\df{postvisit}}$ functions assign a number that increments at each call. Visualizing the end result on some graph:
+
+
+<Graph data={[
+	{link:['(1,8)', '(6,7)']},
+	{link:['(1,8)', '(3,4)']},
+	{link:['(2,5)', '(3,4)']},
+	{link:['(2,5)', '(1,8)']},
+	{link:['(9,12)', '(10,11)']},
+	{link:['(14,17)', '(15,16)']},
+	{link:['(13,18)', '(15,16)']},
+	{link:['(13,18)', '(14,17)']},
+]}
+fontSize={0.3}
+id={`prepost1`}
+repulsion={0.35}
+collisionRadius={10}
+edgeLength={15}
+straightEdges={true}
+scale={60}
+width={250}
+height={110}/>
+
+The pair ${(a,b)}$ where ${a}$ is the previsit increment and ${b}$ is the postvisit increment yields a useful piece of information, based on the following lemma:
+
+> __~lemma~.__ Given vertices ${a}$ and ${b,}$ the intervals ${\ix{\df{pre}(a), \df{post}(a)}}$ and ${\ix{\df{pre}(b), \df{post}(b)}}$ are either _nested_ or _disjoint_.

@@ -1,0 +1,72 @@
+import {Tree} from "../../../components/illus/components/Tree/Tree";
+
+<table>
+<tbody>
+<tr>
+<td width={`35%`}>
+Initial state: left-skewed tree. We start by having a ${temp}$ variable bind to ${b.}$ It's helpful to remember that every node in a binary tree has a left- and right-pointer, even if they aren't visualized. These pointers (and variables more generally), are akin to tentacles. All we're doing is having them stick.
+</td>
+<td>
+<Tree
+	data={[
+		{ child: "c", parent: "" },
+		{ child: "b", parent: "c", ant:`temp`},
+		{ child: "d", parent: "c", display: "none" },
+		{ child: "a", parent: "b"},
+		{ child: "e", parent: "b", display: "none" },
+	]}
+	scale={100}
+	width={170}
+	height={70}
+	scale={80}
+	margins={[15,0,15,0]}
+	id={`rr15`}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Then we bind the ${temp}$ variable's right pointer to the root's left pointer.
+</td>
+<td>
+<Tree
+	data={[
+		{ child: "c", parent: "" },
+		{ child: "b", parent: "c", ant:`\\text{---}~ temp \\to`},
+		{ child: `~~`, parent: "c"},
+		{ child: "a", parent: "b"},
+		{ child: "e", parent: "b", display: "none" },
+	]}
+	scale={100}
+	width={170}
+	height={90}
+	scale={70}
+	margins={[15,1,15,25]}
+	id={`rr38`}
+/>
+</td>
+</tr>
+<tr>
+<td width={`35%`}>
+Now we bind the old root ${c}$ to ${temp}$'s right pointer. Notice that we've now "rotated" the tree. From a low-level perspective, we aren't "rotating" anything. All we're doing is aliasing and moving pointers.
+</td>
+<td>
+<Tree
+	data={[
+		{ child: `c`, parent: "",display:'none'},
+		{ child: "b", parent: "c", ant:`\\text{---}~ temp \\to`},
+		{ child: `~~`, parent: "c", ant:`c`},
+		{ child: "a", parent: "b"},
+		{ child: "e", parent: "b", display: "none" },
+	]}
+	scale={100}
+	width={170}
+	height={95}
+	scale={80}
+	margins={[5,1,15,25]}
+	id={`rr39`}
+/>
+</td>
+</tr>
+</tbody>
+</table>

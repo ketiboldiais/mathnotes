@@ -1,9 +1,3 @@
-<head>
-	<title>Axioms of Set Theory</title>
-	<description>Notes on basic set theory.</description>
-</head>
-
-
 # Axioms
 
 This chapter contains notes on the foundational underpinnings of set theory.
@@ -119,7 +113,7 @@ exists a set we can specify (e.g., tailor) to a set we desire.
 
 A set that's "tailored" is said to be _well-defined_. We say that a set is
 well-defined if, for any given ${x,}$ we can determine whether ${x}$ is a member
-of the set. For example, the set ${L = \{x \in \RR \mid x > 4\}}$ is a
+of the set. For example, the set ${L = \{x \in \reals \mid x > 4\}}$ is a
 well-defined set. Given any ${x,}$ we can determine whether ${x}$ is a member of
 ${L.}$ ${x}$ must be a real number, and it must be greater than 4.  The set ${G
 = \{ 1, 4, 3, 9, \pi, \ldots \},}$ however, is not a well-defined set. Is
@@ -258,7 +252,7 @@ relationship with statements such as "${A}$ is contained in $B$" and "${B}$
 contains ${A.}$"
 
 $$
-  A \subseteq B \iff \forall x(x \in A \implies x \in B)
+  A \subseteq B \iff \forall x(x \in A \nc x \in B)
 $$
 
 If $A \nsubseteq B$ is true, then we can infer: There is at least one
@@ -302,7 +296,7 @@ of root vegetables," and write:
 ${\text{taro} \subset \text{root vegetables}.}$
 
 $$
-  A \subset B \iff [\forall x(x \in A \implies x \in B) \land \exists x (x \in B
+  A \subset B \iff [\forall x(x \in A \nc x \in B) \land \exists x (x \in B
   \land x \notin A)]
 $$
 
@@ -415,7 +409,7 @@ Unfortunately, the temptation is wrong—it does not depend. Recall the
 definition of a subset:
 
 $$
- B \subseteq A \space \iff \space \forall x(x \in B \implies x \in A)
+ B \subseteq A \space \iff \space \forall x(x \in B \nc x \in A)
 $$
 
 The key point to consider is the condition ${x \in B.}$ Now substitute
@@ -470,7 +464,7 @@ Why is this true? Well, we know that since ${\varnothing}$ has no members,
 the sufficient condition for the definition of a subset is always false, so
 it follows that ${\varnothing \subseteq S}$ is always true. Next, by the
 law of identity, every statement implies itself. Thus,
-${x \in S \implies x \in S.}$ This implies that every element of ${S}$ is
+${x \in S \nc x \in S.}$ This implies that every element of ${S}$ is
 an element of ${S.}$ And since every element of ${S}$ is an element of
 ${S,}$ it follows that ${S \subseteq S.}$
 
@@ -522,7 +516,7 @@ outputs is either too large to count or cannot be counted at all.
 <dfn>
 
 __cardinality__. Given a set ${A,}$ if there are exactly ${m}$ elements in
-${A,}$ where ${m \in \NN,}$ then ${A}$ is a _finite set_ with a
+${A,}$ where ${m \in \nat,}$ then ${A}$ is a _finite set_ with a
 _cardinality_ of ${m.}$ We denote this fact with:
 
 $$
@@ -624,7 +618,7 @@ however, is wrong. Why? Because mathematics has a very strict definition of
 __countability__. A set ${S}$ is _countable_ if, and only if:
 
 1. ${S}$ is finite, or
-2. ${n(S) = n(\ZZ^{+}).}$
+2. ${n(S) = n(\uint^{+}).}$
 
 Otherwise, ${S}$ is _uncountable._
 
@@ -635,10 +629,10 @@ writing ${n(S) = \alef_0,}$ and say "${S}$ has cardinality aleph null."
 
 Based on this definition, we can see that the set of odd positive integers,
 ${\Z_{\text{odd}},}$ is a countable set. Why? Consider the function
-${f(n) = 2n - 1,}$ where ${n \in \ZZ^{+}.}$ This function maps the set of
+${f(n) = 2n - 1,}$ where ${n \in \uint^{+}.}$ This function maps the set of
 positive integers to the set of odd numbers. Now, recall the definition for
 when two sets are considered equal. They are equal iff there is a
-one-to-one correspondence between ${\ZZ^{+}}$ and ${\Z_{\text{odd}}.}$ Two
+one-to-one correspondence between ${\uint^{+}}$ and ${\Z_{\text{odd}}.}$ Two
 sets have one-to-one correspondence if they are both (a) one-to-one and (b)
 onto.
 
@@ -648,7 +642,7 @@ that ${n = m.}$ This proves that the set is onto.
 
 The second requirement, (b), is satisfied. Let's say there's some odd
 positive integer ${s.}$ Since ${s}$ is an odd positive integer, it is a
-positive integer of the form ${2k - 1,}$ where ${k \in \ZZ^{+}.}$ This in
+positive integer of the form ${2k - 1,}$ where ${k \in \uint^{+}.}$ This in
 turn means that ${s}$ will always be less than an even positive integer
 ${2k.}$ As such, it follows that ${s = 2k - 1 = f(k).}$ And given this
 fact, no ${s,}$ an odd positive integer, can map to even integer. It
@@ -656,9 +650,9 @@ follows then that the odd positive integers will always map to the positive
 integers.
 
 Satisfying both (a) and (b), the function ${f}$ is a one-to-one
-correspondence from ${\ZZ^{+}}$ to ${\Z_{\text{odd}}.}$ And because it is of
+correspondence from ${\uint^{+}}$ to ${\Z_{\text{odd}}.}$ And because it is of
 one-to-one correspondence, it follows that
-${n(\Z_{\text{odd}}) = n(\ZZ^{+}).}$ This satisfies the definition of
+${n(\Z_{\text{odd}}) = n(\uint^{+}).}$ This satisfies the definition of
 countability above—the set of odd positive integers is countable.
 
 
@@ -1150,7 +1144,7 @@ ideas we will explore in the sections on number theory):
 
 <dfn>
 
-__corollary__. If as set ${A}$ has ${n}$ elements, where ${n \in \NN,}$ then
+__corollary__. If as set ${A}$ has ${n}$ elements, where ${n \in \nat,}$ then
 ${\mathcal{P}(A) = 2^n.}$
 
 </dfn>

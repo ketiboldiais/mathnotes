@@ -1,0 +1,58 @@
+# Limits and Derivatives
+
+### Rolle's Theorem
+
+> __~rolle's theorem~.__ Let ${f:D \subseteq \reals \to \reals}$ be [continuous](#continuity) on the closed interval ${\cic{a}{b}}$ and [differentiable on the open interval](#differentiable-on-an-interval) ${\oio{a}{b}.}$ If ${f(a)=b(a)=0,}$ then there exists a value ${c \in \oio{a}{b}}$ such that ${f'(c)=0.}$
+
+### l'Hopital's Rule
+The requirements of differentiability ultimately lead to _l'Hopital's Rule_. In short, the rule allows us to work with limits that can't be handled with the limit laws alone. Namely, limits of indeterminate forms like ${\frac{0}{0}}$ or ${\frac{\infty}{\infty}.}$
+
+l'Hopital's rule is best presented in three forms: the _Weak l'Hopital's Rule_, the _Strong l'Hopital's Rule_, and the _Extended l'Hopital's Rule_. Really, there's just one statement of the rule — a general case — but stating different versions of the rule distinctily makes the rule's applications explicit.
+
+> __~weak l'hopital's rule~.__ Let ${f}$ and ${g}$ be continuous functions on an interval containing ${x = a,}$ with ${f(0)=g(0)=0.}$ If
+> 
+> 1. ${f}$ and ${g}$ are differentiable, and
+> 2. ${f'}$ and ${g'}$ are continuous, and
+> 3. ${g'(a) \neq 0,}$ 
+> 
+> then
+> 
+> $$
+> 	\eqs{
+> 		&\ll{x}{\infty}\dfrac{f(x)}{g(x)} = \ll{x}{a} \dfrac{f'(x)}{g'(x)} = \dfrac{f'(a)}{g'(a)}, \\[1em]
+> 		\tx{and} \\[1em]
+> 		&\ll{x}{a^+}\dfrac{f(x)}{g(x)} = \ll{x}{a^+}\dfrac{f'(x)}{g'(x)}, \\[1em]
+> 		\tx{and} \\[1em]
+> 		&\ll{x}{a^-}\dfrac{f(x)}{g(x)} = \ll{x}{a^-}\dfrac{f'(x)}{g'(x)}. \\[1em]
+> 	}
+> $$
+
+> __~strong l'hopital's rule~.__ Let ${f}$ and ${g}$ be continuous functions on a closed interval ${[a,b]}$ and are differentiable on the open interval ${(a,b).}$ If
+> 
+> 1. ${g'(x) \neq 0}$ for all ${x \in (a,b)}$ and
+> 2. ${\ll{x}{a^+} \dfrac{f'(x)}{g'(x)}}$ exists,
+> 
+> then
+> 
+> $$
+> 	\ll{x}{a^+}\dfrac{f(x)}{g(x)} = \ll{x}{a^+} \dfrac{f'(x)}{g'(x)}.
+> $$
+
+> __~extended l'hopital's rule~.__ Let ${f}$ and ${g}$ be differentiable functions on an open interval containing ${x = a.}$ If
+> 
+> 1. ${\ll{x}{a}f(x)=0}$ and ${\ll{x}{a}g(x)=0,}$ or
+> 3. ${\ll{x}{a}f(x)=\infty}$ and ${\ll{x}{a}g(x)=\infty,}$
+> 
+> then
+> 
+> $$
+> 	\ll{x}{a}\dfrac{f(x)}{g(x)} = \ll{x}{a}\dfrac{f'(x)}{g'(x)}.
+> $$
+
+#### Requirements of l'Hopital
+All the various forms of l'Hopital's Rule have four _necessary conditions_, listed below. If just one of these conditions is false, we cannot apply l'Hopital's Rule.
+
+1. The limits must result in an indeterminate form. That is, ${\ll{x}{a}f(x) = \ll{x}{a}g(x) = 0}$ or ${\ll{x}{a}f(x) = \ll{x}{a}g(x) = \pm \infty.}$
+2. The functions ${f}$ and ${g}$ must be differentiable on the interval containing ${x=a}$ (except possible at ${a}$).
+3. For all ${x \neq a}$ in the interval containing ${a,}$ we must have ${g'(x) \neq 0.}$
+4. The limit of the quotient of derivatives, ${\ll{x}{a}\dfrac{f'(x)}{g'(x)},}$ must exist.

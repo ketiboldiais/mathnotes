@@ -50,7 +50,7 @@ we effectively overwrite the output string.
 
 In the code examples we've seen thus far, we've used `cout` and `cin` for
 user output and input through the console. We can also read and write files
-in C++. File and user input/output are all examples of a **stream**—an
+in C++. File and user input/output are all examples of a __stream__—an
 object that represents data flowing in and out of a source code program.
 With a stream, we can direct data from one program to another, or more
 generally, from one source to a different source.
@@ -62,18 +62,18 @@ from one file and saved in another; downloading data from a server (e.g.,
 _streaming_ a video); a program accessing data from a web API; these are
 all streams.
 
-The examples cited are all instances of **I/O streams** (input/output
+The examples cited are all instances of __I/O streams__ (input/output
 streams). In programming parlance, the act of obtaining, or getting, data
-from a source is called **reading** (i.e., "reading _from_ a file"). This
+from a source is called __reading__ (i.e., "reading _from_ a file"). This
 is the input part of the acronym I/O. The act of sending data to a source
-is called **writing**. (i.e., "writing _to_ a file"). This is the output
+is called __writing__. (i.e., "writing _to_ a file"). This is the output
 part of I/O.
 
 There are different kinds of I/O streams, depending on what the sources or
 destinations are. For example, streams between files are called **file I/O
-streams**. Streams from the keyboard to a program are called **keyboard
+streams__. Streams from the keyboard to a program are called __keyboard
 streams**. Streams from a program to the monitor (or console), are called
-**console streams**.
+__console streams__.
 
 C++ provides a built-in class for general I/O—`ios`. From `ios`, there are
 two classes: `istream` (for input streams) and `ostream` (for output
@@ -206,7 +206,7 @@ Hello!
 
 The original content, `Hello, world!`, is no longer there. It's been
 _overwritten_ by the output of executing `main.o`. If we want the output
-stream _not_ to perform this default behavior, we can include the **flag**
+stream _not_ to perform this default behavior, we can include the __flag__
 `ios::app` into `ofstream outfile()`. For example, suppose `output.txt`
 contains the string `Hello!`, and we want `main` to simply insert a new
 string, `Goodbye!`. To do so, we write:
@@ -612,7 +612,7 @@ int main() {
 
 ## Stream State
 
-Using `.eof()` is a good point to discuss **stream states**. Every stream
+Using `.eof()` is a good point to discuss __stream states__. Every stream
 has a state. Whenever we read files, we can think of the stream as akin to
 pumping water from a well. There are several things that might happen when
 draw that water: We could be trying to (1) pump water when the well's gone
@@ -621,12 +621,12 @@ pumping good, clean water from a filled well. The same idea extends to
 stream states.
 
 Every stream has four bits keeping track of the stream's state. The
-**eofbit**, represented by `eof()`, is true we're trying to read past the
-end of the file. The **badbit**, represented by `bad()`, is true when we
+__eofbit__, represented by `eof()`, is true we're trying to read past the
+end of the file. The __badbit__, represented by `bad()`, is true when we
 read corrupted data (e.g., trying to store a string into an `int`
-variable). The **failbit**, represented by `fail()`, is true when a file is
+variable). The __failbit__, represented by `fail()`, is true when a file is
 not open (maybe the file doesn't exist or we simply didn't open it). And
-the **goodbit**, represented by `good()`, is true when all of the previous
+the __goodbit__, represented by `good()`, is true when all of the previous
 bits are false.
 
 Knowing these facts, we can use `good()` to cover all of the possible

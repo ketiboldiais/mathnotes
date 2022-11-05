@@ -3,9 +3,8 @@ import { svg } from "../utils/svg/svg";
 import { generateHTreeData } from "../HTree/generateHTreeData/generateHTreeData";
 import { insertArrowDefinitions } from "../utils/insertArrowDefinitions/insertArrowDefinitions";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import { translate } from "../utils/translate/translate";
-import { getBackgroundColor } from "../utils";
+import { linkVertical, select, stratify, tree } from "d3";
 
 export const ParseTree = ({
 	data = [],
@@ -25,16 +24,13 @@ export const ParseTree = ({
 	const _ptreeREF = useRef();
 	const _svg = svg(width, height, margins);
 	const _data = generateHTreeData(data);
-	let root = d3
-		.stratify()
+	let root = stratify()
 		.id((d) => d.child)
 		.parentId((d) => d.parent)(_data);
-	const diagonal = d3
-		.linkVertical()
+	const diagonal = linkVertical()
 		.x((d) => d.x)
 		.y((d) => d.y);
-	const treeStructure = d3
-		.tree()
+	const treeStructure = tree()
 		.size([_svg.width, _svg.height])
 		.separation((a, b) => (a.parent === b.parent ? sibSpace : nSibSpace));
 	treeStructure(root);
@@ -42,7 +38,7 @@ export const ParseTree = ({
 	const nodes = root.descendants();
 
 	const renderParseTree = () => {
-		const canvas = d3.select(_ptreeREF.current).select("g.svgElement");
+		const canvas = select(_ptreeREF.current).select("g.svgElement");
 		const htree = canvas.append("g").attr("class", "htree");
 		if (isDirected)
 			insertArrowDefinitions(

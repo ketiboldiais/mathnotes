@@ -1,0 +1,144 @@
+<Head>
+	<title>Infinite Sequences</title>
+	<meta name={`description`} content={`Notes on infinite sequences.`}/>
+</Head>
+
+# Infinite Sequences
+
+_These notes cover sequences. They assume familiarity with [sequences](./../set_theory/sequences.mdx)_.
+
+1. [Properties of Sequences](#properties-of-sequences)
+	1. [Convergence](#convergence)
+		1. [Historical Background](#historical-background)
+		2. [Formal Definition](#formal-definition)
+	2. [Limit Definition](#limit-definition)
+	3. [Uniqueness of Limits](#uniqueness-of-limits)
+	4. [Common Convergent Sequences](#common-convergent-sequences)
+	5. [Bounded Sequences](#bounded-sequences)
+	6. [Monotonicity](#monotonicity)
+	7. [Subsequences](#subsequences)
+	8. [Monotonic Sequence Theorem](#monotonic-sequence-theorem)
+	9. [Sandwich Theorem](#sandwich-theorem)
+	10. [The Bolzano-Weierstrass Theorem](#the-bolzano-weierstrass-theorem)
+2. [Infinite Series](#infinite-series)
+
+
+## Properties of Sequences
+A few examples of sequences:
+
+~example~.
+${\ar{\dfrac{1}{n^2}}_{n=1}=\ar{1,\frac{1}{4},\frac{1}{9},\frac{1}{16},\ldots}}$
+
+~example~.
+${\ar{\cos \ar{\dfrac{n\pi}{2}}}_{n=1}=\ar{1,0,-1,0,1,0,-1,0,1,0,-1,\ldots}}$
+
+### Convergence
+#### Historical Background
+To better understand convergence — and ultimately, limits — it's best to put these ideas in context. The notion of convergence is all about _control_. What we want to be able to say, is: Given two real numbers ${n}$ and ${L,}$ after some point ${N,}$ the distance between ${n}$ and ${L}$ is so small, even if ${n \neq L.}$ Why do we need this control? Think about the sequence ${(1/n).}$ As ${n}$ gets extremely large, ${(1/n)}$ will get smaller and smaller. At some point, we get some number ${0.0 \ldots 01,}$ comprising so many zeros that we'd sooner die writing them before ever seeing the 1. We want to be able to say that ${(1/n)}$ _converges to_ ${0.}$ That is, as ${x}$ gets very large (formally, "approaches infinity"), ${(1/n)}$ converges to 0.
+
+It seems intuitive to say that ${(1/n)}$ converges to infinity, since we can see that ${(1/n)}$ gets smaller and smaller as ${n}$ gets larger and larger. But in mathematics, a thousand experiments do not make a theorem, nor do a million. The only way to firmly establish that ${(1/n)}$ converges to 0 is to _prove it_.
+
+Now, why do we need sequences to converge? One reason is that without the notion of convergence, we'd never know with certainty if our approximations of functions are even remotely correct. We can never completely express ${\sqrt{2},}$ but we can approximate it with a function, assuming the function _converges_ to ${\sqrt{2}.}$ But there are other reasons. Some mathematical statements are completely _false_ if we don't have the notion of convergence. The sum ${\sum_{n=0}^{\infty} x^n}$ has the closed form fomula ${\frac{1}{1-x}.}$ Without the notion of convergence, we'd have ${1+2+4+8+\ldots=-1,}$ which is most definitely _not what we want_. Another reason is _Zeno's Paradox_: Suppose ${a}$ and ${b}$ are separated by 10 meters. To get from ${a}$ to ${b,}$ we must walk 5 meters. Then we must walk 2.5 meters. Then we must walk another 1.25, and so on. We never get to ${b!}$ We can solve these problems by _defining the notion of convergence_.[^zeno].
+
+[^zeno]: Whether arguments built on the definition of convergence solve Zeno's paradox is not a settled matter, although most mathematicians and philosophers have settled on a theory based on convergence, called the _standard solution_. Doubts remain because of the solution's implications: Finite distances can contain an infinite number of points; a whole may be smaller than one of its parts; the sum of an infinite series can be finite; for each place along a line, there may not be a next place; and several others. Note further that the standard solution to Zeno's paradox is based on axioms that _we_ decided on. The solution can be broken down by attacking the consistency of those very axioms. This is a topic left to the notes on logic.
+
+When Newton and Leibniz began working on calculus, there was no notion of convergence. Instead, there were _infinitesimals_ — numbers that lie between any two real numbers, but aren't real numbers themselves. For example, an infinitesimal lies between ${0.99999\ldots}$ and 1, but _is not a real number_. Almost immediately, we can see how this is difficult to think about. Mathematicians like Newton and Leibniz just "knew" when an infinitesimal would appear and disappear in their derivations. It was intuition that guided them, rather than some rigorous notion. The definition of convergence is aimed at making this idea more rigorous. 
+
+#### Formal Definition
+If we think about the definition of a limit, the key requirement is "small." But the word "small" varies in meaning, depending on the listener and context. A thousand U.S. dollars might be small to a billionaire, but it certainly isn't small to those in abject poverty. Eight miles might seem small to marathon runners, but not to those who only run once every few years. Accordingly, we need a definition that appeases to everyone's idea of "small." Let's begin by defining some notation.
+
+> __~distance~.__ Given ${x,y \in \reals,}$ we define the notation ${\d(y,x):=\abs{y-x}.}$
+
+> __~closeness~.__ Given ${x,y,\varepsilon \in \reals}$ and ${\varepsilon \gt 0,}$ we say that ${x}$ and ${y}$ are _close_ if and only if ${\d(x,y) \le \varepsilon.}$ If ${x}$ and ${y}$ are close, we write ${x \ec y.}$ Otherwise, we write ${x \not\ec y.}$
+
+> __~convergence~.__ Let ${\varepsilon \gt 0}$ be a real number, let ${L}$ be a real number, and let ${\seq{a_n}{n=N}{\infty}}$ be a sequence of real numbers. We write ${\seq{a_n}{n=N}{\infty} \ec L}$ iff for all ${n \ge N,}$ it is true that ${a_n \ec L.}$ We say that a sequence ${\seq{a_n}{n=m}{\infty}}$ is _eventually close_ to ${L}$ iff there exists an ${N \ge m}$ such that ${\seq{a_n}{n=N}{\infty} \ec L.}$ We say that ${\seq{a_n}{n=m}{\infty}}$ _converges to_ ${L}$ iff ${\seq{a_n}{n=m}{\infty}}$ is _eventually close_ to ${L.}$ 
+
+It's helpful to view different implementations of this definition. Below is the standard definition found in most textbooks:
+
+> __~convergence~.__ We say that a sequence ${(a_n)}$ _converges_ to a number ${L \in \reals}$ if, and only if, for every ${\varepsilon \gt 0,}$ there exists an index ${N}$ such that, given any index ${n \ge N,}$ the relation ${\abs{a_n - L} \le \varepsilon}$ is true.
+
+Let's be very clear about what each of these variables are. What is ${(a_n)?}$ ${(a_n)}$ is a sequence. It takes natural number indices, and pairs them up with real numbers — it establishes a specific ordering. What is ${L?}$ ${L}$ is a real number. It is _not_ a term of the sequence (otherwise we wouldn't need to look for a limit in the first place). What is ${n?}$ ${n}$ is an index. What is ${N?}$ ${N}$ is also an index. What is ${\varepsilon?}$ ${\varepsilon}$ is a real number. What is ${a_n?}$ ${a_n}$ is a term of the sequence. What does it mean when ${(a_n)}$ converges? That there's a threshold index ${N}$ where all sequence's terms (starting at ${N}$) map are real numbers ${\varepsilon}$-close to ${L.}$ So, what does this tell us? If we want to prove that a sequence is _divergent_, we want to pick a ${\varepsilon}$ so small that ${a_n-L \gt \varepsilon.}$
+
+~example~. The sequence ${S=\seq{(-1)^n}{n=0}{\infty}}$ is divergent. Assume ${S}$ _is_ convergent. If ${S}$ is convergent, then ${S}$ converges to some ${L \in \reals.}$ That is, the terms of ${S}$ get arbitrarily close to ${L.}$ Fix ${\varepsilon=1.}$ Then we can choose an ${N \in \nat}$ such that:
+
+$$
+	\forall n \in \nat,~~n \ge N \implies \abs{(-1)^n - L} \lt 1. 
+$$
+
+Choose ${n = N.}$ Then ${\abs{(-1)^N - L \lt 1}}$ and ${\abs{(-1)^{N+1}-L}\lt 1,}$ since the former will yield 1, and the latter will yield -1 (the only two terms of ${S}$). It follows that ${\abs{1-L} \lt 1,}$ and ${-1-L \lt 1.}$ From the definition of the absolute value, we have
+
+$$
+	\eqs{
+		&(a)~~~L-1 \lt 1 \lt L + 1 \\
+		&(b)~~~L-1 \lt -1 \lt L+1
+	}
+$$
+
+Transpose ${-1}$ to ${(a),}$ and we get ${0 \lt L.}$ Transpose ${1}$ to ${(b),}$ and we get ${L \lt 0.}$ We have a contradiction. ${L}$ cannot both be less than 0 and greater than 0. Our initial assumption is false, so ${S}$ must be divergent.
+
+### Limit Definition
+> __~definition~.__ Let ${L}$ be a real number, and let ${\seq{a_n}{n=N}{\infty}}$ be a real sequence starting at index ${N.}$ If ${a_n}$ converges to ${L,}$ we call ${L}$ the _limit_ of ${a_n,}$ write ${\ll{n}{\infty}a_n = L,}$ and say that ${a_n}$ is _convergent_. If ${a_n}$ does not converge to any real number, we write ${\lnex L[\ll{n}{\infty}a_n=L],}$ and say that ${a_n}$ is _divergent_.
+
+### Uniqueness of Limits
+> __~limit uniqueness theorem~.__ Let ${\seq{a_n}{n=m}{\infty}}$ be a convergent real sequence and let ${A,B \in \reals.}$ It follows that ${\ll{n}{\infty}a_n = A}$ and ${\ll{n}{\infty} a_n = B}$ if, and only if, ${A = B.}$ That is,
+>
+> $$
+> 	[(\ll{n}{\infty}a_n = A) \land (\ll{n}{\infty}a_n = B)] \iff (A = B).
+> $$
+
+~proof~. Suppose ${\ll{n}{\infty}\seq{a_n}{n=m}{\infty}=A}$ and ${\ll{n}{\infty}\seq{a_n}{n=m}{\infty}=B}$ and ${A \neq B.}$ Since ${A \neq B,}$ let ${0 \lt \varepsilon = \frac{A-B}{3}.}$ Because ${\ll{n}{\infty}\seq{a_n}{n=m}{\infty}=A,}$ it follows that ${\ll{n}{\infty}\seq{a_n}{n=m}{\infty} \ec L}$ by definition. This implies that there exists an ${N \ge m}$ such that ${\d(a_n,A) \le \varepsilon}$ for all ${n \ge N.}$ Likewise, since ${\ll{n}{\infty}\seq{a_n}{n=m}{\infty}=B,}$ it follows that that there exists an ${M \ge m}$ such that ${\d(a_n,B) \le \varepsilon}$ for all ${n \ge M.}$ If ${n = \max\set{N,M},}$ then ${\d(a_n,A) \le \varepsilon}$ and ${\d(a_n,B) \le \varepsilon.}$ Given that ${\varepsilon = \frac{a-b}{3},}$ we have ${\abs{A-B} \le 2 \frac{\abs{A-B}}{3}.}$ This condtradicts the fact that ${\abs{A-B} \gt 0,}$ per the definition of convergence. Hence, it cannot be true that a sequence of reals ${a_n}$ converges to ${A}$ and ${B}$ with ${A \neq B.}$ Therefore, ${\ll{n}{\infty}a_n = A}$ and ${\ll{n}{\infty}a_n = B}$ if, and only if, ${A = B.}$ ${\bs}$
+
+The limit uniqueness theorem has a particularly useful implication.
+
+> __~corollary~.__ All real sequences have, _at most_, one limit ${L \in \reals.}$
+
+This stems from the fact that a real sequence will either _diverge_ (no limit exists) or _converge_ (a limit exists). And by the limit uniqueness theorem, if a real sequence does converge, it has exactly one limit ${L.}$
+
+> __~theorem~.__ If a sequence ${(a_n)_{n=m}^{\infty}}$ is convergent, then ${(a_n)_{n=m}^{\infty}}$ is a Cauchy sequence.
+
+~proof~. First, we know that [every Cauchy sequence converges](./constructing-the-reals.mdx#convergence-of-cauchy-sequences). Suppose ${a_n}$ converges to ${L \in \reals.}$ Then there exists an ${N \in \nat}$ such that, for all ${n \ge N}$ and ${\varepsilon \gt 0,}$ we have ${a_n - L \le \varepsilon.}$
+
+### Common Convergent Sequences
+> __~lemma~.__ ${\ll{n}{\infty}\ar{\dfrac{\ln n}{n}}=0.}$
+
+> __~lemma~.__ ${\ll{n}{\infty}\ar{x^{1/n}}=1}$ provided ${x \gt 0.}$
+
+> __~lemma~.__ ${\ll{n}{\infty}\ar{1+\dfrac{x}{n}}^n = e^x}$ for any ${x.}$
+
+> __~lemma~.__ ${\ll{n}{\infty}\ar{\sqrt[n]{n}}=1.}$
+
+> __~lemma~.__ ${\ll{n}{\infty}\ar{x^n} = 0}$ provided ${\abs{x} \lt 1.}$
+
+> __~lemma~.__ ${\ll{n}{\infty}\ar{\dfrac{x^n}{n!}}=0}$ for any ${x.}$
+
+### Bounded Sequences
+The sequence ${\seq{(-1)^n}{n=1}{\infty}}$ isn't convergent, but it is _bounded_.
+
+> __~sequence bounded above~.__ A sequence ${(a_n)_{n=m}^{\infty}}$ is _bounded above_ if, and only if, there exists a constant ${C \in \reals}$ such that, for all indices ${n,}$ the relation ${a_n \le C}$ is true. To denote the fact that ${(a_n)_{n=m}^{\infty}}$ is bounded, we write ${^1_0{(a_n)_{n=m}^{\infty}}}$
+
+> __~sequence bounded below~.__ A sequence ${(a_n)_{n=m}^{\infty}}$ is _bounded below_ if, and only if, there exists a constant ${C \in \reals}$ such that, for all indices ${n,}$ the relation ${C \le a_n}$ is true. To denote the fact that ${(a_n)_{n=m}^{\infty}}$ is bounded below, we write ${^0_1{(a_n)_{n=m}^{\infty}}}$
+
+> __~bounded sequence~.__ A sequence ${(a_n)_{n=m}^{\infty}}$ is _bounded_ if, and only if, ${S}$ is _bounded above and bounded below._ To denote the fact that ${(a_n)_{n=m}^{\infty}}$ is bounded, we write ${^1_1{(a_n)_{n=m}^{\infty}}}$
+
+### Monotonicity
+> __~monotonicity~.__ Let ${a_n}$ be a sequence. For all ${n \in \nat:}$ We say that ${a_n}$ is _strictly increasing_ iff ${a_{n} \lt a_{n+1};}$ that ${a_n}$ is _increasing_ iff ${a_n \le a_{n+1};}$ that ${a_n}$ is _strictly decreasing_ iff ${a_n \gt a_{n+1};}$ that ${a_n}$ is _decreasing_ iff ${a_n \ge a_{n+1}.}$ If ${a_n}$ is increasing or decreasing or both, then ${a_n}$ is _monotonic_. If ${a_n}$ is neither increasing nor decreasing, we say that ${a_n}$ is _non-monotonic_.
+
+### Subsequences
+> __~subsequence~.__ Let ${(a)_{n=1}^{\infty}}$ and ${(b)_{n=1}^{\infty}}$ be sequences in ${\reals.}$ We say that ${(b)}$ is a _subsequence_ of ${(a)}$ if there exists a strictly increasing function ${f: \nat \to \nat}$ such that, for every ${n \in \nat,}$ it follows that ${b_n = x_i,}$ where ${i = f(n).}$
+
+### Monotonic Sequence Theorem
+> __~theorem~.__ If a sequence ${\ar{a_n}}$ is both [bounded](#bounded-sequences) and [monotonic](#monotonicity), then the sequence ${\ar{a_n}}$ converges.
+
+### Sandwich Theorem
+Also known as the _Squeeze Theorem_, the Sandwich Theorem allows us to determine if a given sequence converges, using sequences that we already know as convergent.
+
+> __~sandwich theorem~.__ Let ${(a_n)}$ and ${(b_n)}$ be sequences, with ${\ll{n}{\infty}(a_n)=L}$ and ${\ll{n}{\infty}(b_n)=L.}$ If ${a_n \le c_n \le b_n,}$ then ${\ll{n}{\infty}(c_n)=L.}$
+
+### The Bolzano-Weierstrass Theorem
+A key theorem in real analysis is the _Bolzano-Weierstrass Theorem_. In short: Every bounded sequence of real numbers contains a convergent subsequence.
+
+> __~bolzano-weierstrass theorem~.__ Let ${(a_n)}$ be a sequence in ${\reals.}$ If ${(a_n)}$ is bounded, then ${(a_n)}$ has a convergent subsequence.
+
+## Infinite Series
+Summing an infinite sequence of numbers returns an _infinite series_. We saw that with infinite sequences, there may or may not be a limit. If there is a limit, then the sequence converges. If there isn't, then the sequence diverges. A similar idea is at play with infinite series.
+

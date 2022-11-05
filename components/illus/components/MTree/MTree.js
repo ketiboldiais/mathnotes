@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import { renderLevelMarks } from "../Tree/renderLevelMarks/renderLevelMarks";
 import { renderDepthMarks } from "../Tree/renderDepthMarks/renderDepthMarks";
 import { renderHeightMarks } from "../Tree/renderHeightMarks/renderHeightMarks";
@@ -15,6 +14,7 @@ import {
 	translate,
 	insertArrowDefinitions,
 } from "../utils";
+import { select, stratify, tree } from "d3";
 
 export const MTree = ({
 	data = [],
@@ -52,19 +52,18 @@ export const MTree = ({
 	const _svg = svg(width, height, margins);
 	const _data = generateMTreeData(data);
 
-	const root = d3
-		.stratify()
+	const root = stratify()
 		.id((d) => d.child.id)
 		.parentId((d) => d.parent)(_data);
 	const _edgeLength = setValue(edgeLength, calculateTreeSize(root));
-	const treeStructure = d3
-		.tree()
+	const treeStructure = tree()
 		.size([_svg.width, _edgeLength])
 		.separation((a, b) => (a.parent === b.parent ? 1 : 1.1));
 	treeStructure(root);
+	
 
 	const renderTree = () => {
-		const canvas = d3.select(_mtreeREF.current).select("g.svgElement");
+		const canvas = select(_mtreeREF.current).select("g.svgElement");
 		const tree = canvas.append("g").attr("class", "MTree");
 
 		insertArrowDefinitions(

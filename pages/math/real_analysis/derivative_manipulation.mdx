@@ -1,0 +1,112 @@
+# Derivative Manipulation
+
+
+## The Sum Rule
+
+The above derivation yields the following:
+
+Sum Rule for Derivatives. Let ${f(x)}$ and ${g(x)}$ be differentiable
+functions. Then the derivative of the sum of ${f}$ and ${g}$ is the sum
+of the derivative of ${f}$ and the derivative of ${g:}$
+
+$$
+	\dfrac{d}{dx}(f(x) + g(x)) = \dfrac{d}{dx}(f(x)) + \dfrac{d}{dx}(g(x))
+$$
+
+
+
+## The Difference Rule
+
+
+
+
+## Constant Multiple Rule
+
+What is the derivative of ${f(x) = x^3 - x^2\left(\dfrac{\pi}{2}\right)?}$
+This may seem complex, but we know enough to handle this. To begin with,
+the term ${\dfrac{\pi}{2}}$ is just a constant. Thus, we can really write
+this function as: ${f(x) = C(g(x)),}$ where ${g(x) = x^3 - x^2}$ and
+${C = \dfrac{\pi}{2}.}$ Let's come up with a rule for computing the
+derivative of ${f(x) = C(g(x)).}$
+
+Because we can factor out constants from limits, applying the derivative
+definition is straightforward. First, the derivative of ${f'(x)}$ is the
+derivative ${(C(g(x)))'.}$ Thus:
+
+$$
+	\begin{aligned} f'(x) = (C(g(x)))' &= \lim\limits_{h \to 0} \dfrac{Cg(x + h) - Cg(x)}{h} \\[1em] &= C \lim\limits_{h \to 0} \dfrac{g(x+h) - g(x)}{h} \\[1em] &= Cg'(x) \end{aligned}
+$$
+
+From our derivation above, we have the following rule:
+
+> _Constant Multiple Rule_. Given the function ${Cf(x),}$ where ${f(x)}$ is
+> differentiable and ${C}$ is a constant:
+>
+> $$
+> 	\dfrac{d}{dx}Cf(x) = C \cdot \dfrac{d}{dx}f(x)
+> $$
+
+Thus, the derivative of ${f(x) = x^3 - x^2\left(\dfrac{\pi}{2}\right)}$ is
+a simple application of the constant multiple rule, difference rule, and
+power rule:
+
+$$
+	f'(x) = (3x^2 - 2x)\left(\dfrac{\pi}{2}\right)
+$$
+
+## The Product Rule
+
+
+
+We now have a general derivative formula, the product rule:
+
+> _Product Rule_. Given functions ${f}$ and ${g,}$ the derivative of
+> ${fg,}$ denoted ${(fg)',}$ is the sum of the derivative of the function
+> ${f,}$ denoted ${f',}$ times ${g,}$ and the derivative of the function
+> ${g,}$ denoted ${g',}$ times ${f.}$ I.e.,
+>
+> $$
+> 	(fg)' = f'g + fg'
+> $$
+
+For example, suppose we are given the functions ${f(x) = x^n}$ and
+${g(x) = \sin x.}$ The product of these functions:
+
+$$
+	(f \cdot g)(x) = x^n \sin x
+$$
+
+What is the derivative of ${(f \cdot g)?}$ We apply the product rule:
+
+$$
+	\begin{aligned}
+		(f \cdot g)' &= f'g + fg'
+		&= (x^n)' \sin x + (x^n) (\sin x)
+		&= (nx^{n-1})(\sin x) + (x^n)(\cos x)
+	\end{aligned}
+$$
+
+## Quotient Rule
+
+
+
+From the derivation above, we have the following rule:
+
+> _Quotient Rule_. Given functions ${f}$ and ${g,}$ the derivative of
+> ${\dfrac{f}{g},}$ denoted ${\left(\dfrac{f}{g}\right)',}$ is provided by
+> the following:
+>
+> $$
+> 	\left(\dfrac{f}{g}\right)' = \dfrac{f'g - fg'}{g^2}
+> $$
+
+Accordingly, the derivative of ${t(x) = \dfrac{5x + 1}{3x - 4}}$ is:
+
+$$
+	\begin{aligned} t'(x) &= \dfrac{\frac{d}{dx}(5x + 1) \cdot (3x - 4) - (5x + 1) \cdot \frac{d}{dx}(3x - 4)}{(3x - 4)^2} \\[1em] &= \dfrac{(5)(3x - 4) - (5x + 1)(3)}{(3x - 4)^2} \\[1em] &= \dfrac{15x - 20 - 15x - 3}{(3x - 4)^2} \\[1em] &= - \dfrac{23}{(3x - 4)^2} \end{aligned}
+$$
+
+## Chain Rule
+
+
+

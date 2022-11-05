@@ -1,0 +1,109 @@
+<Head>
+	<title>Prime Factorization</title>
+	<meta name={`description`} content={`Notes on prime factorization.`}/>
+</Head>
+
+# Prime Factorization
+
+This chapter covers notes on prime factorization.
+
+## Fundamental Theorem of Arithmetic 
+
+~example~. The prime factorization of 45:
+
+$$
+	\eqs{
+		\pf(45) &= (5)(9). \\
+		&= (5)((3)(3)). \\
+		&= 5^1 \by 3^2
+	}
+$$
+
+We use the notation ${\pf(n)}$ to denote the prime factorization of some integer ${n.}$
+
+~example~. Consider ${\pf(90),}$ ${\pf(135),}$ ${\pf(180),}$ and ${\pf(225):}$
+
+<Grid cols={2}>
+
+$$
+	\eqs{
+		\pf(90) &= (5)(18) \\
+		&= (5)((3)(6)) \\
+		&= (5)((3)((3)(2))) \\
+		&= 5^1 \by 3^2 \by 2^1
+	}
+$$
+
+$$
+	\eqs{
+		\pf(135) &= (5)(27) \\
+		&= (5)((3)(9)) \\
+		&= (5)((3)((3)(3))) \\
+		&= 5^1 \by 3^3
+	}
+$$
+
+$$
+	\eqs{
+		\pf(180) &= (90)(2) \\
+		&= ((5)(3)(3)(2))(2) \\
+		&= 5^1 \by 3^2 \by 2^2
+	}
+$$
+
+$$
+	\eqs{
+		\pf(225) &= (45)(5) \\
+		&= ((5)(3)(3))(5) \\
+		&= 5^2 \by 3^2 
+	}
+$$
+
+</Grid>
+
+The integers 90, 135, 180, and 225 are each multiples of 45, and they each
+contain the prime factorization of 45. We can use the prime factorizations of 12 and 45 to find ${\lcm(12,45).}$ For 12, we have ${\pf(12) = 2^3 \by 3^1.}$ And for 45, we have ${\pf(45) = 3^2 \by 5^1.}$ It follows that the least common multiple is ${3^2 \by 3^2 \by 5^1 = 180.}$ Thus, we have ${\lcm(12,45)=180.}$ We can verify this by actually laying out the multiples:
+
+<div class={`numbered`}>
+
+| ${\times}$ | 1   | 2   | 3   | 4             | 5   | 6   | 7   | 8   | 9   | 10  | 11  | 12  | 13  | 15            |
+| ---------- | --- | --- | --- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------------- |
+| 12         | 12  | 24  | 36  | 48            | 60  | 72  | 84  | 96  | 108 | 120 | 132 | 144 | 156 | ${\red{180}}$ |
+| 45         | 45  | 90  | 135 | ${\red{180}}$ | 225 | 270 | 315 | 360 | 405 | 450 | 495 | 540 | 585 | 675           |
+
+</div>
+
+For any two positive integers ${a}$ and ${b,}$ we can obtain the least common multiple through the product of the maximum exponents of the prime factors ${a}$ and ${b:}$
+
+
+$$
+	\eqs{
+		a &= p_1^{e_1} \by p_2^{e_2} \by p_3^{e_3} \ldots \by p_n^{e_n} \\
+		b &= p_1^{f_1} \by p_2^{f_2} \by p_3^{f_3} \ldots \by p_n^{f_n} \\
+		\lcm(a,b) &= p_1^{\max(e_1,f_1)} \by p_2^{\max(e_2,f_2)} \by p_3^{\max(e_3,f_3)} \by \ldots \by p_n^{\max(e_n,f_n)}
+	}
+$$
+
+This results from an important theorem in mathematics, called the _Fundamental Theorem of Arithmetic (FTA)._
+
+<dfn>
+
+__fundamental theorem of arithmetic.__ Let ${n \in \uint : n \gt 1.}$ There are unique prime numbers ${p_i}$ satisfying the relation ${p_1 \le p_2 \le \ldots \le p_k}$ with
+
+$$
+	n = p_1^{n_1} \times p_2^{n_2} \times \ldots p_k^{n_k} = \dprod{i=1}{k}{p_i^{n_i},} 
+$$
+
+where ${n_i \in \pint.}$
+
+</dfn>
+
+FTA tells us that we can represent any integer greater than 1 in terms of its prime factors. This also means that we can _construct_ any integer greater than 1 in terms of its primes. It's why primes are often called the building blocks of numbers. For example: 
+
+$$
+	\eqs{
+		99 &= 3^3 \by 37^1, \\
+		1000 &= 2^3 \by 5^3, \\
+		1001 &= 7^1 \by 11^1 \by 13^1.
+	}
+$$

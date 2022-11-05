@@ -4,14 +4,14 @@
 > and then a page later write ${\varnothing}$ is the empty set, just in
 > case you'd forgotten.
 
-The overarching focus in the following materials is with **proof**.
-Question: What is a proof? A **proof** is a method of ascertaining the
-truth. One method of proof is a **mathematical proof** &mdash; a logically
+The overarching focus in the following materials is with __proof__.
+Question: What is a proof? A __proof__ is a method of ascertaining the
+truth. One method of proof is a __mathematical proof__ &mdash; a logically
 valid path from assumptions to conclusions, collectively forming a _sound
-argument_. But there are other methods of proof. The **scientific method**
+argument_. But there are other methods of proof. The __scientific method__
 is one method of proof. We begin with a question, form a hypothesis,
 conduct experiments confirming or denying that hypothesis, and reach a
-conclusion. A **trial** is another method of proof. It begins with a
+conclusion. A __trial__ is another method of proof. It begins with a
 complaint, then a defense, then an adverserial proceeding before a
 fact-finder presenting arguments and evidence, then a verdict by the
 fact-finder, then a decision from the court.
@@ -26,46 +26,46 @@ extremely stringent and rigorous standard. The only field more formal and
 stringent than mathematics is logic. The logician is to the mathematician
 what the mathematician is to the layperson. If we think mathematics is
 abstract, take a look at what the logicians in the philosophy department
-are up to. A **proposition** is a statement that is either true or false.
+are up to. A __proposition__ is a statement that is either true or false.
 For example, ${2 + 3 = 5.}$ This is a true proposition. Here is another
 proposition:
 
 $$
-	\forall n \in \NN: prime(n^2 + n + 41)
+	\forall n \in \nat: prime(n^2 + n + 41)
 $$
 
 The proposition above reads, "For all ${n}$ in the set of natural numbers,
 ${n^2 + n + 41}$ is a prime number." The part of the proposition
-${prime(n^2 + n + 41)}$ is called a **predicate**. A predicate is a
+${prime(n^2 + n + 41)}$ is called a __predicate__. A predicate is a
 proposition whose truth depends on the value of a variable. In this case,
 the truth of the predicate ${prime(n^2 + n + 41)}$ depends on the variable
 ${n.}$
 
-The part of the proposition ${\forall n \in \NN}$ is called the **domain of
+The part of the proposition ${\forall n \in \nat}$ is called the **domain of
 discourse**. This tells us that the predicate ${prime(n^2 + n + 41)}$
-relates only to ${n \in \NN.}$ We're not talking about the real numbers,
+relates only to ${n \in \nat.}$ We're not talking about the real numbers,
 we're not talking about the integers, we're not talking about the complex
 numbers. We're talking about the natural numbers. The symbol ${\forall}$
-means "for all" and it is called a **quantifier**. More specifically, it is
-called a **universal quantifier**.
+means "for all" and it is called a __quantifier__. More specifically, it is
+called a __universal quantifier__.
 
-To show that ${\forall \in \NN: prime(n^2 + n + 41)}$ is true, we have to
+To show that ${\forall \in \nat: prime(n^2 + n + 41)}$ is true, we have to
 determine whether the predicate ${prime(n^2 + n + 41)}$ is true for any
 natural number ${n.}$ In other words, no matter what natural number value
 of ${n}$ is, ${prime(n^2 + n + 41)}$ is true. We can try some values:
 
 $$
-	n = 0 \implies 0^2 + 0 + 41 = 41 \\
-	n = 1 \implies 1^2 + 1 + 41 = 43 \\
-	n = 2 \implies 2^2 + 2 + 41 = 47 \\
-	n = 3 \implies 3^2 + 3 + 41 = 53 \\
+	n = 0 \nc 0^2 + 0 + 41 = 41 \\
+	n = 1 \nc 1^2 + 1 + 41 = 43 \\
+	n = 2 \nc 2^2 + 2 + 41 = 47 \\
+	n = 3 \nc 3^2 + 3 + 41 = 53 \\
 	\vdots \\
-	n = 20 \implies 20^2 + 20 + 41 = 461 \\
+	n = 20 \nc 20^2 + 20 + 41 = 461 \\
 	\vdots \\
-	n = 39 \implies 39^2 + 39 + 41 = 1601
+	n = 39 \nc 39^2 + 39 + 41 = 1601
 $$
 
-This method of verification is called the **method of exhaustion** &mdash;
+This method of verification is called the __method of exhaustion__ &mdash;
 we exhaust all of the possibilities before we exhaust ourselves.
 
 We could keep going, and it seems as if no matter what natural number we
@@ -73,23 +73,23 @@ put in, it's always prime. In a lot of other fields, this check would have
 been enough. In physics, if we ran 20 experiments, that would have been
 more than enough. In criminal law, a single trial would have been not only
 enough, but mandatory (double jeopardy). Mathematics, however, is
-**rigorous**. Repeated observation is not enough. As the philosopher David
+__rigorous__. Repeated observation is not enough. As the philosopher David
 Hume famously argued, the repeated past observation of a phenomenon in does
 not imply that the phenomenon will always occur.
 
 In fact, the proposition above is a good example:
 
 $$
-	n = 40 \implies 40^2 + 40 + 41 = 1681 = 41^2
+	n = 40 \nc 40^2 + 40 + 41 = 1681 = 41^2
 $$
 
 Or, an even more obvious example:
 
 $$
-	n = 41 \implies 41^2 + 41 + 41
+	n = 41 \nc 41^2 + 41 + 41
 $$
 
-The proposition ${\forall n \in \NN: prime(n^2 + n + 41)}$ is false. Here is
+The proposition ${\forall n \in \nat: prime(n^2 + n + 41)}$ is false. Here is
 another very famous proposition:
 
 $$
@@ -98,8 +98,8 @@ $$
 
 has no positive integer solutions.
 
-This proposition is called **Euler's sum of powers conjecture**. The
-legendary mathematician Leonard Euler **conjectured** the proposition above
+This proposition is called __Euler's sum of powers conjecture__. The
+legendary mathematician Leonard Euler __conjectured__ the proposition above
 to be true in 1769. It was unsolved for over two hundred years before a
 very clever mathematician named Noam Elkies disproved it in 1988. His
 solution:
@@ -115,11 +115,11 @@ In disproving _Euler's sum of powers conjecture_, the correct proposition
 is now:
 
 $$
-	\exists a, b, c, d \in \ZZ^{+} : a^4 + b^4 + c^4 = d^4
+	\exists a, b, c, d \in \uint^{+} : a^4 + b^4 + c^4 = d^4
 $$
 
 Here, we see a new quantifier, ${\exists.}$ This symbol means "there
-exists." This is called an **existential quantifier**. Here is another
+exists." This is called an __existential quantifier__. Here is another
 proposition:
 
 $$
@@ -128,7 +128,7 @@ $$
 
 has no positive integer solutions.
 
-In formal notation: ${\nexists x, y, z \in \ZZ^{+} : 313(x^3 + y^3 = z^3).}$
+In formal notation: ${\nexists x, y, z \in \uint^{+} : 313(x^3 + y^3 = z^3).}$
 A line crossing out the existential quantifer, ${\nexists,}$ means "there
 does not exist." This proposition turns out to be false, but the earliest
 counterexample has over a thousand digits. There is simply no way to verify
@@ -153,11 +153,11 @@ Here is another famous proposition:
 > The regions in any map can be colored in 4 colors so that adjacent
 > regions have different colors.
 
-This is the famous **four-color theorem**. A mathematician named Francis
+This is the famous __four-color theorem__. A mathematician named Francis
 Guthrie conjectured the proposition above to be true in 1852. For next
 century, mathematicians attempted to solve this problem, all of which were
 failed attempts. In 1879, the mathematician Alfred Kempe presented a
-**proof-by-picture** that was believed to be correct for over a decade.
+__proof-by-picture__ that was believed to be correct for over a decade.
 Kempe's idea was that all maps fell into certain types, and from that
 axiom, he concluded that any map could be colored according to the
 proposition. A proof-by-picture is a method of proof wherein the truth of a
@@ -181,7 +181,7 @@ Here is another proposition:
 > Every even integer greater than 2 is the sum of two prime numbers.
 
 For example, ${24 = 11 + 13,}$ ${16 = 11 + 5,}$ ${32 = 13 + 19,}$ and so
-on. This is proposition is known as **Goldbach's conjecture**, and it is
+on. This is proposition is known as __Goldbach's conjecture__, and it is
 one of the most famous unsolved problems in all of mathematics. The
 proposition was conjectured to be true by German mathematician Christian
 Goldbach in a letter he wrote to Leonhard Euler in 1742. To this day, no
@@ -190,15 +190,15 @@ one knows if the proposition is true or false.
 Here is a simpler proposition:
 
 $$
-	\forall n \in \ZZ: (n \geq 2 \implies n^2 \geq 4)
+	\forall n \in \uint: (n \geq 2 \nc n^2 \geq 4)
 $$
 
-The symbol ${\implies}$ means "implies." Thus, the proposition above reads,
+The symbol ${\nc}$ means "implies." Thus, the proposition above reads,
 "For any integer ${n,}$ if ${n \geq 2,}$ then ${n^2 \geq 4.}$" An
-**implication** ${p \implies q}$ is true if ${p}$ is false or ${q}$ is
-true. Thus, if ${p}$ is true, and ${q}$ is true, then ${p \implies q}$ is
-true. If ${p}$ is false and ${q}$ is true, then ${p \implies q}$ is false.
-But if ${p}$ is false, then ${p \implies q}$ is true, regardless of whether
+__implication__ ${p \nc q}$ is true if ${p}$ is false or ${q}$ is
+true. Thus, if ${p}$ is true, and ${q}$ is true, then ${p \nc q}$ is
+true. If ${p}$ is false and ${q}$ is true, then ${p \nc q}$ is false.
+But if ${p}$ is false, then ${p \nc q}$ is true, regardless of whether
 ${q}$ is true or false. The last point is important to remember: False
 implies anything is true. This is strange thing to think about, so let's
 try and think about it in terms of an example.
@@ -212,33 +212,33 @@ fish can walk. False implies anything.
 Here is another proposition:
 
 $$
-	\forall n \in \ZZ: (n \geq 2 \iff n^2 \geq 4)
+	\forall n \in \uint: (n \geq 2 \iff n^2 \geq 4)
 $$
 
 The symbol ${\iff}$ means "if and only if." The proposition thus reads,
 "For any integer ${n,}$ ${n^2 \geq 2}$ if and only if ${n^2 \geq 4."}$ The
-${\implies}$ tells us that there are implications both ways:
+${\nc}$ tells us that there are implications both ways:
 
-1. ${n \geq \implies n^2 \geq 4}$
-2. ${n^2 \geq 4 \implies n \geq 2}$
+1. ${n \geq \nc n^2 \geq 4}$
+2. ${n^2 \geq 4 \nc n \geq 2}$
 
 Thus, to verify the original proposition, we must verify the two component
 propositions. Here, we see that the original proposition is false if we
 suppose ${n = -3.}$
 
 $$
-	(-3)^2 \geq 4 = 9 \geq 4 \implies -3 \geq 2
+	(-3)^2 \geq 4 = 9 \geq 4 \nc -3 \geq 2
 $$
 
 We see that ${p}$ is true, but ${q}$ is false. Because the component
-proposition ${n^2 \geq 4 \implies n \geq 2}$ is false, the original
+proposition ${n^2 \geq 4 \nc n \geq 2}$ is false, the original
 proposition ${n \geq 2 \iff n \geq 4}$ is false. Thus, ${p \iff q}$ is true
 only if both ${p}$ and ${q}$ are true, or both ${p}$ and ${q}$ are false.
 The crucial point: Whenever we have an _iff_ (if and only if) proposition,
 we must always check both ways.
 
 Let's think a bit more about propositions. Propositions come in several
-forms. Some propositions are called **axioms**. These are propositions that
+forms. Some propositions are called __axioms__. These are propositions that
 we assume are true. Axioms are effectively propositions that are treated as
 true without proof. The word axiom comes from the Greek word _axioma_,
 meaning "what is thought fitting" or "to think worthy." Essentially,
@@ -252,7 +252,7 @@ mathematics:
 
 > If ${a = b}$ and ${b = c,}$ then ${a = c.}$
 
-This is called the **axiom of transitivity**, or the **transitive
+This is called the __axiom of transitivity__, or the **transitive
 property**, and there is no proof for it. But, we've accepted that it's a
 pretty good proposition that seems to hold up, so we accept it as true.
 
@@ -282,8 +282,8 @@ discourse_. But, there are two rules about using axioms:
 2. A set of axioms must be _complete_.
 3. A set of axioms must be _decidable_.
 
-A set of axioms is **consistent** if no proposition can be proved to be
-both true and false. A set of axioms is **complete** if it can be used to
+A set of axioms is __consistent__ if no proposition can be proved to be
+both true and false. A set of axioms is __complete__ if it can be used to
 prove every proposition is either true or false. A set of axioms is
 _decidable_ if it provides an algorithm for deciding the truth or falsity
 of any proposition. These rules seem straightforward, but they turn out to
@@ -300,11 +300,11 @@ this area spawned the modern computer).
 
 Godel proved that if we want consistency, there will always be true facts
 that we will never be able to prove. This particular proof is just one of
-Godel's **incompleteness theorems**. Godel's proof is best left to a course
+Godel's __incompleteness theorems__. Godel's proof is best left to a course
 on logic, but the effect of this proof is profound: Perhaps _Goldbach's
 conjecture_ is true, and it is impossible to prove.
 
-**Discrete mathematics** is the mathematics of discrete and finite
+__Discrete mathematics__ is the mathematics of discrete and finite
 mathematical objects. Mathematical objects are abstract concepts &mdash;
 concepts like numbers, functions, triangles, matrices, groups, vector
 spaces, series, etc. Unlike what we might think of when we hear the word
@@ -320,7 +320,7 @@ might seem vague at the moment, but this is expected. The distinction can
 only be clarified with experience in both areas.
 
 All ideas in mathematics, discrete or continuous, are discovered through
-**logic**.[^induction] Accordingly, a strong logic background is invaluable
+__logic__.[^induction] Accordingly, a strong logic background is invaluable
 to any serious student of mathematics. As we study logic, we might find
 ourselves asking questions about knowledge and truth. Play with those
 questions. They are a strong indicator of encountering a link between

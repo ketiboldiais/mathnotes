@@ -1,6 +1,6 @@
+import { range, scaleBand, select } from "d3";
 import React, { useRef, useEffect } from "react";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import {
 	className,
 	isObjectLiteral,
@@ -35,18 +35,16 @@ export const Queue = ({
 	const _svg = svg(width, height, margins);
 	const _data = formatData(data);
 	const frameCount = _data.length;
-	const xScale = d3
-		.scaleBand()
-		.domain(d3.range(frameCount))
+	const xScale = scaleBand()
+		.domain(range(frameCount))
 		.range([0, _svg.width])
 		.paddingInner(0.1);
-	const yScale = d3
-		.scaleBand()
-		.domain(d3.range(frameCount))
+	const yScale = scaleBand()
+		.domain(range(frameCount))
 		.range([_svg.height, 0]);
 
 	const renderQueue = () => {
-		const canvas = d3.select(queueFigure.current).select("g.svgElement");
+		const canvas = select(queueFigure.current).select("g.svgElement");
 		const queueGroup = canvas
 			.selectAll("g.queuers")
 			.data(_data)

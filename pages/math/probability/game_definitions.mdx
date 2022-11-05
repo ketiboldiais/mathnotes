@@ -1,0 +1,581 @@
+import { CartProd, Plot } from "../../../components/hago";
+
+## Poker Hands
+
+Poker hands are used extensively in the examples. The hands are defined as follows.
+
+> __~poker hand~.__ A _poker hand_ is a set of cards ${\set{(r_1,s_1), (r_2,s_2), (r_3,s_3), (r_4,s_4), (r_5,s_5)},}$ where each pair in ${H}$ is called a _card-in-hand_. We may denote a poker hand with the notation ${r_1s_1~r_2s_2~r_3s_3~r_4s_4~r_5s_5}$
+
+
+> __~royal flush~.__ A poker hand ${H}$ is a _royal flush_ if and only if
+>
+> $$
+> 	H = AS~~KS~~QS~~JS~~10S
+> $$
+>
+> where ${A,K,Q,J,10}$ are the ranks ace, king, queen, jack, and 10, and ${S}$ is a suit common to all cards-in-hand.
+
+~example~. What is the probability of drawing a royal flush from a 52-card deck (disregarding order)? There are 4 aces in a deck, and one of those aces must be in hand: ${\frac{4}{52}.}$ The remaining cards-in-hand must be of the same suit as the the ace (i.e., they are _completely determined_). Thus, we have ${\frac{C(4,1)}{C(52,5)}=\frac{4}{2~598~960} \approx 0.0000015391.}$ ${\P(\tx{royal flush})=\frac{1}{649~740}.}$
+
+
+> __~straight-flush~.__ A poker hand ${H}$ is a _straight flush_ if and only if
+> 
+> $$
+>   H = aS~~bS~~cS~~dS~~eS
+> $$
+> 
+> where ${a \prec b \prec c \prec d \prec e}$ and ${S}$ is a suit.
+
+~example~. What is the probability of drawing a straight flush? We must have a single suit and rank must be consecutive, so we have ${(4)(10)=40.}$ There are ${C(52,5)=2~598~960}$ possible draws. Thus: ${\frac{40}{2~598~960}=\approx 0.00001539.}$  ${\P(\tx{straight flush})=\frac{1}{64~974}.}$
+
+
+> __~four of a kind~.__ A poker hand ${H}$ is a _four of a kind_ if and only if
+> 
+> $$
+> 	H = x\ws~~x\ws~~x\ws~~x\ws~~y\ws
+> $$
+> 
+> where each ${\ws}$ is any suit, and ${x}$ and ${y}$ are distinct ranks.
+
+
+> __~full house~.__ A poker hand ${H}$ is a _full house_ if and only if
+> 
+> $$
+> 	H = x\ws~~x\ws~~x\ws~~y\ws~~y\ws
+> $$
+> 
+> where each ${\ws}$ is any suit, and ${x}$ and ${y}$ are distinct ranks.
+
+
+> __~flush~.__ A poker hand ${H}$ is a _flush_ if and only if
+> 
+> $$
+> 	H = nS~~tS~~vS~~xS~~zS
+> $$
+> 
+> where ${n,t,v,x,z}$ are _non-consecutive ranks_ and ${S}$ is a suit common to all cards-in-hand.
+
+
+> __~straight~.__ A poker hand ${H}$ is a _straight_ if and only if
+> 
+> $$
+> 	H = a\ws~~b\ws~~c\ws~~d\ws~~e\ws
+> $$
+> 
+> where ${\ws}$ are suits, _at least one of which is distinct_, and ${(a \prec b \prec c \prec d \prec e)}$ are consecutive ranks.
+
+
+> __~three of a kind~.__ A poker hand ${H}$ is a _three of a kind_ (or _trips_) if and only if
+> 
+> $$
+> 	H = n\ws~~n\ws~~n\ws~~v\ws~~x\ws
+> $$
+> 
+> where each ${\ws}$ is any suit and ${n,v,x}$ are distinct ranks, not necessarily consecutive.
+
+
+> __~two pair~.__ A poker hand ${H}$ is a _two pair_ if and only if
+> 
+> $$
+> 	H = n\ws~~n\ws~~v\ws~~v\ws~~x\ws
+> $$
+> 
+> where ${n,v,x}$ are distinct ranks (not necessarily consecutive) and ${\ws}$ is any suit.
+
+
+> __~one pair~.__ A poker hand ${H}$ is a _one pair_ if and only if
+> 
+> $$
+> 	H = x\ws~~x\ws~~n\ws~~v\ws~~z\ws
+> $$
+> 
+> where ${x,n,v,z}$ are distinct ranks (not necessarily consecutive) and ${\ws}$ is any suit.
+
+
+> __~high card~.__ A poker hand ${H}$ is a _high card_ if, and only if, ${H}$ is not a five of a kind, not a straight flush, not a four of a kind, not a full house, not a flush, not a straight, not a three of a kind, not a two pair, and not a one pair.
+
+
+1. [Poker Hands](#poker-hands)
+2. [Preliminary Definitions](#preliminary-definitions)
+	1. [n-Die](#n-die)
+	2. [Standard Deck](#standard-deck)
+3. [Sample Space](#sample-space)
+4. [Events](#events)
+	1. [Compound and Simple Events](#compound-and-simple-events)
+	2. [Uniqueness](#uniqueness)
+5. [Notation](#notation)
+6. [Discrete Sample Spaces](#discrete-sample-spaces)
+7. [Axioms of Probability](#axioms-of-probability)
+	1. [The Discrete Uniform Law](#the-discrete-uniform-law)
+	2. [Continuous Uniform Law](#continuous-uniform-law)
+	3. [Probability of Disjoint Events](#probability-of-disjoint-events)
+8. [Laws of Discrete Probability](#laws-of-discrete-probability)
+	1. [Probability of Simultaneous Events](#probability-of-simultaneous-events)
+	2. [Probability of Exclusive Events](#probability-of-exclusive-events)
+	3. [Probabilities of States](#probabilities-of-states)
+		1. [Deterministic States](#deterministic-states)
+		2. [Indeterministic States](#indeterministic-states)
+9. [Conditional Property](#conditional-property)
+
+## Preliminary Definitions
+
+### n-Die
+
+> __~n-die~.__ An ${n}$-die is an ${n}$-sided figure, where each side is numbered ${1,2,3,\ldots,n-1,n.}$ Multiple die are called _dice_.
+
+~example~.  A 6-die has sides numbered ${\set{1,2,3,4,5,6}.}$
+
+### Standard Deck
+
+We define a standard deck as follows.
+
+> __~standard deck~.__ Let ${\df{suits}}$ be a set of cardinality 4: ${\set{\diamonds,\clubs,\hearts,\spades},}$ where ${\diamonds}$ is read "diamonds," ${\clubs}$ is read "clubs," ${\hearts}$ is read "hearts," and ${\spades}$ is read "spades." Let ${\df{rank}}$ be a strict poset of cardinality 13:
+> 
+> $$
+>	(A \prec 2 \prec 3 \prec 4 \prec 5 \prec 6 \prec 7 \prec 8 \prec 9 \prec 10 \prec J \prec Q \prec K)
+> $$
+> 
+> We read ${A}$ as "ace," ${J}$ as "jack," ${Q}$ as "queen," and ${K}$ as "king." A _standard deck_, denoted ${\df{deck},}$ is defined as the Cartesian product
+>
+> $$
+> 	\df{rank} \times \df{suits} = \lset{
+> 		\ax{
+> 			(A,\diamonds)&(2,\diamonds)&(3,\diamonds)&(4,\diamonds) \\
+> 			(5,\diamonds)&(6,\diamonds)&(7,\diamonds)&(8,\diamonds) \\
+> 			(9,\diamonds)&(10,\diamonds)&(J,\diamonds)&(Q,\diamonds) \\
+> 			(K,\diamonds)&(A,\clubs)&(2,\clubs)&(3,\clubs) \\
+> 			(4,\clubs)&(5,\clubs)&(6,\clubs)&(7,\clubs) \\
+> 			(8,\clubs)&(9,\clubs)&(10,\clubs)&(J,\clubs) \\
+> 			(Q,\clubs)&(K,\clubs)&(A,\hearts)&(2,\hearts) \\
+> 			(3,\hearts)&(4,\hearts)&(5,\hearts)&(6,\hearts) \\
+> 			(7,\hearts)&(8,\hearts)&(9,\hearts)&(10,\hearts) \\
+> 			(J,\hearts)&(Q,\hearts)&(K,\hearts)&(A,\spades) \\
+> 			(2,\spades)&(3,\spades)&(4,\spades)&(5,\spades) \\
+> 			(6,\spades)&(7,\spades)&(8,\spades)&(9,\spades) \\
+> 			(10,\spades)&(J,\spades)&(Q,\spades)&(K,\spades) \\
+> 		}
+> 	},
+> $$
+> 
+> where each pair ${(r,s) \in \df{deck}}$ is called a _card_ of _rank_ ${r}$ and _suit_ ${s.}$
+
+
+## Sample Space
+
+A _sample space_ is a set of possible outcomes. We can think of it as a list
+of events: heads, tails, rolling a four with a dice, picking the queen of
+hearts, a stock increasing in value, a car crashing into another. Sample spaces,
+however, are a special set of outcomes because of two key properties:
+
+1. Its members are _mutually exclusive_. That is, if we pull one thing out of
+   the set, we won't also pull another thing out. Put in probability terms, if
+   one event occurs, we can rest assured that another event in the set won't
+   occur. For example, if we flip heads, we won't also flip tails.
+2. It is _collectively exhaustive_ — it contains all the possible outcomes of an
+   experiment. For example, if the experiment is flipping a coin, then the
+   sample space ${\set{\text{heads}, \text{tails}}}$ is collectively exhaustive.
+
+Consider rolling a tetrahedral die twice. The sample space can be viewed as:
+
+<CartProd x={[1,2,3,4]} y={[1,2,3,4]}/>
+
+Above, we have a sample space of size 16. This is an example of a _discrete sample space_ — a sample space of finite size. Some samples, however, are _continuous sample spaces_ — sample spaces of infinite size. For example, the set of all points on a dart board. There are infinitely many points on this dart board. Because of its infinite nature, we often express such sample spaces by writing: ${\Omega = \set{ (x,y) | x^2 + y^2 = 1 }}$ This idea — assigning probabilities to events rather than outcomes — applies to discrete sample spaces. For example, if the experiment is flipping a coin and the sample space consists of only heads or tails, what we are really assigning probabilities to is a sample space that looks like ${\set{ \set{\text{heads}},\set{\text{tails}}}.}$ That is, a sample space where the events are singletons — sets with only one element.
+
+## Events
+There's a distinction between _events_ and _outcomes_. As we saw, a sample space is a set of possible outcomes. An __event__ is a subset of the sample space. We assign probabilities to _events_, not outcomes. Why? Because of sample spaces can be infinite sets. Consider the dart board example. What is the probability that, if we threw a dart, it would land at some point ${(x,y)?}$ The answer is zero. No matter how hard we tried, it would always land at some point ${(x.0 \ldots 01, y.0 \ldots 01)}$ because there are infinitely many points! Obviously, we do not want to say zero every time someone asks for a probability. We avoid this problem by assigning probabilities to subsets rather than individual outcomes. Thus, given a sample space ${\Omega,}$ what we're interested is not some outcome ${x}$ in ${\Omega,}$ but a set of outcomes ${E}$ in ${\Omega:}$
+
+$$
+	\Omega \lset{
+		\ax{
+			E_1      & \no{E_2} & \no{E_3} \\
+			\no{E_2} & \no{E_2} & \no{E_2} \\
+			\no{E_2} & \no{E_2} & E_3 \\
+			\no{E_2} & E_2      & \no{E_3} \\
+		}
+	}
+$$
+
+If we get an outcome inside ${E,}$ we say that ${E}$ _occurred_. If we don't get an oucome inside ${E,}$ we say that ${E}$ _did not occur_.  A _probability_ ${\P}$ must be a real number between ${0}$ and ${1}$ inclusive: ${\set{\P \in \reals | 0 \le \P \le 1}.}$ If we assign an event ${E}$ the probability ${\P=0,}$ then we are expressing the notion: "I am certain ${E}$ _will not_ occur." If we assign an event ${E}$ the probability ${\P=1,}$ then we are expressing the notion: "I am certain ${E}$ _will_ occur."
+
+
+### Compound and Simple Events
+We make a further distinction between _compound events_ and _simple events_. A simple event is an experiment comprising just one stage. For example, the experiment of tossing a coin once comprises one stage — tossing the coin. In contrast, compound events are
+events comprising at least two simple events. For example, tossing a coin five times.
+
+### Uniqueness
+To illustrate the notion of a simple space, consider an experiment where we're asked to
+place 3 balls — ${a,}$ ${b,}$ and ${c}$ — into four slots. A sample space might look like:
+
+$$
+	\lset{\ax{
+		\set{abc \mid \ws \mid \ws}&\set{\ws \mid abc \mid \ws}&\set{\ws \mid \ws \mid abc} \\
+		\set{ab \mid c \mid \ws}&\set{ac \mid b \mid \ws}&\set{bc \mid a \mid \ws} \\
+		\set{ab \mid \ws \mid c}&\set{ac \mid \ws \mid b}&\set{bc \mid \ws \mid a} \\
+		\set{a \mid bc \mid \ws}&\set{b \mid ac \mid \ws}&\set{c \mid ab \mid \ws} \\
+		\set{a \mid \ws \mid bc}&\set{b \mid \ws \mid ac}&\set{c \mid \ws \mid ab} \\
+		\set{\ws \mid ab \mid c}&\set{\ws \mid ac \mid b}&\set{\ws \mid bc \mid a} \\
+		\set{\ws \mid a \mid bc}&\set{\ws \mid b \mid ac}&\set{\ws \mid c \mid ab} \\
+		\set{a \mid b \mid c}&\set{a \mid c \mid b}&\set{b \mid a \mid c} \\
+		\set{b \mid c \mid a}&\set{c \mid a \mid b}&\set{c \mid b \mid a} \\
+	}}.
+$$
+
+Each set above is an _outcome_, and _event_ is a set of these outcomes. For example, one event might be "The ball ${c}$ is not in the same slot as the ball ${a.}$" Another event might be "${c}$ in the first slot, ${b}$ in the second slot, and ${c}$ in the third slot. This is an event with exactly one outcome.
+
+Numerous experiments reduce to variations of ball placement: Dropping bombs at ${n}$ targets, where the bombs are balls, and the targets slots; grouping ${n}$ people 
+into ${c}$ categories; rolling ${n}$ dice corresponds to placing ${n}$ balls into 6 slots.
+All of these experiments have a common pattern — _unique sequences of unique groupings of unique objects_. For ball placement, we used the letters ${a,b,c.}$ For a die, we use the sides 1, 2, 3, 4,5, and 6.
+
+For some problems, however, we're only interested in _unique sequences of unique groupings_, so we treat the objects as no different from the others. In the ball placement context, this reduces the sample space considerably:
+
+$$
+	\lset{\ax{
+		\lset{\wc\wc\wc\mid~~~\mid~~~}&\lset{~~~\mid\wc\wc\wc\mid~~~} \\[0.5em]
+		\lset{~~~\mid~~~\mid\wc\wc\wc}&\lset{\wc\wc\mid\wc\mid~~~} \\[0.5em]
+		\lset{\wc\wc\mid~~~\mid\wc}&\lset{\wc\mid\wc\wc\mid~~~} \\[0.5em]
+		\lset{~~~\mid~~~\mid\wc\wc}&\lset{~~~\mid~~~\mid\wc\wc} \\[0.5em]
+		\lset{~~~\mid\wc\wc\mid\wc}&\lset{~~~\mid\wc\mid\wc\wc} \\[0.5em]
+		\lset{\wc\mid\wc\mid\wc} \\
+	}}.
+$$
+
+In other problems still, we're only interested in _unique groupings_, so we
+treat certain sequences as no different from others:
+
+$$
+	\lset{\ax{
+		\set{\wc\wc\wc \mid ~~~ \mid ~~~} \\[0.5em]
+		\set{\wc\wc \mid \wc \mid ~~~} \\[0.5em]
+		\set{\wc \mid \wc \mid \wc} 
+	}}.
+$$
+
+
+## Notation
+Below are some definitions we'll use throughout the notes.
+
+> __~notation~.__ We denote a sample space with the notation ${\frak{S}.}$ We denote events with an uppercase Latin alphabet (e.g., ${A,B,C,\ldots,Z}$) and outcomes with a lowercase Latin alphabet (e.g., ${a,b,c,\ldots,z}$). The notation ${a \in A}$ corresponds to an outcome ${a}$ of the event ${A.}$
+
+> __~impossibility~.__ Given an event ${A,}$ the notation ${A=\nil}$ means that ${A}$ is _impossible_. That is, there are no outcomes contained in ${A.}$
+
+> __~complementary events~.__ Given an event ${A,}$ we denote the set of all outcomes not in ${A}$ with the notation ${\nix{A}.}$
+
+> __~simultaneous events~.__ Given an event ${A}$ and an event ${B,}$ we denote the event of _both ${A}$ and ${B}$ occur_ with the notation ${A \cap B.}$
+
+> __~inclusive events~.__ Given an event ${A}$ and an event ${B,}$ we denote the event of _either ${A,}$ ${B,}$ or both ${A}$ and ${B}$_ with the notation ${A \cup B.}$
+
+> __~exclusive events~.__ Given an event ${A}$ and an event ${B,}$ we denote the event of _either ${A}$ or ${B,}$ but not both, occur_ with the notation ${A \dup B.}$
+
+> __~exclusionary events~.__ The notation ${A \subset B}$ denotes _If ${A}$ occurs, then ${B}$ occurs._ Given the fact ${A \subset B,}$ we denote the event of _${B}$ occurs but ${A}$ does not occur_ with the notation ${B \smallsetminus A.}$
+
+~remark~. It goes without saying that all the events above are _distinct_ from their referent events ${A}$ and ${B.}$
+
+
+## Discrete Sample Spaces
+
+__~discrete sample space~.__ We say that a sample space ${\frak{S}}$ is _discrete_ if, and only if, ${\frak{S}}$ contains finitely many points or infinitely many points that can be arranged into a sequence ${E_1, E_2, E_3, \ldots, E_n}$ with ${n \in \nat.}$
+
+## Axioms of Probability
+There are three axioms that every probability model must obey
+(which in turn means we can rely on these facts when interpreting the models):
+
+> __~nonnegativity axiom~.__ Let ${\P(A)}$ be the probability assigned to some event ${A.}$ Then ${\P(A) \ge 0.}$
+
+> __~normalization axiom~.__ Let ${\P(\Omega)}$ be the probability of some sample space ${\Omega.}$ Then ${\P(\Omega) = 1.}$
+
+> __~additivity axiom~.__ Let ${\P(A)}$ be the probability of some event ${A,}$ and ${\P(B)}$ be the probability of some event ${B.}$ Then:
+> 
+> $$
+> 	{(A \cap B = \nil) \nc \P(A \cup B) = \P(A) + \P(B)}
+> $$
+> 
+
+Let's briefly think about the additivity axiom. Whenever we see the notation ${A \cap B}$ in the context of probability, we read it as: "${A}$ occurs _and_ ${B}$ occurs." When we see the notation ${A \cup B,}$ we read it as: "${A}$ occurs, ${B}$ occurs, or both ${A}$ and ${B}$ occur." In this case, ${A \cup B}$ refers to all the events within ${A,}$ ${B,}$ and both ${A}$ and ${B.}$ When we see the notation ${A \cap B = \nil,}$ we read it as: "${A}$ and ${B}$ are mutually exclusive." The notation indicates that the events are _disjoint_.  The additivity axiom tells us that the probability of ${A}$ _or_ ${B}$ occuring is the sum of both these probabilities.
+
+But what about that rule where a probability must be less than or equal to 1? Why isn't that an axiom? That rule isn't stated as an axiom because of a common characteristic of mathematics as a field: If it doesn't need to be said, don't say it. In this case, the rule doesn't need to be said because we can derive it from the three axioms.  From the normalization axiom, we know that ${\P(\Omega) = 1.}$ From the partition rule of set theory, we know that: ${P(\Omega) = \P(A \cup A^{\c}).}$ That is, the sample space consists of the set ${A}$ with the complement of ${A}$ (the set of all things outside of ${A}$ and inside ${\Omega,}$ denoted ${A^{\c}}$). Then, by the third axiom, we have ${\P(A) + \P(A^{\c}) = 1.}$ Because probabilities are nonnegative real numbers per the nonnegativity axiom, we can rewrite this equation as ${\P(A) = 1 - \P(A^{\c}).}$ And since probabilities are nonnegative (again by the nonnegativity axiom), the smallest ${\P(A^{\c})}$ can be is ${0}$ (any smaller and it becomes negative, which violates the nonnegativity axiom) and the largest it can be is ${1}$ (any larger and ${1-\P(A^{\c})}$ is negative, which also violates the nonnegativity axiom). Therefore, it follows that: ${\P(A) \le 1.}$ Because of its derived nature, we can state this as a lemma rather than axiom:
+
+> __~lemma i~.__ Let ${\P(A)}$ be the probability of some event ${A.}$ Then ${\P(A) \le 1.}$
+
+
+### The Discrete Uniform Law
+In the previous questions, we made the assumption that all the outcomes are
+equally likely. Put formally, by making that assumption, we rely on the premise
+that the sample space obeys the _Discrete Uniform Law._
+
+> __~discrete uniform law~.__ Let ${A}$ be an event within the sample space ${\Omega}$. If all the outcomes of ${A}$ are equally likely, then:
+> 
+> $$
+> 	\P(A) = \dfrac{\card(A)}{\card(\Omega)}
+> $$
+
+That is, the probability of ${A}$ is the number of elements of ${A}$ divided by the number of elements of the sample space. If we assume that all outcomes are equally likely (i.e., the discrete uniform law applies), then computing probabilities reduces to counting. Of course, that doesn't make the computation any easier. In later sections, we'll see that counting can get hairy very quickly — it's why there's an entirely separate mathematical field devoted to it, _combinatorics_.
+
+
+~example~. A card is drawn at random from a 52-deck. What is the probability of a spade? There are 13 spades in a 52-deck: ${\P(\spades)=\frac{13}{52}.}$ 
+
+~example~. What is the probability of drawing a face card? There are 12 face cards in a 52-deck: ${\P(\tx{face card})=\frac{12}{52}.}$ 
+
+~example~. What is the probability of drawing a red ace? There are 2 red aces in a 52-deck: ${\P(\text{red ace})=\frac{2}{52}.}$
+
+### Continuous Uniform Law
+For continous sample spaces, we apply the _Continuous Uniform Law._ An explicit
+statement of this law requires a little more background information, so we'll
+delay this task to a later section. For now, we'll simply describe it: _Given an event ${x,}$ the probability of ${x}$ occurring is the area of ${x.}$_
+For example, suppose we had the following plane:
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662836342/math/cul_cmljfd.svg"}
+imwidth={"280"} imheight={"253"} caption={"board"} width={"30"} />
+
+What is the probability of landing at some point ${(x,y)}$ such that ${x + y \le 1/2?}$ Well, it's simply the area beneath the curve ${x + y = 1/2.}$ Or, in perhaps more familiar notation. This area is simply the integral:
+
+<Grid cols={2}>
+
+$$
+	\small
+	\begin{aligned}
+			\P(x+y \le 1/2) &= \int_{0}^{1/2} \dfrac{1}{2} - x~dx \\[1em]
+			&= \int_{0}^{1/2} \dfrac{1}{2}~dx + \int_{0}^{1/2} x~dx \\[1em]
+			&= \ar{\left. \dfrac{1}{2}x + C \right \vert_{0}^{1/2}} - \ar{\left. \dfrac{x^2}{2} + C \right \vert_{0}^{1/2}} \\[1em]
+			&= \dfrac{1}{4} - \dfrac{1}{8} \\[1em]
+			&= \dfrac{1}{8}
+	\end{aligned}
+$$
+
+	<Plot data={[{f: (x) => 0.5-x, integrate:[0,0.5,'x']}]} domain={[0,1.5]}
+	range={[0,1.5]}/>
+
+</Grid>
+
+Of course, we could have just calculated the area using the triangle area
+formula:
+
+$$
+	\begin{aligned}
+		\P (x + y \le 1/2) &= \dfrac{(1/2) \cdot (1/2)}{2} \\[1em]
+		&= \dfrac{(1/4)}{2} \\[1em]
+		&= \dfrac{1}{8}
+	\end{aligned}
+$$
+
+We demonstrate the calculus approach because in the real world, most continuous
+sample spaces have far more complicated shapes that require us to apply
+calculus, and for the thorniest problems, real analysis.
+Computing probabilities, however, is an entirely separate exercise from building
+and interpreting the arguments that those computations must support. Sometimes
+it's geometry, sometimes it's calculus, and occassionally it's real and complex
+analysis. For the remaining sections, this author will assume that the reader
+has some background in these areas. 
+
+### Probability of Disjoint Events 
+Using just the three axioms, we can analyze the probabilities of multiple events. Suppose we had three disjoint events, ${A,B,C}$ with ${A \cap B \cap C = \nil.}$ The probability of ${A}$ occurring, ${B}$ occurring, ${C}$ occurring, or all three occurring together is written as ${\P(A \cup B \cup C).}$
+The additivity axiom tells us how to determine the probability of two events,
+but how do we deal with three? Well, set theory tells us that the union
+operation is associative. Thus: 
+
+$$
+	\P(A \cup B \cup C) = \P((A \cup B) \cup C).
+$$
+
+Because ${A,}$ ${B,}$ and ${C}$ are disjoint, ${A \cup B}$ and ${C}$ are
+disjoint. It follows that:
+
+$$
+	\begin{aligned}
+		 \P(A \cup B \cup C) &= \P(A \cup B) + \P(C) \\
+		 &= \P(A) + \P(B) + \P(C)
+	\end{aligned}
+$$
+
+Let's apply these rules we've just derived to the experiment of rolling two
+tetrahedral die:
+
+<CartProd x={[1,2,3,4]} y={[1,2,3,4]}/>
+
+We make the assumption that each outcome is equally likely. That is, all
+of the outcomes above (the tuples) have a ${1/16}$ chance of occuring. We will revisit this assumption at length later.  What is the probability of rolling 1 followed by a 1, or rolling 1 followed by a 2? Applying the additivity law, we have:
+
+$$
+	\begin{aligned}
+		 \P(\set{(x,y) | \set{x=1},~ y \in \set{1,2}}) &= \P((1,1)) + \P((1,2)) \\
+		 &= 1/16 + 1/16 \\
+		 &= 2/16 \\
+		 &= 1/8.
+	\end{aligned}
+$$
+
+What is the probability of rolling one on the first roll? Here, we're looking for the probability of the set of all outcomes where ${x=1:}$
+
+$$
+		\begin{aligned}
+			\P(\set{x=1}) &= \P((1,1)) + \P((1,2)) + \P((1,3)) + \P((1,4))  \\
+			&= 1/16 + 1/16 + 1/16 + 1/16 \\
+			&= 4/16 \\
+			&= 1/4.
+		\end{aligned}
+$$
+
+What is the probability that ${x + y}$ is odd? Here, we use a tiny bit of number theory. The number of odd integers in a given sequence is given by the formula:
+
+$$
+	\C = 
+	\begin{cases}
+		\begin{aligned}
+				&\ceil{\dfrac{a_n - a_1}{2} + 1} &\text{if}~~~a_n, a_1 \in \text{even} \\[1em]
+				&\ceil{\dfrac{a_n - a_1}{2}} &\text{else}
+		\end{aligned}
+	\end{cases}
+$$
+
+Here, the sequence is ${\ix{1,2,3,4}.}$ Thus, the number of odd integers is:
+
+$$
+	\ceil{\dfrac{4-1}{2}} = \ceil{1.5} = 2 
+$$
+
+Since the natural numbers are well-ordered, the number of even integers is simpl ${n-\C,}$ where ${n}$ is the number of terms.  Next, odd integers are integers of the form ${2k + 1,}$ and even integers are integers of the form ${2k,}$ where ${k \in \nat.}$ Thus, to roll an odd integer, we must roll an odd and an even. Therefore, we have:
+
+$$
+	\begin{aligned}
+			\P(\set{(x,y) | x+y \in \odds}) &= \P(\set{x \in \odds, y \in \evens}) +
+			\P(\set{x \in \evens, y \in \odds}) \\
+			&= (2/16 + 2/16) + (2/16 + 2/16) \\
+			&= 4/16 + 4/16 \\
+			&= 8/16
+	\end{aligned}
+$$
+
+What is the probability that the minimum of two rolls is 2? Here, we're asked for the probability of ${\P(\min(x,y)=2).}$ Here, it's helpful to think about the cases where the minimum is 2: (a) When ${x=2}$ and ${y=2,}$ (b) when ${y=2}$ and ${x \gtn y,}$ and (c) when ${x=2}$ and ${y \gtn x.}$ For case ${a,}$ we only have outcome, so our first term is:
+
+$$
+	\P(\min(x,y)=2) = 1/16
+$$
+
+For case (b), we have two: ${(3,2)}$ and ${(4,2).}$ This gives us the next two terms:
+
+$$
+	\P(\min(x,y)=2) = 1/16 + 1/16 + 1/16
+$$
+
+And for case (c), we have two again: ${(2,3)}$ and ${(2,4):}$
+
+$$
+	\P(\min(x,y)=2) = 1/16 + 1/16 + 1/16 + 1/16 + 1/16
+$$
+
+Therefore:
+
+$$
+	\P(\min(x,y)=2) = 5/16
+$$
+
+The previous discussion on continuous sample spaces raises a subtle point about
+the axiom of additivity. Earlier, we saw the following lemma:
+
+$$
+	\P\ar{\bigcup\limits_{i=1}^{n}E_i} = \P(E_1) + \P(E_2) + \ldots \P(E_n).
+$$
+
+Now suppose we were interested in the probability of some part of this square.
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1662836342/math/cul_cmljfd.svg"}
+imwidth={"280"} imheight={"253"} caption={"board"} width={"30"} />
+
+Intuitively, we can think of this square as being comprised of infinitely many points. Building on this intuition, we can infer that the area of the square, in total, is: ${\A = \bigcup\limits_{x,y}~\set{(x,y)}}$
+Next, we know that the total probability of ${\A}$ is ${1,}$ and it's the sum of
+all the elements ${(x,y):}$
+
+$$
+	\P(\A) = 1 = \sum_{x,y} \P(\set{(x,y)}).
+$$
+
+But now we have a problem. The area of just a single point ${(x,y)}$ is 0. So:
+
+$$
+	\P(\A) = 1 = \sum_{x,y} \P(\set{(x,y)}) = 0 + 0 + \ldots + 0 = 0.
+$$
+
+We've just concluded that ${1 = 0.}$ What went wrong? The culprit is the implicit equality we made:
+
+$$
+	\bigcup\limits_{x,y}~\set{(x,y)} = \sum_{x,y} \P(\set{(x,y)}).
+$$
+
+We missed a very subtle part of the lemma: _in sequence_. The union
+${\bigcup\limits_{x,y}~\set{(x,y)}}$ will never exhaust the entire unit square. The unit square is an uncountable set; it has far more elements than any sequence could have. From this caveat, let's rewrite our lemma as a cautionary measure:
+
+> __~lemma ii~.__ Let ${E_1, E_2, \ldots, E_n}$ be disjoint events in sequence.  Then:
+> 
+> $$
+> 	\P\ar{\bigsqcup\limits_{i=1}^{n}E_i} = \P(E_1) + \P(E_2) + \ldots \P(E_n).
+> $$
+
+## Laws of Discrete Probability
+
+### Probability of Simultaneous Events
+
+> __~theorem~.__ For any two events ${A}$ and ${B,}$ ${\P(A \cup B)=\P(A)+\P(B)-\P(A \cap B).}$
+
+### Probability of Exclusive Events
+
+> __~theorem~.__ For any two events ${A}$ and ${B,}$ ${\P(A \dup B)=\P(A)+\P(B).}$
+
+### Probabilities of States
+All of the events we've considered thus far concern single events. We now examine probabilities of _states_.
+
+
+
+#### Deterministic States
+> __~theorem~.__ Let ${E}$ be an ${n}$-decision experiment: ${D_1, D_2, D_3, \ldots, D_n.}$ If ${D_1}$ has ${{a}_1}$ outcomes, ${{D}_2}$ has ${{a}_2}$ outcomes, ${\ldots,}$ ${{D}_{n-1}}$ has ${a_{n-1},}$ and ${D_{n}}$ has ${a_{n}}$ outcomes (where the outcomes of the ${n-1}$th decision has no bearing on the ${n}$th decision), then the experiment, as a whole, has
+> 
+> $$
+> 	\dprod{i=1}{n} a_{i} = (a_1)(a_2)(a_3)\ldots(a_{n-1})(a_{n})
+> $$
+>
+> outcomes.
+
+~example~. 3 cards are drawn one at a time from a 52-deck, without replacement. What is the probability that all 3 are red? Drawing red for the 1st card has a probability of ${\P(\tx{1st[red]})=\frac{26}{52}.}$ Since we took one card out, we have 51 cards left, 25 of which are red cards: ${\P(\tx{2nd[red]})=\frac{25}{52}.}$ Taking another card out, we have 50 cards left, 24 of which are red cards: ${\P(\tx{3rd[red]})=\frac{24}{50}.}$ All together, we have ${\frac{(26)(25)(24)}{(52)(51)(50)}=\frac{15600}{132600} \approx 0.1176.}$
+
+~example~. 3 cards are drawn one at a time from a 52-deck, without replacement. What is the probability that none of them are spades? There are 13 spades, so there are ${52-13=39}$ cards that are not spades. For the first draw, we have ${\P(\tx{1st}[\neg \spades])=\frac{39}{52}.}$ Taking that card, we have ${51}$ cards left, 38 of which are not spades. Thus, we have ${\P(\tx{2nd}[\neg \spades])=\frac{38}{51}}$ for the second draw. The same goes for the third draw: ${\P(\tx{3rd}[\neg \spades])=\frac{37}{50}.}$ Thus, we have ${\P(\neg \spades)=\frac{(39)(38)(37)}{(52)(51)(50)}=\frac{54834}{132600} \approx 0.4135.}$
+
+~example~. 3 cards are drawn one at a time from a 52-deck without replacement. What is the probability of drawing a club, a heart, and a diamond (in that order)? We have: ${\P(\tx{1st}[\clubs]) = \frac{13}{52}.}$ Drawing that card, there are 51 cards left. ${P(\tx{2nd}[\hearts])=\frac{13}{51}.}$ Drawing that card, there are 50 cards left. ${P(\tx{3rd}[\diamonds])=\frac{13}{50}.}$ Thus, we have: ${P([\hearts,\clubs,\diamonds])=\frac{13^3}{(52)(51)(50)}=\frac{2197}{132600} \approx 0.0166.}$
+
+~example~. A die is rolled 4 times. What is the probability of obtaining different numbers? There are 6 outcomes for the first roll, 6 for the second, 6 for the third, etc: ${6^4.}$ But, the question asks for the probability of obtaining different numbers on each roll. These means we have 6 options for the first, 5 for the second, 4 for the third, and 3 for the fourth. At each stage, however, we still have a _sample space_ (the set of all possible outcomes) of ${6^4.}$ Hence, the probability is ${\frac{(6)(5)(4)(3)}{6^4}=\frac{5}{18} \approx 0.2778.}$
+
+#### Indeterministic States
+Permutations from combinatorics allow us to determine the probability of
+a particular order.
+
+> __~permutation rule~.__ Let ${E}$ be an ${n}$-decision experiment of ordering ${n}$ distinct objects. Then there are are
+> 
+> $$
+> 	n(n-1)(n-2)\ldots(2)(1) = n!
+> $$
+>
+> possible outcomes.
+
+> __~k-permutation rule~.__ Let ${E}$ be an ${n}$-decision experiment of ordering ${k}$ objects out of ${n}$ total objects. Then there are
+> 
+> $$
+> 	n(n-1)(n-2)\ldots(n-k+1) = \dfrac{n!}{(n-k)!}
+> $$
+> 
+> possible outcomes.
+
+## Conditional Property
+Our probability calculations should change when
+a given event in the sample space occurs. For example,
+suppose we're given the following probabilities:
+
+| ${A}$   | ${A \cap B}$ | ${B}$   |
+| ------- | ------------ | ------- |
+| ${3/6}$ | ${2/6}$      | ${1/6}$ |
+
+Now suppose someone tells us that ${B}$ occurred. What is the probability of ${A}$ occurring? First, denote this probability, we use the notation
+
+$$
+	\P(A \mid B)
+$$
+
+which we read as "the probability of ${A,}$ given that ${B}$ occurred."

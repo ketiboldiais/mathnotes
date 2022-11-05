@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from "react";
 import { svg } from "../utils/svg/svg";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import { insertArrowDefinitions } from "../utils/insertArrowDefinitions/insertArrowDefinitions";
 import { generateFTreeData } from "./generateFTreeData";
+import { forceCenter, forceSimulation, forceX, forceY, hierarchy, max, scaleLinear, stratify, select, forceManyBody, forceLink } from "d3";
 
 export const FTree = ({
 	data = [],
@@ -32,36 +32,34 @@ export const FTree = ({
 	const _svg = svg(width, height, margins);
 
 	const _data = generateFTreeData(data);
+	
 
-	const stratifiedData = d3
-		.stratify()
+	const stratifiedData = stratify()
 		.id((d) => d.child)
 		.parentId((d) => d.parent)(_data);
-
-	const root = d3.hierarchy(stratifiedData);
+	
+	const root = hierarchy(stratifiedData);
 
 	const _links = root.links();
 	const _nodes = root.descendants();
+	
 
-	const forceCenter = d3
-		.forceCenter()
+	const centerForce = forceCenter()
 		.x(_svg.width / 2)
 		.y(_svg.height / 2);
-	const manyBody = d3.forceManyBody().strength(-600);
-	const linkForce = d3
-		.forceLink(_links)
+	const manyBody = forceManyBody().strength(-600);
+	const linkForce = forceLink(_links)
 		.id((d) => d.id)
 		.distance(0)
 		.strength(1);
+	
 
-	const simulation = d3
-		.forceSimulation(_nodes)
+	const simulation = forceSimulation(_nodes)
 		.force("link", linkForce)
-		.force("center", forceCenter)
+		.force("center", centerForce)
 		.force("charge", manyBody)
-		.force("x", d3.forceX())
-		.force("y", d3.forceY())
-		// .force("collision", d3.forceCollide().radius(repulsion));
+		.force("x", forceX())
+		.force("y", forceY())
 
 	const ordinalColor = (d) => {
 		return ordinalColorLevel[d.data.depth]
@@ -69,16 +67,14 @@ export const FTree = ({
 			: nodeColor;
 	};
 	const linearColor = (d) => {
-		const maxDepth = d3.max(_nodes.map((datum) => datum.data.depth));
-		const color = d3
-			.scaleLinear()
+		const maxDepth = max(_nodes.map((datum) => datum.data.depth));
+		const color = scaleLinear()
 			.domain([0, maxDepth])
 			.range(linearColorLevel);
 		return color(d.data.depth);
 	};
-
 	useEffect(() => {
-		const canvas = d3.select(_ftreeREF.current).select("g.svgElement");
+		const canvas = select(_ftreeREF.current).select("g.svgElement");
 		const tree = canvas.append("g").attr("class", "ftree");
 		if (isDirected) {
 			insertArrowDefinitions(

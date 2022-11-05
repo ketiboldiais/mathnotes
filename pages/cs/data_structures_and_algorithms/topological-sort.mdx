@@ -1,0 +1,71 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+
+# Topological Sort
+
+
+Cyclic graphs _cannot_ be linearly ordered according to their edges. Suppose that they could be linearly ordered. Let ${G}$ be a cyclic graph with edges ${(a,b), (b,a),}$ with ${b \neq a.}$ Then a linear ordering based on their edges would could contain the first edge — ${a,b}$ — followed by ${a.}$ This contradicts the notion of linear ordering — we said that ${a \prec b,}$ so we cannot have ${b \prec a.}$ This lack of linear ordering makes cyclic graphs both difficult to reason about and unwieldy.
+
+In contrast, _DAGs (directed acyclic graphs)_ are almost always blessings. These graphs _can always_ be linearly ordered, and its precisely this property that leads to the algorithm of _topological sort_. First, a bit of terminology:
+
+> __~definition: source~.__ A vertex ${v}$ is a _source_ if, and only if, ${v}$ has no incoming edges.
+
+> __~definition: sink~.__ A vertex ${v}$ is a _sink_ if, and only if, ${v}$ has no outgoing edges.
+
+The basic idea of topological sort: First, we find a sink ${S_f.}$ Once found, we place ${S_f}$ at the end of our ordering: ${\px{\ldots S_f}.}$ Then, we "remove" (mark as visited) ${S_f}$ from the graph. We repeat the process, finding sinks over and over: ${\px{\ldots, S_{f-2}, S_{f-1}, S_f,}.}$ Eventually, we'll get a _linear ordering_ of the graph's vertices.
+
+<table className={`trace`}>
+<tbody>
+<tr>
+<td width={`50%`}>
+Suppose the first sink we find is ${d.}$ We add that to our ordering, and remove it from the graph.
+
+$$
+	\tx{ordering}:~ \px{d}
+$$
+
+</td>
+<td><Graph data={[ {link: [`a`,`b`]}, {link: [`b`,`c`]}, {link: [`c`,`d`]}, {link: [`a`,`e`]}, ]} id={`tpsort`} collisionRadius={10} edgeLength={11} straightEdges={true} isDirected={true} scale={80} width={160} height={100} /></td>
+</tr>
+<tr>
+<td>
+Then we go the next sink, ${c.}$ We take this node out of the graph, and it to our ordering.
+
+$$
+	\tx{ordering}: \px{d,c}
+$$
+
+</td>
+<td><Graph data={[ {link: [`a`,`b`]}, {link: [`b`,`c`]}, {link: [`a`,`e`]}, ]} id={`tpsort2`} collisionRadius={10} edgeLength={11} straightEdges={true} isDirected={true} scale={80} width={160} height={50}/></td>
+</tr>
+<tr>
+<td>
+Now go to the next sink, ${b.}$ Take that out, add to ordering.
+
+$$
+	\tx{ordering}: \px{d,c,b}
+$$
+</td>
+<td><Graph data={[ {link: [`a`,`b`]}, {link: [`a`,`e`]}, ]} id={`tpsort3`} collisionRadius={17} edgeLength={15} straightEdges={true} isDirected={true} scale={80} width={160} height={50}/></td>
+</tr>
+<tr>
+<td>
+We go to the next node, ${a,}$ and find that ${a}$ is _not_ a sink. We must instead go to ${e.}$
+
+$$
+	\tx{ordering}: \px{d,c,e}
+$$
+</td>
+<td><Graph data={[ {link: [`a`,`e`]}, ]} id={`tpsort4`} collisionRadius={17} edgeLength={15} straightEdges={true} isDirected={true} scale={80} width={160} height={40}/></td>
+</tr>
+<tr>
+<td>
+Take that out and add to ordering. Now we're now left with ${a,}$ which is now a sink. Take out, add to ordering. Our final result:
+
+$$
+	\tx{ordering}: \px{d,c,b,e,a}
+$$
+</td>
+<td><Graph data={[ {link: [`a`]}, ]} id={`tpsort5`} collisionRadius={17} edgeLength={15} straightEdges={true} isDirected={true} scale={80} width={160} height={30}/></td>
+</tr>
+</tbody>
+</table>

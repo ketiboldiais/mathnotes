@@ -3,12 +3,12 @@
 As we saw in the section on variables, the initialization of variables is
 called an _assigment statement_. The assignment statement is just one
 instance of a statement. In JavaScript, there are three types of
-statements: (1) **simple statements**, (2) **compound statements**, and (3)
-**control statements**. The assignment statement is one kind of simple
+statements: (1) __simple statements__, (2) __compound statements__, and (3)
+__control statements__. The assignment statement is one kind of simple
 statement. Sequences of statements, like those found in a function or the
 entirety of a program, are compound statements. Control statements consist
-of two subtypes categories: (1) **conditional statements** and (2)
-**iterative statements**. In this section, we focus on the former.
+of two subtypes categories: (1) __conditional statements__ and (2)
+__iterative statements__. In this section, we focus on the former.
 
 Conditional statements are the backbone of simple decisions in a program. A
 conditional statement is a statement that specifies a test. If the test is
@@ -20,7 +20,7 @@ specify repetition of statements.
 
 ## The if-statement
 
-The if-statement tells JavaScript to run a given block of code **if** a
+The if-statement tells JavaScript to run a given block of code __if__ a
 given condition is true. If the condition is false, then the code block is
 never run. The if-statement takes the following format:
 
@@ -122,7 +122,7 @@ else-statement after checking an if-statement, the else-statement must
 always be preceded by an if-statement or an else-if-statement. Thus, an
 else-statement can never stand on its own. Furthermore, because an
 else-statement effectively provides the default, or fallback, instruction
-to JavaScript in a set of conditionals, there can only be **one**
+to JavaScript in a set of conditionals, there can only be __one__
 else-statement in a given block of conditionals.
 
 ## Branching: Nesting Conditional Statements
@@ -221,9 +221,9 @@ if (password.length >= 6 && password.indexOf(" ") === -1) {
 ```
 
 `&&` allows us to connect conditional statements into a single conditional
-expression, called a **conditional AND expression**. We can connect as many
+expression, called a __conditional AND expression__. We can connect as many
 conditional expressions (i.e., conditions) as we want with `&&`. For the
-conditional AND expression to be true, all of its **sub-expressions** (the
+conditional AND expression to be true, all of its __sub-expressions__ (the
 connected conditions) must all be true. Thus, if a single sub-expression is
 false, the entire conditional AND expression is false. Example:
 
@@ -267,7 +267,7 @@ else-statement's code block is run.
 ### OR Operator
 
 The `||` operator allows us to connect sub-expressions into a single
-conditional expression, called a **conditional OR expression**. If just one
+conditional expression, called a __conditional OR expression__. If just one
 of the sub-expressions is true, then the entire OR expression is true.
 
 The code below returns true, since one of the sub-expressions, 10 === 10,
@@ -312,7 +312,7 @@ if (age <= 6 || age >= 60) {
 ```
 
 As an aside, note that JavaScript evaluates the `&&` and `||` operators
-using an evaluation model called **short-circuit mode**. Under this
+using an evaluation model called __short-circuit mode__. Under this
 evaluation model, JavaScript evaluates the right operand only if it needs
 to. For example, given the expression `a && b`, if JavaScript evaluates `a`
 to be `false`, it will immediately return `false` for the entire
@@ -354,7 +354,7 @@ if (!(flavor === "taro" || flavor === "tea")) {
 
 ## Logical Operator Precedence
 
-JavaScript follows a strict rule, called **operator precedence**, when
+JavaScript follows a strict rule, called __operator precedence__, when
 evaluating complex conditional statements. For example, what does
 JavaScript return for the following:
 
@@ -400,7 +400,7 @@ switch(<expression>) {
 
 Note that if a single case value matches the variable, JavaScript will
 execute all of the statements thereafter except the statements in the first
-match. This is called **fall-through behavior**, and is found in languages
+match. This is called __fall-through behavior__, and is found in languages
 like C and C++. In some situations, this may be desirable, and in others,
 it may not be.[^swift_note].
 

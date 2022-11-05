@@ -4,11 +4,11 @@ import {Stack} from "../../../components/illus/components/Stack/Stack";
 
 # The Stack
 
-The following materials pertain to the **stack data structure**. Unlike the
+The following materials pertain to the __stack data structure__. Unlike the
 other data structures we've seen, the stack is modeled after a _behavioral
 principle_—a defining trait in how the data structure acts, which dictates
 what the data structure looks like and how the data structure operates. For
-the stack, this behavioral principle is **Last-in-first-out (LIFO)**.
+the stack, this behavioral principle is __Last-in-first-out (LIFO)__.
 
 The principle is simple. Suppose we have a large box to place plates in. If
 we place one plate, we have the following:
@@ -38,10 +38,10 @@ Looking at the plate we took off the stack, this is the _last_ plate we
 placed. This is the principle of LIFO—the _last_ that goes in is the
 _first_ that goes out. A important terms associated with stacks:
 
-1. When we place an object ${x}$ on the stack, we are **pushing** ${x}$ on
+1. When we place an object ${x}$ on the stack, we are __pushing__ ${x}$ on
    the stack.
 
-2. When we take an object ${x}$ off the stack, we are **popping** ${x}$ off
+2. When we take an object ${x}$ off the stack, we are __popping__ ${x}$ off
    the stack.
 
 Why push and pop? It's not entirely clear. One theory is that the terms
@@ -66,10 +66,10 @@ $$
 	\begin{aligned} t \rarr &(F_3 \mid 7) \\ &(F_2 \mid 1) \\ &(F_1 \mid 3) \\ &(F_0 \mid 8) \end{aligned}
 $$
 
-The variable ${F}$ indicates a **frame**—an element of the stack—and the
-variable ${t}$ is a pointer to the **topmost frame** (in the diagram, the
+The variable ${F}$ indicates a __frame__—an element of the stack—and the
+variable ${t}$ is a pointer to the __topmost frame__ (in the diagram, the
 frame colored green). In these materials, we also refer to the topmost
-frame as the **T-frame**, and all others as simply _frames_. Each frame has
+frame as the __T-frame__, and all others as simply _frames_. Each frame has
 a subscripted index ${i,}$ and a data value stored in it—the number to the
 right of the vertical bar. We employ this notation to maintain flexibility
 between different implementations of the stack data structure.
@@ -83,13 +83,13 @@ We now consider each implementation in turn.
 
 ## Static Stacks
 
-A **static stack** is a stack with a fixed capacity—the maximum number of
+A __static stack__ is a stack with a fixed capacity—the maximum number of
 frames the stack can hold. Because there's an upper bound on the number of
 frames, the stack cannot hold frames beyond its given capacity. Static
 stacks are described as static because they are implemented with _static
 arrays_. Where the static array has a fixed _size_, the static stack has a
-fixed **capacity**. And where the array has a variable _length_, the static
-stack has a variable **height**.
+fixed __capacity__. And where the array has a variable _length_, the static
+stack has a variable __height__.
 
 For example, suppose we wanted to implement a new, empty stack of
 capacity 4. Such a stack can be interpreted as:
@@ -137,7 +137,7 @@ frame on the stack, say `array[3] = 8`, we have:
 
 <Sequence data={[2, 9, 1, 8]} scale={40} />
 
-At this point, we say that the stack is **full**—the stack's height equals
+At this point, we say that the stack is __full__—the stack's height equals
 its capacity, and we can push no further frames.
 
 Examining the diagrams above, we see that pushing a frame onto the stack is
@@ -237,7 +237,7 @@ struct Stack* newStack(int maxSize) {
 
 ## Pushing
 
-The first fundamental operation to all stacks is **pushing**. The
+The first fundamental operation to all stacks is __pushing__. The
 implementation is straightforward. In pseudocode:
 
 ```nasm
@@ -297,11 +297,11 @@ maintains the number of frames currently in the stack.
 
 The function above, however, is not implemented well. Why? Because it does
 not include a guard against pushing onto the stack beyond its limit, the
-`capacity`. Accordingly, we need a **capacity guard**.
+`capacity`. Accordingly, we need a __capacity guard__.
 
 ## Capacity Guard
 
-With static stacks, we must always be using a **capacity guard**—a
+With static stacks, we must always be using a __capacity guard__—a
 procedure that determines whether the stack's capacity has been reached.
 We'll implement this procedure as a function called <var>isFull()</var >,
 which returns `true` if the stack's capacity has been reached, and `false`
@@ -509,7 +509,7 @@ we need an _empty guard_.
 
 ## Empty Guard
 
-The **empty guard** is a procedure that determines if a given stack is
+The __empty guard__ is a procedure that determines if a given stack is
 empty. The question then, is, when is a stack empty? When its `height` is
 `0`. Needless to say, the implementation is short:
 
@@ -934,7 +934,7 @@ peek6: -128
 
 ## Pulling
 
-When we **pull** from a stack, we are retrieving the data value in the
+When we __pull__ from a stack, we are retrieving the data value in the
 topmost frame. Because the `top` pointer updates each time we push and pop
 off the stack, the procedure is straightforward:
 
@@ -1097,7 +1097,7 @@ Current top: 5
 
 ## Dynamic Stacks
 
-In contrast to static stacks, **dynamic stacks** are stacks that have no
+In contrast to static stacks, __dynamic stacks__ are stacks that have no
 set capacity. As long as we have memory available, we can store as many
 stacks as we'd like. To realize this property, we implement dynamic stacks
 with _linked lists_ rather than arrays. Consider the following dynamic

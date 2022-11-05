@@ -1,0 +1,426 @@
+import { CircularQueue } from "../../../components/hago";
+
+<Head>
+	<title>Modular Arithmetic</title>
+	<meta name={`description`} content={`Notes on modular arithmetic.`}/>
+</Head>
+
+# Modular Arithmetic
+
+
+Ths chapter covers notes on modular arithmetic.
+
+<div class={`outline`}>
+
+1. [Divisors](#divisors)
+2. [Multiples](#multiples)
+3. [Remainders](#remainders)
+	1. [Floors and Ceilings](#floors-and-ceilings)
+	2. [Remainders and Quotients](#remainders-and-quotients)
+4. [Congruence](#congruence)
+
+</div>
+
+Remark: In the notes below, we often use the term "division" for ease of communication alongside writing expressions like ${a/b.}$ This is an abuse of notation and language. When we use the word division, we mean the following:
+
+<dfn>
+
+__division.__ Let ${a,b \in \uint.}$ Then ${a/b}$ is defined if and only if there exists a ${q \in \uint}$ such that ${a = bq + r}$ with ${0 \le r \lt b.}$
+
+</dfn>
+
+We state this definition because at a formal level, the operation of division that we usually think of does not exist in the world of integers. The standard definition of division is ${a/b = c \iff a = b \by c.}$ There is no integer that satisfies ${2c = 1,}$ so there's no such thing as "division" in the usual sense. In fact, the very lack of division is why we have a seperate set of numbers, ${\rat,}$ called the rationals. 
+
+## Divisors
+
+We begin this section by defining a few special sets.
+
+<dfn>
+
+__divisors.__ Let ${n \in \uint.}$ Then the poset ${(\dv_n)}$ denotes the set of all divisors of ${n.}$ 
+
+</dfn>
+
+_Example_. ${(\dv_{9}) = \set{1,3,9}.}$
+
+_Example_. ${(\dv_{36}) = \set{1,2,3,4,6,9,12,18,36}.}$
+
+Following the definition above, all sets of divisors ${(\dv_n)}$ are non-empty. They will always contain the integer ${1}$ and ${n}$ itself.
+
+<dfn>
+
+__common divisors.__ Let ${n,m \in \uint.}$ Given the sets of divisors ${(\dv_n)}$ and ${(\dv_m),}$ then the set ${(\dv_n \cap \dv_m)}$ is the set of all common divisors of ${n}$ and ${m.}$ Given an integer ${x \in (\dv_n \cap \dv_m),}$ we say that ${x}$ is a _common divisor_ of ${n}$ and ${m.}$
+
+</dfn>
+
+~example.~ ${(\dv_{12} \cap \dv_{8}) = \set{1,2,3,4,6,12} \cap \set{1,2,4,8} = \set{1,2,4}.}$
+
+Since all sets of divisors contain the integer ${1,}$ all intersections of divisor sets are non-empty — they all contain the integer ${1.}$ There is, however, a special case where the intersection consists of only ${1.}$
+
+<dfn>
+
+__coprimality.__ Let ${n,m \in \uint.}$ If ${(\dv_n \cap \dv_m) = \lset{1},}$ then we say that ${n}$ and ${m}$ are _coprime_ or _relatively prime_.
+
+</dfn>
+
+_Example_. The integers ${13}$ and ${8}$ are coprime, since ${(\dv_{13}) = \set{1,13},}$ ${(\dv_{8}) = \set{1,2,4,8}}$ and ${(\dv_{13} \cap \dv_{8}) = \set{1}.}$
+
+We're often interested in the largest element of a common divisor set, called the _greatest common divisor_.
+
+<dfn>
+
+__greatest common divisor.__ Let ${n,m \in \uint}$ and ${x \in (\dv_n \cap \dv_m).}$ If ${x}$ is the maximum element of ${(\dv_n \cap \dv_m),}$ then ${x}$ is the _greatest common divisor_ of ${n}$ and ${m,}$ and we write ${\gcd{{n,m}} = x.}$ 
+
+</dfn>
+
+_Example_. ${\gcd{12,18} = 16.}$
+
+_Example_. ${\gcd{16,8} = 4.}$
+
+## Multiples
+
+<dfn>
+
+__multiples.__ Let ${n}$ be an integer and ${\Z \subseteq \uint}$. Then the set ${n \Z}$ denotes the set of multiples of ${n.}$ If ${x \in n \Z,}$ then we say that ${x}$ is a _multiple_ of ${n.}$
+
+</dfn>
+
+_Example_. ${2 \nat = \set{0,2,4,6,8,10,12,14,16,\ldots}}$
+
+_Example_. ${2 \uint^+ = \set{2,4,6,8,10,12,14,16,\ldots}}$
+
+_Example_. ${3 \uint = \set{\ldots, -9, -6, -3, 0, 3, 6, 9, \ldots}}$
+
+From the definition of a multiple, we can determine that the sum of any two multiples of ${kn}$ is also a multiple of ${n.}$ Suppose ${a}$ and ${b}$ are integers, and ${an}$ and ${bn}$ are multiples of ${n.}$ It follows that:
+
+$$
+	an + bn = (a + b)n
+$$
+
+Since addition is closed on the integers, it follows that ${a + b}$ is an integer. Thus, ${(an + bn = (a+b)n) \in n \uint.}$ The same idea extends to subtraction: The difference between any two multiples of ${n}$ is also a multiple of ${n.}$ Given the ${n}$-multiples ${an}$ and ${bn,}$ it follows that ${an - bn = (a-b)n.}$ And since subtraction is closed on the integers, the term ${(a-b)}$ is an integer. Thus, ${(a-b)n}$ is also a multiple of ${n.}$
+
+This leads to an alternative reading of the relation ${a \dv b.}$ When we write ${a \dv b,}$ we're effectively implying that ${b}$ _is a multiple of_ ${a.}$ Thus, another way of viewing the "divides" relation is that it's the "multiple of" relation.
+
+> ${a \dv b}$ ${\nc}$ "${b}$ is a multiple of ${a.}$"
+
+We thus have the following lemma:
+
+<dfn>
+
+__lemma.__ Given ${a,b,c \in \uint,}$ if ${c \dv a}$ and ${c \dv b,}$ then ${c \dv (a + b)}$ and ${c \dv (a - b).}$
+
+</dfn>
+
+It's helpful to know an alternative framing of the lemma above. Suppose ${a,b,c \in \uint,}$ and ${c \dv a - b}$ and ${c \dv b.}$ Then ${c \dv (a - b + b = a),}$ following our previous lemma. Thus, we have:
+
+<dfn>
+
+__lemma.__ Given ${a,b,c \in \uint,}$ if ${c \dv (a - b)}$ and ${c \dv b,}$ then ${c \dv a.}$
+
+</dfn>
+
+This leads us to the notion of common multiples:
+
+<dfn>
+
+__common multiples.__ Let ${n}$ and ${m}$ be integers, ${n \Z}$ the set of all multiples of ${n}$ and ${m \Z}$ the set of all multiples of ${m.}$ Then ${n \Z \cap m \Z}$ denotes the set of all _common multiples_ of ${n}$ and ${m.}$ Given an integer ${x \in n \Z \cap m \Z,}$ we call ${x}$ a _common multiple_ of ${n}$ and ${m.}$
+
+</dfn>
+
+_Example_. ${4 \uint^+ \cap 6 \uint^+ = \set{12,24,36,48,60,72,84,\ldots}.}$ 
+
+
+
+
+There's a particularly special multiple when we work with positive multiples. Because the positive integers are just the natural numbers without ${0,}$ they have the special property of being _well-ordered_. That is, there's always a _least element_ in any set of positive integers. This means that, the intersection ${n \uint^+ \cap m \uint^+}$ where ${n}$ and ${m}$ are positive integers always contains a least element called the _least common multiple._ 
+
+<dfn>
+
+__least common multiple.__ Let ${n,m \in \uint^+,}$ and the sets ${n \uint^+}$ and the ${m \uint^+}$ denoting the positive multiples of ${n}$ and ${m}$ respectively. Then the least element of ${n \uint^+ \cap m \uint^+}$ is called the _least common multiple_ of ${n}$ and ${m,}$ which we denote as ${\df{lcm}(n,m).}$
+
+</dfn>
+
+_Example_. ${\df{lcm}(4,6) = 12,}$ since ${4\uint^+ \cap 6 \uint^+ = \set{12,24,36,48,\ldots.}}$
+
+The link between multiples and common divisors is encapsulated in the following theorem.
+
+<dfn>
+
+__euclid's theorem.__ For all ${m,n \in \nat}$ with ${m \gt n,}$ it follows that ${\gcd{m,n} = \gcd{m-n,n}.}$ 
+
+
+</dfn>
+
+The proof is fairly straightfoward. Given ${m,n,c \in \nat}$ with ${m \gt n,}$ if ${c \dv (m - n)}$ and ${c \dv n,}$ then ${c \dv m.}$ Similarly, if ${c \dv m}$ and ${c \dv n,}$ then ${c \dv (m - n).}$ These are merely the two lemmas we proved earlier. If it were instead the case that ${c \dv (m - n)}$ and ${c \dv n}$ but ${c}$ was not a common divisor of both ${m}$ and ${n,}$ then it must be the case that ${c}$ is not a divisor of ${m.}$ But this would contradict the lemma we just proved. If it were instead the case that ${c \dv n}$ and ${c \dv m}$ but ${c \ndv (m-n)}$ and ${c \ndv n,}$ then it must be the case that ${c}$ is not a divisor of ${m - n.}$ But this would contradict another lemma we just proved — that ${((c \dv m) \land (c \dv n)) \nc (c \dv (m - n)).}$ Thus, it must be the case that set of all the common divisors of ${m}$ and ${n}$ and the common divisors of ${m-n}$ and ${n}$ are the exact same sets. And since they're the exact same sets, it follows that their maximum element is also the same.
+
+The theorem above is a particularly useful theorem because it's almost always the case that finding the greatest common divisor of two integers ${m}$ and ${n}$ is much easier for smaller integers than it is for larger integers. This is particularly true for computers; they can only handle integers so large.
+
+## Remainders
+
+Consider the following equations:
+
+$$
+	\eqs{
+		10 &= 3a + b \\
+		11 &= 3a + b \\
+		12 &= 3a + b \\
+		13 &= 3a + b \\
+		14 &= 3a + b \\
+		15 &= 3a + b \\
+		16 &= 3a + b \\
+	}
+$$
+
+If ${a \in \uint}$ and ${b \in \set{0,1,2},}$ what are the pairs of ${(a,b)}$ that satisfy the equations respectively? Well, let's lay them out:
+
+<div className={"numbered"}>
+
+| ~equation~      | ${a}$ | ${b}$ | ${(a,b)}$ |
+| --------------- | ----- | ----- | --------- |
+| ${10 = 3a + b}$ | ${3}$ | ${1}$ | ${(3,1)}$ |
+| ${11 = 3a + b}$ | ${3}$ | ${2}$ | ${(3,2)}$ |
+| ${12 = 3a + b}$ | ${4}$ | ${0}$ | ${(4,0)}$ |
+| ${13 = 3a + b}$ | ${4}$ | ${1}$ | ${(4,1)}$ |
+| ${14 = 3a + b}$ | ${4}$ | ${2}$ | ${(4,2)}$ |
+| ${15 = 3a + b}$ | ${5}$ | ${0}$ | ${(5,0)}$ |
+| ${16 = 3a + b}$ | ${5}$ | ${1}$ | ${(5,1)}$ |
+
+</div>
+
+Question: Given ${a \in \uint}$ and ${b \in \set{0,1,2},}$ is there an integer ${n}$ such that no pair ${(a,b)}$ satisfies the equation ${n = 3a + b?}$ Well, let's think about the integer ${3a}$ for a moment. If ${a \in \uint,}$ then ${3a \in 3 \uint.}$ That is, ${3a}$ is a multiple of ${3.}$ We can think of a multiple of some integer ${n}$ as _long-jumping_ along the integer number line by ${kn}$ places, where ${k}$ is the multiple. In this case, ${3n}$ means that there are certain places that we land on by default:
+
+<div className={"number-line"}>
+
+|           |     |     |           |     |     |           |     |     |           |     |     |     |
+| --------- | --- | --- | --------- | --- | --- | --------- | --- | --- | --------- | --- | --- | --- |
+| -6        | -5  | -4  | -3        | -2  | -1  | 0         | 1   | 2   | 3         | 4   | 5   |     |
+| ${\circ}$ |     |     | ${\circ}$ |     |     | ${\circ}$ |     |     | ${\circ}$ |     |     |     |
+
+</div>
+
+If we want to land on an integer other outside of ${3\uint,}$ that is, an integer that is not a multiple of ${3,}$ then we must add either ${1}$ or ${2.}$ For example, to go from ${-6}$ to ${-5,}$ must add ${1.}$ To go from ${3}$ to ${5,}$ must add ${2.}$
+
+If we think of addition as moving along the number line, this phenomenon is intuitive. If we start at the integer ${0}$ and want to get to the integer ${6,}$ we take ${6}$ steps, where each step is one.
+
+$$
+	\eqs{
+		0 & \\
+		1 &= 0 + 1  \\ 
+		2 &= 1 + 1 \\
+		3 &= 2 + 1 \\
+		4 &= 3 + 1 \\
+		5 &= 4 + 1 \\
+		6 &= 5 + 1 \\
+	}
+$$
+
+Thus, to get from point ${n}$ to a destination ${d,}$ we perform ${+ m}$ to get to ${d,}$ where ${m}$ is the number of steps. That is, ${d = n + m.}$ If we start at a point ${kn,}$ then that means we took ${n}$ steps from ${0}$ a total of ${k}$ times. And if we start from ${kn}$ and want to get to a destination ${d,}$ then we have ${d = kn + m.}$ If we rearrange this equation, we get ${d - m = kn.}$ We can read this as "Take ${m}$ steps back to return to ${kn.}$" And since ${d - m = kn,}$ it must be the case that ${m \lt k.}$ And since ${m}$ stands for the number of steps, it's a nonnegative quantity, so we can be even more specific: ${0 \le m \le k.}$ As it turns out, this is leads to an extremely important theorem in number theory called the _Division Theorem._ 
+
+
+<dfn>
+
+__division theorem.__ Let ${a,b \in \uint.}$ Then there is _exactly one_ pair of integers ${(q,r)}$ with ${0 \le r \lt b,}$ such that ${a = bq + r.}$ Given ${a = bq + r,}$ we call ${a}$ the _dividend_, ${b}$ the _divisor_, ${q}$ the _quotient_, and ${r}$ the _remainder_.
+
+</dfn>
+
+The division theorem leads to a natural extension of a theorem we've seen before.
+
+<dfn>
+
+__euclid's theorem ii.__ Let ${m,n,q,r \in \uint}$ with ${0 \le r \lt n}$ such that ${m = qn + r.}$ Then ${\gcd{m,n} = \gcd{r,n}.}$
+
+</dfn>
+
+### Floors and Ceilings
+
+We begin by defining the floors and ceilings of real numbers. The definitions below are presented formally to ensure we aren't sweeping anything under the rug or hiding the ball. For our purposes, the floor function returns the closest integer to a real number ${x}$ that is less than ${x.}$ Its sibling is the ceiling function, which returns the closest integer to a real number ${x}$ that is greater than ${x.}$
+
+<dfn>
+
+__floor.__ Given a real number ${x,}$ there exists a function ${f: \reals \to \uint}$ whose image under ${\reals}$ is an integer ${n}$ satisfying the relation ${n \le x \lt n + 1.}$ We call ${n}$ the _floor_ of ${x,}$ denoted ${\floor{x},}$ and ${f}$ the _floor function_. 
+
+</dfn>
+
+_Example_. ${\floor{2.1} = 2.}$
+
+_Example_. ${\floor{3.9} = 3.}$
+
+_Example_. ${\floor{2.99999} = 2.}$
+
+_Example_. ${\floor{-8.9} = -9.}$ (Remember that the floor returns the closest integer _less than_ its argument).
+
+<dfn>
+
+__ceiling.__ Let ${x}$ be a real number. Then there exists a function ${f: \reals \to \uint}$ whose image under ${\reals}$ is an integer ${n}$ satisfying the relation ${n - 1 \lt x \le n.}$ We call ${n}$ the _ceiling_ of ${x,}$ denoted ${\ceil{x},}$ and ${f}$ the _ceiling function_. 
+
+</dfn>
+
+_Example_. ${\ceil{2.9} = 3.}$
+
+_Example_. ${\ceil{6.1} = 7.}$
+
+_Example_. ${\ceil{0.009} = 1.}$
+
+_Example_. ${\ceil{-3.1} = -2.}$ (The ceiling function returns the closest integer _greater than_ its argument).
+
+### Remainders and Quotients 
+
+Having defined the floor and ceiling functions, we can now define the remainder operation. Informally, the remainder operation returns the remainder after division.
+
+<dfn>
+
+__remainder operation.__ Let ${a,b \in \uint}$ and ${b \gt 0.}$ Then
+
+$$
+	a \rem b = a - b \ar{ \floor{a/b} }.
+$$
+
+
+</dfn>
+
+_Example_. ${25 \rem 3 = 25 - 3(\floor{25/3}) = 25 - 3(8) = 25 - 24 = 1.}$
+
+_Example_. ${18 \rem 3 = 18 - 3(\floor{18/3}) = 18 - 3(6) = 18 - 18 = 0.}$
+
+_Example_. ${-12 \rem 7 = -12 - 7(\floor{-12/7}) = -12 - 7(-2) = -12 + 14 = 2.}$
+
+The remainder operation's partner is the integer division operation. Informally, it returns the integer quotient after division.
+
+<dfn>
+
+__integer division.__ Let ${a,b \in \uint}$ and ${b \gt 0.}$ Then
+
+$$
+	a \quo b = \floor{a/b}.
+$$
+
+</dfn>
+
+As an aside, many programming languages (e.g., Python) use `%` for the remainder operation and `//` for integer division. These operations behave differently from the mathematical definitions. Some languages, for example, may return a negative result given some expression `a % b` where `a` and `b` are integers. This stems from two rules that many computer architects and software engineers want:
+
+> (1) ${a = b(a \quo b) + (a \rem b).}$
+> 
+> (2) ${(-a) \quo b = -(a \quo b).}$
+
+The first rule is sensible. It's exactly how normal division works. The second rule, however, is suspect. As we saw, the floor should return the closest integer to a real number ${a/b}$ that is less than ${a/b.}$ Thus, the expression ${(-a) \quo b}$ is most certainly a very different expression from ${-(a \quo b).}$ So if the second rule is mathematically silly (some mathematicians, rather unkindly, go so far as to call it "dirty"), why is its implementation incentivized? Because the vast majority of programmers — and arguably, the vast majority of integer division applications — do not use integer division the way its mathematically defined. If a language did use the mathematically correct definition, then the line of code
+
+$$
+	(-a) ~\texttt{//}~ b = -(a ~\texttt{//}~ b)
+$$
+
+must be _false_.
+
+There are two significant problems with this result from an engineering standpoint. First, it's a breeding ground for bugs. Anyone who's had experience designing products — e.g., a programming language — knows that the first rule of design is to never make the user think. This nuance to parentheses and integer division won't just make the user think; it may very well make them smash their keyboards. Those who leave their keyboards intact will either move to another language or try to "fix" the language with various hacks and publishing them — the designer's worst nightmare.
+
+The second major problem is that implementing the mathematically correct definition requires a separate parsing rule for parentheses and integer division. That incurs a time and space cost for likely very little reward — most users do not expect a rule ${(-a) \star b \neq -(a \star b),}$ where ${\star}$ is a binary operator on a number type. This also means that the designers have to decide how they'd like to parse ${-a~\texttt{//}~b.}$ Is it ${(-a) ~ \texttt{//} ~ b}$ or ${-(a ~ \texttt{//}~ b)?}$ All of this translates to time, money, and labor; things that we don't have to worry about with mathematical definitions.  
+
+
+## Congruence
+
+Suppose we had the following, somewhat strange, clock. The cock only has one hand, and it moves around the clock from ${0}$ to ${1,}$ then from ${1}$ to ${2,}$ then from ${3}$ to ${4,}$ and finally from ${4}$ to ${0.}$ Assume it moves only in that order. 
+
+<CircularQueue data={[0,1,2,3,4]} scale={70} />
+
+If the clock ticks by 1, then the hand lands on 1. If the clock ticks by 2, then the hand lands on 2. Let's take a look at some of the patterns:
+
+$$
+	\ax{
+		\df{tick} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 \\ 
+		\df{hand} & 0 & 1 & 2 & 3 & 4 & 0 & 1 & 2 & 3 & 4 & 0 & 1 & 2 & 3 & 4 & 0 & 1 & 2 & 3 & 4 \\ 
+	}
+$$
+
+Here's another way to look at the pattern:
+
+$$
+	\ax{
+		0  & 1  & 2  & 3  & 4  \\
+		\hline
+		0  & 1  & 2  & 3  & 4  \\
+		5  & 6  & 7  & 8  & 9  \\
+		10 & 11 & 12 & 13 & 14 \\
+		15 & 16 & 17 & 18 & 19 \\
+		20 & 21 & 22 & 23 & 24 \\
+		25 & 26 & 27 & 28 & 29 \\
+		30 & 31 & 32 & 33 & 34 \\
+		35 & 36 & 37 & 38 & 39 \\
+		40 & 41 & 42 & 43 & 44 \\
+		45 & 46 & 47 & 48 & 49 \\
+	}
+$$
+
+The first row, separated from all the others, corresponds to a number on the
+clock. The integers beneath each clock number correspond to the number of ticks.
+Thus, at 5 clicks, we land on 0. At 19 clicks, we land on 4. At 46 clicks, we
+land on 1. Counting with only ${0,1,2,3,4}$ is called _counting modulo 5._ It's
+an example of a broader notion called _arithmetic modulo-${n}$_, where ${n}$ is
+the set ${\set{0,1,2,3,\ldots,n-1}}$  with ${n \in \nat.}$ In general, we call
+the set ${\set{0,1,2,3,\ldots,n-1}}$ the _integers modulo-${n}$_, and we call
+${n}$ the _modulus_. We aren't limited to just counting forwards — we can count backwards as well:
+
+$$
+	\ax{
+		-50  & -49  & -48  & -47  & -46  \\
+		-45  & -44  & -43  & -42  & -41  \\
+		-40  & -39  & -38  & -37  & -36  \\
+		-35  & -34  & -33  & -32  & -31  \\
+		-30  & -29  & -28  & -27  & -26  \\
+		-25  & -24  & -23  & -22  & -21  \\
+		-20  & -19  & -18  & -17  & -16  \\
+		-15  & -14  & -13  & -12  & -11  \\
+		-10  & -9   & -8   & -7   & -6  \\
+		-5   & -4   & -3   & -2   & -1  \\
+		0    & 1    & 2    & 3    & 4  \\
+		5    & 6    & 7    & 8    & 9  \\
+		10   & 11   & 12   & 13   & 14 \\
+		15   & 16   & 17   & 18   & 19 \\
+		20   & 21   & 22   & 23   & 24 \\
+		25   & 26   & 27   & 28   & 29 \\
+		30   & 31   & 32   & 33   & 34 \\
+		35   & 36   & 37   & 38   & 39 \\
+		40   & 41   & 42   & 43   & 44 \\
+		45   & 46   & 47   & 48   & 49 \\
+	}
+$$
+
+Given ${c}$ clock numbers, is there a way to determine which clock number ${\ell}$ we land on after ${t}$ ticks? Yes: ${\ell = c \rem t.}$ For example, for our sample clock, there are ${t = 5}$ clock numbers. After ${c=8}$ ticks, we land on ${8 \rem 5 = 8 - 5(\floor{8/5}) = 8 - 5(1) = 3,}$ which is what our pattern indicates. At this point, we can now introduction some notation.
+
+<dfn>
+
+__congruence.__ Let ${a,b,m \in \uint}$ and ${m \gt 0.}$ If, and only if, ${a \rem m = b \rem m,}$ we say that ${a}$ is _congruent to ${b}$ modulo ${m}$_ and write
+
+$$
+	a \equiv b \pmod m.
+$$
+
+We call the proposition ${a \equiv b \pmod m}$ a _congruence_ and call ${m}$ its _modulus_. If ${a}$ and ${b}$ are not _congruent modulo ${m}$_, then we write ${a \not\equiv b \pmod m.}$
+
+</dfn>
+
+Let's iron out some wrinkles with this definition. First, the notation
+
+$$
+	a \equiv b \pmod m
+$$
+
+is akin to saying "${a}$ is equivalent to ${b}$ ... ${\pmod m}$-wise, that is." The ${(\text{mod} ~~ m)}$ is like an adjective. "Pope Francis and Marilyn Manson are equivalent ... human-wise, that is." A more consistent notation for the same idea would've been
+
+$$
+	a ~\equiv_{\text{mod}~~c}~ b.
+$$
+
+The symbol ${\text{mod}}$ is another symbol for the remainder operation, which, in these materials, we denoted ${\rem.}$ We avoid using ${\text{mod}}$ for the remainder operation because it causes unnecessary confusion. However, now that we know that ${\text{mod}}$ is just another symbol for the remainder operation, we can conjecture as to why the notation is the way it is. It's not too difficult to imagine a lecturer writing
+
+$$
+	a \equiv b
+$$
+
+on a chalkboard, then, just to make sure things are clear, writing
+
+$$
+	a \equiv b \pmod m.
+$$
+
+This would also explain why there's that irregular spacing (again, just conjecture).
+
+Second, in the expression ${a \equiv b \pmod m,}$ the notation ${(\text{mod} ~ m)}$ denotes a set of integers. This is another reason why we avoid using ${\text{mod}}$ for the remainder operation.

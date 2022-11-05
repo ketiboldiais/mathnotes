@@ -3,8 +3,8 @@ import { isObjectLiteral } from "../utils/isObjectLiteral/isObjectLiteral";
 import { className } from "../utils/ClassNames";
 import { svg } from "../utils/svg/svg";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
 import { insertArrowDefinitions, translate } from "../utils";
+import { scaleBand, select } from "d3";
 
 const generateDataFromArray = (arr = []) => {
 	let data = [];
@@ -27,9 +27,9 @@ export const Sequence = ({
 	data = [1, 2, 3, 4, 5],
 	arrayPointers = [],
 	width = 0.574045 * data.length ** 2 + 22.878 * data.length + 45.8824,
-	height = 80,
+	height = 50,
 	scale = 100,
-	index = true,
+	index = false,
 	elementFillColor = "white",
 	elementStrokeColor = "black",
 	elementFontSize = "1rem",
@@ -51,16 +51,14 @@ export const Sequence = ({
 	const svgDimensions = svg(width, height, margins);
 	const sequenceData = generateDataFromArray(data);
 
-	const xScale = d3
-		.scaleBand()
+	const xScale = scaleBand()
 		.domain(sequenceData)
 		.range([0, svgDimensions.width], 0.05)
 		.paddingInner(0.1);
 
 	const renderSequence = () => {
 		// set up group
-		const canvas = d3
-			.select(sequenceFigure.current)
+		const canvas = select(sequenceFigure.current)
 			.select("g.svgElement");
 		insertArrowDefinitions(
 			canvas,

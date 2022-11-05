@@ -1,12 +1,11 @@
-import * as d3 from "d3";
+import { select } from "d3";
 
 export function wrap(text, width) {
   text.each(function () {
-    let text = d3.select(this);
+    let text = select(this);
     let words = text.text().split(/\s+/).reverse();
     let word;
     let line = [];
-		let lineNumber = 1;
     let lineHeight = 1.1; // ems
     let x = text.attr("x");
     let y = text.attr("y");

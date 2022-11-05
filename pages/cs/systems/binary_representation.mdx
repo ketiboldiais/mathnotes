@@ -1,10 +1,5 @@
 import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
 
-<head>
-	<title>Bit Manipulation</title>
-	<description>Notes on bit manipulation techniques</description>
-</head>
-
 # Binary Representation
 
 
@@ -70,9 +65,9 @@ ${\mathbb{B}.}$
 
 ## Representing Information
 
-On a computer, information is represented with **bits** — 0 or 1. By
+On a computer, information is represented with __bits__ — 0 or 1. By
 arranging the 1s and 0s in certain ways and assigning those arrangments
-meaning (a process called **encoding**) we can instruct a computer to
+meaning (a process called __encoding__) we can instruct a computer to
 perform operations.
 
 This is a key point. A sequence of bits on a computer have no meaning
@@ -96,7 +91,7 @@ that _appear_ to resemble step functions.
 
 ### Word Size
 
-Every computer has a **word size**. In terms of hardware, the word size is
+Every computer has a __word size__. In terms of hardware, the word size is
 the width of a single register on the machine. The width of a register is
 the number of binary cells the register contains. For example, a machine
 with a word size of 8 bits consists of registers with 8 binary cells. On a
@@ -118,10 +113,10 @@ sequences. This leaves 16 possible memory addresses.
 
 If we have ${n}$ possible numbers for addresses, the next question is how
 we want to use those numbers to address memory locations — the process of
-**byte ordering**. There are predominant two approaches too byte ordering:
+__byte ordering__. There are predominant two approaches too byte ordering:
 
-1. **Big Endian** (used by SPARC, PPC Mac, and the Internet), and
-2. **Little Endian** (used by the x86, ARM processesors for Android, iOS,
+1. __Big Endian__ (used by SPARC, PPC Mac, and the Internet), and
+2. __Little Endian__ (used by the x86, ARM processesors for Android, iOS,
    Linux, as well as most modern operating systems like Windows and OSX)
 
 With the Big Endian approach, the least significant byte has the highest
@@ -151,7 +146,7 @@ they made that decision, but it's what we have today.
 
 Because a single bit is so small, when we want to think of the smallest
 possible unit on a computer, we tend not to think in terms of an individual
-bit, but rather a group of four bits, colloquially called a **nibble**. In
+bit, but rather a group of four bits, colloquially called a __nibble__. In
 doing so, we can then think of information in terms of hexadecimal:
 
 | Hex | Decimal | Binary |
@@ -176,7 +171,7 @@ doing so, we can then think of information in terms of hexadecimal:
 This allows us to write large numbers in hexadecimal notation ala C:
 
 $$
-	\tt{0xFA1D37B}
+	\text{0xFA1D37B}
 $$
 
 ## Data Representations in C
@@ -207,13 +202,13 @@ Integers can be positive or negative (signed or unsigned). For unsigned
 integers, the binary representation can be mathematically represented as:
 
 $$
-	\tt{unsignedBinary}(X) = \sum\limits_{i=0}^{w-1} x_i \. 2^i
+	\text{unsignedBinary}(X) = \sum\limits_{i=0}^{w-1} x_i \cdot 2^i
 $$
 
 And to represent signed integers, we use two's complement. Mathematically:
 
 $$
-	\tt{twosComplement}(X) = -x_{w-1} \cdot 2^{w-1} + \sum\limits_{i=0}^{w-1} x_i \. 2^i
+	\text{twosComplement}(X) = -x_{w-1} \cdot 2^{w-1} + \sum\limits_{i=0}^{w-1} x_i \cdot 2^i
 $$
 
 The term:
@@ -222,7 +217,7 @@ $$
 	-x_{w-1} \cdot 2^{w-1}
 $$
 
-In Twos-complement, this is called the **sign bit**, and it indicates the
+In Twos-complement, this is called the __sign bit__, and it indicates the
 numbers signage — 0 for nonnegative, 1 for negative. For example, consider
 the number 10 on a machine with a word size of 5. In binary, this number is
 represented as:
@@ -372,7 +367,7 @@ $$
 $$
 
 Obviously, there's a limit on how many more bits we can append to a given
-bit sequence. When we go over that limit, we get an **overflow bit**.
+bit sequence. When we go over that limit, we get an __overflow bit__.
 
 ### Overflow Bits in Addition
 
@@ -380,20 +375,20 @@ When an overflow results from twos-complement addition, we have two
 possibilities:
 
 1. The result is within the twos-complement representable range,
-2. The result is too big (a **positive overflow**) — resulting in a
+2. The result is too big (a __positive overflow__) — resulting in a
    negative number.
-3. The result is too small (a **negative overflow**) — resulting in a
+3. The result is too small (a __negative overflow__) — resulting in a
    positive number.
 
 Mathematically:
 
 $$
 	\small
-	\tt{2sAdd}(u, v) = \begin{cases}
+	\text{2sAdd}(u, v) = \begin{cases}
 	\begin{aligned}
-		u + v + 2^w ~~~~ &u + v < \tt{MIN}_w ~~ \tt{(Negative Overflow)} \\
-		u + v ~~~~ &\tt{MIN}_w \leq u + v \leq \tt{MAX}_w \tt{(No Overflow)} \\
-		u + v - 2^w ~~~~ &\tt{MAX}_w < u + v ~~ \tt{(Positive Overflow)}
+		u + v + 2^w ~~~~ &u + v < \text{MIN}_w ~~ \text{(Negative Overflow)} \\
+		u + v ~~~~ &\text{MIN}_w \leq u + v \leq \text{MAX}_w \text{(No Overflow)} \\
+		u + v - 2^w ~~~~ &\text{MAX}_w < u + v ~~ \text{(Positive Overflow)}
 	\end{aligned}
 	\end{cases}
 $$
@@ -410,8 +405,8 @@ requires twice as many bits. Thus, the product of two unsigned ${w}$ bit
 numbers can require either ${0}$ or ${2w}$ bits.
 
 For 2s-complement multiplication (signed multiplication), we have two
-cases. If one of the operands is ${\tt{MIN}}$, then we may need up to
-${2w-1}$ bits. If one of the operands is ${\tt{MAX},}$ we may need up to
+cases. If one of the operands is ${\text{MIN}}$, then we may need up to
+${2w-1}$ bits. If one of the operands is ${\text{MAX},}$ we may need up to
 ${2w}$ bits.
 
 Again, we can't keep adding bits. As such, like addition, there are two
@@ -517,11 +512,11 @@ $$
 	-1^s \cdot M \cdot 2^E
 $$
 
-where ${s}$ is the sign bit. ${M}$ is the **significand** or **mantissa**.
+where ${s}$ is the sign bit. ${M}$ is the __significand__ or __mantissa__.
 This is the number of significant digits, usually some fractional value in
-the range ${[1.0, 2.0).}$ The bits that encode ${M}$ are called **f-bits**
-(fractional bits). And ${E}$ is the **exponent**, which weights the value
-by a power of two. The bits that encode ${E}$ are called the **e-bits**
+the range ${[1.0, 2.0).}$ The bits that encode ${M}$ are called __f-bits__
+(fractional bits). And ${E}$ is the __exponent__, which weights the value
+by a power of two. The bits that encode ${E}$ are called the __e-bits__
 (exponent bits).
 
 For example, the number ${15213,}$ as a float, can be represented as:
@@ -583,7 +578,7 @@ e-bits are encoded.
 2. If all of the e-bits are 1, the number is a **special floating point
    number**.
 3. If the e-bits are not all zeroes and not all ones, the number is a
-   **normalized floating point number**.
+   __normalized floating point number__.
 
 The way a floating point number's exponent ${E}$ and significand ${M}$ is
 encoded depends on which of these three kinds the floating point number is.
@@ -598,21 +593,21 @@ is a potentially very small amount, we want to make the best use of it.
 To do so, the ${E}$ value is encoded as a _biased value_:
 
 $$
-	E = \tt{exp} - \tt{bias}
+	E = \text{exp} - \text{bias}
 $$
 
-where ${\tt{exp}}$ is the unsigned number represented by the e-bits, and
+where ${\text{exp}}$ is the unsigned number represented by the e-bits, and
 the bias is:
 
 $$
-	\tt{bias} = 2^{k-1} - 1
+	\text{bias} = 2^{k-1} - 1
 $$
 
 and ${k}$ is the number of e-bits. Putting it goether, the encoding of the
 exponent is:
 
 $$
-	E = \tt{exp} - 2^{k - 1} - 1
+	E = \text{exp} - 2^{k - 1} - 1
 $$
 
 Because of this, the encoding of ${E}$ falls within the ranges:
@@ -644,11 +639,11 @@ While the encoding scheme for normalized values covers a lot of
 floating-point use cases, we can get closer to zero.
 
 For floating point numbers, when the e-bits are all 0s, we have a
-**denormalized value**. For denormalized values, we use a different
+__denormalized value__. For denormalized values, we use a different
 encoding:
 
 $$
-	E = 1 - \tt{bias}  = 1 - 2^{k-1} - 1
+	E = 1 - \text{bias}  = 1 - 2^{k-1} - 1
 $$
 
 ## Bit Manipulation
@@ -855,7 +850,7 @@ The number ${0001}$ in binary is the number ${1.}$ Hence the result -1.
 
 The bitwise left-shift operation is defined as follows:
 
-> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \NN.}$ Then ${b \bls n}$ shifts
+> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \nat.}$ Then ${b \bls n}$ shifts
 > all the digits of ${b}$ to the _left_ ${n}$ positions.
 
 Let's look at an example. The number 5 in binary is ${0000101.}$ When we
@@ -885,7 +880,7 @@ The number ${0101}$ in decimal is ${5,}$ and the number ${010100}$ in
 binary is ${20.}$ This observation leads to an alternative definition of
 the binary left-shift operator:
 
-> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \NN.}$ Then:
+> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \nat.}$ Then:
 >
 > $$
 > 	b \bls n = c \cdot 2^n
@@ -898,15 +893,15 @@ Thus, we have the following:
 <Grid cols={3}>
 
 $$
-  5 \bls 1 = 5 \. 2^1 = 10
+  5 \bls 1 = 5 \cdot 2^1 = 10
 $$
 
 $$
- 4 \bls 2 = 4 \. 2^2 = 16
+ 4 \bls 2 = 4 \cdot 2^2 = 16
 $$
 
 $$
- 8 \bls 3 = 8 \. 2^3 = 64
+ 8 \bls 3 = 8 \cdot 2^3 = 64
 $$
 
 </Grid>
@@ -915,7 +910,7 @@ $$
 
 Bitwise right shift.
 
-> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \NN.}$ Then ${b \brs n}$ shifts
+> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \nat.}$ Then ${b \brs n}$ shifts
 > all the digits of ${b}$ to the _right_ ${n}$ positions.
 
 For example, the number 10 in binary is ${001010.}$ The computation:
@@ -943,7 +938,7 @@ Notice how we lose the last two binary digits. The number ${000010}$ in
 decimal is ${2.}$ Like the left-shift operation, the right-shift operation
 also yields a more interesting definition:
 
-> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \NN.}$ Then:
+> _Defition_. Let ${b \in \mathbb{B}}$ and ${n \in \nat.}$ Then:
 >
 > $$
 > 	b \brs n = \floor{\dfrac{c}{2^n}} \\
@@ -1305,7 +1300,7 @@ $$
 
 Once we have this number, we can compare it against ${0.}$ If it's greater
 than ${0,}$ then the bit is ${1.}$ Otherwise, its ${0.}$ The result of
-computing ${1 \bls i}$ is called a **bitmask**. Here's an implementation in
+computing ${1 \bls i}$ is called a __bitmask__. Here's an implementation in
 C++:
 
 ```cpp

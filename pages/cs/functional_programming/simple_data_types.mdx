@@ -14,15 +14,15 @@ ML has the following base types:
 ## Expressions & Variable Bindings
 
 Before we study ML, we must first understand its foundational terminology
-and concepts. In ML, a program is a sequence of **bindings**. Each
-**binding** has a **type**, which is checked. If it the binding passes its
-type-check, then it is **evaluated**.
+and concepts. In ML, a program is a sequence of __bindings__. Each
+__binding__ has a __type__, which is checked. If it the binding passes its
+type-check, then it is __evaluated__.
 
-A binding's type depends on its **static environment** &mdash; roughly, the
+A binding's type depends on its __static environment__ &mdash; roughly, the
 _types_ of the preceding bindings. How a binding is evaluated depends on
-its **dynamic environment** &mdash; roughly, the _values_ of the preceding
-bindings. The term **environment** usually refers to the dynamic
-environment, and the term **context** usually refers to the static
+its __dynamic environment__ &mdash; roughly, the _values_ of the preceding
+bindings. The term __environment__ usually refers to the dynamic
+environment, and the term __context__ usually refers to the static
 environment. The following are some common expressions in ML:
 
 ### If-expressions
@@ -152,10 +152,10 @@ concatenation of ${e_1}$ and ${e_2.}$
 ## Variable Binding
 
 There are many kinds of bindings in ML, but the simplest binding is the
-**variable binding**. It takes the general form:
+__variable binding__. It takes the general form:
 
 $$
-	\mm{val $v$ = $e$}
+	\texttt{val $v$ = $e$}
 $$
 
 In the syntax above, `val` is akeyword, ${v}$ is the _variable_, and ${e}$
@@ -163,7 +163,7 @@ is any expression. The semicolon is optional, but it is necessary in a REPL
 (read-eval-print loop) to inform the _interpreter_ that the binding is
 complete.
 
-Every binding in ML has a**scope**, which we can think of as &#8220;where
+Every binding in ML has a__scope__, which we can think of as &#8220;where
 it can be used.&#8221; The example above tells us the _syntax_ for a
 variable binding (how to write it), but it does not tell us the _semantics_
 (how the binding is type-checked and evaluated; its meaning). The semantics
@@ -182,7 +182,7 @@ produces a _ new dynamic environment _ where the current dynamic
 environment now includes `⟨variable⟩` with the value of the
 `⟨expression⟩`'s evaluation.
 
-What is a **value**? A*value* is an expression that cannot be further
+What is a __value__? A*value* is an expression that cannot be further
 simplified &mdash; i.e., there is no more work to be done. For example,
 `10` is a value, but `5 + 5` is not. Both `10` and `5 + 5`, however, are
 _expressions_. In ML, all values are expressions, but not all expressions
@@ -225,11 +225,11 @@ val x = 20;
 ```
 
 but all this does is create a _different dynamic environment_ where
-`x = 20` **shadows** `x = 8+9`.
+`x = 20` __shadows__ `x = 8+9`.
 
 ## Function Bindings
 
-To define and use functions in ML, we create **function bindings**. For
+To define and use functions in ML, we create __function bindings__. For
 those coming from a Python or Java background, functions in ML work much
 the same way, with a few stark differences: (1) There is no notion of a
 _class_; (2) there is no notion of a `return` statement. As an example,
@@ -245,7 +245,7 @@ fun pow (x:int, y:int) = (* correct only for y >= 0 *)
 The general syntax for a function in ML:
 
 $$
-	\mm{fun $f$ ($a_1$ : $t_1$, ..., $a_n$ : $t_n$) = } \\
+	\texttt{fun $f$ ($a_1$ : $t_1$, ..., $a_n$ : $t_n$) = } \\
 	~~e_1
 	~~\vodts
 	~~e_n
@@ -279,7 +279,7 @@ program to evaluate the current expression).
 ### Function Calls
 
 Function bindings are only useful if we can _call_ them. To do so, we write
-a **function call**. The syntax:
+a __function call__. The syntax:
 
 $$
 	f \space (a_1, \ldots, a_n)
@@ -312,10 +312,10 @@ constructs, ML implements them awkwardly. Because recursion is effectively
 mandatory when using ML, it is important that we are as comfortable with
 recursion as possible.
 
-A **recursive** function is a function that calls itself. Because the
-function calls itself, we must always have a **base case** &mdash; a call
+A __recursive__ function is a function that calls itself. Because the
+function calls itself, we must always have a __base case__ &mdash; a call
 to the function that immediately returns a value, ending the line of calls
-made. The recursive function also requires an **inductive case** &mdash;
+made. The recursive function also requires an __inductive case__ &mdash;
 all other calls not handled by the base case; the function calls itself
 with smaller and smaller arguments.
 
@@ -359,21 +359,21 @@ val list1 = [0,1,2,3,4] : int list
 val list2 = [4,3,2,1,0] : int list
 ```
 
-The function above is an example of **linear recursion**: Each recursive
+The function above is an example of __linear recursion__: Each recursive
 call either (1) results in another recursive call with a smaller argument,
 or (2) results in the base case. However, we can also perform _nonlinear
 recursion_.
 
 ### Nonlinear Recursion
 
-In **nonlinear recursion**, the recursion involves more than one recursive
+In __nonlinear recursion__, the recursion involves more than one recursive
 call.
 
 ## Pairs
 
 As we already know, a good programming language provides ways of building
 compound data from simpler data. The simplest way of forming compound data
-in ML is through **pairs**. To build a pair, we use the following syntax:
+in ML is through __pairs__. To build a pair, we use the following syntax:
 
 $$
 	(e_1, e_2)
@@ -433,7 +433,7 @@ example, a 3-tuple (a triple):
 
 ### Nesting Tuples
 
-Tuples are of fixed but **arbtirary arity** &mdash; we can nest tuples
+Tuples are of fixed but __arbtirary arity__ &mdash; we can nest tuples
 however much we would like:
 
 ```sml
@@ -457,14 +457,14 @@ Type: int*(bool*int)
 We can nest pairs as much as we would like, but it can be difficult to
 determine how many parts are in a pair, since the type determines the
 amount of data contained in a pair. To get around this difficulty, ML
-provides **lists**. A list containing ${n}$ values is initialized with the
+provides __lists__. A list containing ${n}$ values is initialized with the
 following syntax:
 
 $$
-	\mm{[$v_1$, $v_2$, \ldots, $v_n$]}
+	\texttt{[$v_1$, $v_2$, \ldots, $v_n$]}
 $$
 
-Note that unlike tuples, lists are **homogeneous** &mdash; a list's members
+Note that unlike tuples, lists are __homogeneous__ &mdash; a list's members
 must all be of the same type.
 
 The _empty list_,`[]`, is the list with 0 elements. However, while it does
@@ -518,7 +518,7 @@ expression, we can place it anywhere an expression may be placed. The `let`
 expression takes the form:
 
 $$
-	\mm{let $b_1$, $b_2$, \dots $b_n$ in $e$ end}
+	\texttt{let $b_1$, $b_2$, \dots $b_n$ in $e$ end}
 $$
 
 Above: Each ${b}$ is a binding, ${e}$ is an expression, and the symbols
@@ -586,13 +586,13 @@ not, then ask the second question, `else`. The answer to `else` is always
 
 $$
 \begin{aligned}
-	&\mm{f(5)} \\
-	&\mm{c(1, 5)} \\
-	&\mm{[1, c(2, 5)]} \\
-	&\mm{[1, 2, c(3, 5)]} \\
-	&\mm{[1, 2, 3, c(4, 5)]} \\
-	&\mm{[1, 2, 3, 4, c(5, 5)]} \\
-	&\mm{[1, 2, 3, 4, 5]} \\
+	&\texttt{f(5)} \\
+	&\texttt{c(1, 5)} \\
+	&\texttt{[1, c(2, 5)]} \\
+	&\texttt{[1, 2, c(3, 5)]} \\
+	&\texttt{[1, 2, 3, c(4, 5)]} \\
+	&\texttt{[1, 2, 3, 4, c(5, 5)]} \\
+	&\texttt{[1, 2, 3, 4, 5]} \\
 \end{aligned}
 $$
 
@@ -642,22 +642,22 @@ fun max (x_list : int list) =
 The code above asks 4 different questions:
 
 1. Is `x_list` the empty list?
-   - Yes ${\implies}$ evaluate to `0`.
-   - No ${\implies}$ ask the next question.
+   - Yes ${\nc}$ evaluate to `0`.
+   - No ${\nc}$ ask the next question.
 2. Is the tail of `x_list` the empty list? (i.e., Is the list a singleton
    list?)
-   - Yes ${\implies}$ evaluate to the head of `x_list`.
-   - No ${\implies}$ ask the next question.
+   - Yes ${\nc}$ evaluate to the head of `x_list`.
+   - No ${\nc}$ ask the next question.
 3. Is the head of `x_list` greater than the maximum of the tail of the
    list?
-   - Yes ${\implies}$ evaluate to the head of `x_list`
-   - No ${\implies}$ ask the next question.
+   - Yes ${\nc}$ evaluate to the head of `x_list`
+   - No ${\nc}$ ask the next question.
 4. `else`.
    - evaluate to the maximum of the tail of the list.
 
 What is the problem with this algorithm? The problem is we are calling
 `max()` twice recursively. This is an example of a common recursive error,
-the **exponential blowup** &mdash; `max()` asks for `max()` twice, and in
+the __exponential blowup__ &mdash; `max()` asks for `max()` twice, and in
 both those `max()` calls, `max()` is asked twice (now 4 `max()` calls), and
 in each of those 4 `max()` calls, `max()` is asked twice (now 16 `max()`
 calls), etc. If we passed into `max()` the value of `countUp_from_1(100)`,
@@ -692,29 +692,29 @@ is ${t,}$ ${\ell}$ is `[1, 2, 3, 4, 5]`, and ${v}$ is `tail_max`:
 
 $$
 	\begin{aligned}
-		&\mm{M($\ell$)} \\
-		&\mm{M([1, 2, 3, 4, 5])} \\
-		&\mm{h($\ell$) > v} \\
-		&\mm{h($\ell$) > M(t($\ell$))} \\
-		&\mm{1 > M([2, 3, 4, 5])} \\
-		&\mm{1 > (h($\ell$) > v)} \\
-		&\mm{1 > (h($\ell$) > M(t($\ell$)))} \\
-		&\mm{1 > (2 > M([3, 4, 5]))} \\
-		&\mm{1 > (2 > (3 > v))} \\
-		&\mm{1 > (2 > (3 > M(t($\ell$))))} \\
-		&\mm{1 > (2 > (3 > M[4, 5]))} \\
-		&\mm{1 > (2 > (3 > (4 > v)))} \\
-		&\mm{1 > (2 > (3 > (4 > M(t($\ell$)))))} \\
-		&\mm{1 > (2 > (3 > (4 > M([5]))))} \\
-		&\mm{1 > (2 > (3 > (4 > (5 > v))))} \\
-		&\mm{1 > (2 > (3 > (4 > (5 > M(t($\ell$))))))} \\
-		&\mm{1 > (2 > (3 > (4 > (5 > M([])))))} \\
-		&\mm{1 > (2 > (3 > (4 > (5 > 0))))} \\
-		&\mm{1 > (2 > (3 > (4 > (5))))} \\
-		&\mm{1 > (2 > (3 > (5)))} \\
-		&\mm{1 > (2 > (5))} \\
-		&\mm{1 > (5)} \\
-		&\mm{5} \\
+		&\texttt{M($\ell$)} \\
+		&\texttt{M([1, 2, 3, 4, 5])} \\
+		&\texttt{h($\ell$) > v} \\
+		&\texttt{h($\ell$) > M(t($\ell$))} \\
+		&\texttt{1 > M([2, 3, 4, 5])} \\
+		&\texttt{1 > (h($\ell$) > v)} \\
+		&\texttt{1 > (h($\ell$) > M(t($\ell$)))} \\
+		&\texttt{1 > (2 > M([3, 4, 5]))} \\
+		&\texttt{1 > (2 > (3 > v))} \\
+		&\texttt{1 > (2 > (3 > M(t($\ell$))))} \\
+		&\texttt{1 > (2 > (3 > M[4, 5]))} \\
+		&\texttt{1 > (2 > (3 > (4 > v)))} \\
+		&\texttt{1 > (2 > (3 > (4 > M(t($\ell$)))))} \\
+		&\texttt{1 > (2 > (3 > (4 > M([5]))))} \\
+		&\texttt{1 > (2 > (3 > (4 > (5 > v))))} \\
+		&\texttt{1 > (2 > (3 > (4 > (5 > M(t($\ell$))))))} \\
+		&\texttt{1 > (2 > (3 > (4 > (5 > M([])))))} \\
+		&\texttt{1 > (2 > (3 > (4 > (5 > 0))))} \\
+		&\texttt{1 > (2 > (3 > (4 > (5))))} \\
+		&\texttt{1 > (2 > (3 > (5)))} \\
+		&\texttt{1 > (2 > (5))} \\
+		&\texttt{1 > (5)} \\
+		&\texttt{5} \\
 	\end{aligned}
 $$
 
@@ -757,19 +757,19 @@ fun max (x_list : int list) =
 Errors in ML fall into three groups: (1) _syntax errors_, (2) _type
 errors_, and (3) _runtime errors_.
 
-**Syntax errors** are errors caused by writing something incorrectly.
+__Syntax errors__ are errors caused by writing something incorrectly.
 Incorrect meaning we have written something in violation of ML's syntax.
 
-**Type errors** are errors caused by failing to pass a type check. These
+__Type errors__ are errors caused by failing to pass a type check. These
 errors occur when we fail to follow the type checking rules; e.g., adding
 an `int` type variable to a`bool` type variable.
 
-**Runtime errors** are errors that occur during evaluation. This might be
+__Runtime errors__ are errors that occur during evaluation. This might be
 because we used an operator incorrectly, or because we wrote a recursive
 function that _bottoms out_ &mdash; making too many recursive calls such
 that the program terminates.
 
-Errors are not caught by ML can be broadly classified as **logic errors**.
+Errors are not caught by ML can be broadly classified as __logic errors__.
 Here, we complied with syntax and semantics, so we do not see any syntax,
 type, or runtime errors, but our program does something outside of our
 expections. Perhaps it hangs (enters an infinite loop), returns an

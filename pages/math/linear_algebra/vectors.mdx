@@ -1,38 +1,41 @@
 import { Plot as Plot2 } from "../../../components/illus/components/Plot/Plot";
 
-<head>
-	<title>Vector Algebra</title>
-	<description>Notes on vector algebra.</description>
-</head>
+<Head>
+	<title>Real Vector Algebra</title>
+	<meta name={`description`} content={`Notes on real vector aglebra.`}/>
+</Head>
 
-# Vector Algebra
+# Real Vector Algebra
 
-This chapter covers notes on vector algebra.
+This chapter covers notes on real vector algebra.
 
 <div className={"outline"}>
 
-1. [Vector Operations](#vector-operations)
+1. [Vector Relations](#vector-relations)
+2. [Vector Operations](#vector-operations)
 	1. [Vector Addition and Subtraction](#vector-addition-and-subtraction)
 	2. [Scalar Multiplication](#scalar-multiplication)
+		1. [Distributivity of Scalar Multiplication](#distributivity-of-scalar-multiplication)
 	3. [Vector Length](#vector-length)
-	4. [Vector Relations](#vector-relations)
-2. [Linear Combinations](#linear-combinations)
+3. [Zero Vector](#zero-vector)
+4. [Vector Space](#vector-space)
+5. [Linear Combinations](#linear-combinations)
+6. [Spans](#spans)
 
 </div>
 
-Before we continue with matrices, we take a brief detour to examine vectors.
-First, we define two kinds of vectors. The column vector:
+Below are the definitions for the column and row vector. We use the term "field" in some of the definitions for generality. The vectors considered in this chapter will only be vectors in ${\reals^n}$ (what are called _real vectors_). Accordingly, for the materials on this page only, any mention of a "field" or ${\field}$ may be safely replaced with "real numbers" and ${\reals}$ respectively.
 
 <dfn>
 
-__column vector.__ An ${n}$-dimensional column vector ${v}$ is an ${n}$-tuple on ${\reals^n,}$ denoted:
+__column vector.__ An ${n}$-dimensional column vector ${v}$ is an ${n}$-tuple on a field ${\reals^n,}$ denoted:
 
 $$
-	v_c = \mx{c_1, \\ c_2, \\ \vdots \\ c_n}
+	\vv_c = \mx{c_1, \\ c_2, \\ \vdots \\ c_n}
 $$
 
-where ${c_i \in \reals,~i=1,2,\ldots,n \in \NN}$ are called the _components_ of
-the vector ${v.}$
+where ${c_i \in \reals,~i=1,2,\ldots,n \in \nat}$ are called the _components_ of
+the vector ${\vv.}$
 
 </dfn>
 
@@ -40,13 +43,13 @@ and the row vector:
 
 <dfn>
 
-__row vector.__ An ${n}$-dimensional row vector ${v_r}$ is an ${n}$-tuple on ${\reals^n,}$ denoted:
+__row vector.__ An ${n}$-dimensional row vector ${v_r}$ is an ${n}$-tuple on a field ${\reals^n,}$ denoted:
 
 $$
-	v_r = [r_1, r_2, \ldots, r_n]
+	\vv_r = [r_1, r_2, \ldots, r_n]
 $$
 
-where ${r_i \in \reals,~i=1,2,\ldots,n \in \NN}$ are called the _components_ of the vector ${v.}$
+where ${r_i \in \reals,~i=1,2,\ldots,n \in \nat}$ are called the _components_ of the vector ${\vv.}$
 
 </dfn>
 
@@ -58,6 +61,30 @@ vector. For the remaining sections, we'll restrict ourselves to column vectors.
 Thus, when we use the word "vector" we mean a column vector, and when we write
 ${v \in \reals^n,}$ we mean ${v_c \in \reals^n.}$ When we need to use a row
 vector, we revert and use the more explicit notations ${v_r}$ and ${v_c.}$
+
+## Vector Relations
+
+Alongside the usual operations, we may also describe relations between vectors.
+These relations are defined below.
+
+<dfn>
+
+__vector relations.__ Let ${{\mtx{v}} \in \field^n}$ and ${\mtx{w} \in \field^n}$ be the vectors
+
+$$
+	\mtx{v} = \mx{a_1 \\ a_2 \\ \vdots \\ a_n},~~~
+	\mtx{w} = \mx{b_1 \\ b_2 \\ \vdots \\ b_n}.
+$$
+
+where ${a_1, a_2, \ldots, a_n \in \field}$ and ${b_1, b_2, \ldots, b_n \in \field.}$ Then ${\mtx{v} \rel \mtx{w}}$ if, and only if,
+
+$$
+	a_1 \rel b_1,~~a_2 \rel b_2,~~\ldots,~~a_n \rel b_n,
+$$
+
+where ${R \in \set{ =, \le, \ge, \lt, \gt }.}$ That is, ${\mtx{v} \rel \mtx{w},}$ if and only if ${R}$ holds for all members of the Cartesian product of the components of ${\mtx{v}}$ and ${\mtx{w}.}$
+
+</dfn>
 
 ## Vector Operations
 
@@ -127,6 +154,15 @@ $$
 
 </Grid>
 
+Importantly, vector addition is associative. This follows directly from the
+parallelogram law of elementary geometry.
+
+<dfn>
+
+__associativity of vector addition.__ Let ${{\bf a}, {\bf b}, {\bf c} \in \reals^n.}$ Then ${{\bf a} + ({\bf b} + {\bf c}) = ({\bf a} + {\bf b}) + {\bf c}.}$
+
+</dfn>
+
 ### Scalar Multiplication
 
 Given a vector ${\mtx{v} \in \reals^n,}$ we can multiply ${\mtx{v}}$ with a real
@@ -148,6 +184,58 @@ $$
 	c \mtx{v} = \mx{ca_1 \\ ca_2 \\ \ldots \\ ca_n}.
 $$
 
+</dfn>
+
+#### Distributivity of Scalar Multiplication 
+
+Suppose we had two vectors, ${{\bf a} = \vc{OP}}$ and ${{\bf b} = \vc{PQ}.}$
+
+<Fig
+link={"https://res.cloudinary.com/sublimis/image/upload/v1664037297/math/dist_vector_multiply_bz2whh.svg"}
+imwidth={"429"} imheight={"321"} caption={"Vector multiplication"} width={"40"}
+/>
+
+From the parallelogram law of elementary geometry, we know that ${\vc{OQ} = {\bf a} + {\bf b}.}$ Now suppose that ${P'}$ is a point on ${OP}$ and ${Q'}$ is a point on ${OQ,}$ such that:
+
+$$
+	\dfrac{OP'}{OP} = \dfrac{OQ'}{OQ} = m
+$$
+
+It follows, then, that ${P'Q'}$ is parallel to ${PQ,}$ which allows us to infer that:
+
+$$
+	\vc{P'Q'} = m {\bf b}
+$$
+
+Therefore:
+
+$$
+	\eqs{
+		m({\bf a} + {\bf b}) &= \vc{OQ'} \\
+		&= \vc{OP} + \vc{OP'} \\
+		&= m {\bf a} + m {\bf b}
+	}
+$$
+
+This leads to a particularly important property of scalar multiplication: Scalar multiplication is distributive over addition. For example:
+
+$$
+	3 \ar{
+		\mx{3 \\ 2 \\ 4} +
+		\mx{2 \\ 8 \\ 9}
+	} =
+	\mx{(3)3 \\ (3)2 \\ (3)4} +
+	\mx{(3)2 \\ (3)8 \\ (3)9}
+	=
+	\mx{9 \\ 6 \\ 12} +
+	\mx{6 \\ 24 \\ 27}
+$$
+
+We state this as a theorem:
+
+<dfn>
+
+__distributivity of scalar multiplication.__ Let ${{\bf a}, {\bf b} \in \reals^n.}$ be vectors, and ${m}$ a scalar. Then ${m ({\bf a} + {\bf b}) = m {\bf a} + m {\bf b}.}$
 
 </dfn>
 
@@ -159,7 +247,7 @@ ${\mtx{v},}$ denoted below.
 
 <Fig
 link={"https://res.cloudinary.com/sublimis/image/upload/v1663806824/math/vector_space_uxrr15.svg"}
-imwidth={"713"} imheight={"554"} caption={"vector length"} width={"40"} />
+imwidth={"713"} imheight={"554"} caption={"vector length"} width={"45"} />
 
 The length of this vector is computed using Pythagoras's theorem:
 
@@ -187,29 +275,69 @@ $$
 
 </dfn>
 
-### Vector Relations
+## Zero Vector
 
-Alongside the usual operations, we may also describe relations between vectors.
-These relations are defined below.
+There's a particularly special kind of vector we'll use extensively, called the
+_zero vector_.
 
 <dfn>
 
-__vector relations.__ Let ${{\mtx{v}} \in \reals^n}$ and ${\mtx{w} \in \reals^n}$ be the vectors
+__zero vector.__ Let ${{\bf 0} \in \reals^n.}$ Then ${\bf 0}$ is the zero  vector, defined as:
 
 $$
-	\mtx{v} = \mx{a_1 \\ a_2 \\ \vdots \\ a_n},~~~
-	\mtx{w} = \mx{b_1 \\ b_2 \\ \vdots \\ b_n}.
+	{\bf 0} = \mx{0 \\ 0 \\ \vdots \\ 0}.
 $$
 
-where ${a_1, a_2, \ldots, a_n \in \reals}$ and ${b_1, b_2, \ldots, b_n \in \reals.}$ Then ${\mtx{v} \rel \mtx{w}}$ if, and only if,
+Given ${{\bf 0}, {\bf v} \in \reals^n,}$ the follow propositions are true:
 
 $$
-	a_1 \rel b_1,~~a_2 \rel b_2,~~\ldots,~~a_n \rel b_n,
+	\eqs{
+		{\bf v} + {\bf 0} &= {\bf 0} + {\bf v} = {\bf v} \\
+		{\bf v} + (-{\bf v}) &= {\bf 0}
+	}
 $$
-
-where ${R \in \set{ =, \le, \ge, \lt, \gt }.}$ That is, ${\mtx{v} \rel \mtx{w},}$ if and only if ${R}$ holds for all members of the Cartesian product of the components of ${\mtx{v}}$ and ${\mtx{w}.}$
 
 </dfn>
+
+## Vector Space
+
+The space ${\reals^n}$ is an example of a _vector space_.  We won't be concerned
+with vector spaces too deeply in this chapter, but we present the definition
+below to make our discussion more efficient. Note that the definition below uses
+the term "algebra." For our purposes, this is simply a set that contains (a)
+some objects — in our case, vectors, and (b) operations on those objects — here,
+vector addition and scalar multiplication.
+
+<dfn>
+
+__vector space.__ Let ${\V}$ be a set, ${+}$ be the operation of _vector addition_, and ${\op}$ be _scalar multiplication_. Then the algebra ${\set{\V, \set{+,\op}}}$ is a _vector space_ over a field ${\field}$ if, and only if, for all ${\uu, \vv, \ww \in \V}$ and for all scalars ${c,d \in \field,}$ the following axioms are true:
+
+<div className={`numbered`}>
+
+|                                                                           |                                                    |
+| ------------------------------------------------------------------------- | -------------------------------------------------- |
+| ${\V}$ is closed under vector addition.                                   | ${\uu + \vv \in \V.}$                              |
+| Vector addition is commutative on ${\V.}$                                 | ${\uu + \vv = \vv + \uu.}$                         |
+| Vector addition is associative on ${\V.}$                                 | ${(\uu + \vv) + \ww = \vv + (\uu + \ww).}$         |
+| For all ${\uu \in \V,}$ there exists an additive identity in ${\V.}$      | ${\uu + \mathbf{0} = \uu.}$                        |
+| For all ${\uu \in \V,}$ there exists an additive inverse in ${\V.}$       | ${\uu + (-\uu) = \mathbf{0}.}$                     |
+| ${\V}$ is closed under scalar multiplication.                             | ${c \ast \uu \in \V.}$                             |
+| Scalar multiplication is distributive over vector addition on ${\V.}$     | ${c \op (\uu + \vv) = (c \op \uu) + (c \op \vv).}$ |
+|                                                                           | ${\uu \op (c + d) = (c \op \uu) + (d \op \uu).}$   |
+| Scalar multiplication is associative on ${\V.}$                           | ${c \op (d \op \uu) = (c \op d) \op u.}$           |
+| For all ${\uu \in \V,}$ there exists a multiplicative identity in ${\V.}$ | ${1(\uu) = \uu.}$                                  |
+
+
+</div>
+
+
+
+
+
+</dfn>
+
+
+
 
 ## Linear Combinations
 
@@ -278,3 +406,129 @@ combination. These cofficients directly lead to a fundamental problem in linear
 algebra called the _linear combination problem_:
 
 > Given vectors ${\mtx{v}_1, \mtx{v}_2, \ldots, \mtx{v}_n}$ and a vector ${b,}$ is ${b}$ a linear combination of ${\mtx{v}_1, \mtx{v}_2, \ldots, \mtx{v}_n?}$ 
+
+Let's consider an example. Say we had the following vector equation:
+
+$$
+	x_1 \mx{1 \\ 2 \\ 1} +
+	x_2 \mx{1 \\ 1 \\ 0} +
+	x_3 \mx{2 \\ 1 \\ 2} =
+	\mx{0 \\ 1 \\ -2}
+$$
+
+As we did earlier, we can rewrite this equation by denoting each vector as a
+variable:
+
+$$
+	x_1{\vv}_1 + x_2{\vv}_2 + x_3{\vv}_3 = {\bb}, \\[1em]
+	\where{}
+	{\vv}_1 = \mx{1 \\ 2 \\ 1},
+	~~
+	{\vv}_2 = \mx{1 \\ 1 \\ 0},
+	~~
+	{\vv}_3 = \mx{2 \\ 1 \\ 2},
+	~~
+	{\bb} = \mx{0 \\ 1 \\ -2}.
+$$
+
+The linear combination problem asks, what values of ${\ar{x_1,x_2,x_3}}$ are
+there such that this equation holds? We begin by expanding the left-hand side of
+the equation:
+
+$$
+	x_1{\vv}_1 + x_2{\vv}_2 + x_3{\vv}_3 = {\bb}
+	=
+	\mx{x_1 \\ 2 x_1 \\ x_1} +
+	\mx{x_2 \\ x_2 \\ 0} +
+	\mx{2 x_3 \\ x_3 \\ 2 x_3} =
+	\mx{x_1 + x_2 + 2x_3 \\ 2x_1 + x_2 + x_3 \\ x_1 + 2x_3}.
+$$
+
+Substituting the expanded expression into our previous expression, we have:
+
+$$
+	\mx{x_1 + x_2 + 2x_3 \\ 2x_1 + x_2 + x_3 \\ x_1 + 2x_3} = \mx{0 \\ 1 \\ -2}.
+$$
+
+Once more, we have a system of linear equations:
+
+<div className="eq">
+
+| ${x_1}$  | ${+}$  | ${x_2}$ | ${+}$ | ${2x_3}$ | ${=}$ | ${0}$   |
+| -------- | ------ | ------- | ----- | -------- | ----- | ------- |
+| ${2x_1}$ | ${+}$  | ${x_2}$ | ${+}$ | ${2x_3}$ | ${=}$ | ${1}$   |
+| ${x_1}$  | ${~~}$ | ${~~}$  | ${+}$ | ${2x_3}$ | ${=}$ | ${-2.}$ |
+
+</div>
+
+This yields the agumented matrix:
+
+$$
+	\ix{
+		\AA \aug \bb
+	}
+	=
+	\mx{
+		1 & 1 & 2 & \aug & 0 \\
+		2 & 1 & 1 & \aug & 1 \\
+		1 & 0 & 2 & \aug & -2
+	}
+$$
+
+As turns out, this particular combination has the solution ${\ar{0, 2, -1}.}$
+Given that linear combination problem expands to a system of linear equations,
+we can rely on several facts we've seen: 
+
+1. If the linear system is inconsistent, then there are no scalars ${x_1, x_2,
+\ldots x_n}$ such that ${x_1 \vv_1 + x_2 \vv_2 + \ldots + x_n \vv_n = \bb.}$
+2. If the linear system is consistent and the solution is unique, then ${x_1,
+x_2, \ldots x_n}$ such that ${x_1 \vv_1 + x_2 \vv_2 + \ldots + x_n \vv_n}$ is
+the _only_ linear combination of ${\bb.}$
+3. If the linear system is consistent and the solution set has free parameters,
+then there are infinitely many linear combinations of ${\bb.}$ 
+
+## Spans
+
+Suppose we're given a set of vectors ${\set{{\vv}_1, {\vv}_2, {\vv}_3, \ldots, {\vv}_n}.}$ We're then asked, what are all the linear combinations of this set? For example, say the set of vectors is:
+
+$$
+	\lset{
+		{\vv}_1 = \mx{2 \\ 1 \\ 3},
+		~~
+		{\vv}_2 = \mx{4 \\ 2 \\ 6},
+		~~
+		{\vv}_3 = \mx{6 \\ 4 \\ 9}
+	}.
+$$
+
+One linear combination of this vector is
+
+$$
+	{\bb} = \mx{8 \\ 8 \\ 12}.
+$$
+
+Why? Because:
+
+$$
+		-10 \mx{2 \\ 1 \\ 3} +
+		\mx{4 \\ 2 \\ 6} +
+		4 \mx{6 \\ 4 \\ 9} =
+		\mx{8 \\ 8 \\ 12}.
+$$
+
+The set of all linear combinations of ${\vv_1,}$ ${\vv_2,}$ and ${\vv_3}$ is the called the _span_ of ${\vv_1,}$ ${\vv_2,}$ and ${\vv_3.}$ Above, we've determined that ${\bb}$ is a member of the span of ${\set{{\vv}_1, {\vv}_2, {\vv}_3, \ldots, {\vv}_n}.}$
+
+<dfn>
+
+__span.__ Let ${S=\set{{\vv}_1, {\vv}_2, \ldots {\vv}_n}}$ be a set vectors,
+where ${n \in \nat.}$ The set of all vectors that are linear combinations of
+${S}$ is called the _span_ of ${S,}$ denoted ${V = \text{span}(S).}$ We say that
+${V}$ _spans_ ${S,}$ ${V}$ is _spanned by_ ${S,}$ and that ${S}$ is a
+_spanning set_ of ${V.}$ Symbolically,
+
+$$
+	\text{span}(S) = \lset{ \left. \dsum{i=1}{n} c_i v_i ~~ \right \vert ~~ n \in \nat,~~c_i \in \reals,~~v_i \in S }.
+$$
+
+</dfn>
+

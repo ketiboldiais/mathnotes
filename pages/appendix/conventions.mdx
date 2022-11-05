@@ -1,0 +1,396 @@
+## Natural Numbers
+The symbol ${\nat}$ always denotes the _nonnegative integers_: ${\set{0,1,2,3,\ldots}.}$ To denote the positive integers, I use the notation ${\uint^+.}$ I adopt this convention because many of the notes assume von Neumann's construction of the naturals, and I've personally found it's much easier [constructing them](./../math/set_theory/natural-numbers) with ${\nil := 0.}$ This is just anecdote and personal preference. Edmund Landau, in his book ~foundations of analysis~ (1960), uses the classical construction starting at 1, and it's a sterling example of mathematical exposition.
+
+## Choice of Set Theory
+A majority of the notes (roughly 98.73% on the last count) assume ZF set theory. As such, the terms "universal set" or "domain of discourse" of the sets ${A,}$ ${B,}$ ${C,}$ etc., are intended to imply that the sets discussed exist in some larger set ${U}$ or ${D.}$ They _do not_ imply that there exists a set of all sets. A minority of the notes delve into other set theory (e.g., NFU). Those notes will always be prefaced with a bold __WITHIN (set theory ${x}$)__. I state this upfront to avoid the "eggshell walking" sensation that occasionally accompanies using set theory terms.
+
+## "Calculus"
+As Paul Halmos wrote, "Calculus books are bad because there is no such subject as calculus."[^halmos] Both linguistics and the history of mathematics are on his side. In Latin, the word _calculus_ is the diminutive of _calx_, meaning "limestone" (from which we inherit the word _calcium_). Accordingly, calculus books often translate _calculus_ as "pebble" in a footnote, suggesting the Romans — the people who gaves us arches and the Justinian Code — used rocks to add and subtract. Already, something strange is afoot. Although the Romans certainly weren't as interested in mathematics as the Greeks, they also weren't troglodytes chained to Plato's cave. Those "rocks" were beads on an abacus. 
+
+A better citation would be to the Oxford dictionary's definition: "A particular method or system of calculation or reasoning." This would be in line with what Newton and Leibniz ventured — investigating methods of reasoning about infinites and infinitesimals. It would also hint at why topic transitions in calculus feel rough to many readers. The move from derivatives to integrals is often clear, but not so much volumes, disks, sequences and series. Why? Because the standard calculus course is a smorgasbord of ideas from various mathematical domains: logic, set theory, algebra, geometry, analysis, field theory, topology, differentiation, integration, measure theory, linear algebra, ..., some application the author is interested in.  
+
+Because of this, there aren't any "calculus" notes, in so far as there isn't a heading called _Calculus_. There was such a header at first. But organizing my notes over the years, the header's directory emptied steadily — its contents ebbed, flowing into specific folders without my explicit notice (a side effect of working predominantly via console). A colleague asked one day if I had any materials on calculus, and to my surprise, there was no explicit header called _Calculus_. All of this is to say that branches of mathematics aren't disjoint sets, and the notes may not fall under a heading the reader would expect. 
+
+[^halmos]: ~Pauls Halmos~, ~How to Write Mathematics~ 2 (1973) (_available at_ ~[sciencesconf.org](https://entropiesschool.sciencesconf.org/data/How_to_Write_Mathematics.pdf)~).
+
+
+
+
+## Symbols
+
+Below are some symbols used in the materials.
+
+
+<div className={`ltb`}>
+
+| ~expression~                                                                         | ~note~                                                                                               |
+| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| ${0}$                                                                                | The Boolean value false.                                                                             |
+| ${1}$                                                                                | The Boolean value true.                                                                              |
+| ${\bot(p)}$                                                                          | The proposition ${p}$ is false.                                                                      |
+| ${\top(p)}$                                                                          | The proposition ${p}$ is true.                                                                       |
+| ${\neg p}$                                                                           | Not ${p.}$                                                                                           |
+| ${a \land b}$                                                                        | ${a}$ and ${b.}$                                                                                     |
+| ${a \lnand b}$                                                                       | Not both ${a}$ and ${b}$ (also called _nand_).                                                       |
+| ${a \lor b}$                                                                         | ${a}$ or ${b}$ (_inclusive or_).                                                                     |
+| ${a \lxor b}$                                                                        | Either ${a}$ or ${b}$ (_exclusive or_, also called _xor_).                                           |
+| ${a \lnor b}$                                                                        | ${a}$ nor ${b}$ (also called _nor_).                                                                 |
+| ${a \lxnor b}$                                                                       | Neither ${a}$ nor ${b}$ (also called _xnor_).                                                        |
+| ${a \nc b}$                                                                          | If ${a}$ then ${b.}$                                                                                 |
+| ${a \cn b}$                                                                          | ${a}$ only if ${b.}$                                                                                 |
+| ${a \iff b}$                                                                         | ${a}$ if and only if ${b.}$                                                                          |
+| ${\lex x \ix{\top(p)}}$                                                              | There exists an ${x}$ such that ${p}$ is true.                                                       |
+| ${\lnex x \ix{\top(p)}}$                                                             | There is no ${x}$ such that ${p}$ is true.                                                           |
+| ${\uni x \ix{\top(p)}}$                                                              | There is exactly one ${x}$ such that ${p}$ is true (implies that ${x}$ is unique).                   |
+| ${\exists_n x \ix{\top(p)}}$                                                         | there exists exactly ${n}$ ${x}$s such that ${P}$ is true                                            |
+| ${\all x \ix{\top(p)}}$                                                              | For all ${x,}$ ${p}$ is true.                                                                        |
+| ${\nall x \ix{\top(p)}}$                                                             | Not all ${x}$ satisfy ${p.}$                                                                         |
+| ${a \equiv b}$                                                                       | ${a}$ is equivalent to ${b.}$                                                                        |
+| ${a \tf b}$                                                                          | ${a}$ therefore ${b.}$                                                                               |
+| ${b \ft a}$                                                                          | ${b}$ because ${a.}$                                                                                 |
+| ${\nil}$                                                                             | The empty set.                                                                                       |
+| ${\set{a_1, a_2, a_3, \ldots, a_{n-1}}}$                                             | _set_ of ${n}$ elements (unordered, no repetitions, variable-size).                                  |
+| ${\ar{a_1, a_2, a_3, \ldots, a_{n_1}}}$                                              | _tuple_ of ${n}$ elements (ordered, repetitions permitted, fixed-size).                              |
+| ${\bag{a_1, a_2, a_3, \ldots, a_{n-1}}}$                                             | _bag_ of ${n}$ elements (unordered, repetitions permitted, variable-size).                           |
+| ${\ix{a_1, a_2, a_3, \ldots, a_{n-1}}}$                                              | _sequence_ of ${n}$ elements (ordered, repetitions permitted, variable-size).                        |
+| ${\per{a_1, a_2, a_3, \ldots, a_{n-1}}}$                                             | _permutation_ of ${n}$ elements (ordered, no repetitions, variable-size).                            |
+| ${\set{x : P(x)}}$                                                                   | The set of all ${x}$ that satisfy the statement ${P.}$                                               |
+| ${\set{a,b,c,\ldots}}$                                                               | An infinite set starting with ${a,}$ ${b,}$ ${c,}$ and so on.                                        |
+| ${\set{\ldots, a,b,c,\ldots}}$                                                       | Infinite set containing ${a,}$ ${b,}$ and ${c.}$                                                     |
+| ${x \in S}$                                                                          | ${x}$ is an element of ${S.}$                                                                        |
+| ${x \nin S}$                                                                         | ${x}$ is not an element of ${S.}$                                                                    |
+| ${\num{S}}$                                                                          | The cardinality of ${S}$ (the number of elements in ${S}$).                                          |
+| ${A \are B}$                                                                         | All ${A}$ are ${B}$, not all ${B}$ are ${A}$ (${A}$ is a strict subset of ${B}$).                    |
+| ${A \is B}$                                                                          | All ${A}$ are ${B}$, and all ${B}$ are possibly all ${A.}$                                           |
+| ${A \not\subset B}$                                                                  | ${A}$ is not a strict subset of ${B}$; no ${A}$s are ${B}$s, but all ${B}$s are _possibly_ ${A}$s    |
+| ${A \not\subseteq B}$                                                                | ${A}$ is not a subset of ${B}$; no ${A}$s are ${B}$s, and no ${B}$s are ${A}$s                       |
+| ${A = B}$                                                                            | ${\forall x (x \in A \nc x \iff x \in B).}$                                                          |
+| ${\pow{A}}$                                                                          | The _power set_ of ${A.}$ ${\pow{\set{a,b}} = \set{\nil, \set{a}, \set{b}, \set{a,b}}.}$             |
+| ${A \cap B}$                                                                         | ${\set{x : (x \in A) \land (x \in B)}.}$                                                             |
+| ${A \dis B}$                                                                         | ${A \cap B = \nil.}$                                                                                 |
+| ${A \cup B}$                                                                         | ${\set{x : (x \in A) \lor (x \in B) \lor (x \in A \cap B)}}$                                         |
+| ${A \dup B}$                                                                         | The _disjoint union_ of ${A}$ and ${B.}$ ${\set{x : ((x \in A) \lxor (x \in B)) \land (A \dis B)}.}$ |
+| ${A \rid B}$                                                                         | ${\set{x : (x \in A) \land (x \notin B)}.}$                                                          |
+| ${A \dif B}$                                                                         | Symmetric difference of ${A}$ and ${B.}$ ${(A \rid B) \cup (B \rid A).}$                             |
+| ${\nix{A}}$                                                                          | ${\set{x : x \nin A}}$                                                                               |
+| ${(a,b)}$                                                                            | _Ordered pair_, or simply _pair_.                                                                    |
+| ${(a,b,c)}$                                                                          | _Ordered triple_, or simply _triple_.                                                                |
+| ${A \times B}$                                                                       | _Cartesian product_ of ${A}$ and ${B.}$ ${\set{(a,b) \mid (a \in A) \land (b \in B)}}$               |
+| ${A^n}$                                                                              | _Cartesian power_ of ${A.}$ ${A \times A \times \ldots \times A \times A.}$                          |
+| ${\nat}$                                                                             | The set of all natural numbers                                                                       |
+| ${\primes}$                                                                          | The set of all primes                                                                                |
+| ${\nevens}$                                                                          | The set of all even natural numbers                                                                  |
+| ${\nodds}$                                                                           | The set of all odd natural numbers                                                                   |
+| ${\uint}$                                                                            | The set of all integers (from the German _zahl_, meaning _number_)                                   |
+| ${\pint}$                                                                            | The set of all positive integers                                                                     |
+| ${\nint}$                                                                            | The set of all negative integers                                                                     |
+| ${\evens}$                                                                           | The set of all even integers                                                                         |
+| ${\odds}$                                                                            | The set of all odd integers                                                                          |
+| ${\rat}$                                                                             | The set of all rationals (from the word _quotient_)                                                  |
+| ${\reals}$                                                                           | The set of all real numbers                                                                          |
+| ${\reals^+}$                                                                         | The set of all positive real numbers.                                                                |
+| ${\reals^-}$                                                                         | The set of all negative real numbers                                                                 |
+| ${\com}$                                                                             | The set of all complex numbers                                                                       |
+| ${a \dv b}$                                                                          | ${a}$ divides ${b}$; ${a}$ is a factor of ${b}$; ${b}$ is a multiple of ${a}$                        |
+| ${a \ndv b}$                                                                         | ${a}$ does not divide ${b}$                                                                          |
+| ${\floor{x}}$                                                                        | The floor of ${x}$                                                                                   |
+| ${\ceil{x}}$                                                                         | The ceiling of ${x}$                                                                                 |
+| ${a \rem b}$                                                                         | The remainder of ${b/a}$                                                                             |
+| ${a \quo b}$                                                                         | Integer quotient of ${b/a}$                                                                          |
+| ${a \rel b}$                                                                         | A relation between ${a}$ and ${b}$ (e.g., ${a \lt b}$). ${\set{(a,b) : a \rel b}.}$                  |
+| ${R: S \to S \iff \all x \in S \ix{x \rel x}}$                                       | Reflexive relation.                                                                                  |
+| ${R: S \to S \iff \all a,b \in S \ix{a \rel b \nc b \rel a}}$                        | Symmetric relation.                                                                                  |
+| ${R: S \to S \iff \all a,b \in S \ix{(a \rel b) \land (b \rel a) \nc (a = b)}}$      | Antisymmetric relation.                                                                              |
+| ${R: S \to S \iff \all a,b,c \in S \ix{(a \rel b) \land (b \rel c) \nc (a \rel c)}}$ | Transitive relation.                                                                                 |
+| ${R: S \to S \iff \all a,b \in S \ix{a \equiv b}}$                                   | Equivalence relation (reflexive, symmetric, and transitive).                                         |
+| ${f : X \mapsto Y}$                                                                  | A function ${f}$ from ${x}$ to ${y.}$                                                                |
+| ${f(x) = e_x}$                                                                       | Function definition, where ${e_x}$ is an expression of ${x}$ (e.g., ${f(x) = x^2}$).                 |
+| ${\dom{f}}$                                                                          | The domain of a function ${f.}$                                                                      |
+| ${\ran{f}}$                                                                          | The range of a function ${f.}$                                                                       |
+| ${\image{(f)}}$                                                                      | The image of a function ${f.}$                                                                       |
+| ${(f: X \inj Y) \iff \forall a,b \in X \ix{f(a) = f(b) \nc a = b}}$                  | Injective function.                                                                                  |
+| ${(f: X \surj Y) \iff (y \in Y \nc \lex x \in X \land f(x) = y)}$                    | Surjective function.                                                                                 |
+| ${(f: X \bij Y) \iff (\ix{f : X \inj Y} \land \ix{f: X \surj Y})}$                   | Bijective function (injective and surjective function).                                              |
+| ${x = y}$                                                                            | ${x,y \in \reals \nc x-y = 0}$                                                                       |
+| ${\abs{x}}$                                                                          | ${x \in \reals \nc \abs{x} = \sqrt{x^2}}$ (absolute value).                                          |
+| ${a \gt b}$                                                                          | ${a - b \in \reals^+.}$                                                                              |
+| ${a \lt b}$                                                                          | ${b \gt a.}$                                                                                         |
+| ${a \ge b}$                                                                          | ${(a \gt b) \lor (a = b).}$                                                                          |
+| ${a \le b}$                                                                          | ${(a \lt b) \lor (a = b).}$                                                                          |
+| ${a \lt b \lt c}$                                                                    | ${(a \lt b) \land (b \lt c).}$                                                                       |
+| ${a \le b \lt c}$                                                                    | ${\ix{(a \lt b) \lor (a=b)} \land (b \lt c).}$                                                       |
+| ${a \lt b \le c}$                                                                    | ${(a \lt b) \land \ix{(b \lt c) \lor (b = c)}.}$                                                     |
+| ${a \le b \le c}$                                                                    | ${\ix{(a \lt b) \lor (a = b)} \land \ix{(b \lt c) \lor (b=c)}.}$                                     |
+
+</div>
+
+
+
+These are expressions used in [ISL](#informal-specification-language).
+
+<div className={`ltb`}>
+
+| ~expression~                                                                                    | ~note~                                         |
+| ----------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| ${\let{x}{v}}$                                                                                  | Assign the variable ${x}$ the value ${v.}$     |
+| ${{A}\push{1}}$                                                                                 | Push the value 1 into ${A}$                    |
+| ${\string{abc} \con \string{def} = \string{abcdef}}$                                            | String concatentation                          |
+| ${\df{tail}~(a_0,a_1,a_2,\ldots,a_{n-1}) = a_{n-1}}$                                            | Returns the last element of a linear ordering  |
+| ${\df{head}~(a_0,a_1,a_2,\ldots,a_{n-1}) = a_{0}}$                                              | Returns the first element of a linear ordering |
+| ${\set{a_0, a_1, \ldots, a_{n-1}} \multimap \set{\set{~}_0, \set{~}_1, \ldots, \set{~}_{x-1}}}$ | Pack ${n}$ objects into ${x}$ containers.      |
+| ${\ix{e_0, e_1, \ldots, e_n}}$                                                                  | ${n}$-element static array                     |
+| ${\lang{e_0, e_1, \ldots, e_n}\rang}$                                                           | ${n}$-element dynamic array                    |
+| ${(e_0, e_1, \ldots, e_n)}$                                                                     | ${n}$-element linked-list                      |
+| ${\set{e_0, e_1, \ldots, e_n}}$                                                                 | ${n}$-element set                              |
+
+</div>
+
+
+
+## Basic Propositions
+
+These are basic propositions that may or may not be assumed in the notes.
+
+
+
+| ${a}$ | ${b}$ | ${\neg a}$ | ${a \land b}$ | ${a \lor b}$ | ${a \nc b}$ | ${a \iff b}$ | ${a \lxor b}$ | ${a \lnor b}$ | ${a \lnand b}$ | ${a \lxnor b}$ |
+| ----- | ----- | ---------- | ------------- | ------------ | ----------- | ------------ | ------------- | ------------- | -------------- | -------------- |
+| 0     | 0     | 1          | 0             | 0            | 1           | 1            | 0             | 1             | 1              | 1              |
+| 0     | 1     | 1          | 0             | 1            | 1           | 0            | 1             | 0             | 1              | 0              |
+| 1     | 0     | 0          | 0             | 1            | 0           | 0            | 1             | 0             | 1              | 0              |
+| 1     | 1     | 0          | 1             | 1            | 1           | 1            | 0             | 0             | 0              | 1              |
+
+
+
+<div className={`ltb`}>
+
+| ~logic propositions~                                                     | ~note~                 |
+| ------------------------------------------------------------------------ | ---------------------- |
+| ${\neg(\neg p) \iff p}$                                                  | Double Negation        |
+| ${\neg(a \land b) \iff \neg a \lor \neg b}$                              | De Morgan's Law 1      |
+| ${\neg(a \lor b) \iff \neg a \land \neg b}$                              | De Morgan's Law 2      |
+| ${p \land 1 \iff p}$                                                     |                        |
+| ${p \land 0 \iff 0}$                                                     |                        |
+| ${p \lor 0 \iff p}$                                                      |                        |
+| ${p \lor 1 \iff 1}$                                                      |                        |
+| ${p \lor p \iff p}$                                                      |                        |
+| ${p \land p \iff p}$                                                     |                        |
+| ${a \lor b \iff b \lor a}$                                               |                        |
+| ${a \land b \iff b \land a}$                                             |                        |
+| ${(a \lor b \lor c) \iff (a \lor b) \lor c \iff a \lor (b \lor c)}$      |                        |
+| ${(a \land b \lor c) \iff (a \land b) \land c \iff a \land (b \land c)}$ |                        |
+| ${a \lor (b \land c) \iff (a \lor b) \land (a \lor c)}$                  |                        |
+| ${a \land (b \lor c) \iff (a \land b) \lor (a \land c)}$                 |                        |
+| ${a \lor (a \land b) \iff a}$                                            |                        |
+| ${a \land (a \lor b) \iff a}$                                            |                        |
+| ${p \lor (\neg p) \iff 1}$                                               |                        |
+| ${p \land (\neg p) \iff 0}$                                              |                        |
+| ${a \nc b \equiv (\neg a) \lor b}$                                       |                        |
+| ${a \nc b \equiv (\neg b) \nc (\neg a)}$                                 | Contrapositive         |
+| ${a \lor b \equiv (\neg a \nc b)}$                                       |                        |
+| ${\phi, ~ \phi \nc \psi \tf \psi}$                                       | Modus Ponens           |
+| ${\neg \psi, ~ \phi \nc \psi \tf \neg \phi}$                             | Modus Tollens          |
+| ${\phi \nc \psi, ~ \psi \nc \xi \tf \xi }$                               | Hypothetical Syllogism |
+| ${\phi \lor \psi, \neg \phi \tf \psi}$                                   | Disjunctive Syllogism  |
+
+</div>
+
+
+
+Below are some common natural language propositions alongside their negations.
+
+<div className={`ltb`}>
+
+| ~natural language proposition~                 | ~negation~                                          |
+| ---------------------------------------------- | --------------------------------------------------- |
+| ${A}$ or ${B}$                                 | (_not_ ${A}$) _and_ (_not_ ${B}$)                   |
+| ${A}$ and ${B}$                                | (_not_ ${A}$) _and_ (_not_ ${B}$)                   |
+| If ${A}$ then ${B}$                            | (${A}$) _and_ (_not_ ${B}$)                         |
+| For all ${x,}$ ${\df{claim}(x)}$               | there exist ${x}$ such that _not_ ${\df{claim}(x)}$ |
+| There exists ${x}$ such that ${\df{claim}(x)}$ | for every ${x,}$ _not_ ${\df{claim}(x)}$            |
+
+</div>
+
+
+<div className={`ltb`}>
+
+| ~set theory propositions~                                                | ~note~                                                                                                                                      |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| ${(A \cap B) \subseteq (A \cup B)}$                                      | Intersection is always a subset of the union.                                                                                               |
+| ${A \cup A = A}$                                                         | The union of a set and itself is itself.                                                                                                    |
+| ${A \cap A = A}$                                                         | The intersection of a set and itself is itself.                                                                                             |
+| ${(A \cup B = A \cap B) \nc A = B}$                                      | If the union and intersection of two sets are equal, then the two sets are equal.                                                           |
+| ${(A \cup B = A) \iff (B \is A)}$                                        | If the union of ${A}$ and ${B}$ is ${A,}$ then ${B}$ is a subset of ${A.}$                                                                  |
+| ${(A \cap B = A) \iff (A \is B)}$                                        | If the intersection of ${A}$ and ${B}$ is ${A,}$ then ${A}$ is a subset of ${B.}$                                                           |
+| ${A \cup \nix{A} = \mathbb{D}}$                                          | The union of ${A}$ and everything outside of it is the domain of discourse.                                                                 |
+| ${A \cup \nil = A}$                                                      | The intersection of a set and nothing is the set itself.                                                                                    |
+| ${A \cup \mathbb{D} = \mathbb{D}}$                                       | The union of a domain of discourse and a set is the domain of discourse.                                                                    |
+| ${A \cap \mathbb{D} = A}$                                                | The intersection of a domain of discourse and a set is the set itself.                                                                      |
+| ${A \cap \nix{A} = \nil}$                                                | The intersection of a set and everything outside of it is nothing.                                                                          |
+| ${A \cap \nil = \nil}$                                                   | The intersection of a set and nothing is nothing.                                                                                           |
+| ${\nix{\mathbb{D}} = \nil}$                                              | There is nothing outside the domain of discourse.                                                                                           |
+| ${\nix{\nil}={\mathbb{D}}}$                                              | Outside nothing is the domain of discourse.                                                                                                 |
+| ${\nix{(\nix{A})}}$                                                      | Double complement law.                                                                                                                      |
+| ${A \cup B = B \cup A}$                                                  | ${\cup}$ is commutative.                                                                                                                    |
+| ${A \cap B = B \cap A}$                                                  | ${\cap}$ is commutative.                                                                                                                    |
+| ${(A \cup B) \cup C = A \cup (B \cup C)}$                                | ${\cup}$ is associative.                                                                                                                    |
+| ${(A \cap B) \cap C = A \cap (B \cap C)}$                                | ${\cap}$ is associative.                                                                                                                    |
+| ${A \cup (B \cap C) = (A \cup B) \cap (A \cup C)}$                       | ${\cup}$ is distributive over ${\cap.}$                                                                                                     |
+| ${A \cap (B \cup C) = (A \cap B) \cup (A \cap C)}$                       | ${\cap}$ is distributive over ${\cup.}$                                                                                                     |
+| ${\nix{(A \cup B)} = \nix{A} \cap \nix{B}}$                              | De Morgan's law 1                                                                                                                           |
+| ${\nix{(A \cap B)} = \nix{A} \cup \nix{B}}$                              | De Morgan's law 2                                                                                                                           |
+| ${A \dif B = B \dif A}$                                                  | ${\dif}$ is commutative.                                                                                                                    |
+| ${A \dif (B \dif C) = (A \dif B) \dif C}$                                | ${\dif}$ is associative.                                                                                                                    |
+| ${A \dif \nil = A}$                                                      | The symmetric difference of a set and nothing is the set itself.                                                                            |
+| ${A \dif A = \nil}$                                                      | The symmetric difference of a set and itself is nothing.                                                                                    |
+| ${A \dif \nix{A} = \mathbb{D}}$                                          | The symmetric difference of a set and everything outside of it is the domain of discourse.                                                  |
+| ${(a,b)=(c,d) \iff (a=c \land b=d)}$                                     | Equality of ordered pairs.                                                                                                                  |
+| ${\num{A \times B} = \num{A} \by \num{B}}$                               | Cardinality of a Cartesian product.                                                                                                         |
+| ${\num{\pow{A}} = 2^{\num{A}}}$                                          | Cardinality of a power set (2 raised to the cardinality of the set).                                                                        |
+| ${\num{A \cup B} = \num{A} + \num{B} - \num{A \cap B}}$                  | Inclusion-exclusion Principle.                                                                                                              |
+| ${[f : A \mapsto B \land (\num{A} \gt \num{B})] \nc \neg (f: A \inj B)}$ | Pigeonhole Principle. If ${n}$ objects are placed into ${k}$ bins, there is at least one object containing at least ${\ceil{n/k}}$ objects. |
+
+</div>
+
+
+
+All variables in the table below are variables in ${\reals.}$
+
+<div className={`ltb`}>
+
+| ~algebra propositions~                                                              | ~notes~                                        |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------- |
+| ${a + b = b + a}$                                                                   | ${+}$ is commutative on ${\reals}$             |
+| ${a \by b = b \by a}$                                                               | ${\by}$ is commutative on ${\reals}$           |
+| ${(a + b) + c = a + (b + c)}$                                                       | ${+}$ is associative on ${\reals}$             |
+| ${(a \by b) \by c = a \by (b \by c)}$                                               | ${\by}$ is associative on ${\reals}$           |
+| ${a + 0 = 0 + a = a}$                                                               | ${\reals}$ has an additive identity            |
+| ${a + (-a) = (-a) + a = 0}$                                                         | ${\reals}$ has an additive inverse             |
+| ${a \by 1 = 1 \by a = a}$                                                           | ${\reals}$ has a multiplicative identity       |
+| ${a \by a^{-1} = a^{-1} \by a = 1}$                                                 | ${\reals}$ has a multiplicative inverse        |
+| ${(a + x = a) \iff (x = 0)}$                                                        |                                                |
+| ${(a - b = b - a) \iff (a = b)}$                                                    |                                                |
+| ${(ab = ac) \nc \ix{(a = 0) \lor (b = c)}}$                                         | ${ab = ac}$ doesn't imply that ${b = c.}$      |
+| ${a \by (b + c) = (a \by b) + (a \by c)}$                                           | ${\by}$ is distributive over ${+}$             |
+| ${(-a) \by (-b) = a \by b}$                                                         |                                                |
+| ${\forall x \in \reals: (x = 0) \lor (x \gt 0) \lor (x \lt 0)}$                     | Trichotomy Law                                 |
+| ${\forall a,b \in \reals: (a = b) \lxor (a \lt b) \lxor (b \lt a)}$                 | Corollary of trichotomy law                    |
+| ${\forall a,b \in \reals: (a \lt b) \nc (a + c \lt b + c)}$                         |                                                |
+| ${\forall x \in \reals: (a^2 \gt 0) \iff (a \neq 0)}$                               |                                                |
+| ${\neg(a \lt b) \nc (a = b \lor a \gt b)}$                                          | ${a \not\lt b \equiv a \ge b}$                 |
+| ${\neg(a \gt b) \nc (a = b \lor a \lt b)}$                                          | ${a \not\gt b \equiv a \le b}$                 |
+| ${\neg(a \le b) \nc (a \gt b)}$                                                     | ${a \not\le b \equiv a \gt b}$                 |
+| ${\neg(a \ge b) \nc (a \lt b)}$                                                     | ${a \not\ge b \equiv a \lt b}$                 |
+| ${\neg(a \lt b \lt c) \nc \ix{(a = b) \lor (b \gt a) \lor (b = c) \lor (b \gt c)}}$ | ${a \not\lt b \not\lt c \equiv a \ge b \ge c}$ |
+| ${\neg(a \le b \lt c) \nc \ix{(a \gt b) \land ((b = c) \lor (b \gt c))}}$           | ${a \not\le b \not\lt c \equiv a \gt b \ge c}$ |
+| ${\neg(a \lt b \le c) \nc \ix{((a = b) \lor (a \gt b)) \land (b \gt c)}}$           | ${a \not\lt b \not\le c \equiv a \ge b \gt c}$ |
+| ${\neg(a \lte b \lte c) \nc \ix{(a \gt b) \land (b \gt c)}}$                        | ${a \not\le b \not\le c \equiv a \gt b \gt c}$ |
+| ${(a \lt b \land c \lt d) \nc (a + c \lt b + d)}$                                   |                                                |
+| ${(a \lt b) \nc (-b \lt -a)}$                                                       |                                                |
+| ${\ix{(a \lt b) \land (c \gt d)} \nc (a - c \lt b - d)}$                            |                                                |
+
+</div>
+
+
+## If
+The syntactic structure _if x then y_ communicates: if _x_ is true, then _y_ must be true. On its own, it says nothing about whether _x_ is true or _y_ is true. Thus, it has its own truth value, independent of _x_ and _y_. This point is all too often missed. If it turns out that _x_ is false, then the proposition _if x then y_ is true. The only case where _if x then y_ is false is where _x_ is true and _y_ is false.
+
+## Iff
+The idiom _iff_ is a clipping of _if and only if_. It means, if ${x}$ is true,
+then ${y}$ is true and if ${y}$ is true ${x}$ is true. Equivalently, if ${x}$ is
+is false, then ${x}$ is false, and if ${y}$ is false, ${x}$ is false.
+
+## At Least, At Most
+The idiom _at least ${x}$_ implies a floor — there must be, at a minimum, ${x.}$
+It also implies that we can have more than ${x.}$ For example, the sentence
+"There are at least four apples in the bag" is just a convenient way of
+communicating two statements: (1) There can be five, six, seven, ... apples in
+the bag, and (2) it is not the case that there are three, two, one, or no apples
+in the bag.
+
+The idiom _at most ${x}$_ implies a ceiling — there must be, at most, ${x.}$ It
+also implies that we can have less than ${x.}$ The sentence "There are at most
+three students in the class" is just a more concise way of saying: (1) There are
+either no students in the class, (2) there are one, two, or three students in
+the class, and (3) it is not the case that there are four, five, six,...
+students in the class. 
+
+## Some
+The morpheme _some_ means _at least one_, which implies that there may or may
+not be more than one. Thus, when I use the word "some ${x}$" I mean that there
+exists at least one ${x,}$ but I don't preclude the possibility of there being
+many ${x}$s. The morphemes _many_ and _most_ and the idioms _not all_ and _there
+exists_ are all synonyms for _some_.
+
+## But
+The syntactic structure _${x}$ but ${y}$_ is prose for _${x}$ and not ${y.}$_
+For example, the sentence "Harry ate the cake but didn't like it" is equivalent
+to "Harry at the cake and did not like it."
+
+## Only If
+The syntactic structure _${x}$ only if ${y}$_ is equivalent to the structure _if
+${x}$ then ${y}$_. The idiom "only if" merely introduces the necessary condition
+${y.}$
+
+## Any, Every, and Each
+The morphemes _any_, _every_, and _each_ are all synonyms for _all_. For
+example, the statement "${x-0=x}$ for any real number ${x}$" is equivalent to
+saying, "For all real numbers ${x,}$ it is true that ${x-0=x.}$"
+
+## But For
+The syntactic structure _${x}$ but for ${y}$_ is equivalent to the statement
+_${x}$ was caused by, and only by, ${y}$_.
+
+## Informal Specification Language 
+The materials on algorithms are often written in pseudocode, using a language
+called ISL (Informal Specification Language). This is a small language I've
+constructed to maintain generality and consistency in algorithm specification.
+I try to keep the specification as programming language neutral as possible, but
+this is much harder than it sounds — some constructs end up resembling C, others
+SML, and others Python. There really ought to be a study on programming language
+deprivation — Roger Shattuck's "forbidden experiment" _à la vanille_ — where
+logicians or set theorists, devoid of any exposure to programming languages, construct a pseudocode language under memory and processing constraints. Unfortunately (or perhaps fortunately), it's unclear whether such a sample space exists.  Some ISL code:
+
+<Algo>
+
+__Binary Tree Node Insertion__
+- __Identifier__: ~insert~
+- __Preconditions:__
+	- Structure ${\df{node}}$ is defined.
+	- Structure ${\df{binary-tree}}$ is defined.
+- __Input:__
+	- ${\df{binary-tree}^*}$ ${t}$, the insertion's targeted tree.
+	- ${\df{comparable}}$ ${d}$, the inserted node's data.
+- __Output:__ ${\df{binary-tree}^*}$
+
+1. __if__ ${~ {t} \ix{\tx{root}} = \nil ~}$ __then__
+	1. __init__ ${\df{node}^*}$ ${\let{n}{\df{new node}(d)}}$
+	2. ${{t} \ix{\tx{root}} \gets n}$
+2. __else__
+	1. __init__ ${\df{node}^*}$ ${p \gets {t} \ix{\tx{root}}}$
+	2. __init__ ${\df{node}^*}$ ${r \gets \nil}$
+	3. __while__ ${p \neq \nil}$ __do__
+		1. ${r \gets p}$
+		2. __if__ ${{d} \lt p \ix{\tx{datum}}}$ __then__ ${p \gets p \ix{\tx{left-child}}}$
+		3. __else if__ ${{d} \gt p \ix{\tx{datum}}}$ __then__ ${p \gets p \ix{\tx{right-child}}}$
+		4. __else__ __return__ ${t}$
+	4. ${p \gets \df{new node}({d})}$
+	5. __if__ ${{d} \lt r \ix{\tx{datum}}}$ __then__ ${r \gets p \ix{\tx{left-child}}}$
+	6. __else__ ${r \ix{\tx{right-child}} \gets p}$
+3. __return__ ${t}$ ${\blacksquare}$
+
+</Algo>
+
+An accompanying node structure:
+
+<Obj>
+
+- __structure__ ${\df{node}}$ __contains__
+	1. ${\df{comparable} ~ \tx{datum}}$
+	2. ${\df{node}^* ~ \tx{left-child}}$
+	3. ${\df{node}^* ~ \tx{right-child}}$
+- __end__
+
+</Obj>
+
+The underlying syntax and lexicon are explained as needed in the notes.

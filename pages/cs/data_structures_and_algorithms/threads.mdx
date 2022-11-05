@@ -1,0 +1,160 @@
+
+## Chips
+> __~definition~.__ A _chip_ is a function ${c: I \mapsto O,}$ where ${I}$ is a set of Boolean values, and ${O}$ is a set of Boolean values.
+
+### Or-chip
+> __~or-chip~.__
+> $$
+> 	\df{or}(a,b) = \case{
+> 		1 &\if a = 1 \\
+> 		1 &\if b = 1 \\
+> 		0 &\else
+> 	}
+> $$
+> 
+> Given a bitstring argument of ${n}$ bits ${a\ix{n}=\ix{a_1,\ldots,a_n}}$ and ${b\ix{n}=\ix{b_1,\ldots,b_n}}$
+> 
+> $$
+> 	\small\df{or}(a\ix{n},b\ix{n}) = \case{
+> 		\ix{\df{or}(a_1,b_1)} &\if n = 1 \\
+> 		\df{or}(a\ix{n-1},b\ix{n-1})\uplus\df{or}(a_n,b_n) &\else
+> 	}
+> $$
+
+~example~.
+$$
+	~\\
+	\df{or}(\ix{1001},\ix{0101}) = \ax{
+		&\yd{1}\sd{0}\sd{0}\yd{1} \\
+		\df{or}~&\sd{0}\yd{1}\sd{0}\yd{1} \\ \hline
+		&\yd{1}\yd{1}\sd{0}\yd{1} \\
+	}
+$$
+
+### Not-chip
+> __~not-chip~.__
+> 
+> $$
+> 	\df{not}(x) = \case{
+> 		0 &\if x = 1 \\
+> 		1 &\if x = 0
+> 	}
+> $$
+> Given a bitstring argument of ${n}$ bits ${x\ix{n}=\ix{x_1,\ldots,x_n},}$
+> 
+> $$
+> 	\small\df{not}(x\ix{n}) = \case{
+> 		\ix{\df{not}(x_1)} &\if n = 1 \\
+> 		\df{not}(x\ix{n-1})\uplus\df{not}(x_n) &\else
+> 	}
+> $$
+
+### And-chip
+> __~and-chip~.__
+> $$
+> 	\df{and}(a,b) = \case{
+> 		0 &\if a = 0 \\
+> 		0 &\if b = 0 \\
+> 		1 &\else
+> 	}
+> $$
+
+### Nand-chip
+> __~nand-chip~.__
+> $$
+> 	\df{nand}(a,b) = \case{
+> 		0 &\if ~~\df{and}(a,b) = 1 \\
+> 		1 &\else
+> 	}
+> $$
+
+### Xor-chip
+> __~xor-chip~.__
+> $$
+> 	\df{xor}(a,b) = \case{
+> 		1 &\if ~~\df{and}(\df{not}(a), b) = 1 \\
+> 		1 &\if ~~\df{and}(a, \df{not}(b)) = 1 \\
+> 		0 &\else
+> 	}
+> $$
+
+### Mux-chip
+> __~mux-chip~.__
+> $$
+> 	\df{mux}(a,b,s) = \case{
+> 		a &\if s=0 \\
+> 		b &\else
+> 	}
+> $$
+
+### Demux-chip
+> __~demux-chip~.__
+> $$
+>  	\df{dmux}(x,s) = \case{
+> 		(x,0) &\if s = 0 \\
+> 		(0,x) &\if s = 1
+>  	}
+> $$
+
+
+## Hardware
+> __~definition: hardware~.__ A _hardware_ ${H}$ is set ${\set{\df{cpu}, \df{rom}, \df{ram}, \df{io}, \df{power}},}$ where each ${c \in H}$ is a structure called a _chip_.
+
+## Operating Systems
+> __~definition: operating system~.__ An _operating system_ is a structure ${(H,P),}$ where ${H}$ is a set of entities called _hardware_, and ${P}$ is a set of operations acting upon that hardware.
+
+## Processes & Threads
+> __~definition~.__ A _process_ is a tuple ${P=(\Oo,R,I),}$ where ${\Oo}$ is a sequence of ${n}$ instructions ${(f_1,\ldots,f_n),}$ ${R \subset \Hh}$ is a set of hardware, and ${I=[a,b]}$ is a sequence of positive integers with ${a \lt b.}$ We call the interval ${I}$ the _time slot_ of ${P,}$ and the integer ${P_\Delta = b - a}$ the _processing time_ of ${P.}$ We call the integer ${a}$ the _commencement_ of ${P,}$ and the integer ${b}$ the _completion_ of ${P.}$ For each ${i \in I,}$ a set of instructions ${F_i \subseteq \Oo}$ is passed to the ${\df{cpu}}$ as an argument, such that ${F_{i=0}}$ is executed first, and each ${F_{i}}$ is executed only after ${F_{i-1}}$ has executed. We call an execution of ${F_i}$ a _thread_, and each thread is related to one or more ${r \in R.}$ That is, each ${F_{i=k}}$ _shares_ an ${r \in R}$ with every other ${F_{i=j}.}$ If ${F_i = \Oo,}$ we call the process _single-threaded_.
+
+One way to think about the definition above is as follows. Suppose we have a program comprising the following instructions:
+
+$$
+	\df{prog}{\sd{a~b~c~d}} \to \df{cpu} \to \tx{thread}\to\sd{a~b~c~d}
+$$
+
+We could pass the entire block of instructions to the ${\df{cpu}.}$ This corresponds to a single thread. In that case, each instruction in the block is executed one at a time. However, we could also send the instructions in separate blocks:
+
+
+$$
+	\df{prog}{\sd{a~b~c~d}} \to \rcase{
+		\sd{a} \\
+		\sd{b} \\
+		\sd{c} \\
+		\sd{d}
+	} \to \df{cpu} \case{
+		\tx{thread 1}\to\sd{a} \\
+		\tx{thread 2}\to\sd{b} \\
+		\tx{thread 3}\to\sd{c} \\
+		\tx{thread 4}\to\sd{d} \\
+	}
+$$
+
+By default, ${F_i = \Oo.}$ That is, all of the instructions of a procedure (i.e., _program_), are sent a single sequence of instructions on a single thread.  Given a program of ${n}$ instructions, the ${1^{\tx{st}}}$ instruction is executed first, and for all others, the ${\ith{n}}$ instruction is not executed unless the ${\ith{(n-1)}}$ instruction has finished executing.
+
+$$
+	\underset{1}{\sd{{\small\tx{op}~1}}}
+	\underset{2}{\sd{{\small\tx{op}~2}}}
+	\underset{3}{\sd{{\small\tx{op}~3}}}
+	\ldots
+	\underset{n}{\sd{{\small\tx{op}~n}}}
+$$
+
+The most significant problem with sequential problems is where a particularly time- or power-consuming operation is encountered. The best-case scenario is that the program just takes a little longer to run. The worst case: The system stops processing the program's instructions, resulting in a "freeze."
+
+$$
+\eqs{
+	\\
+	&\tx{case 1}~~\underset{1}{\sd{{\small\tx{op}~1}}} \underset{2}{\sd{{\small\tx{op}~2}}} \underset{3}{\sd{{\small\tx{op}~3}}} \ldots \underset{n}{\sd{{\small\tx{op}~n}}} \\
+	&\tx{case 2}~~\underset{1}{\sd{{\small\tx{op}~1}}} \underset{2}{\sd{{\small\tx{op}~2}}} \underset{3}{\sd{{\small\tx{op}~3}}} \underset{4}{\sd{{\small\tx{op}~3}}} \ldots \underset{4+k}{\sd{{\small\tx{op}~3}}} \ldots~\ldots \underset{n}{\sd{{\small\tx{op}~n}}} \\
+	&\tx{case 3}~~\underset{1}{\sd{{\small\tx{op}~1}}} \underset{2}{\sd{{\small\tx{op}~2}}} \underset{3}{\sd{{\small\tx{op}~3}}} \underset{4}{\sd{{\small\tx{op}~3}}} \ldots \underset{4+k}{\sd{{\small\tx{op}~3}}} \ldots \tx{freeze}
+}
+$$
+
+### Time Slicing
+Importantly, even if we send partitions of instructions to the CPU, this does not change the fact that the CPU can only execute one instruction at a time. 
+The CPU handles the multiple threads by allocating time between the threads:
+
+$$
+	\sd{{1}}\no{\sd{{1}}}\sd{{1}}\no{\sd{{1}}}\sd{{1}}\no{\sd{{1}}}\sd{{1}}\no{\sd{{1}}} \\
+	\no{\sd{{2}}}\wd{{2}}\no{\sd{{2}}}\wd{{2}}\no{\sd{{2}}}\wd{{2}}\no{\sd{{2}}}\wd{{2}}
+$$

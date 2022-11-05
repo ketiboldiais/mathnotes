@@ -1,0 +1,201 @@
+# Newton's Method
+
+_newton's method_ is one of the greatest examples of applied
+differentiation. The method is best illustrated by way of example.
+
+> __problem__. Without a calculator, compute ${\sqrt{5}.}$
+
+The first step is to express the quantity ${\sqrt{5}}$ as an equation:
+
+$$
+	x^2 = 5
+$$
+
+Next, we'll want to abstract the equation as a function:
+
+$$
+	f(x) = x^2 - 5
+$$
+
+Now the question is, what values of ${x}$ satisfy the following:
+
+$$
+	f(x) = x^2 - 5 = 0
+$$
+
+Plotting the function ${f(x) = x^2 - 5}$ is pretty easy, so let's take a
+look at that:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656723403/math/newton_method_w64ebr.svg"
+	}
+	imwidth={"259"}
+	imheight={"216"}
+	caption={"Newton's Method"}
+	width={"50"}
+/>
+
+The idea now is to try and estimate ${\sqrt{5}.}$ ${\sqrt{5}}$ is close to
+${\sqrt{4},}$ which is ${2.}$ So our initial guess, call it ${x_0,}$ will
+be ${2:}$
+
+$$
+	x_0 = 2
+$$
+
+The next step is to pretend that ${f(x)}$ is linear. We mark where ${f(2)}$
+is, and draw a tangent line there. Where the tangent line intersects the
+${\text{$x$-axis}}$ is where our new guess will be:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656723455/math/newton_method1_nvcyh9.svg"
+	}
+	imwidth={"259"}
+	imheight={"216"}
+	caption={"A tangent line"}
+	width={"40"}
+/>
+
+Notice that by doing this, we've gotten closer to where ${f(x)}$ actually
+cross the ${\text{$x$-axis}.}$ This is the key idea behind newton's method.
+We keep guessing, over and over again, until we eventually reach the
+desired result.
+
+The equation of the tangent line is:
+
+$$
+	y - y_0 = m(x-x_0)
+$$
+
+In our diagram above, the tangent line is the blue line. Where it crosses
+the ${\text{$x$-axis}}$ is a point we'll call ${x_1.}$ We want to find the
+value of ${x_1.}$ Easy: It's when ${y = 0.}$
+
+$$
+	\begin{aligned} 0 - y_0 &= m(x_1 - x_0) \\[1em] -\dfrac{y_0}{m} &= x_1 - x_0 \end{aligned}
+$$
+
+Now we can derive a formula for ${x_1:}$
+
+$$
+	\begin{aligned} -\dfrac{y_0}{m} &= x_1 - x_0 \\[1em] x_0 - \dfrac{y_0}{m} &= x_1 \end{aligned}
+$$
+
+We have our formula for ${x_1:}$
+
+$$
+	x_1 = x_0 - \dfrac{y_0}{m}
+$$
+
+Now, we know that ${y_0}$ is just the function ${f(x)}$ evaluated at
+${x_0.}$ We also know that ${m}$ is the slope of ${f(x)}$ at ${x_0.}$ Thus,
+the formula, expanded, is:
+
+$$
+	x_1 = x_0 - \dfrac{f(x_0)}{f'(x_0)}
+$$
+
+The formula above is what allows us to calculate _any_ root. This formula
+is so important that we state it a little more formally:
+
+> __newton's wethod__. Let ${f(x)}$ be a function. If ${f(x)}$ is
+> differentiable, then for any point ${x_n}$ on ${f(x),}$ we may
+> approximate ${f(x)}$ by the tangent line to the graph of ${f(x)}$ at the
+> point ${(x_n, f(x_n)).}$ That is,
+
+$$
+	f(x) \approx f(x_n) + f'(x_n)(x - x_n)
+$$
+
+Hence, if the tangent line is a good approximation to ${f}$ between ${x_n}$
+and a zero of ${f(x),}$ then we may find an _approximate_ zero by solving
+for:
+
+$$
+	0 = f(x_{n+1}) \approx f(x_n) + f'(x_n)(x_{n+1} - x_n)
+$$
+
+giving:
+
+$$
+	x_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)}
+$$
+
+Let's apply the formula. We start with ${x_0 = 2,}$ and ${f(x) = x^2-5.}$
+Then, we have ${f'(x) = 2x.}$ Thus:
+
+$$
+	\begin{aligned} x_1 &= x_0 - \dfrac{x_0^2 - 5}{2x_0} \\[1em] &= x_0 - \dfrac{(x_0)(x_0) - 5}{2x_0} \\[1em] &= x_0 - \dfrac{\cancel{(x_0)}(x_0) - 5}{2\cancel{x_0}} \\[1em] &= x_0 - \dfrac{1}{2}x_0 + \dfrac{5}{2x_0} \\[1em] &= \dfrac{1}{2}x_0 + \dfrac{5}{2x_0} \end{aligned}
+$$
+
+Plugging in ${x_0 = 2:}$
+
+$$
+	\begin{aligned} x_1 &= \dfrac{1}{2}x_0 + \dfrac{5}{2x_0} \\[1em] &= \dfrac{1}{2}(2) + \dfrac{5}{2(2)} \\[1em] &= 1 + \dfrac{5}{4} \\[1em] &= \dfrac{4}{4} + \dfrac{5}{4} \\[1em] &= \dfrac{9}{4} \end{aligned}
+$$
+
+Then we can solve for ${x_2}$ by plugging in ${x_1 = \dfrac{9}{4}:}$
+
+$$
+	\begin{aligned} x_2 &= \dfrac{1}{2}x_0 + \dfrac{5}{2x_0} \\[1em] &= \dfrac{1}{2} \cdot \dfrac{9}{4} + \dfrac{5}{2 \left(\dfrac{9}{4}\right)} \\[3em] &= \dfrac{1}{2} \cdot \dfrac{9}{4} + \dfrac{5}{2} \cdot \dfrac{4}{9} \\[1em] &= \dfrac{9}{8} + \dfrac{20}{18} \\[1em] &= \dfrac{9}{8} + \dfrac{10}{9} \\[1em] &= \dfrac{(9)(9) + (10)(8)}{(9)(8)} \\[1em] &= \dfrac{81 + 80}{72} \\[1em] &= \dfrac{161}{72} \\[1em] \end{aligned}
+$$
+
+Then we can solve for ${x_2}$ by plugging in ${x_1 = \dfrac{161}{72}:}$
+
+$$
+	\begin{aligned} x_2 &= \dfrac{1}{2}x_0 + \dfrac{5}{2x_0} \\[1em] &= \dfrac{1}{2} \cdot \dfrac{161}{72} + \dfrac{5}{2 \left(\dfrac{161}{72}\right)} \\[3em] &= \dfrac{1}{2} \cdot \dfrac{161}{72} + \dfrac{5}{2} \cdot \dfrac{72}{161} \\[1em] &= \dfrac{161}{144} + \dfrac{360}{322} \end{aligned}
+$$
+
+On a calculator, ${\sqrt{5} \approx 2.2360679775.}$ Comparing our
+approximations:
+
+| ${n}$ | ${x_n}$                                 | ${E_n =\lvert \sqrt{5} - x_n \rvert}$        |
+| ----- | --------------------------------------- | -------------------------------------------- |
+| ${0}$ | ${2}$                                   | ${0.2360679775 \approx 2.4 \times 10^{-1}}$  |
+| ${1}$ | ${\dfrac{9}{4}}$                        | ${0.0139320225 \approx 1.4 \times 10^{-2}}$  |
+| ${2}$ | ${\dfrac{161}{72}}$                     | ${0.00004313361 \approx 4.3 \times 10^{-5}}$ |
+| ${3}$ | ${\dfrac{161}{144} + \dfrac{360}{322}}$ | ${\approx 4.16 \times 10^{-10}}$             |
+
+Looking at the table, once we're at the second iteration, we're already at
+such a good approximation of ${\sqrt{5}}$ that we don't need to go any
+further. In fact, most calculators won't even go to the third iteration.
+
+Again, _newton's method_ works by repeatedly bringing the tangent line's
+intersection with the ${x}$-axis closer and closer to the target what we
+want:
+
+<Fig
+	link={
+		"https://res.cloudinary.com/sublimis/image/upload/v1656723678/math/newtons_method_close_look_uj9jvy.svg"
+	}
+	imwidth={"131"}
+	imheight={"135"}
+	caption={"A closer look at Newton's method"}
+	width={"30"}
+/>
+
+As illustrated in the diagram above, notice how close ${x_2}$ is to the
+target, the ${x}$ value marked with the brown vertical line. The distance
+${E_n = \lvert x - x_n \rvert }$ is the __error margin__. The distance
+${E_{n+1}}$ is roughly ${(E_{n})^2.}$ This in turn means that, roughly
+speaking, the error margin is squared at each iteration of applying the
+
+_newton's method_ (i.e., the number of digits of accuracy _doubles_ at each
+iteration):
+
+| ${E_n}$ | Error                |
+| ------- | -------------------- |
+| ${E_0}$ | ${\approx 10^{-1}}$  |
+| ${E_1}$ | ${\approx 10^{-2}}$  |
+| ${E_2}$ | ${\approx 10^{-4}}$  |
+| ${E_3}$ | ${\approx 10^{-8}}$  |
+| ${E_4}$ | ${\approx 10^{-16}}$ |
+
+There are, however, a few constraints to _newton's method_. The constraints
+are as follows:
+
+1. ${\lvert f' \rvert }$ must not be small.
+2. ${\lvert f'' \rvert }$ must not be too big.
+3. ${x_0,}$ the initial guess, starts nearby ${x,}$ the target.

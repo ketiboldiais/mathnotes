@@ -7,7 +7,7 @@ import {
 	insertArrowDefinitions,
 } from "../utils";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
+import { range, scaleBand, select } from "d3";
 
 const formatData = (arr = []) => {
 	let data = [];
@@ -66,17 +66,15 @@ export const DoublyLinkedList = ({
 	const _svg = svg(width, height, margins);
 	const _data = formatData(data);
 	const nodeCount = _data.length;
-	const scale = d3
-		.scaleBand()
-		.domain(d3.range(nodeCount))
+	const scale = scaleBand()
+		.domain(range(nodeCount))
 		.rangeRound([0, _svg.width])
 		.paddingInner(0.5);
 	const nodeWidth = scale.bandwidth();
 	const nodeHeight = scale.bandwidth() / 2;
 
 	const renderDoublyLinkedList = () => {
-		const canvas = d3
-			.select(_doublyLinkedListREF.current)
+		const canvas = select(_doublyLinkedListREF.current)
 			.select("g.svgElement");
 		const doublyLinkedListCanvas = canvas
 			.append("g")

@@ -1,0 +1,456 @@
+<Head>
+   <title>Sequences</title>
+   <meta name={`description`} content={`Notes on sequences, sums, and products.`}/>
+</Head>
+
+# Sequences and Sums
+
+This chapter covers notes on _enumeration_, the study of basic enumerative counting.
+
+<div className={`outline`}>
+
+1. [Natural Ordering](#natural-ordering)
+2. [Sequences](#sequences)
+3. [Common Sequences](#common-sequences)
+   1. [Arithmetic Sequence](#arithmetic-sequence)
+   2. [Geometric Sequence](#geometric-sequence)
+   3. [Fibonacci Sequence](#fibonacci-sequence)
+4. [Summations](#summations)
+   1. [Properties of Sigma Notation](#properties-of-sigma-notation)
+5. [Arithmetic Sum](#arithmetic-sum)
+6. [Products](#products)
+
+</div>
+
+
+## Natural Ordering
+
+We begin by defining some notation that will help us with subsequent defintions.
+
+<dfn className={`defn`}>
+
+__natural ordering.__ Let ${\le}$ be a relation on ${\nat}$. Then the well ordering
+
+$$
+   (\set{0,1,2,3,\ldots,n-1 \mid n \in \nat},\le)
+$$
+
+is called the _natural ordering_ or _standard order of natural numbers_, which we denote as ${\ix{n}}$ and define ${\ix{0}}$ to be the empty set ${\nil.}$
+
+</dfn>
+
+From the definition above, the notation ${\ix{5},}$ is just shorthand for ${(0,1,2,3,4).}$ When we write ${\ix{10},}$ we mean ${(0,1,2,3,4,5,6,7,8,9).}$ But we will never write ${\ix{-1},}$ ${\ix{2.2},}$ or ${\ix{\pi},}$ because they're undefined — the ${n}$ in ${\ix{n}}$ must be a natural number.
+
+## Sequences
+
+A sequence is a function — or more generally, a family — from a standard ordering of natural numbers to some given set. For example, ${(1,2,3,4,5)}$ is a sequence, and so is ${(1).}$ We'll use the definition below for the remainder of this page.
+
+<dfn>
+
+__sequence.__ Given a set ${\Ss}$ and the well ordering ${N = (\set{i,j,k \in \nat},~~i \le j \le k)}$ the function ${a : N \to \set{t\in\Ss\mid a(j) = t}}$ is called a _sequence_. We call ${I}$ the _index set_, and the set ${\set{t\in\Ss\mid f(j) = t}}$ the _indexed set_. We denote each ${(j,t) \in a}$ as ${t_j,}$ and say that ${t_j}$ is a _term_ of the sequence whose _index_ is ${j,}$ and whose _value_ is ${t.}$
+
+</dfn>
+
+There are many ways to express a sequence. The sequence
+
+$$
+  \tag{roster notation} (1,2,3,4,5,6,7,8,\ldots)
+$$
+
+is a sequence of the positive integer. We can express this as:
+
+$$
+   \tag{indexed notation} (a_n)_{n \in \uint^+}
+$$
+
+This notation is popular in analysis circles. We may also denote the sequence with an explicit formula:
+
+$$
+   \tag{formulaic notation} \seq{a_n}{n=1}{\infty} = 1.
+$$
+
+All of these notations should only be used if it's clear what ${k}$'s type is — whether it's an integer, a natural, an odd integer, etc. Sequences are functions, and functions always have a domain. Without defining the domain, the notations are ambiguous. If it is clear what the sequence's domain is, we may write:
+
+$$
+   a_n = n. \\[1em]
+$$
+
+For particularly tricky problems, we will use the following notation:
+
+$$
+  a_k := \Seq{1 \le k \le n}{k} \in [\nat \mapsto \nat].
+$$
+
+This is non-standard notation, but it has a few advantages. First, it uses the traditional subscript notation ${a_k}$ to clarify that this is a sequence. We use the symbol ${:=}$ to indicate that this is a function definition, rather than function application. Second, the notation ${\nat \mapsto \nat}$ communicates that ${a_k}$ is a member of the class of functions from the integers to the integers. As such, the variables ${k}$ and ${n}$ are variables in ${\nat.}$ The third advantage is that it makes indexing much easier. For example, suppose the sequence where instead:
+
+$$
+   (0,1,2,3,4,\ldots),
+$$
+
+and we wanted to index starting from ${0.}$ To denote this sequence, we simply manipulate the tuple ${(1 \le k \le n, k):}$
+
+$$
+  \eqs{
+     & (1 \le k \le n, k) \\
+     & (1 {\red{-1}} \le k \le n {\red{-1}}, k {\red{+ 1}}) \\
+     & (0 \le k \le n - 1, k + 1)
+  }
+$$
+
+This gives us the sequence:
+
+$$
+  \Seq{0 \le k \le n-1}{k+1} \in [\uint \mapsto \uint].
+$$
+
+That said, we will reserve this notation for problems that require ordinal arithmetic. We will instead use the formulaic notation (equivalent to the preceding notation)
+
+$$
+   \seq{a_k}{k = 0}{n-1} = k.
+$$
+
+Because we've defined sequences as mappings from a subset of the natural numbers, the sequence indices, ${k}$ and ${n,}$ will always be natural numbers.
+
+## Common Sequences
+
+Having defined sequences, we can now turn to examining several common sequences. These are sequences that appear so frequently that it's helpful to be familiar with their definitions.
+
+### Arithmetic Sequence
+
+Consider the sequence
+
+$$
+   (1,2,3,4,5,6,7,9).
+$$
+
+This is called an _arithmetic sequence_.
+
+<dfn>
+
+__arithmetic sequence__. An _arithmetic sequence_ is a sequence of the form
+
+$$
+   (a + 0d, ~~ a + 1d, ~~ a + 2d, ~~ \ldots, ~~ a + nd)
+$$
+
+where ${n \in \nat}$ is the last index, ${a \in \reals}$ is the _initial term_, and ${d \in \reals}$ is the _common difference_ or _stride_. The ${n}$th term may be obtained with the closed form expression
+
+$$
+   a_n = a_0 + (n \by d).
+$$
+
+</dfn>
+
+We can think of the arithmetic sequence as a list of numbers where each subsequent number is a _sum_ of itself and the last number. This comes from the fact that each term contains the initial term ${a,}$ multiplied by a stride ${d.}$
+
+For our sequence ${(1,2,3,4,5,6,7,8,9),}$ the stride is ${1,}$ and the initial term is ${1.}$ Thus, we can express our arithmetic sequence with the notation
+
+$$
+   \seq{1 + (k)(1)}{k=0}{8} = \seq{k+1}{k=0}{8}.
+$$
+
+Notice that we fixed the indices. Because ${k}$ corresponds to the last valid index, we use ${8.}$ If we wanted to use ${1}$ and ${9}$ instead, we would have to subtract the ${1}$ from our sequence's condition:
+
+$$
+   \seq{1 + (k+1-1)}{k=1}{9} = \seq{k}{k=1}{9}.
+$$
+
+Thus, the number of integers between ${a}$ and ${b}$ inclusive, where ${a \lt b,}$ is ${(b - a) + 1.}$ For example, the sequence ${(1,2,3)}$ has ${(3 - 1) + 1 = 3}$ terms. The sequence ${(0,1,2)}$ has ${(2-0) + 1 = 3}$ terms as well. Let's look at a few more examples. As we saw, the sequence of positive integers can be expressed as:
+
+$$
+  \seq{k + 1}{k = 0}{n} = (1,2,3,4,5,\ldots,n + 1).
+$$
+
+Now, we can multiply every term by ${2}$ to get the sequence of even integers:
+
+$$
+  \seq{2(k + 1)}{k = 0}{n} = (2,4,6,8,10,\ldots,2(n + 1)).
+$$
+
+If we wanted just the odd integers, we just multiply the ${k}$ alone:
+
+$$
+  \seq{(2k + 1)}{k = 0}{n} = (1,3,5,7,9,\ldots,2n + 1).
+$$
+
+The name "arithmetic" comes from the fact that any term other than the first is the arithmetic mean of its predecessor and successor. For example, suppose we're given some arithmetic sequence ${(\ldots, a,b,c, \ldots).}$ Since the terms all have a common difference, it follows that: 
+
+$$
+\eqs{
+   b - a &= c - b. \\[1em]
+   2b &= a + c. \\[1em]
+   b &= \dfrac{a + c}{2}.
+}
+$$
+
+### Geometric Sequence
+
+Consider the sequence
+
+$$
+  \ar{1,2,4,8,16,\ldots,2^{n}}.
+$$
+
+This is an example of a _geometric sequence_. We can express it as:
+
+$$
+   \seq{2^{k}}{k=0}{{n-1}}
+$$
+
+<dfn>
+
+__geometric sequence__. A _geometric sequence_ is a sequence of the form
+
+$$
+   a r^0,~~a r^1,~~a r^2,~~a r^3,~~a r^4,~~\ldots,~~a r^n
+$$
+
+where ${n \in \nat}$ is the number of terms in the sequence, ${a \in \reals^{\pm}}$ is the _initial term_, and ${r \in \reals^{\pm}}$ is the _common ratio_. The ${n}$th term may be obtained with the closed form expression:
+
+$$
+   a_n = a_0 \by r^{n-1}.
+$$
+
+</dfn>
+
+With the geometric sequence, each term after the first is some multiple of the last. For example, the sequence ${\seq{2^k}{k=0}{5}}$ can be envisioned as:
+
+| ${2^0={\red{1}}}$ | ${2^1=\red{2}}$      | ${2^2=\red{4}}$      | ${2^3=\red{8}}$      | ${2^4=\red{16}}$      |
+| ----------------- | -------------------- | -------------------- | -------------------- | --------------------- |
+| ${1 \times 1}$    | ${\red{1} \times 2}$ | ${\red{2} \times 2}$ | ${\red{4} \times 2}$ | ${\red{8}  \times 2}$ |
+
+The name "geometric sequence" stems from the fact that each term other than the first is the _geometric mean_ of its predecessor and successor. For example, given some geometric sequence ${(\ldots, a,b,c, \ldots),}$ we have:
+
+$$
+   \eqs{
+      \dfrac{b}{a} &= \dfrac{c}{b}. \\[1em]
+      b^2 &= ac. \\
+      b &= \pm \sqrt{ac}.
+   }
+$$
+
+### Fibonacci Sequence
+
+The first 10 terms of the sequence
+
+$$
+   (0,1,1,2,3,5,8,13,21,34,55)
+$$
+
+are part of a sequence called the _Fibonacci sequence_.
+
+<dfn>
+
+__fibonacci sequence.__ Let ${n \in \nat.}$ Then the Fibonacci sequence is defined as
+
+$$
+   f_n =
+   \begin{cases}
+      0                 & \if n=0 \\
+      1                 & \if n=1 \\
+      f_{n-1} + f_{n-2} & \else
+   \end{cases}.
+$$
+
+The ${n}$th term may be obtained with the closed form expression
+
+$$
+   f_n = \dfrac{\varphi^{n} - \psi^{n}}{\sqrt{5}},
+$$
+
+where ${\varphi = (1 + \sqrt{5})/2,}$ and ${\psi = (1-\sqrt{5})/2}$ is the conjugate of ${\phi.}$
+
+</dfn>
+
+
+
+## Summations
+
+Given some finite sequence ${a_n,}$ the sum of all of ${a_n}$'s terms is called a _summation_.
+
+<dfn>
+
+__summation.__ Let ${k}$ and ${n}$ be natural numbers, and ${a}$ the finite sequence
+
+$$
+   \seq{a_k}{k=1}{n} = \ar{a_1, ~ a_2, ~ a_3, ~ \ldots, ~ a_{n}}.
+$$
+
+Then the sum of all the terms of ${a}$ is called the _summation_ of ${a,}$ which we express as
+
+$$
+   \dsum{k=1}{n} a_k = a_1 + a_2 + a_3 + \ldots + a_{n}.
+$$
+
+</dfn>
+
+The expression ${\tsum{k=1}{n}a_k}$ is an example of _sigma notation_, and we read it as "the sum over ${k}$ from 1 to ${n.}$" Introduced by Joseph Fourier in 1820, sigma notation is just an abstraction — a way to package — long sums.
+For example, the sum:
+
+$$
+   2 + 2 + 2 + 2 + 2
+$$
+
+can be simply expressed as
+
+$$
+   \dsum{1}{5} ~ 2.
+$$
+
+Of course, this is overkill, and it's certainly not why Fourier invented sigma notation — an easier notation is multiplication: 
+
+$$
+   \dsum{1}{5} ~ 2 = 5 \times 2.
+$$
+
+And in fact, there's an even easier notation, an integer:
+
+$$
+   \dsum{1}{5} ~ 2 = 5 \times 2 = 10.
+$$
+
+Where sigma notation is most useful is where a term in the expression can be determined based on the last term. For example:
+
+$$
+   1 + 2 + 3 + 4 + 5.
+$$
+
+That is, an expression who's terms are well-ordered, or, more relevantly, the terms can be expressed as a _sequence_. In this case, we write:
+
+$$
+   \dsum{k=1}{5} k = 1 + 2 + 3 + 4 + 5. 
+$$
+
+Here are a few more examples:
+
+$$
+   \dsum{k=1}{n} 2k = 2(1) + 2(2) + 2(3) + 2(4) + \ldots + 2n. \\
+   \dsum{k=1}{n} 2kx = 2(1)x + 2(2)x + 2(3)x + 2(4)x + \ldots + 2nx. \\
+   \dsum{k=2}{n} (k^3 - 3kx + 1) = (2^3 - 3(2)x + 1) + (3^3 - 3(3)x + 1) + (4^3 - 3(4)x + 1) + \ldots + n^3 - 3nx + 1. \\
+$$
+
+
+There's an alternative method of writing a summation:
+
+$$
+   \dsum{1 \le k \le n}{} a_k \equiv \dsum{k=1}{n} a_k.
+$$
+
+The equivalent form (on the left-hand side) is written in _delimited sigma notation_. The advantage to this notation: it's much easier to manipulate indices. For example,
+
+$$
+  \dsum{1 \le k \le n}{} a_k = \dsum{0 \le k \le n-1}{} a_{k}.
+$$
+
+Notice that all we did was subtract 1 from the indices. Moreover, we did it smoothly — from left to right.
+
+### Properties of Sigma Notation
+
+The following properties hold for sigma notation.
+
+<dfn>
+
+__summation properties.__ Given the variables ${k,n \in \nat,}$ the constant ${C \in \reals,}$ and the expressions ${a_k}$ and ${b_k,}$ the following properties hold: 
+
+$$
+   \tag{1} \dsum{k=k_0}{n}(a_k + b_k) = \dsum{k=k_0}{n}a_k + \dsum{k=k_0}{n}b_k.
+$$
+$$
+   \tag{2} \dsum{k=k_0}{n}(a_k - b_k) = \dsum{k=k_0}{n}a_k - \dsum{k=k_0}{n}b_k.
+$$
+$$
+   \tag{3} \dsum{k=k_0}{n} C a_k = C \dsum{k=k_0}{n} a_k.
+$$
+$$
+   \tag{4} \dsum{k=k_0}{n} C = C \by n.
+$$
+$$
+   \tag{5} \dsum{k=k_0}{n} (Ca_k + b_k) = C \dsum{k=k_0}{n} a_k + \dsum{k=k_0}{n} b_k.
+$$
+
+</dfn>
+
+
+## Arithmetic Sum
+
+Consider the sequence ${\seq{k}{k=0}{n-1}.}$ As we know, this is simply the sequence ${(0,1,2,3,4,\ldots,n-1).}$ It follows that we have the sum:
+
+$$
+   \eqs{
+      \dsum{k=0}{n-1}{k} &= (k_0+1) + (k_1+1) + (k_2+1) + \ldots + (k_{n-1}+1). \\
+      &= (0+0) + (0+1) + (1+1) + (2+1) + \ldots + (n-1+1). \\
+      &= 0 + 1 + 2 + 3 + \ldots + n. \\
+   }
+$$
+
+As useful as sigma notation is, it's often much more helpful to obtain a closed form expression, as we saw with sequences. First, let's denote the sum as ${S:}$
+
+$$
+   \dsum{k=0}{n-1}{k} = S.
+$$
+
+Thus, we have:
+
+$$
+   S = k + (k+d) + (k+2d) + (k+3d) + \ldots + (k+(n-2)d) + (k+(n-1)d).
+$$
+
+This is just the closed form expression of the arithmetic sequence. Now, the reverse of this sequence is:
+
+$$
+   S = (k+(n-1)d) + (k+(n-2)d) + \ldots + (k+3d) + (k+2d) + (k+d) + k.
+$$
+
+Adding these two sequences together, gives us ${2S:}$ 
+
+<div class="numbered">
+
+| ${S}$  | ${=}$ | ${k}$           | ${+}$ | ${(k+d)}$       | ${+}$ | ${\ldots}$ | ${+}$ | ${k+(n-2)d}$ | ${+}$ | ${k + (n-1)d}$ |
+| ------ | ----- | --------------- | ----- | --------------- | ----- | ---------- | ----- | ------------ | ----- | -------------- |
+| ${S}$  | ${=}$ | ${k + (n-1)d}$  | ${+}$ | ${k + (n-2)d}$  | ${+}$ | ${\ldots}$ | ${+}$ | ${k+d}$      | ${+}$ | ${k}$          |
+| ${2S}$ | ${=}$ | ${2k + (n-1)d}$ | ${+}$ | ${2k + (n-1)d}$ | ${+}$ | ${\ldots}$ | ${+}$ | ${2k+(n-1)}$ | ${+}$ | ${2k+(n-1)d}$  |
+
+</div>
+
+This gives us the following formula for the arithmetic sum:
+
+<dfn>
+
+__arithmetic sum.__ Let ${k,n \in \nat}$ and ${a,d \in \reals.}$ Then
+
+$$
+   \dsum{k=0}{n-1}(a_k + kd) = \dfrac{n}{2}(2a_0 + (n-1)d).
+$$
+
+where ${a_0}$ is the initial term of the sequence ${\seq{a+kd}{k=0}{n-1},}$ ${k}$ is the index, ${n}$ is the number of terms, and ${d}$ is the common difference.
+
+</dfn>
+
+Notice that when ${d = 1,}$ we get the following formula:
+
+$$
+   \dsum{k=0}{n-1} n = \dfrac{n(n-1)}{2} = 0 + 1 + 2 + \ldots + n-1.
+$$
+
+## Products
+
+Similar to summations, we're also often interested in the _products_ of a sequence's terms.
+
+<dfn>
+
+__product.__ Let ${k}$ and ${n}$ be natural numbers, and ${a}$ the finite sequence
+
+$$
+   \seq{a_k}{k=1}{n} = \ar{a_1, ~ a_2, ~ a_3, ~ \ldots, ~ a_{n}}.
+$$
+
+Then the product of all the terms of ${a}$ is called the product of ${a,}$ which we express as
+
+$$
+   \dprod{k=1}{n} a_k = (a_1)(a_2)(a_3)\ldots(a_{n}).
+$$
+
+</dfn>
+
+The same ideas we saw with sums apply to products. All we're doing is replacing ${+}$ with ${\times,}$ or, in the definition above, removing ${+}$ entirely and using multiplicative notation.
+

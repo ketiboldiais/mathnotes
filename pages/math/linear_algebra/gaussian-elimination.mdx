@@ -1,11 +1,12 @@
-<head>
-	<title>Gaussian Elimination</title>
-	<description>Notes on Gaussian elimination.</description>
-</head>
+<Head>
+	<title>Vector Spaces</title>
+	<meta name={`description`} content={`Notes on vector spaces.`}/>
+</Head>
 
-# Gaussian Elimination
 
-This chapter provides an overview of _Gaussian elimination_.
+# Vector Spaces
+
+_This chapter provides an overview of Gaussian elimination. The notes assume familiarity with the complex and real numbers._
 
 <div className={`outline`}>
 
@@ -18,13 +19,33 @@ This chapter provides an overview of _Gaussian elimination_.
 	2. [The Point of Gaussian Elimination](#the-point-of-gaussian-elimination)
 6. [Echelon Form](#echelon-form)
 7. [Reduced Echelon Form](#reduced-echelon-form)
+8. [Vector Spaces](#vector-spaces)
+	1. [Conventions](#conventions)
+	2. [Vector Properties](#vector-properties)
+	3. [Subspaces](#subspaces)
+9. [Linear Combinations](#linear-combinations)
 
 </div>
 
+
+
 ## Linear Equations
 
-Like all mathematical fields, linear algebra has its own lingo. Let's
-familiarize ourselves with some of it. An expression of the form:
+<dfn>
+
+__linear equation.__ An equation of the form:
+
+$$
+ a_1 x_1 + a_2 x_2 + \ldots + a_n x_n = b
+$$
+
+is a _linear equation_ in the variables ${x_1,}$ ${x_2,}$
+${\ldots,}$ ${x_n}$ whre ${a_1,}$ ${a_2,}$ ${\ldots,}$
+${a_n,}$ ${b}$ are constants.
+
+</dfn>
+
+An expression of the form:
 
 $$
 	a_1x_1 + a_2x_2 + \ldots a_n x_n
@@ -56,6 +77,14 @@ $$
 $$
 
 </Grid>
+
+Linear equations are the bedrock of modern technology. In the world of pure mathematics, we can simply write ${\nil}$ or ${\infty.}$ Computers, however,
+don't have the same luxury. We must model and approximate these abstractions to realize them physically. For example, the derivative ${\frac{df}{dx}(x)}$ of a differentiable function ${f: \reals \to \reals}$ can be viewed as a _linear approximation_ of ${f.}$
+
+$$
+	f(x) = f(a) + \frac{df}{df}(a)(x-a) + \ldots.
+$$
+
 
 ## The Solution Set
 
@@ -104,8 +133,8 @@ the system has no solutions, we describe it as _inconsistent_.
 
 In the system above, the the subscript ${m}$ is a positive integer, and denotes
 the _row_ index. The subscript ${n}$ is also a positive integer, and denotes the
-_column_ index. Much like how rectangles are described with ${\tt{length} \times
-\tt{width},}$ linear systems have the property ${m \times n.}$ We call this the
+_column_ index. Much like how rectangles are described with ${\text{length} \times
+\text{width},}$ linear systems have the property ${m \times n.}$ We call this the
 linear system's _order_.
 
 Notice that the row index ${m}$ corresponds to the number of equations we have,
@@ -313,7 +342,7 @@ Then, we scale our equation of choice. Let's use 2 (why we choose 2 is
 another question we'll save for later). 
 
 $$
-	2(x - 3y = 17) \implies 2x - 6y = 34
+	2(x - 3y = 17) \nc 2x - 6y = 34
 $$
 
 Next, we choose a second equation (other than what we chose first) and perform
@@ -321,7 +350,7 @@ the same. Since we only have two equations, we scale the first. Let's use the
 constant ${-1:}$
 
 $$
-	-1(2x + y = -1) \implies -2x - y = 1
+	-1(2x + y = -1) \nc -2x - y = 1
 $$
 
 Then, we add the scaled equations:
@@ -419,7 +448,7 @@ $$
 $$
 
 The notation ${R_1 \alt -3R_1}$ means: "Row 1 was replaced with ${-3 \times
-\tt{row 1}.}$" The pivoting operation is expressed as:
+\text{row 1}.}$" The pivoting operation is expressed as:
 
 $$
 	\mx{
@@ -542,9 +571,9 @@ $$
 	},
 $$
 
-where ${\set{i,j \in \ZZ^+},}$ ${x \in \NN,}$ ${r,s \in
-\seq{1,2,\ldots,i},}$ and ${c \in \seq{1,2,\ldots,j}.}$ We say that ${\bf M}$ is
-in _echelon form_ if, and only if, the following propositions are true for ${\bf M}$: First, if there exists a row ${R_r}$ with an entry ${x \neq 0}$ and a row ${R_s}$ with entries ${\seq{0,0,\ldots,0},}$ then ${r \lt s.}$ Second, given a row ${R_r}$ and ${r \neq 1,}$ if ${R_r}$ contains a leading entry at the position ${R_{r,c}}$ and ${c \neq 1,}$ then ${R_{r-1}}$ contains a leading entry at ${R_{r-1,c-1}.}$ Third, if a row ${R_r}$ contains a leading entry at the position ${R_{r,c}}$ then for all rows ${R_{r + k}}$ where ${k \lt i - r,}$ the entry at ${R_{r+k,c} = 0.}$ 
+where ${\set{i,j \in \pint},}$ ${x \in \nat,}$ ${r,s \in
+\ix{1,2,\ldots,i},}$ and ${c \in \ix{1,2,\ldots,j}.}$ We say that ${\bf M}$ is
+in _echelon form_ if, and only if, the following propositions are true for ${\bf M}$: First, if there exists a row ${R_r}$ with an entry ${x \neq 0}$ and a row ${R_s}$ with entries ${\ix{0,0,\ldots,0},}$ then ${r \lt s.}$ Second, given a row ${R_r}$ and ${r \neq 1,}$ if ${R_r}$ contains a leading entry at the position ${R_{r,c}}$ and ${c \neq 1,}$ then ${R_{r-1}}$ contains a leading entry at ${R_{r-1,c-1}.}$ Third, if a row ${R_r}$ contains a leading entry at the position ${R_{r,c}}$ then for all rows ${R_{r + k}}$ where ${k \lt i - r,}$ the entry at ${R_{r+k,c} = 0.}$ 
 
 </dfn>
 
@@ -706,4 +735,64 @@ row reduction algorithm proceeds as follows.
 12. If a pivot is not ${1,}$ make it a ${1}$ via scaling.
 
 </dfn>
+
+## Vector Spaces
+
+>__~vector space.~__ Let ${V}$ be a set of vectors, ${S}$ a set of scalars, ${+}$ the operation of _addition_, and ${\op}$ the operation of _scalar multiplication_. Then the algebra ${{\sf V} = \set{V \cup S, \set{+,\op}}}$ is a _vector space_ if, and only if, for all ${\uu, \vv, \ww \in {V}}$ and for all scalars ${c,d \in {S},}$ the following properties hold:
+>
+> |                                                                                     |                                                    |
+> | ----------------------------------------------------------------------------------- | -------------------------------------------------- |
+> | ${{\sf V}}$ is closed under vector addition.                                        | ${\uu + \vv \in {\sf V}.}$                         |
+> | Vector addition is commutative on ${{\sf V}.}$                                      | ${\uu + \vv = \vv + \uu.}$                         |
+> | Vector addition is associative on ${{\sf V}.}$                                      | ${(\uu + \vv) + \ww = \vv + (\uu + \ww).}$         |
+> | For all ${\uu \in {V},}$ there exists an additive identity in ${{\sf V}.}$          | ${\uu + \mathbf{0} = \uu.}$                        |
+> | For all ${\uu \in {V},}$ there exists an additive inverse in ${{\sf V}.}$           | ${\uu + (-\uu) = \mathbf{0}.}$                     |
+> | ${{\sf F}}$ is closed under scalar multiplication.                                  | ${c \op \uu \in {\sf F}.}$                         |
+> | Scalar multiplication is distributive over vector addition on ${{\sf V}.}$          | ${c \op (\uu + \vv) = (c \op \uu) + (c \op \vv).}$ |
+> |                                                                                     | ${\uu \op (c + d) = (c \op \uu) + (d \op \uu).}$   |
+> | Scalar multiplication is associative on ${{\sf V}.}$                                | ${c \op (d \op \uu) = (c \op d) \op u.}$           |
+> | For all ${\uu \in {\sf V},}$ there exists a multiplicative identity in ${{\sf V}.}$ | ${1(\uu) = \uu.}$                                  |
+
+A vector space, in short, is just a very special set. It's members may be lists,
+vectors, functions, or some other strange object. It's key requirement is that
+we can meaningfully perform vector addition and scalar multiplication. The
+properties laid out in the definition above establish what "meaningfully" means.
+Moreover, notice that we use  different fonts to denote a vector space. We do so
+to emphasize the difference between a _field_ and a _vector space_. All fields
+are vector spaces — ${\reals}$ is simply the vector space ${{\sf R}^1;}$ a
+vector space over itself. Not all vector spaces, however, are fields. To list
+just one reason, fields require commutativity of multiplication for all its
+carrier set's members. As we'll see later, that's a very special property, and
+it's not one that many vector spaces satisfy. 
+
+### Conventions
+In these notes, we adopt the following conventions:
+
+> __~convention.~__ ${\sf V}$ denotes a vector space over ${\sf F.}$
+
+> __~convention.~__ ${0_{\vv}}$ denotes a zero vector.
+
+### Vector Properties
+
+> __~property.~__ For every ${\vv \in {\sf V},}$ it is true that ${0\vv = 0.}$
+
+> __~property.~__ For every ${a \in {\sf F},}$ it is true that ${a0_{\vv}= 0.}$
+
+> __~property.~__ For every ${\vv \in {\sf V},}$ it is true that ${(-1)\vv = -\vv.}$
+
+### Subspaces
+
+> __~subspace.~__ Given a vector space ${\sf V,}$ we call a subset ${{\sf U} \subseteq {\sf V}}$ a _subspace_ of ${\sf V}$ if, and only if, ${\sf U}$ is also a vector space. That is, if, and only if, the following conditions are satisfied: (1) ${0_{\vv} \in {\sf U}.}$ (2) If ${\uu,\ww \in {\sf U},}$ then ${\uu + \ww \in {\sf U}.}$ (2) If ${a \in {\sf F}}$ and ${\uu \in {\sf U},}$ then ${au \in {\sf U}.}$
+
+>__~sum of subsets~.__ Let ${{\sf U}_1, \ldots {\sf U}_m \subseteq {\sf V}.}$ The sum ${{\sf U}_1 + \ldots + {\sf U}_m}$ is defined as
+>
+>$$
+>	{\sf U}_1 + \ldots + {\sf U}_m = \set{u_1 + \ldots + u_m : u_1 \in {\sf U}_1, \ldots, u_m \in {\sf U}_m}.
+>$$
+
+## Linear Combinations
+
+> __~linear combination~.__ A vector of the form ${a_1 v_1 + \ldots + a_m v_m}$ where ${a_1, \ldots, a_m \in {\sf F}}$ and ${v_1, \ldots, v_m \in {\sf V}}$ is called a _linear combination_ (a list) of vectors in ${{\sf V}.}$
+
+> __~span~.__ Let ${L}$ be a list of vectors ${v_1,\ldots,v_m,}$ where each vector is a vector in ${{\sf V}.}$ The set of all linear combinations of ${L}$ is called the _span_ of ${L,}$ denoted ${\df{span}(v_1,\ldots,v_m).}$ The span of an empty list is defined to be ${0.}$
 

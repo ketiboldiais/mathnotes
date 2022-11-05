@@ -4,9 +4,7 @@ export const renderBalanceFactors = (
 	selection,
 	data,
 	radius,
-	balanceFactorFontSize,
-	balancedTextColor,
-	imbalancedTextColor,
+	balanceFactorFontSize=0.8,
 	offsetX=0,
 	offsetY=0,
 ) => {
@@ -22,24 +20,10 @@ export const renderBalanceFactors = (
 		.append("text")
 		.text((d) => calculateBalanceFactor(d));
 	attrs(bfNumText, {
-		class: (d) => {
-			if (Math.abs(calculateBalanceFactor(d)) > 1) {
-				return `balanceFactorImbalanced`;
-			} else {
-				return `balanceFactorBalanced`;
-			}
-		},
 		x: (d) => d.x - offsetX,
 		y: (d) => d.y - offsetY,
 		dy: -radius - radius / 2,
 		"text-anchor": "middle",
-		fill: (d) => {
-			if (Math.abs(calculateBalanceFactor(d)) > 1) {
-				return imbalancedTextColor;
-			} else {
-				return balancedTextColor;
-			}
-		},
-		"font-size": balanceFactorFontSize,
+		"font-size": `${balanceFactorFontSize}em`,
 	});
 };

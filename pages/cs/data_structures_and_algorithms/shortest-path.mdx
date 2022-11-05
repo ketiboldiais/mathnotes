@@ -1,0 +1,73 @@
+import { Graph } from "../../../components/illus/components/Graph/Graph";
+
+
+# Shortest Path Algorithms
+
+
+Let's consider the problem of finding the shortest path between vertices ${a}$ and ${b}$ given an edge list. Let's start by considering an example. Suppose we're given the following graph.
+
+<Grid cols={2}>
+<Graph data={[
+	{link:['w', 'x']},
+	{link:['x', 'y']},
+	{link:['y', 'z']},
+	{link:['v', 'z']},
+	{link:['v', 'w']},
+]}
+id={`spf1`}
+repulsion={0.3}
+collisionRadius={15}
+edgeLength={12}
+straightEdges={true}
+scale={50}
+width={100}
+height={55}/>
+
+$$
+	\lset{\ax{
+		w &\mapsto& \ix{x,w} \\ 
+		x &\mapsto& \ix{w,y} \\
+		y &\mapsto& \ix{x} \\ 
+		v &\mapsto& \ix{z,w} \\
+		z &\mapsto& \ix{v} \\
+	}}
+$$
+
+</Grid>
+
+There are two possible paths to get to ${z:}$
+
+$$
+	P_1 = \ar{w,x,y,z} ~~~~~ P_2 \ar{w,v,z}
+$$
+
+We see that ${P_2}$  is the shorter path, compared to ${P_1.}$ Our task is to find such a ${P_2,}$ if it exists, and return its length. This problem is a good example of where BFT is easier to work with than DFT. Recall that with BFT, we _spread as far as we can_ from the starting vertex before moving on to the next vertex, and with DFT, we traverse _plunge as deep as we can_. This means that, with DFT, we'd have to run along a potentially very long path before ever hitting the path's end.
+
+<Algo>
+
+> __~shortest-path~.__ Let ${G}$ be a nonempty graph, represented as an adjacency list. The function ${\df{spath}}$ takes ${G}$ and a pair of vertices ${(src,dst),}$ and returns an nonnegative integer ${n}$ corresponding to the shortest path between ${a}$ and ${b}$ on ${G,}$ and ${-1}$ if no such path exists.
+
+1. __function__ ${\df{spath}(G, src, dst):}$
+	1. ${\let{visited}{\df{new set}}}$
+	2. ${\let{visited}{\df{insert}\ix{src}~}}$
+	2. ${\let{Q}{\df{new queue}}}$
+	3. ${\let{Q}{\df{enqueue}~\ix{src,0}}}$
+	4. ${\let{pathlen}{-1}}$
+	5. __while__ ${Q \neq \nil}$
+		1. ${\let{v}{\df{dequeue}~Q\ix{0}}}$
+		2. ${\let{pathlen}{\df{dequeue}~Q\ix{1}}}$
+		3. __if__  ${v = src}$ __return__ ${pathlen}$
+		4. __for each__ ${neighbor \in G\ix{v}}$
+			1. __if__ ${neighbor \notin visited}$ __then__
+				1. ${\let{visited}{\df{insert}(neighbor)}}$
+				2. ${\let{Q}{\df{enqueue}(\ix{neighbor,pathlen+1})}}$
+	6. __return__ ${pathlen}$
+
+</Algo>
+
+
+
+
+
+
+

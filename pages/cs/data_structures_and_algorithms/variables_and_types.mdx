@@ -3,7 +3,7 @@
 In a computer, data is stored inside a memory location. We can think of
 computer memory as a large grid of small squares with unique addresses.
 These small squares, or cells, are arranged in a logical order. Each cell
-can store **1 byte, or 8 bits** of data. A bit is either a 0 or a 1. With 8
+can store __1 byte, or 8 bits__ of data. A bit is either a 0 or a 1. With 8
 bits, we have 256 different combinations (${2^8 = 256.}$) Those
 combinations can be used to represent the numbers 0 to 255. In statically
 typed languages, we must explicitly state variable's type during
@@ -14,7 +14,7 @@ In languages like Assembly, this is in fact how we access that data. Now,
 these memory locations are fairly cryptic and difficult to read (they're in
 hexadecimal). Instead of referencing these memory locations, we can
 associate a _name_ to that particular location, and reference that name
-instead. This is called a **binding**.
+instead. This is called a __binding__.
 
 Variables are essentialy "cabinets" where we can place data. Those
 cabinets, however, have specific labels called _types_. The data we place
@@ -30,7 +30,7 @@ Additionally, the first character in the identifier must be either an
 alphabet or an underscore. Thus, identifiers cannot contain special
 characters (`&`, `!`, `#`, `;`, etc.) nor can it contain whitespace.
 Upper-case alphabets and lower-case alphabets are distinct. Thus, the
-identifier `foo` is different from the identifier `Foo`. A **variable** is
+identifier `foo` is different from the identifier `Foo`. A __variable__ is
 a programming construct that allows us to associate a _value with a name_.
 More formally, a variable is a named piece of memory that a programmer uses
 to store specific types of data. In other words, it is an abstraction for
@@ -42,17 +42,17 @@ char grade = 'A';
 double pi = 3.14;
 ```
 
-The value `'A'` and `3.14` are called **literals**. A literal is a value
+The value `'A'` and `3.14` are called __literals__. A literal is a value
 directly represented inside the program executable (as opposed to a value
 that must be accessed through a variable stored somewhere in memory). For
 example, the variable `pi` will be stored somewhere in memory. The literal
 `3.14`, however, will be directly represented as binary in the executable.
 For example, suppose we wrote the following:
 
-A _variable declaration_ is an instruction to the compiler to **reserve**
+A _variable declaration_ is an instruction to the compiler to __reserve__
 space in memory for data. Because C++ is a _statically typed_ language,
 variable declarations must explicitly include the variable's type. A
-_variable initialization_ is an instruction to the compiler to **store**
+_variable initialization_ is an instruction to the compiler to __store__
 data in the reserved space.
 
 ```cpp
@@ -99,7 +99,7 @@ intended.
     exception report (it evaluates to the integer `3131746989`.) Similarly,
     `0xDEADBEEF` is almost ubiquitously used in embedded systems to
     indicate a software crash or a deadlock. These are all examples of
-    **magic numbers**; numbers used to indicate a particular value.
+    __magic numbers__; numbers used to indicate a particular value.
 
 In the last line, we see a `float` literal. Notice the suffix `f`. This
 suffix must be included if we want to ensure the value is treated as a
@@ -147,7 +147,7 @@ _Data type modifiers_ are special symbols we can prepend to a data type to
 modify the data type's instructions. The modifier `long` will instruct the
 compiler to allocate 4 more bytes. We can use `long` with `int` and
 `double`. The modifier `short` instructs the compiler to only allocate 2
-bytes. `short` applies only to `int`. We **cannot** use modifiers with the
+bytes. `short` applies only to `int`. We __cannot__ use modifiers with the
 `float` type. The `unsigned` modifier allows us to store only positive
 values (i.e., values without the signed bit). The `signed` modifier allows
 us to store both positive and negative values. `signed` is the default
@@ -163,7 +163,7 @@ programmers, explicitly instruct the compiler to convert.
 
 The value of `x` above is `undefined`, which is itself a value. It will
 display to the console some value, but it could be any value. All of the
-types above are **primitive types** in `C++`. There are several others:
+types above are __primitive types__ in `C++`. There are several others:
 
 | Type               | Size                              | Description             |
 | ------------------ | --------------------------------- | ----------------------- |
@@ -190,7 +190,7 @@ types above are **primitive types** in `C++`. There are several others:
 What data type we use depends on the program we're writing and whether
 we're particularly concerned about memory use. If we attempt to assign too
 large of a value into a variable type that does not accomodate for that
-value's size, we will get an **overflow**.
+value's size, we will get an __overflow__.
 
 # Constants
 
@@ -201,7 +201,7 @@ cannot be changed. We can initialize constants in C++ as such:
 const double accelerationGravity { 9.807 }; // meters per second^2
 ```
 
-A _constant_ is a variable whose constants **cannot** be changed. We can
+A _constant_ is a variable whose constants __cannot__ be changed. We can
 think of it as a locked cabinet. Because they are locked cabinets,
 constants must be initialized and declared at the same time.
 
@@ -267,7 +267,7 @@ expressions, we use the `constexpr` keyword:
 constexpr double pi {3.14};
 ```
 
-We cannot use non-constant expressions (i.e., **runtime values**) inside
+We cannot use non-constant expressions (i.e., __runtime values__) inside
 constant expressions (compile-time values). This is because the compiler
 cannot perform computations on or with runtime values. Those computations
 must be done at runtime.
@@ -357,7 +357,7 @@ int g {x + y + i}; // won't compile, i is undeclared
 ```
 
 Note that if we declare a variable but do not initialize it, that variable
-will have some **garbage value** stored, and we have no control over what
+will have some __garbage value__ stored, and we have no control over what
 that value is. As such, it is crucial that we initialize variables once
 declared.
 
@@ -383,7 +383,7 @@ signed int val1 {1}
 signed int val2 {-1}
 ```
 
-The keyword `signed` is called a **modifier**. A modifier does what it says
+The keyword `signed` is called a __modifier__. A modifier does what it says
 &mdash; it modifies what a variable can and cannot do. In this case,
 `signed` indicates that the subsequent variable can store positive or
 negative numbers. If we want to ensure that a variable can only store
@@ -438,8 +438,8 @@ unsigned long long int momo {};
 ```
 
 Note that the modifiers `signed`, `unsigned`, `long`, and `short` only work
-for **integral types** &mdash; types representing integers. They will not
-work for **floating types** &mdash; types representing fractional numbers.
+for __integral types__ &mdash; types representing integers. They will not
+work for __floating types__ &mdash; types representing fractional numbers.
 
 Furthermore, we should be careful when using the `short` and `unsigned`
 modifiers with integral types like `short int`. Arithmetic may not work as
@@ -632,7 +632,7 @@ function. Put differently, the variables `fen` and `gib` only exist inside
 the `main()` function. Outside of the `main()` function, they effectively
 do not exist.
 
-In contrast, the variable `zob` is a **global variable**. This means they
+In contrast, the variable `zob` is a __global variable__. This means they
 are visible to everything in the program. Which in turn means they can be
 changed from anywhere and by anything in the program.
 

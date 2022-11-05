@@ -9,7 +9,7 @@ import {
 	getPropertyValues,
 } from "../utils";
 import { Base } from "../base/Base";
-import * as d3 from "d3";
+import { select, scaleBand, scaleLinear, axisBottom, axisLeft } from "d3";
 
 const formatData = (arr = []) => {
 	let data = [];
@@ -47,23 +47,21 @@ export const BarPlot = ({
 	const _yMin = setValue(getArrayMin(getPropertyValues(_data, "y")));
 	const _yMax = setValue(getArrayMax(getPropertyValues(_data, "y")));
 
-	const xScale = d3
-		.scaleBand()
+	const xScale = scaleBand()
 		.domain(getPropertyValues(_data, "x"))
 		.range([0, _svg.width], 0.05)
 		.padding(0.05);
-	const yScale = d3
-		.scaleLinear()
+	const yScale = scaleLinear
 		.domain([0, _yMax])
 		.range([_svg.height, 0]);
 	const color = colorWeight
-		? d3.scaleLinear().domain([_yMin, _yMax]).range(colorWeight)
+		? ScaleLinear().domain([_yMin, _yMax]).range(colorWeight)
 		: "salmon";
-	const xAxis = d3.axisBottom().scale(xScale);
-	const yAxis = d3.axisLeft().scale(yScale);
+	const xAxis = axisBottom().scale(xScale);
+	const yAxis = axisLeft().scale(yScale);
 
 	useEffect(() => {
-		const BarPlot = d3.select(ref.current).select("g.svgElement");
+		const BarPlot = select(ref.current).select("g.svgElement");
 
 		const bars = BarPlot.selectAll("rectangles")
 			.data(_data)

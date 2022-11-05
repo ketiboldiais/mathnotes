@@ -57,7 +57,7 @@ nothing there."
 
 Gleefully, Kukau exlaims, "Aha, so my answers are all correct!"
 
-**Recursion** is the programming technique of solving a problem whose
+__Recursion__ is the programming technique of solving a problem whose
 solution depends on solutions to smaller instances of the same problem.
 This is done by calling a function that calls itself from within itself. To
 understand how this works, it's worth recalling the control flow with
@@ -118,10 +118,10 @@ journey. (3) We must know how to break the journey down into a single step
 plus a smaller journey.
 
 The point where we stop (i.e., a known fact about the problem), is called
-the **base case**. We must always have this base case, lest we embark on an
+the __base case__. We must always have this base case, lest we embark on an
 infinite journey. When we state how to take one step in the journey, we are
 simply moving along the journey. When we break the journey down into a
-single step plus a smaller journey, we are performing **induction**.
+single step plus a smaller journey, we are performing __induction__.
 
 All this said, let's consider an example:
 
@@ -237,7 +237,7 @@ incremented to `4`. As such, when `f(0, 4)` has finished executing,
 	f(4,0) &rarr; print f(4,4)
 ```
 
-The above is an example of a **classical recursion** or **simple
+The above is an example of a __classical recursion__ or **simple
 recursion**. It's the kind of recursion most commonly used in programming.
 There are, however, other types of recursion: tail recursion, head
 recursion, tree recursion, mutual recursion, and nested recursion. We will
@@ -410,7 +410,7 @@ Applying complexity analysis, we have the time complexity of ${O(n).}$
 The first example in the previous section was an example of **tail
 recursion** &mdash; a recursive function where the recursive call is the
 
-last expression to be evaluated. We call this a **tail call**. Roughly, a
+last expression to be evaluated. We call this a __tail call__. Roughly, a
 tail recursive function takes the form:
 
 ```
@@ -493,7 +493,7 @@ optimizes space allocation.
 
 ## Head Recursion
 
-The opposite of tail recursion is **head recursion**. With head recursion,
+The opposite of tail recursion is __head recursion__. With head recursion,
 the recursive call <span className="underlineText">before</span> other
 statements are executed. Visually:
 
@@ -538,10 +538,10 @@ that head recursion tends to be much more difficult to implement as a loop.
 
 ## Tree Recursion
 
-All of the examples we've used above are instances of **linear recursion**.
+All of the examples we've used above are instances of __linear recursion__.
 In linear recursion, the recursive function is defined with only one call
 to itself. If the recursive function is defined with either multiple calls
-to itself, then we have an instance of **tree recursion**. Roughly, this
+to itself, then we have an instance of __tree recursion__. Roughly, this
 looks like the following:
 
 ```
@@ -713,7 +713,7 @@ can do. We will see some of these problems in later sections.
 
 ## Mutual Recursion
 
-In **mutual recursion**, the recursive function ${f}$ calls a recursive
+In __mutual recursion__, the recursive function ${f}$ calls a recursive
 function ${g,}$ and the recursive function ${g}$ calls the recursive
 function ${f.}$ Generally:
 

@@ -2,8 +2,8 @@ import {Sequence} from "../../../components/illus/components/Sequence/Sequence";
 
 # The ALU
 
-The **Arithmetic Logic Unit (ALU)** can be thought of as the computer's
-brain. Using the elementary logic gates, we can implement **adders**
+The __Arithmetic Logic Unit (ALU)__ can be thought of as the computer's
+brain. Using the elementary logic gates, we can implement __adders__
 &mdash; chips designed to add numbers. Once we can perform addition, a
 whole host of other operations are available &mdash; subtraction, numeric
 comparison, and other logical operations. The ALU is essentially a
@@ -42,7 +42,7 @@ And if we had three boxes, we would have eight possible packages:
 
 In general, if we have ${n}$ bits, where ${n}$ is a positive integer, we
 have ${2^n}$ possible packages. This analysis extends to computation. For
-computers, the boxes are **bits**, and the packages are **bitstreams**
+computers, the boxes are __bits__, and the packages are __bitstreams__
 (sequences of bits):
 
 | Number of Bits | Number of Possible Bitstreams           |
@@ -71,7 +71,7 @@ we continue.
 
 Ok, so we have all of the possible bit streams. Now what? Well, we can give
 those bitstreams _meaning_. And once we give a particular bistream a unique
-meaning, that bistream is called a **word**. For example, we can assign the
+meaning, that bistream is called a __word__. For example, we can assign the
 bitstreams to numbers, using _binary representation_, giving us _words_
 that represent numbers:
 
@@ -126,7 +126,7 @@ For simple computers, only so many numbers can be represented &mdash;
 there's a ceiling on how many bits are used to make a bitstream. In other
 words, returning to our box-package analogy, there's a limit on how many
 boxes the computer can fit into a single package. That limit is called a
-**word size**.
+__word size__.
 
 For example, for computers with a word size of ${8}$ bits, there are
 ${256}$ possible bitstreams, or ${256}$ possible words. For computers with
@@ -159,7 +159,7 @@ can think about a simpler problem, ${1_{[2]}+1_{[2]}.}$ In terms of decimal
 numbers, ${1_{[10]} + 1_{[10]} = 2_{[10]}.}$ We know that ${2}$ in binary
 is ${10_{[2]}.}$ Thus, ${1_{[2]} + 1_{[2]} = 10_{[2]}.}$ This means that
 when we perform binary addition, the addition ${1_{[2]} + 1_{[2]}}$ results
-in a **carry bit** of ${1_{[2]}.}$ Accordingly, we have the following carry
+in a __carry bit__ of ${1_{[2]}.}$ Accordingly, we have the following carry
 over combinations:
 
 $$
@@ -193,7 +193,7 @@ $$
 $$
 
 When a computation results in a word that exceeds the computer's word size,
-we have an **overflow**. What happens when an overflow occurs? For most
+we have an __overflow__. What happens when an overflow occurs? For most
 ALUs, nothing. The carry bit that does not fit into the word is simply
 ignored, and we end up with:
 
@@ -206,7 +206,7 @@ results in ${4.}$ This illustrates a critical point about computers: The
 addition performed is not real integer addition. There are infinitely many
 integers, but computers can only handle a subset &mdash; the integers whose
 binary representations can fit within its word size. More formally,
-computer addition is actually **${\bmod~2^{\omega}}$ addition**, where
+computer addition is actually __${\bmod~2^{\omega}}$ addition__, where
 ${\omega}$ is the word size. Thus, for the computer with a word size of
 ${4,}$ we have:
 
@@ -220,19 +220,19 @@ overflow leads to some interesting, albeit similar, results.
 
 ### Adders
 
-Now that we understand binary arithmetic, we can now discuss **adders**
+Now that we understand binary arithmetic, we can now discuss __adders__
 &mdash; logic gates for performing addition. As we saw earlier, when we
 perform binary addition, there are really just two cases we have to
 consider: Adding two bits (no carryover occurs) and adding three bits (a
 carryover occurs). Accordingly, to implement an adder, we need two simpler
 adders:
 
-1. The **half-adder** &mdash; a logic gate that adds two bits.
+1. The __half-adder__ &mdash; a logic gate that adds two bits.
 
-2. The **full-adder** &mdash; a logic gate that adds three bits.
+2. The __full-adder__ &mdash; a logic gate that adds three bits.
 
 Once we have these two simpler adders, we can implement a
-**multibit-adder** &mdash; a logic gate that adds two _numbers_.
+__multibit-adder__ &mdash; a logic gate that adds two _numbers_.
 
 ### Half-adder
 
@@ -358,9 +358,9 @@ several choices.
 
 ### Sign Bit Representation
 
-One way is to reserve the first bit of a word as the **sign bit** &mdash; a
+One way is to reserve the first bit of a word as the __sign bit__ &mdash; a
 bit corresponding to the integers's signum; `0` for positive, `1` for
-negative. This approach is called **sign bit representation**.
+negative. This approach is called __sign bit representation__.
 
 | Word      | Decimal  |
 | --------- | -------- |
@@ -426,7 +426,7 @@ $$
 $$
 
 which give us the correct answer, ${3.}$ This is a needlessly complicated
-process requiring an entirely separate logic gate, a **subtractor**, with
+process requiring an entirely separate logic gate, a __subtractor__, with
 the following truth table:
 
 <div id="sign_bit_subtractor"></div>
@@ -440,16 +440,16 @@ for that additional representation of ${0,}$ we'd at least have ${8.}$
 
 ### One's Complement Representation
 
-Another representation approach is **one's complement**. With one's
+Another representation approach is __one's complement__. With one's
 complement, negative numbers are formed by <q>flipping</q> or
 
 <q>reflecting</q> all of the bits &mdash; turn all the ones into zeros, and
 all the zeros into ones. For example, the binary number
 ${1011_{\texttt{b}},}$ flipped, is ${0100_{\texttt{b}}.}$ This
 <q>flipped</q> form of ${1011_{\texttt{b}},}$ the binary number
-${0100_{\texttt{b}},}$ is called the **complement** of
+${0100_{\texttt{b}},}$ is called the __complement__ of
 ${1011_{\texttt{b}},}$ and the operation of reflecting or flipping the
-digits is called **complementing**. Through complementing, the most
+digits is called __complementing__. Through complementing, the most
 significant bit communicates the number's sign. Note, however, that this is
 <em>not</em> sign bit.
 
@@ -601,7 +601,7 @@ for zero greatly simplifies the ALU's implementation.
 ### The Arithmetic Logic Unit
 
 So, we now know how to perform addition and subtraction with logic gates.
-Our next step is examining the **arithmetic logic unit (ALU)**.
+Our next step is examining the __arithmetic logic unit (ALU)__.
 Schematically, the ALU looks like:
 
 ![ALU Schematic](https://res.cloudinary.com/sublimis/image/upload/v1653171156/cs/ALU_schematic_euht0n.svg)
@@ -614,9 +614,9 @@ takes these three inputs, and returns the output `${f}$(input1, input2)`.
 
 The function ${f}$ is one out of a set of pre-defined arithmetic and
 logical functions. That set determines what the ALU can and cannot do. For
-most ALUs, the set includes **arithmetic functions** (integer addition,
+most ALUs, the set includes __arithmetic functions__ (integer addition,
 subtraction, and for some, multiplication and division), **logical
-functions** (AND, OR, XOR, NOT, and so on), and even **bitwise functions**
+functions__ (AND, OR, XOR, NOT, and so on), and even __bitwise functions**
 (bitwise-AND, bitwise-NOT, etc.).
 
 One of the hardest decisions an ALU designer must make is determining which
@@ -644,7 +644,7 @@ Examining the diagram above, we see that the ALU has ${11}$ pins. The blue
 arrows indicate single-bit buses, and the red arrows indicate ${16}$-bit
 buses. The single-bit bus inputs, `zx`, `nx`, `zy`, `ny`, `f`, and `no` all
 feed either a ${0}$ or ${1}$ into the ALU. These inputs are called
-**control bits**. Notice that there are ${6}$ of these bits. With ${6}$
+__control bits__. Notice that there are ${6}$ of these bits. With ${6}$
 bits, we have ${2^6 = 64}$ possible bitstreams. Those bit streams can then
 be assigned to particular functions.
 
@@ -953,7 +953,7 @@ Again this is correct, given that the final `out` `0000 0000 0000 0000` is
 zero.
 
 As we can likely tell, an ALU with just ${6}$ control inputs &mdash; called
-a **${6}$-bit ALU** &mdash; is already fairly complex. Early computers had
+a __${6}$-bit ALU__ &mdash; is already fairly complex. Early computers had
 ${4}$- and ${8}$-bit ALUs (thus capable of implementing ${16}$ operations
 and ${256}$ hardware-based operations respectively). Later, computers
 progressed to ${32}$-bit ALUs (over ${4}$ billion possible operations), and
