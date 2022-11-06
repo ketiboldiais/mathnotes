@@ -11,8 +11,9 @@ _This note presents an overview of vectors._
 3. [Subspaces](#subspaces)
 	1. [Sums of Subspaces](#sums-of-subspaces)
 	2. [Direct Sums](#direct-sums)
-4. [Spans](#spans)
+4. [Vector Lists](#vector-lists)
 5. [Linear Combinations](#linear-combinations)
+6. [Spans](#spans)
 
 ## Vector Space
 > __~vector space~.__ A _vector space_ ${\Vv}$ is an algebra ${(V,S,\set{\by,+}).}$ The set ${V}$ is a collection of objects called _vectors_, and ${S}$ is a collection of objects called _scalars_. The operation ${+}$ is a function called _vector addition_, which assigns to each pair of elements ${\uu, \vv \in V}$ an element ${\uu + \vv \in V.}$ The operation ${\by}$ is a function called _scalar multiplication_, which assigns to each ${a \in S}$ and to each ${\vv \in V,}$ an element ${a \by \vv \in V.}$ Given a vector space ${\Vv,}$ the following properties hold.
@@ -46,6 +47,8 @@ _This note presents an overview of vectors._
 
 > __~notation~.__ The notation ${\field^n}$ is an ${n}$-vector space denoting either ${\reals^n}$ or ${\Complex^n,}$ where ${\reals}$ is the field of real numbers and ${\Complex}$ is the field of complex numbers. The notation ${\field}$ denotes either ${\reals}$ or ${\Complex.}$
 
+> __~notation~.__ The notation ${\Vv}$ denotes an arbitrary vector space.
+
 > __~addition in ${\field^n}$~.__ Let ${\vv = (v_1,\ldots,v_n)}$ and ${\ww=(w_1,\ldots,w_n)}$ be vectors in ${\field^n}$ Then ${\vv + \ww \in \field^n}$ is the vector mapped whose components are the sums of the corresponding components of ${\vv}$ and ${\ww.}$ That is,
 > $$
 > 	\vv + \ww = (v_1+w_1,~\ldots,~v_n+w_n).
@@ -57,14 +60,14 @@ _This note presents an overview of vectors._
 
 > __~theorem~.__ Addition in ${\field^n}$ is commutative.
 
-> ~proof~. Let ${\vv = (v_1,\ldots,v_n)}$ and let ${\ww = (w_1,\ldots,w_n).}$ Then
+> ~proof~. Let ${\vv = \ix{v_1,\ldots,v_n}}$ and let ${\ww = \ix{w_1,\ldots,w_n}.}$ Then
 > 
 > $$
 > 	\eqs{
-> 		\vv + \ww &= (v_1,\ldots,v_n) + (w_1,\ldots,w_n) \\
-> 		&= (v_1 + w_1, \ldots, v_n + w_n)  ~~ \small\tx{by definition of addition in } \field^n\\
-> 		&= (w_1 + v_1, \ldots, w_n + v_n) ~~ \small\tx{by commutativity of addition in } \field^n\\
-> 		&= (w_1,\ldots,w_n) + (v_1, \ldots, v_n) ~~ \small\tx{by definition of addition in } \field^n\\
+> 		\vv + \ww &= \ix{v_1,\ldots,v_n} + \ix{w_1,\ldots,w_n} \\
+> 		&= \ix{v_1 + w_1, \ldots, v_n + w_n}  ~~ \small\tx{by definition of addition in } \field^n\\
+> 		&= \ix{w_1 + v_1, \ldots, w_n + v_n} ~~ \small\tx{by commutativity of addition in } \field^n\\
+> 		&= \ix{w_1,\ldots,w_n} + \ix{v_1, \ldots, v_n} ~~ \small\tx{by definition of addition in } \field^n\\
 > 		&= \ww + \vv.
 > 	}
 > $$
@@ -72,7 +75,7 @@ _This note presents an overview of vectors._
 > __~scalar multiplication in ${\field^n}$~.__ Let ${\vv}$ be a vector in ${\field^n}$ and let ${a}$ be a scalar in ${\field.}$ The _scalar product_ of ${a}$ and ${\vv}$ is the vector ${c\vv}$ such that every component of ${\vv}$ is multiplied by ${c.}$ That is,
 >
 > $$
-> 	c\vv = (cv_1, \ldots cv_n).
+> 	c\vv = \ix{cv_1, \ldots cv_n}.
 > $$
 
 > __~lemma~.__ For every ${\vv \in \field^n,}$ it follows that ${{\bf 0}\vv = \bf 0.}$
@@ -84,9 +87,9 @@ _This note presents an overview of vectors._
 ## Subspaces
 > __~subspace~.__ Let ${V}$ be a subset of the vector space ${\field^n.}$ If ${V}$ is a vector space, then ${V}$ is a _subspace_ of the vector space ${\field^n.}$
 
-> ~example~. ${\set{\ar{x,~x^2} : x \in \reals}}$ is a subspace of ${\reals^2.}$
+> ~example~. ${\set{\ix{x,~x^2} : x \in \reals}}$ is a subspace of ${\reals^2.}$
 
-> ~example~. ${\set{\ar{v_1,~v_2,~0} : v_1,v_2 \in \field}}$ is a subspace of ${\field^3.}$
+> ~example~. ${\set{\ix{v_1,~v_2,~0} : v_1,v_2 \in \field}}$ is a subspace of ${\field^3.}$
 
 ### Sums of Subspaces
 > __~subset sum~.__ Let ${V_1, V_2, \ldots, V_{m-1}, V_m}$ be subsets of the vector space ${\field^n.}$ The subset sum of ${V_1, V_2, \ldots, V_{m-1}, V_m}$ is defined as
@@ -98,44 +101,65 @@ _This note presents an overview of vectors._
 > That is, the set of all possible sums of elements of ${V_1, V_2, \ldots, V_{m-1}, V_m.}$
 
 ~example~. 
-1. Let ${~~~\no{W+}V=\set{(x,0,0) \in \field^3 : x \in \field}.}$ 
-2. Let ${~~~\no{V+}W=\set{(0,y,0) \in \field^3 : y \in \field}.}$ 
-3. Then ${V+W=\set{(x,y,0) \in \field^3 : x,y \in \field}.}$
+1. Let ${~~~\no{W+}V=\set{\ix{x,0,0} \in \field^3 : x \in \field}.}$ 
+2. Let ${~~~\no{V+}W=\set{\ix{0,y,0} \in \field^3 : y \in \field}.}$ 
+3. Then ${V+W=\set{\ix{x,y,0} \in \field^3 : x,y \in \field}.}$
 
 > __~theorem~.__ Let ${V_1,\ldots,V_m}$ be subspaces of ${\field^n.}$ Then ${V_1 + \ldots + V_m}$ is the smallest subspace of ${\field^n}$ containing ${V_1,\ldots,V_m.}$
 
 > ~proof~. Clearly, ${0 \in V_1+\ldots+V_m}$ and ${V_1+\ldots+V_m}$ is closed under addition and scalar multiplication, since ${\field^n}$ is either ${\reals}$ or ${\Complex.}$ Moreover, given ${v_1 \in V_1, \ldots, v_m \in V_m}$ such that ${v_1 = v_2 = \ldots = v_{m-1} = 0,}$ it follows that ${V_1,\ldots,V_m}$ contains ${V_1 + \ldots + V_m.}$ Therefore, ${V_1 + \ldots + V_m}$ is the smallest subspace containing ${V_1,\ldots,V_m.}$ ${\footnotesize\bs}$
 
 ### Direct Sums
-Given that every element ${v_i}$ of ${V_1+\ldots+V_m}$ can be written in the form ${v_1+\ldots+v_m,}$ where ${V_1,\ldots V_m}$ are subspaces of ${\field^n,}$ we often want to know if every vector of ${V_1+\ldots+V_m}$ can be expressed in exactly one way. If the subspace sum ${V_1+\ldots + V_m}$ has this property, then we know that every vector of ${V_1 + \ldots + V_m}$ is _unique_, since every vector can be _uniquely expressed_.
+Given that every element ${v_i}$ of ${V_1+\ldots+V_m}$ can be written in the form ${v_1+\ldots+v_m,}$ where ${V_1,\ldots V_m}$ are subspaces of ${\field^n,}$ we often want to know if every vector of ${V_1+\ldots+V_m}$ can be expressed in exactly one way. 
 
 > __~direct sum~.__ Let ${V_1,\ldots,V_m}$ be subspaces of ${\field^n.}$ If each element ${v_{1 \le i \lt n}}$ of ${V_1 + \ldots + V_m}$ can be expressed in exactly one way as the sum ${v_1 + \ldots + v_m,}$ then we say that ${V_1 + \ldots + V_m}$ is a _direct sum_ of ${\field^n.}$ We denote a direct sum ${V_1 + \ldots + V_m}$ with the notation ${V_1 \oplus \ldots \oplus V_m.}$
 
 ~example~. 
-1. Let ${~~~~V=\set{(x,y,0) \in \field^3 : x \in \field}.}$ 
-2. Let ${~~~W=\set{(0,0,z) \in \field^3 : y \in \field}.}$ 
-3. Then ${\field^3=\set{(x,y,z) \in \field^3 : x,y,z \in \field} = V\oplus W.}$
+1. Let ${~~~~V=\set{\ix{x,y,0} \in \field^3 : x \in \field}.}$ 
+2. Let ${~~~W=\set{\ix{0,0,z} \in \field^3 : y \in \field}.}$ 
+3. Then ${\field^3=\set{\ix{x,y,z} \in \field^3 : x,y,z \in \field} = V\oplus W.}$
 
-## Spans
+If the subspace sum ${V_1+\ldots + V_m}$ has this property, then we know that every vector of ${V_1 + \ldots + V_m}$ is _unique_, since every vector can be _uniquely expressed_.
+
+## Vector Lists
 > __~vector list~.__ The notation ${[\vv_1,\ldots,\vv_n]}$ denotes a _list of vectors_.
 
-~example~. ${[(1,2,3),(4,5,6),(7,8,9)].}$
+~example~. ${[\ix{1,2,3},\ix{4,5,6},\ix{7,8,9}].}$
 
 ## Linear Combinations
 > __~definition~.__  Let ${[\vv_1,\ldots,\vv_m]}$ be a list of vectors in ${\field^n.}$ A vector of the form
 > 
 > $$
-> 	a_1 \vv_1 + \ldots a_m \vv_m
+> 	a_1 \vv_1 + \ldots + a_m \vv_m
 > $$
 > 
 > where ${a_1,\ldots,a_m \in \field}$ is called a _linear combination_.
 
-~example~. Let ${\aa = (32,88,23),}$ ${\vv = (2,8,3)}$ and ${\ww = (4,8,1),}$ where ${\aa, \vv, \ww \in \field^3.}$ Then ${\aa}$ is a linear combination of the list ${[\vv, \ww],}$ since ${(32,88,23)=6(2,8,3) + 5(4,8,1).}$ That is, there exist ${a_1 = 6}$ and ${a_2 = 5}$ in ${\field}$ such that ${\aa = a_1\vv + a_2\ww.}$
+~example~. Let ${\aa \eq \ix{32,88,23},}$ ${\vv \eq \ix{2,8,3}}$ and ${\ww \eq \ix{4,8,1},}$ where ${\aa, \vv, \ww \in \field^3.}$ Then ${\aa}$ is a linear combination of the list ${[\vv, \ww],}$ since ${\ix{32,88,23} \eq 6\ix{2,8,3} + 5\ix{4,8,1}.}$
 
 $$
 	\eqs{
-		 &6(2,8,3) = (12,48,18) \\
-		 +~&5(4,8,1) = (20,40,~~5) \\ \hline
-&\no{5(4,8,1) =} (32,88,23) \\
+		 &6\ix{2,8,3} \eq \ix{12,48,18} \\
+		 \pl~&5\ix{4,8,1} \eq \ix{20,40,~~5} \\ \hline
+&\no{5\ix{4,8,1} \eq } \ix{32,88,23} \\
 	}
 $$
+
+Put another way, there exists a solution set for the set of linear equations:
+
+$$
+	\lset{\ax{
+		2a_1 & \pl & 4a_2 & \eq & 32 \\
+		8a_1 & \pl & 8a_2 & \eq & 88 \\
+		3a_1 & \pl & \no{8}a_2 & \eq & 23 \\
+	}}.
+$$
+
+Namely, ${\set{{a_1 \eq 6, a_2 \eq 5}}.}$
+
+## Spans
+__~definition: span~.__ Let ${[\vv_1, \ldots, \vv_n]}$ be a list of vectors in ${\Vv.}$ The set of all linear combinations of ${[\vv_1, \ldots, \vv_n]}$ is called the __*span*__ of ${[\vv_1, \ldots, \vv_n],}$ denoted ${\tx{span}\px{\vv_1, \ldots, \vv_n}.}$ The span of the empty vector list, is defined to be ${\set{0}.}$
+
+~example~. Let ${\vv \eq \ix{2,1,\mi3}}$ and let ${\ix{1,-2,4}.}$ Then ${\ix{17,-4,2} \in \tx{span}(\vv, \ww).}$
+
+> __~theorem~.__ Given a list of vectors ${\AA = \ix{\vv_1, \ldots, \vv_2}}$ in ${\field^n,}$ ${\tx{span}(\AA)}$ is the smallest subspace of ${\field^n}$ containing all the vectors of ${\AA.}$

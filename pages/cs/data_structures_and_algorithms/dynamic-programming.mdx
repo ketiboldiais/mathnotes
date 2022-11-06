@@ -11,7 +11,8 @@ _This note presents an overview of dynamic programming_.
 
 1. [Sequence Generation: Fibonacci Numbers](#sequence-generation-fibonacci-numbers)
 2. [Memoization](#memoization)
-3. [Decision Tree Problems](#decision-tree-problems)
+3. [Decision Trees](#decision-trees)
+	1. [Minimum Change Problem](#minimum-change-problem)
 
 ## Sequence Generation: Fibonacci Numbers
 Perhaps the best introduction to dynamic programming is the procedure for generating the Fibonacci numbers. Below is a straightforward, recursive approach:
@@ -117,7 +118,7 @@ Above, all of the filled nodes correspond to ${\tx{fib}}$ calls that are _unnece
 Employing memoization, the algorithm's time complexity reduces to an order of ${\bigO{n}}$ (space complexity remains of order ${\bigO{n}}$).
 
 ## Decision Trees
-> __~definition: palette~.__ Let ${Z}$ be a set of natural numbers, let ${n}$ be a positive integer, and let ${x}$ be a natural number. We say that ${A}$ is a _palette_ of ${x}$ if it contains (1) a factor of ${x,}$ or (2) ${k \in \pint}$ elements such that ${\tsum{i=0}{k} z_i = x,}$ where ${z_i \in Z.}$ If ${Z}$ is a palette of ${x,}$ we write ${\df{palette}\px{Z,x} = 1.}$ If ${Z}$ is not a palette of ${x,}$ we write ${\df{palette}\px{Z,x}=0.}$
+> __~definition: palette~.__ Let ${Z}$ be a set of positive integers, let ${n}$ and ${x}$ be positive integers. We say that a set ${Z}$ is a _palette_ of ${x}$ if it contains ${k \in \pint}$ elements such that ${\tsum{i=1}{k} z_i = x}$ with ${\tsum{j=1}{n}z_jz_j = x,}$ where ${z_i, z_j \in Z.}$ If ${Z}$ is a palette of ${x,}$ we write ${\df{palette}\px{Z,x} = 1.}$ If ${Z}$ is not a palette of ${x,}$ we write ${\df{palette}\px{Z,x}=0.}$
 
 ~example~. ${\df{palette}\px{\set{1,2,3},5} = 1,}$ since:
 
@@ -133,7 +134,7 @@ $$
 
 > __~problem: palette verification~.__ Does there exist an algorithm that returns true if a set of positive integers ${Z}$ is a palette of a natural number ${x,}$ and false otherwise?
 
-The palette verification problem can be modelled with a _decision tree_.
+The palette verification problem can be modelled with a __*decision tree*__.
 
 > __~decision tree~.__ Let ${T = (V,E)}$ be a rooted binary tree with a set of vertices ${V}$ and a set of edges ${E.}$ We call ${T}$ a _decision tree_ if each nonleaf ${\set{n \in V:\deg\px{n} \neq 1}}$ represents a variable, each leaf ${\set{\ell \in V:\deg\px{\ell}=1}}$ represents a Boolean 1 or 0 (i.e., true or false), and each edge ${\e \in E}$ represents a a value that a nonleaf ${n}$ can take.
 
@@ -184,14 +185,14 @@ Each edge is a decision to subtract either 1, 2, or 3 — the elements of ${Z.}$
 
 
 <Tree data={[
-	{child:4, parent:'', ec: 'teal'},
-	{child:3, parent:4, el:'\\texttt{+}1', ec:'teal'},
+	{child:4, parent:'', ec: 'red'},
+	{child:3, parent:4, el:'\\texttt{+}1', ec:'red'},
 		{child:432, parent:3, n:2, el:'\\texttt{+}1'},
 			{child:4321, parent:432, n:1, el: '\\texttt{+}1'},
 				{child:43210, parent:4321, n:0, el: '\\texttt{+}1', class:'nil'},
 			{child:4320, parent:432, n:0, el: '\\texttt{+}2', class: 'nil'},
-		{child:431, parent:3, n:1, el: '\\texttt{+}2', ec:'teal'},
-			{child:4310, parent:431, n:0, el: '\\texttt{+}1', class: 'nil', ec:'teal'},
+		{child:431, parent:3, n:1, el: '\\texttt{+}2', ec:'red'},
+			{child:4310, parent:431, n:0, el: '\\texttt{+}1', class: 'nil', ec:'red'},
 		{child:430, parent:3, n:0, el: '\\texttt{+}3'},
 	{child:2, parent:4, el: '\\texttt{+}2'},
 		{child:421, parent:2, n:1, el:'\\texttt{+}1'},
@@ -245,4 +246,56 @@ The algorithm above has a time complexity of order ${\bigO{x \by n},}$ and the s
 		{child:420, parent:2, n:0, class:'nil', tc:'out'},
 	{child:1, parent:4 },
 		{child:410, parent:1, n:0, class:'nil', tc:'out'},
-]} tx={-10} r={3} id={'pv3'}/>
+]} tx={-10} r={3} id={'pv3'} margin={20}/>
+
+### Branching Factors
+> __~definition: branching factor~.__ Given a vertex ${v}$ of ${T,}$ the _branching factor_ of ${v,}$ denoted ${\tx{brf}(v),}$ is the number of children of ${v.}$ If ${v}$ is a leaf, then ${\tx{brf}(v) = 0.}$
+
+Branching factors lead to the notion of __*combinatorial explosions*__ — problems whose set of possible solutions grow exponentially with increased inputs. For example, a state machine (e.g., a modern computer) with ${k}$ binary cells (i.e., _bits_) has ${2^k}$ possible states, since each cell can take one of two values, ${\set{0,1}.}$ If, instead, the cells could take on ${n}$ possible values, then we have ${n^k}$ possible states. Given that a typical modern computer with ${500\tx{GB}}$ of memory, we're looking at ${4 \times 10^{12}}$ bits, or ${2^{4~000~000~000~000}}$ (two raised to the four trillion) possible states. That's a number so large that it's pointless trying to even comprehend it. It's also why phenomenon like _undefined behavior_ exist for languages like C; we're writing code whose final state is anyone's guess — there are far too many variables.
+
+### Minimum Change Problem
+The minimum change problem is stated as follows.
+
+> __~problem: minimum coins~.__ Given a set ${C}$ of ${n}$ positive integers, each representing a coin—${C=\set{c_1, \ldots, c_n}}$—and a positive integer ${A}$ representing an amount, what is the smallest [bag](./../../math/set_theory/bags) of ${c}$ elements that sum to ${A?}$
+
+~example~. Suppose ${A = 4,}$ and ${C = \set{1,2,3}.}$ Then the smallest bag is ${\tup{3^11^1},}$ since ${3 + 1 = 4.}$ We can model this problem with the decision tree below. The problem's solution, then, is the shortest path from the root ${\set{4}}$ to a leaf ${\set{0}.}$ We've colored a few such paths in the decision tree.
+
+<Tree data={[
+	{child:4, parent:''},
+	{child:3, parent:4, el:'\\texttt{-}1',ec:'blue',class:'blue'},
+		{child:'32', parent:3, n:2,el:'\\texttt{-}1'},
+			{child:'321', parent:'32', n:1,el:'\\texttt{-}1'},
+				{child:'3210', parent:'321', n:0, el:'\\texttt{-}1'},
+			{child:'320', parent:'32', n:0,el:'\\texttt{-}2'},
+		{child:'31', parent:3, n:1, el: '\\texttt{-}2'},
+			{child:'310', parent:'31', n:0, el:'\\texttt{-}1'},
+		{child:'30', parent:3, n:0, el:'\\texttt{-}3',ec:'blue',class:'blue'},
+	{child:2, parent:4,el:'\\texttt{-}2',ec:'green', class:'green'},
+		{child:'21', parent:2, n:1, el:'\\texttt{-}1'},
+			{child:'210', parent:'21', n:0, el:'\\texttt{-}1'},
+		{child:'20', parent:2, n:0, el: '\\texttt{-}2',ec:'green',class:'green'},
+	{child:1, parent:4, el:'\\texttt{-}3', ec:'red', class:'red'},
+		{child:'10', parent:1,n:0, el:'\\texttt{-}1', ec:'red', class:'red'},
+]} tx={-15} r={3} id={'minchange1'} wh={[400,210]} margin={10}/>
+
+Like the palette problem, we use 0 as the base case. Next question: How do we get the shortest path? The shortest path is the path with the least amount of edges from the root to a leaf. Remember that every vertex of a tree is a tree itself. Thus, given a vertex with ${n}$ children, the shortest path is the path to a vertex that is either a leaf, or, if not a leaf, the child closest to a leaf. How do we know which child is closest to a leaf? By comparing the values they're assigned. Given a set ${C}$ of ${n}$ children, the shortest path runs through ${\min\set{C}.}$ Thus, because every recursive call returns 0, we want to add one to each caller (a nonleaf) to the returned value of its callee. In other words, if the callee is a leaf, we return 0. If the callee is a nonleaf, we return the minimum of its callees, plus one.
+
+Without memoization, this is a problem that leads to a combinatorial explosion: The time complexity is of order ${\bigO{n^A}}$ and the space complexity is of order ${\bigO{A},}$ where ${n}$ is the size of ${C}$—the number of coin denominations—and ${A}$ is the target sum. So, alongside writing the recursive function, we must also identify the duplicate trees. Such trees correspond to unnecessary operations. Examining the tree, we can spot a few duplicates:
+
+<Tree data={[
+	{child:4,parent:''},
+	{child:3,parent:4},
+		{child:'32',parent:3,n:2},
+			{child:'321',parent:'32',n:1},
+				{child:'3210',parent:'321',n:0},
+			{child:'320',parent:'32',n:0},
+		{child:'31',parent:3,n:1},
+			{child:'310',parent:'31',n:0,tc:'out'},
+		{child:'30',parent:3,n:0},
+	{child:2,parent:4},
+		{child:'21',parent:2,n:1,tc:'out'},
+			{child:'210',parent:'21',n:0,tc:'out'},
+		{child:'20',parent:2,n:0,tc:'out'},
+	{child:1,parent:4},
+		{child:'10',parent:1,n:0,tc:'out'},
+]}tx={-15}r={3}id={'minchange2'}wh={[400,210]}margin={10}/>

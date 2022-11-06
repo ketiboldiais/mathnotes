@@ -8,7 +8,6 @@ import { generateTreeData } from "./generateTreeData/generateTreeData";
 import {
 	className,
 	svg,
-	setClassName,
 	translate,
 	Trim,
 	MathText,
@@ -53,7 +52,6 @@ export const Tree = ({
 	levelLineColor = "grey",
 	levelTextColor = "grey",
 	levelFontSize = 7,
-	debug=false,
 }) => {
 	const TreeFigure = useRef();
 	const _svg = svg(wh[0], wh[1], margins);
@@ -71,9 +69,9 @@ export const Tree = ({
   let _nodes = root.descendants();
 	for (let i = 0; i < _nodes.length; i++) {
 		_nodes[i].name = _nodes[i].data.n || _nodes[i].data.n === 0 ? _nodes[i].data.n : _nodes[i].id;
-		let className = 'tree-leaf';
+		let className = 'tree-node';
+		if (_nodes[i].parent && _nodes[i].parent.data.tc) { className += " " + `${_nodes[i].parent.data.tc}`}
 		if (_nodes[i].data.tc) { className += " " + `${_nodes[i].data.tc}` }
-		if (_nodes[i].parent && _nodes[i].parent.data.tc) { className += " " + `${_nodes[i].parent.data.tc}` }
 		if (_nodes[i].data.class) { className += " " + `${_nodes[i].data.class}` }
 		_nodes[i].class = className;
 	}
@@ -139,17 +137,7 @@ export const Tree = ({
 			.data(_nodes)
 			.enter()
 			.append("g")
-			.attr("class", (d) => {
-				if (d.class) {
-					return d.class;
-				}
-				else if (d.height === 0) {
-					return 'tree-leaf';
-				}
-				else {
-					return 'tree-branch';
-				}
-			});
+			.attr('class', (d) => d.class ? d.class : d.treeClass)
 		const annotations=tree
 			.append("g")
 			.selectAll('ants')
@@ -170,7 +158,7 @@ export const Tree = ({
 			.each(function (d, i) {
 				const graphId = Trim(id, [/ /]);
 				let sel = select(this);
-				MathText(sel,d.data.ant,fs,50,50,`${graphId}-${d.id}-${i}`,"black");
+				MathText(sel,d.data.ant,fs,50,50,`${graphId}-${d.id}-${i}`,"initial");
 			});		
 		nodes
 			.filter((d) => d.data.display !== "none")

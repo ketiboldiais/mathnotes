@@ -346,6 +346,8 @@
 		}
 /* KaTeX */
 	:not(.illus) span.katex {font-size: 0.98em;}
+	span.mbin {font-family: 'Latin Modern';}
+	span.mord.text {font-family: 'Latin Modern';}
 	/* .illus span.katex {font-size: 0.6em;} */
 	.Plot span.mord.texttt {
 		font-family: var(--mono) !important;
@@ -1001,10 +1003,16 @@
 	/* Trees */
 		.tree line, .tree circle { stroke: rgb(127, 127, 127); }
 		.tree .nil circle {fill: rgb(139, 139, 139); stroke: rgb(21, 21, 21)}
-		.tree .red circle {fill: rgb(255, 213, 129); stroke: rgb(168, 24, 24)}
+		.tree .red circle {fill: rgb(252, 215, 210); stroke: rgb(168, 24, 24)}
+		.tree .green circle {fill: rgb(219, 243, 220); stroke: rgb(59, 124, 61)}
+		.tree .green span.katex {color: green;}
+		.tree .red span.katex {color: firebrick;}
+		.tree .blue span.katex {color: teal;}
+		.tree .blue circle {fill: rgb(220, 245, 248); stroke: rgb(12, 133, 157)}
 		.tree line.red {stroke: firebrick}
-		.tree .out {opacity: 0.2;}
-		.tree line.teal {stroke: rgb(124, 208, 208); stroke-width: 2;}
+		.tree line.blue {stroke: rgb(8, 176, 176);}
+		.tree line.green {stroke: rgb(115, 172, 105);}
+		.tree .out, .tree .out span.katex {opacity: 0.2;}
 	/* Graphs */
 		.Graph circle {fill: var(--background-color); stroke: var(--lightBlue)}
 		.Graph path {stroke: var(--lightBlue);}
@@ -1217,9 +1225,24 @@
 	table.trace tr:last-child td {
 		/* border-bottom: 0; */
 	}
+/* div.tile */
+	div.tile {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-evenly;
+	}
+	div.tile>div {
+		padding: 1em 0.5em;
+		margin: 1% 0;
+		width: 40%;
+		height: fit-content;
+	}
+
+
 /* Media Queries */
 	@media (min-width:501px) {
-		html {font-size: 12px;}
+		html {font-size: 13px;}
 	}
 	@media (max-width: 500px) {
 		html {font-size: 11px;}

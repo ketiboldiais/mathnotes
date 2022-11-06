@@ -470,3 +470,170 @@ $$
 
 Thus, the loop executes ${n/2}$ times.
 
+
+### Cardinality
+An alternative name for combinatorics is _finite set theory_ — it is the study of finite sets, with a particular emphasis on the cardinalities of finite sets.
+
+> __~definition~.__ Given the sets ${A}$ and ${B,}$ we say that ${A}$ is _equipotent_ to ${B}$ if there exists a bijection from ${A}$ to ${B.}$ If ${A}$ and ${B}$ are equipotent, we write ${A \seteq B.}$
+
+> __~definition~.__ Given the non-empty set ${A,}$ we say that ${A}$ is _countably infinite_ if, and only if, ${A \seteq B.}$
+
+> __~definition~.__ Given the non-empty set ${A,}$ if ${A}$ is neither countably infinite nor countably finite, then we say that ${A}$ is _uncountably infinite_, and write ${\abs{A}=\infty.}$
+
+> __~definition~.__ Given the set ${A,}$ we say that ${A}$ is _countably finite_ if, and only if, ${A \seteq \ix{n}}$ or ${A \seteq \nil.}$ If ${A \seteq \ix{n},}$ we write ${\abs{A} = n.}$ If ${A \seteq \nil,}$ we write ${\abs{A}=0.}$
+
+> __~properties of cardinality~.__ Let ${A}$ and ${B}$ be countably finite sets. The following properties hold for ${A.}$
+>
+> (1) ${A \seteq A.}$
+> 
+> (2) If ${A \seteq B,}$ then ${B \seteq A.}$
+> 
+> (3) If ${A \seteq B}$ and ${B \seteq C,}$ then ${A \seteq C.}$
+
+The definitions above evidence a preliminary task that's not often mentioned in combinatorics materials: Before we even deal with the cardinality of sets, we must first establish that the sets in question are actually finite.
+
+### Disjoint Sum Rule
+> __~theorem~.__ Let ${A}$ be a set of disjoint finite sets ${A_1, A_2, \ldots A_n.}$ It follows that
+> 
+> $$
+> 	\abs{A} = \abs{A_1 \dup A_2 \dup \ldots \dup A_n} = \left\vert{\bigsqcup_{i=1}^{n}A_i}\right\vert = \dsum{i=1}{n}\abs{A_i}= \abs{A_1} + \abs{A_2} + \ldots + \abs{A_n}.
+> $$
+
+__~probability of disjoint events~.__ If an event can occur ${m}$ 
+
+~example~. A box contains 18 ${\cash{1}}$ bills and 3 ${\cash{100}}$ bills. What is probability of selecting one ${\cash{100}}$ bill? There are ${18+3=21}$ bills: ${\pb{\tx{pick}~~\cash{1}} = 3/21 \approx 0.143.}$ 
+
+### Complementary Rule
+> __~theorem~.__ Let ${U}$ be a countably finite set, and let ${A \subseteq U.}$ It follows that:
+> 
+> $$
+> 	\abs{\nix{A}} = \abs{U} - \abs{A}.
+> $$
+
+### Symmetry Rule 
+> __~theorem~.__ Let ${U}$ be a countably finite set. If ${A \subseteq U,}$ ${B \subseteq U,}$ ${C \subseteq U,}$ and ${\abs{A} = \abs{B},}$ then
+> 
+> $$
+> 	\abs{A} = \dfrac{\abs{U}-\abs{C}}{2}.
+> $$
+
+Visually, this rule results from the following. Suppose ${U}$ is a countably finite set partitioned into the sets ${A,B,C,}$ with ${\abs{A}=\abs{B}:}$
+
+$$
+	^{\normalsize U}~{\wd{A}\wd{~~C~~}\wd{B}}
+$$
+
+The cardinality of ${A}$ (or ${B}$) can be determined by constructing a set without ${C,}$ counting all its elements, and dividing by 2.
+
+$$
+	^{\normalsize U}~{\wd{A}{\sd{~~\no{C}~~}}\wd{B}}
+$$
+
+### Pigeonhole Principle
+__~theorem~.__ Let ${P}$ and ${H}$ be countably finite sets, and let ${f: P \mapsto H.}$ If ${\abs{P} \gt \abs{H},}$ then at least one ${h \in H}$ is mapped to _twice_. That is, ${f}$ is _not injective_.
+
+__~theorem~.__ Let ${P}$ and ${H}$ be countably finite sets, and let ${f: P \mapsto H.}$ If ${\abs{P} \lt \abs{H},}$ then at least one ${h \in H}$ is _not mapped to_. That is, ${f}$ is _not surjective_.
+
+### Enumerating Pairs
+> __~theorem~.__ Given ${n}$ elements ${\set{x_1,\ldots,x_n}}$ and ${m}$ elements ${\set{y_1,\ldots,y_n},}$ there are ${n \times m}$ _pairs_ of the form ${(x_j,y_k).}$ That is, tuples containing exactly one unique element from each type.
+
+~example~. Suppose ${A = \set{1,2,3}}$ and ${B = \set{a,b,c}.}$ We have the pairs:
+
+$$
+	\lset{\ax{
+		(1,a) & (2,a) & (3,a) \\
+		(1,b) & (2,b) & (3,b) \\
+		(1,c) & (2,c) & (3,c) \\
+	}}
+$$
+
+### Enumerating Multiplets
+> __~theorem~.__ Given ${n_1}$ elements ${\set{a_1, \ldots, a_{n_1}},}$ and ${n_2}$ elements ${\set{b_1, \ldots, b_{n_2}},}$ etc., up to ${n_r}$ elements ${\set{x_1, \ldots, x_{n_r}},}$ there are ${n_1 \times n_2 \times \ldots \times n_r}$ _multiplets_ of the form ${(a_{j_1}, b_{j_1}, \ldots, x_{j_r}).}$ That is, tuples containing ${r}$ unique elements from each type.
+
+This is merely a generalization of the previous theorem. Pairs have an _arity_ of two: ${A \times B.}$ Multiplets have an arity of ${r:}$ ${S_1 \times S_2 \times \ldots \times S_r.}$
+
+### Three Possible Cases of Orderings
+> __~definition: generic ordering~.__ Let ${A}$ be the set ${\set{a_1,\ldots,a_n},}$ let ${B}$ be the set ${\set{b_1,\ldots,b_n},}$ and let ${f \subset A \times B.}$ If ${(a_i, b_k) \in f}$ and ${(a_j,b_k) \in f,}$ then we say that ${f}$ is a _generic ordering_, or _sampling with replacement_. That is, after an element ${b_k}$ has been mapped to by an element ${a_i,}$ another element ${a_j \neq a_i}$ _may_ map to ${b_k.}$ 
+
+> __~definition: injective ordering~.__ Let ${A}$ be the set ${\set{a_1,\ldots,a_n},}$ let ${B}$ be the set ${\set{b_1,\ldots,b_n},}$ and let ${f \subset A \times B}$ be a mapping from ${A}$ to ${B.}$ If every element of ${B}$ is mapped to _at most once_, then ${f}$ is an _injective ordering_, or _sampling without replacement_.
+
+> __~definition: surjective ordering~.__ Let ${A}$ be the set ${\set{a_1,\ldots,a_n},}$ let ${B}$ be the set ${\set{b_1,\ldots,b_n},}$ and let ${f \subset A \times B}$ be a mapping from ${A}$ to ${B.}$ If every element of ${B}$ is mapped to _at least once_, then ${f}$ is a _surjective ordering_, or _total sampling with replacement_.
+
+> __~definition: bijective ordering~.__ Let ${A}$ be the set ${\set{a_1,\ldots,a_n},}$ let ${B}$ be the set ${\set{b_1,\ldots,b_n},}$ and let ${f \subset A \times B}$ be a mapping from ${A}$ to ${B.}$ If every element of ${B}$ is mapped to _exactly once_, then ${f}$ is a _bijective ordering_, or _total sampling without replacement_.
+
+### Enumerating Bijective Orderings
+> __~theorem~.__  Given ${n}$ elements, there are ${n! = n(n-1)(n-2)\ldots(2)(1)}$ possible bijective orderings.
+
+~example~. How many ways are there to order the elements of ${\set{0,1}?}$ There are ${2! = 2}$ ways: ${(0,1)}$ and ${(1,0).}$
+
+~example~. How many ways are there to order the outcomes ${\set{a,b,c}?}$ There are ${3! = 6}$ ways:
+
+<div className={`TableMatrix`}>
+| position | 0     | 1     | 2     |
+| -------- | ----- | ----- | ----- |
+|          | ${a}$ | ${b}$ | ${c}$ |
+|          | ${a}$ | ${c}$ | ${b}$ |
+|          | ${b}$ | ${a}$ | ${c}$ |
+|          | ${b}$ | ${c}$ | ${a}$ |
+|          | ${c}$ | ${a}$ | ${b}$ |
+|          | ${c}$ | ${b}$ | ${a}$ |
+</div>
+
+Orders are merely _bijections_ from a set of natural numbers to a set of objects. Thus, each of the orders above are distinct sets of tuples.
+
+$$
+	P_1=\lset{(0,a)~~(1,b)~~(2,c)} \\
+	P_2=\lset{(0,a)~~(1,c)~~(2,b)} \\
+	P_3=\lset{(0,b)~~(1,a)~~(2,c)} \\
+	P_4=\lset{(0,b)~~(1,c)~~(2,a)} \\
+	P_5=\lset{(0,c)~~(1,a)~~(2,b)} \\
+	P_6=\lset{(0,c)~~(1,b)~~(2,a)} \\
+$$
+
+Each set ${P_i}$ is a mathematical object called a _permutation_, and more generally, a type of _strict ordering_. The term strict comes from the fact that (1) once a given element of the base set ${\set{a,b,c}}$ has been mapped to, it cannot be mapped to again, and (2) every element of the set ${\set{a,b,c}}$ is mapped to at least once. For example, we will never have a set ${\set{(0,a), (1,a), (2,a)}.}$ Orderings free from these two conditions are called _weak orderings_. This brings us to the notion of sampling with and without replacement.
+
+### Enumerating Injective Orderings
+> __~theorem~.__ Let ${A = \set{a_1, a_2, \ldots, a_n},}$ let ${B = \set{b_1, b_2 \ldots, b_m},}$ and let ${\ix{A \inj B}}$ be the set of all possible injections from ${A}$ to ${B.}$ It follows that
+> 
+> $$
+> 	\abs{\ix{A \inj B}} = \dfrac{m!}{(m-n)!} ~~~~~\tx{provided}~~ (n \le m).
+> $$
+> 
+> If ${m \lt n,}$ then ${\ix{A \inj B} = \nil.}$
+
+### Enumerating Surjective Orderings
+> __~theorem~.__ Let ${A = \set{a_1, a_2, \ldots, a_n},}$ let ${B = \set{b_1, b_2 \ldots, b_m},}$ and let ${\ix{A \surj B}}$ be the set of all possible surjections from ${A}$ to ${B.}$ It follows that
+> 
+> $$
+> 	\abs{\ix{A \surj B}} = \dsum{i=0}{n}(-1)^i \dbinom{n}{i}(n-i)^m ~~~~~\tx{provided}~~ (n \le m).
+> $$
+> 
+> If ${m \lt n,}$ then ${\ix{A \surj B} = \nil.}$
+
+
+## "Impossibilities"
+> __~theorem~.__ ${\pb{\nil}=0.}$
+> 
+> ~proof~. Set theory tells us that ${\Omega \cup \nil = \Omega,}$ and that ${\Omega \cap \nil = \nil.}$ Hence, ${\pb{\nil} + \pb{\Omega}=\pb{\Omega}.}$ That is, ${\pb{\nil} + 1 = 1.}$
+
+## Nonnegativity of Probability
+> __~theorem~.__ ${\pb{A} \le 1}$ for all ${A \subseteq \Omega.}$
+>
+> ~proof~. Every event ${A}$ has a complete with ${\pb{\nix{A}} \ge 0.}$ It follows that ${\pb{A}=1-\pb{\nix{A}} \le 1.}$
+
+## Probability of Not-Events
+> __~theorem~.__ ${\pb{\nix{A}}=1-\pb{A}.}$
+>
+> ~proof~. ${A \cap \nix{A}=\nil}$ and ${A \cup \nix{A}=\Omega.}$ Therefore, ${\pb{\Omega}=\pb{A}+\pb{\nix{A}}=1.}$ Hence, ${\pb{\nix{A}}=1-\pb{A}.}$
+
+## Probability of Or-Events
+> __~theorem~.__ Let ${A}$ and ${B}$ be events of a sample ${\Omega.}$ The probability of _${A}$ or ${B}$ occurring_, denoted ${A \cup B,}$ is given by
+> 
+> $$
+> 	\pb{A \cup B} = \pb{A} + \pb{B} - \pb{A \cap B}.
+> $$
+
+
+## Combinatorial Analysis
+Combinatorics is a branch of mathematics distinct from probability, and contrary to popular belief, underlies a small subset of probability theory. Much of modern probability theory is instead built atop _measure theory_, the branch of mathematics from which integral calculus and geometry shoot. We cover only the basic combinatorial theorems necessary for the _combinatorial analyses_ of probability theory. We will also present the theorems without proof, as the proofs may be found in the [~note on combinatorics~](./../combinatorics/counting).
+

@@ -13,10 +13,18 @@ _These notes cover polynomial functions_.
 2. [Horizontal and Vertical Lines](#horizontal-and-vertical-lines)
 	1. [Monotonicity of Linear Functions](#monotonicity-of-linear-functions)
 	2. [Examples of Linear Functions](#examples-of-linear-functions)
-	3. [${x}$-intercept](#bmx-intercept)
+	3. [${\bm{x}}$-intercept](#bmx-intercept)
 	4. [Derivatives of Linear Functions](#derivatives-of-linear-functions)
 	5. [Parallel and Parpendicular Lines](#parallel-and-parpendicular-lines)
-3. [Quadratic Functions](#quadratic-functions)
+3. [Exponent Properties](#exponent-properties)
+4. [Nomials](#nomials)
+	1. [Monomials](#monomials)
+	2. [Binomials](#binomials)
+	3. [Trinomials](#trinomials)
+	4. [Polynomials](#polynomials)
+	5. [Multiplying Polynomials](#multiplying-polynomials)
+	6. [Dividing Polynomials](#dividing-polynomials)
+5. [Quadratic Functions](#quadratic-functions)
 
 
 > __~definition~.__ Let ${p}$ be a function, where ${\tx{dom}{\px{p}} \subseteq \reals}$ and ${\tx{codom}\px{p} \subseteq \reals.}$ Then ${p}$ is a polynomial function if ${\ell}$ is of the form:
@@ -158,4 +166,205 @@ __~linslope~.__ Let ${a=\ix{x_1, y_1}}$ and ${b=\ix{x_2, y_2}}$ be arrays of len
 
 </Grid>
 
+## Exponent Properties
+Working with polynomials of degree ${n}$ requires comfort with exponent manipulation. Below is a quick review of common algebraic techniques associated with exponents. Note the necessary conditions.
+
+<div className={'tile'}>
+$$
+	x^a \by x^b = x^{a ~\pl~ b}
+$$
+
+$$
+	\frac{x^b}{x^a} = x^{b ~\mi~ a} \quad \nc x \neq 0
+$$
+
+$$
+	\px{x^a}^b = \px{x}^{a \by b}
+$$
+
+$$
+	x^0 = 1 \quad \nc x \neq 0
+$$
+
+$$
+	x^{-n} = \frac{1}{x^n} \quad \nc x \neq 0
+$$
+
+$$
+	\px{xy}^n = \px{x^n}\px{y^n}
+$$
+
+$$
+	\ar{\frac{x}{y}}^n = \frac{x^n}{y^n} \quad \nc y \neq 0
+$$
+
+$$
+	x^{1/n} = \sqrt[n]{x} \quad \nc n \neq 0
+$$
+
+</div>
+
+## Nomials
+We should also be familiar with the lingua franca.
+
+### Monomials
+> __~definition~.__ A _monomial_ is a variable product of natural number powers.
+
+<Grid cols={2}>
+
+~example~. ${3x}$
+
+~example~. ${x^2}$
+
+~example~. ${x^2y^4z^6}$
+
+~example~. ${xyz}$
+
+~example~. 1, since ${x^0 = 1}$ and ${0 \in \nat.}$
+
+~nonexample~. ${x^{1/2,}}$ since ${1/2 \notin \nat.}$
+
+~nonexample~. ${\sqrt{x},}$ since ${\sqrt{x} = x^{1/2}.}$
+
+~nonexample~. ${\dfrac{x}{2},}$ since ${\dfrac{x}{2} = 2^{\mi1}x}$ and ${\mi1 \notin \nat.}$
+
+</Grid>
+
+### Binomials
+> __~definition: binomial~.__ A _binomial_ is the sum of two monomials.
+
+<Grid cols={2}>
+
+~example~. ${2x + 1.}$
+
+~example~. ${17xyz^8 - 3xy^3z.}$
+
+~example~. ${a^2 - b^2 = (a + b)(a - b).}$ This binomial is called the _difference of squares_.
+
+~example~. ${a^2 + b^2.}$ Called the _sum of squares_, this binomial does not factor.
+
+~example~. ${a^3 - b^3 = (a - b)(a^2 + ab + b^2).}$ This binomial is called the _difference of cubes_.
+
+~example~. ${a^3 + b^3 = (a + b)(a^2 - ab + b^2).}$ This is called the _sum of cubes_.
+
+</Grid>
+
+### Trinomials
+> __~definition: trinomial~.__ A _trinomial_ is the sum of three monomials.
+
+~example~. ${x^2 - 2x + 1.}$
+
+~example~. ${(a + b)^2 = a^2 + 2ab + b^2.}$
+
+~example~. ${(a - b)^2 = a^2 - 2ab + b^2.}$
+
+
+### Polynomials
+> __~definition: polynomial~.__ A _polynomial_ is a sum of monomials.
+
+~example~. ${2x + 1.}$
+
+~example~. ${x^2 - 2x + 1.}$
+
+~example~. ${(a + b + c)^2 = a^2 + b^2 + c^2 + 2ab + 2bc + 2ca.}$
+
+~example~. ${(a - b - c)^2 = a^2 + b^2 + c^2 - 2ab + 2bc - 2ca.}$
+
+### Multiplying Polynomials
+We can quickly multiply polynomials with a 2-way table.
+
+~example~. ${(2x + 3)(3x -7).}$
+
+$$
+	\begin{array}{c:c:}
+		~  & \pl3x   & \mi4 \\ \hdashline
+		\pl2x & \pl6x^2 & \mi8x \\ \hdashline
+		\pl3 & \pl9x   & \mi12
+	\end{array}
+$$
+
+Concatenate the cells row by row, top-right to bottom-left:
+
+$$
+	\begin{array}{c:c:}
+		~  & \pl3x   & \mi4 \\ \hdashline
+		\pl2x & \rd{\pl6x^2} & \yd{\mi8x} \\ \hdashline
+		\pl3 & \yd{\pl9x}   & \bd{\mi12}
+	\end{array}
+	= \rd{\pl6x^2}\yd{\mi8x}\yd{\pl9x}\bd{\mi12}
+	= 6x^2-x-12
+$$
+
+The approach extends to larger polynomials.
+
+~example~.
+
+$$
+	(x^3-2x^2+2x+3)(2x^2-3x-4) \\[1em]
+	\parallel
+	\\[1em]
+	\begin{array}{c:c:c:}
+		~        & \pl 2x^2 & \mi 3x   & \mi 4    \\
+		\hdashline
+		\pl x^3  & \sd{\pl 2x^5} & \rd{\mi 3x^4} & \yd{\mi 4x^3} \\
+		\hdashline
+		\mi 2x^2 & \rd{\mi 4x^4} & \yd{\pl 6x^3} & \bd{\pl 8x^2} \\
+		\hdashline
+		\pl 2x   & \yd{\pl 4x^3} & \bd{\mi 6x^2} & \gd{\mi 8x}   \\
+		\hdashline
+		\pl 3    & \bd{\pl 6x^2} & \gd{\mi 9x}   & \sd{\mi 12}   \\
+	\end{array}\\[1em]
+	\parallel \\[1em]
+		\sd{\pl 2x^5}
+		\rd{\mi 3x^4}
+		\rd{\mi 4x^4}
+		\yd{\mi 4x^3}
+		\yd{\pl 6x^3}
+		\yd{\pl 4x^3}
+		\bd{\pl 8x^2}
+		\bd{\mi 6x^2}
+		\bd{\pl 6x^2}
+		\gd{\mi 8x}  
+		\gd{\mi 9x}
+		\sd{\mi 12}
+	\\[1em]
+	\parallel\\[1em]
+	2x^5-7x^4+6x^3+8x^2-17x-12
+$$
+
+Notice that we included the signum for each term. Redundant as it may be, one of the most common mistakes in binomial multiplication is losing track of the signs. It's best to append every signum, then polish afterwards. Algebraic manipulation is similar to writing. Being concise requires trimming details, and if we trim the details too early, we increase the risk of error. On the topic of error, the "FOIL" method is the most common method taught in elementary schools, but in this author's experience, it is by far the most error-prone method. The method is essentially an arc diagram, which is _not_ an object humans are very good at processing. Accordingly, we won't address it here.
+
+### Dividing Polynomials
+We should also be comfortable with polynomial division.
+
+~example~. ${\dfrac{2x^3+5x^2+x-2}{x+2}.}$ We will analyze this step by step.
+1. Set up:
+
+$$
+	{x + 2} \space \begin{array}{|c}\hline
+	{2x^3} & \pl & {5x^2} & \pl & {x} & \mi & {2} 
+	\end{array}
+$$
+
+2. Now divide the dividend's leading term ${(2x^3)}$ by the leading term of the divisor ${(x)}$. We have: ${\dfrac{2x^3}{x} = \dfrac{2xx\xcancel{x}}{x}=2x^2.}$ We place this term above the dividend's term of equal degree:
+
+
+$$
+	{x + 2} \space \begin{array}{|c}
+	~ & ~ & {2x^2} & ~ &  ~ & ~ & ~\\
+	\hline
+	{2x^3} & \pl & {5x^2} & \pl & {x} & \mi & {2} 
+	\end{array}
+$$
+
+3. Multiply the new term by the divisor.
+
 ## Quadratic Functions
+> __~definition: quadratic function~.__ Let ${q}$ be a fuction with ${\tx{dom}\px{q} \subseteq \reals}$ and ${\tx{codom}\px{q} \subseteq \reals.}$ Given ${x \in \tx{dom}\px{q},}$ if ${q}$ is of the form
+> 
+> $$
+> 	q\px{x} = ax^2 + bx + c,
+> $$
+> 
+> where ${a,}$ ${b,}$ and ${c}$ are constants with ${a \neq 0,}$ then we say that ${q}$ is a _quadratic function_. The term ${ax^2}$ is called the _quadratic term_, the term ${bx}$ is called the _linear term_, and the term ${c}$ is called the _constant term_. By definition, a quadratic function is a polynomial of degree 2.
+

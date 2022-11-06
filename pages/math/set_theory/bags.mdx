@@ -1,0 +1,34 @@
+<Head>
+	<title>Bags</title>
+	<meta name={`description`} content={`Notes on bags, also called multisets.`}/>
+</Head>
+
+# Bags
+_This note presents an overview of bags_.
+
+If we agree to follow axiomatic set theory, then the _set_ is the simplest mathematical structure. Sets are nonredundant, unordered collections — the set ${\set{a,b,a,c,c}}$ is the same set as ${\set{c,b,a}}$ and ${\set{a,b,c}}$ and several others. We later saw the _permutation_, which is a nonrepeatable ordered collection — ${\px{1,2,3}}$ is a different collection from ${\tup{2,1,3}.}$ Then we saw the _tuple_, which is a repeatable ordered collection — the collection ${\px{2,2,2}}$ is a different collection from ${\px{2,2}.}$ Both permutations and tuples are subtypes of _lists_ — a collection with some notion of ordering. __Bags__, or __multisets__ are the missing half of unordered collections: They're collections that have no order, but are repeatable.
+
+## Definition
+Because sets are what underlie every mathematical object, we can't just introduce bags out of thin air. Instead, we must construct them in terms of sets.
+
+> __~definition: bag~.__ A _bag_ is an ordered pair ${B=(A,m),}$ where ${A}$ is a set of elements, and ${m}$ is a function from ${A}$ to ${\pint.}$ The function ${m}$ is called the _multiplicity_ of ${A,}$ where ${m(a)}$ corresponds to the number of occurrences of ${a.}$ The set ${A}$ is called the _support_ of ${B,}$ and is denoted and defined as ${\df{supp}~B := \set{x \in A : m(a) \gt 0}.}$ Thus, the bag ${B}$ may be represented as
+> 
+> $$
+> 	\lset{a_1^{m(a_1)}, a_2^{m(a_2)}, \ldots, a_{n-1}^{m(n-1)}, a_n^{m(a_n)}},
+> $$
+> 
+> where each ${a_{1 \le i \le n}}$ is an element of ${A.}$ To distinguish bags from sets, we will use the notation
+> 
+> $$
+> 	\tup{a_1^{m(a_1)}, a_2^{m(a_2)}, \ldots, a_{n-1}^{m(n-1)}, a_n^{m(a_n)}},
+> $$
+> 
+> and may explicitly write the elements ${a_i}$ in lieu of the exponents.
+
+~example~. ${\tup{a^2b^2c^1} = \tup{a,a,b,b,c}.}$
+
+~example~. ${\tup{a^1b^1c^1} = \tup{a,b,c}.}$
+
+~example~. ${\df{supp}\tup{a^2b^2c^1} = \set{a,b,c}}$
+
+

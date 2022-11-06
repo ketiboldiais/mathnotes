@@ -38,6 +38,7 @@ const Routes = [
 			{ name: "Natural Numbers", path: `${math}${sets}natural-numbers`},
 			{ name: "Functions", path: `${math}${sets}functions`},
 			{ name: "Sequences", path: `${math}${sets}sequences`},
+			{ name: "Bags", path: `${math}${sets}bags`},
 			{ name: "Categories", path: `${math}${sets}categories`},
 			{ name: "Classes", path: `${math}${sets}class`},
 		]},
