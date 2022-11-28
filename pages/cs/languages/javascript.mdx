@@ -1,0 +1,374 @@
+import { Plot } from "../../../components/hago";
+
+<Head>
+	<title>JavaScript Survey</title>
+	<meta name={`description`} content={`A survey of the JavaScript language.`}/>
+</Head>
+
+
+# JavaScript
+_This is a survey of the JavaScript language._
+
+1. [Type System](#type-system)
+	1. [Special Numeric Values](#special-numeric-values)
+2. [Arrays](#arrays)
+3. [Objects](#objects)
+4. [Variables](#variables)
+	1. [Naming](#naming)
+	2. [Declaration & Initialization](#declaration--initialization)
+5. [Standard Library](#standard-library)
+	1. [Math Object](#math-object)
+6. [Fetch](#fetch)
+7. [Asynchronous Execution](#asynchronous-execution)
+	1. [setTimeout](#settimeout)
+	2. [Asynchronous Code and Network Applications](#asynchronous-code-and-network-applications)
+	3. [Promises](#promises)
+		1. [Async and Await](#async-and-await)
+8. [Symbols](#symbols)
+9. [React](#react)
+	1. [useEffect](#useeffect)
+
+## Type System
+JavaScript has six primitive types.
+
+| ~type~    | ~description~                   | ~remark~                                                                                                                                                                                         |
+| --------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Number    | any numeric type data           | No distinction between floats and integers. Separators are permitted: `1000` is equivalent to `1_000`. Binary, hex, and scientific representations are supported: `0xc0ffee`, `0b0011`, `3.8e8`. |
+| String    | any string data                 | strings are immutable                                                                                                                                                                            |
+| Boolean   | Literals are `true` and `false` |                                                                                                                                                                                                  |
+| Null      | Literal is `null`               |                                                                                                                                                                                                  |
+| Undefined | Literal is `undefined`          |                                                                                                                                                                                                  |
+| Symbol    | Unique identifier type          | Essentially a data type whose values are _always_ unique; i.e., one where the equality test will always return false.                                                                            |
+
+### Special Numeric Values
+JavaScript also has a few special number type values.
+
+| ~value~           | ~remark~                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------- |
+| ${\tx{NaN}}$      | Represents a numeric value that is not a number, but is of type number. E.g., `0/0`.                    |
+|                   | Arithmetic operations are defined, but always return ${\tx{NaN}:}$ ${1 + \tx{NaN} = \tx{NaN}.}$         |
+| ${\tx{infinity}}$ | Result of indeterminate operations. Has two instances: ${\mi \tx{infinity}}$ and ${\pl \tx{infinity}.}$ |
+| ${\mi 0, \pl 0}$  | Positive and negative zeros.                                                                            |
+
+## Arrays 
+Arrays are supported natively, implemented as _dynamic arrays_ and instantiated with square brackets.
+
+<Algo>
+
+1. __let__ ${A = \ix{1,2,3,4,5};}$
+1. __let__ ${B = \ix{~};}$ _empty array_
+1. __let__ ${C = \ix{0,\string{banana},\tx{true}};}$ _array of mixed type_
+
+</Algo>
+
+## Objects
+JavaScript objects are essentially records, somewhat like the ${\tx{struct}}$ in C.
+
+<Algo>
+
+1. __let__ ${\dk obj = \lbrace}$
+	1. ${a:\dk 1,}$
+	2. ${b:\dk 2,}$
+	3. ${c:\dk \string{foobar}}$
+2. ${\rbrace;}$
+
+</Algo>
+
+Each of ${a,}$ ${b,}$ and ${c}$ above are called _keys_, and their assigned values _values_. In short, the JavaScript object
+is a collection of key-value pairs.
+
+## Variables
+### Naming
+
+> __~rule~.__ First character must be a letter.
+
+> __~rule~.__ Underscores allowed, but not dashes.
+
+> __~convention~.__ camelCasing by convention.
+
+### Declaration & Initialization
+Three possible ways:
+
+<Algo>
+
+1. ${\tx{let} \dk x = 5;}$ _mutable value, cannot be hoisted_
+2. ${\tx{const} \dk y = \string{a string value};}$ _immutable value, sort of_
+3. ${\tx{var} \dk n = \tx{true};}$ _mutable value, can be hoisted_
+
+</Algo>
+
+
+
+## Standard Library
+JavaScript does not have a standard library per se, but most implementations come with a few standard methods and objects.
+
+### Math Object
+The ${\textbf{Math}}$ object is a native object providing numeric methods and constants.
+
+<Grid cols={2}>
+
+| ~property~                          | ~value~                |
+| ----------------------------------- | ---------------------- |
+| ${\textbf{Math}\mc{\df{pi}}}$       | ${\pi}$                |
+| ${\textbf{Math}\mc{\df{e}}}$        | ${e}$ (Euler's number) |
+| ${\textbf{Math}\mc{\df{sqrt2}}}$    | ${\sqrt{2}}$           |
+| ${\textbf{Math}\mc{\df{ln2}}}$      | ${\ln{2}}$             |
+| ${\textbf{Math}\mc{\df{ln10}}}$     | ${\ln{10}}$            |
+| ${\textbf{Math}\mc{\df{log2e}}}$    | ${\lg{e}}$             |
+| ${\textbf{Math}\mc{\df{log10e}}}$   | ${\log_{10}{e}}$       |
+| ${\textbf{Math}\mc{\df{sqrt1\_2}}}$ | ${\sqrt{1/2}}$         |
+
+| ~methods~                                      | ~return~                                                                      |
+| ---------------------------------------------- | ----------------------------------------------------------------------------- |
+| ${\textbf{Math}\mc{\sin(x)}}$                  | ${\sin(x)}$                                                                   |
+| ${\textbf{Math}\mc{\cos(x)}}$                  | ${\cos(x)}$                                                                   |
+| ${\textbf{Math}\mc{\tan(x)}}$                  | ${\tan(x)}$                                                                   |
+| ${\textbf{Math}\mc{\tx{hypot}(x)}}$            | ${\sqrt{x^2 + y^2}}$                                                          |
+| ${\textbf{Math}\mc{\tx{abs}(x)}}$              | ${\abs{x}}$                                                                   |
+| ${\textbf{Math}\mc{\tx{ceil}(x)}}$             | ${\ceil{x}}$                                                                  |
+| ${\textbf{Math}\mc{\tx{floor}(x)}}$            | ${\floor{x}}$                                                                 |
+| ${\textbf{Math}\mc{\tx{max}(x_1,\ldots,x_n)}}$ | ${\max\set{x_1,\ldots,x_n}}$                                                  |
+| ${\textbf{Math}\mc{\tx{min}(x_1,\ldots,x_n)}}$ | ${\min\set{x_1,\ldots,x_n}}$                                                  |
+| ${\textbf{Math}\mc{\tx{sqrt}(x)}}$             | ${\sqrt{x}}$                                                                  |
+| ${\textbf{Math}\mc{\tx{cbrt}(x)}}$             | ${\sqrt[3]{x}}$                                                               |
+| ${\textbf{Math}\mc{\tx{random}(~)}}$           | Pseudorandom float ${c,}$ where ${0 \lt c \lt 1}$                             |
+| ${\textbf{Math}\mc{\tx{sign}(x)}}$             | 1 if ${x \gt 0,}$ ${-1}$ if ${x \lt 0,}$ 0 if ${x = 0,}$ ${-0}$ if ${x = -0}$ |
+
+</Grid>
+
+## Fetch
+_*This section assumes knowledge of [HTTP requests](./../systems/osi-application-layer#web-browsing)_.
+
+Network applications rely heavily on remotely stored data objects. To retrieve this objects, HTTP requests must be made. These HTTP requests contain request from a client process (the network application) to a server process (e.g., a database management system). The server process provides an API (usually, how to format queries) that allows the client easier interaction.
+
+> __~fetch~.__ Where ${u}$ is a URL of type string, ${{\tx{fetch}\px{u}}}$ sends an HTTP request for a data object ${d}$ from a server process, and returns a _promise_ ${p.}$ The promise ${p}$ is a sum type value ${\set{response + error}.}$ The object ${response}$ is a product type value ${\set{body \times bodyused \times headers \times ok \times redirected \times status \times statusText \times type \times u}.}$ The key ${body}$ maps to ${d.}$
+
+~example~. Suppose ${u}$ is a URL string.
+
+<Algo>
+
+1. ${\textbf{fetch}\px{u}}$
+	1. ${\mc\textbf{then}\px{response \nc \tx{return}\dk response\mc\tx{json}\px{~}}}$
+	2. ${\mc\textbf{then}\px{data \nc \tx{console}\mc\tx{log}\px{data}}}$
+	3. ${\mc\textbf{catch}\px{error \nc \tx{console}\mc\tx{log}\px{error}}}$
+
+</Algo>
+
+On line 0, ${\tx{fetch}}$ sends an HTTP request, addressed to the URL ${u.}$ The HTTP request either succeeds or fails. JavaScript models this with a _promise_ object; a union data type of two fields, ${resolved}$ or ${rejected.}$ If field ${resolved}$ is initiated, then ${response}$ is JavaScript's interpretation of the HTTP response, modeled as an object. The ${response}$ object contains a ${body}$ key, which maps to the data object requested. This data object is a stream of bytes. To use the data object, it must be translated into a format understood by the JavaScript engine's parser. This is achieved through the ${response}$ object's ${\tx{json}}$ method. Executing ${\tx{response}\mc\tx{json}\px{~},}$ a promise is returned. If the bytestream was successfully converted, then we may access the translated bytestream through ${data.}$
+
+## Asynchronous Execution
+
+> __~definition~.__ Let ${P}$ be a procedure of ${n}$ statements ${\set{s_1, \ldots, s_n}.}$ We say that ${P}$ is a _synchronous procedure_ if, for all statements ${s_i,}$ ${s_0}$ is executed first, and if ${s_i}$ is executed, then ${s_{i-1}}$ has executed. If ${P}$ is not a synchronous procedure, then we say that ${P}$ is an _asynchronous procedure_.
+
+~example~. Let ${P = \set{a,b,c}.}$ Then the execution sequence is visualized with the following block, from left to right:
+
+$$
+	\sd{\no{b}a\no{b}}
+	\sd{\no{b}b\no{b}}
+	\sd{\no{b}c\no{b}}
+$$
+
+
+~example~. Suppose ${P = \set{(s_1,1),(s_2,1),(s_3,1)},}$ where each pair ${(s_i,n) \in \tx{statement} \times \tx{time}.}$ Then the width of each block corresponds to the amount of time it takes to execute the each ${s_i:}$
+
+$$
+	\tnote{\sd{\no{b}s_1\no{b}}}{1}
+	\tnote{\sd{\no{b}s_2\no{b}}}{1}
+	\tnote{\sd{\no{b}s_3\no{b}}}{1}
+$$
+
+~example~. Suppose ${P = \set{(s_1,t),(s_2,ct),(s_3,t)}}$ where ${t}$ is a unit of time, and ${c}$ is a positive integer constant greater than 1. 
+
+
+$$
+	\bnote{\tnote{\sd{\no{b}s_1\no{b}}}{$t$}
+	\tnote{\sd{\no{b}\no{b}\no{b}\no{b}s_2\no{b}\no{b}\no{b}\no{b}}}{$ct$}}{$d = t + ct$}
+	\tnote{\sd{\no{b}s_3\no{b}}}{$t$}
+$$
+
+Given a sufficiently large ${ct,}$ takes ${d = t(c+1)}$ units of time _at least_ to execute ${s_3.}$ We can fix this by writing an _interrupt function_ that executes ${s_2}$ after a specified amount of time.
+
+$$
+	{\sd{\no{f}s_1\no{f}}}
+	{\sd{f}}
+	{\sd{\no{f}s_3\no{f}}}
+	{\sd{f}} \\
+	\no{
+		\dk\dk
+		\sd{\no{f}s_3\no{f}}
+		\sd{\no{f}s_3\no{f}}
+	}
+	\uparrow \\
+	\no{
+		\sd{\no{f}s_3\no{f}}
+		\sd{\no{f}s_3\no{f}}
+		\sd{\no{f}s_3\no{f}}
+	}
+	{\sd{\no{f}\no{f}\no{f}\no{b}s_2\no{f}\no{f}\no{f}\no{f}}}
+$$
+
+That is, we initiate ${s_2,}$ but rather than waiting for ${s_2}$ to finish before executing ${s_3,}$ we move on to executing ${s_3.}$ If we write the program ${P}$ this way, then we say that ${P}$ is an _asynchronous program_.
+
+
+
+
+Consider the following code:
+
+<Grid cols={2}>
+<Algo>
+
+_~prog a~_
+
+1. __const__ ${f = \px{~} \nc {\textbf{console}\mc\tx{log}}(\string{a})}$
+2. __const__ ${g = \px{~} \nc {\textbf{console}\mc\tx{log}}(\string{b})}$
+3. ${\textbf{setTimeout}\px{f,3000}}$
+4. ${g\px{~}}$
+
+</Algo>
+<Algo>
+
+_~prog b~_
+
+1. __const__ ${f = \px{~} \nc {\textbf{console}\mc\tx{log}}(\string{a})}$
+2. __const__ ${g = \px{~} \nc {\textbf{console}\mc\tx{log}}(\string{b})}$
+3. ${f\px{~}}$
+4. ${g\px{~}}$
+
+</Algo>
+
+</Grid>
+
+From an execution perspective:
+
+$$
+	\eqs{
+		\df{prog a}\dk&\tnote{\sd{\no{f}g\no{f}}\yd{\no{f}}}{3 seconds}\sd{\no{f}f\no{f}} \\
+	  \df{prog b}\dk&\sd{\no{g}f\no{g}}\sd{\no{f}g\no{f}}
+	}
+$$
+
+~prog a~ is an example of an _asynchronous program_ — a program whose code is executed non-sequentially, in the sense that it doesn't execute according to how it's visually written. The _synchronous program_ is the traditional, and expected sequence: ${f}$ followed by ${g.}$ Contrast this with the asynchronous program, ${g}$ followed by ${f.}$ Asynchronous program provide a feature that synchronous programs do not: Executing a given procedure at runtime only after it has received the data at needs while ensuring that other instructions do not wait for the halted procedure.
+
+### setTimeout
+Where ${f}$ is a function and ${t}$ is a natural number, the ${\tx{setTimeout}\px{f,t}}$ function is handled by the browser directly. In short, when the browser's parser encounters the function call, it starts an internal timer for ${t}$ time. Once ${t}$ has elapsed, an interrupt occurs, prompting the executing of ${f.}$
+
+### Asynchronous Code and Network Applications 
+Asynchronous programs are a necessity for network applications. This is because the ${\tx{fetch}}$ method is _never_ guaranteed to return a data object. This is not because of deficiencies with ${\tx{fetch}.}$ Rather, it's merely the reality of computer networking. Countless things can go wrong—a packet getting lost along the way, a router running out of memory, or a ship's anchor falling on top of a submarine cable. Because of these factors, asynchronous programs are needed to handle cases where things don't go as planned. That handling itself, however, can result in deeply-nested callbacks, leading to pattern colloquially called _callback hell_.
+
+<Algo>
+
+1. ${f\lparen d_1,~\px{~} \nc \lbrace}$
+	1. ${g_1\lparen{d_2,~\px{~} \nc \lbrace}}$
+		1. ${h_2\px{\ldots}}$
+	2. ${\rbrace, \px{~} \nc h_2\px{\ldots}\rparen}$
+2. ${\rbrace, \px{~} \nc g_2\px{\ldots}\rparen}$
+
+</Algo>
+
+Above, the function ${f}$ is some asynchronous function. If the network data ${d_1}$ is received successfully, it executes ${g_1,}$ if it isn't, it executes ${g_2.}$ Inside ${g_1}$ is another function that depends on receiving network data. If the data's received, execute ${h_2,}$ otherwise, execute ${h_1.}$ This pattern continues so long as additional network data is needed.
+
+### Promises
+_Promises_ are one method of excorcising deeply-nested callbacks. As usual, the JavaScript promise is an object with methods and properties. Like any other procedure, asynchronous procedures either end in success or failure. With synchronous procedures, we address these two cases branching: if-else branches, switch statements, logical shortcircuits, ternary expressions, and so on. These tools are not always available for asynchronous procedures. Suppose one of these branching operations is expected to occur at time ${t_j.}$ Preceding this operation is an asynchronous procedure ${p,}$ commencing at time ${t_i,}$ and ending ${x}$ time units later. The branch at ${t_j}$ consists of ${(b_1,\ldots,b_n)}$ inclusive arms, where ${b_1}$ corresponds to the path where the result of ${p}$ is false.  If ${t_j - t_i \lt x,}$ then the code will either always go down ${b_1}$ (at best) or the program prematurely terminates. Promises allow us to avoid this scenario by providing a ${\tx{then}\px{f,g}}$ method, where ${f}$ and ${g}$ are functions. The function ${f}$ executes if a promise ${P}$ terminates successfully, and ${g}$ executes if ${P}$ terminates in failure.
+
+
+| ~interface~                                                                         | ~description~                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ${\text{let}\dk p = \textbf{new Promise}\px{\px{resolve,reject} \nc \set{\ldots}}}$ | Constructor, where ${resolve}$ and ${reject}$ are callback functions. If the job finished successfully, the Javascript-provided function ${resolve}$ is executed. Otherwise, another Javascript-provided function, ${reject,}$ is executed. We use these functions to handle the _success_ and _failure_ prongs usually handled by callbacks. For both ${resolve}$ and ${reject,}$ a _promise object_ is returned with the a _result_ property. If ${resolve}$ was executed, the _result_ property maps to a value (e.g., the data requested). If ${reject}$ was executed, the _result_ property maps to an error object. |
+| ${p\mc\tx{then}\px{f,g}}$                                                           | Where ${p}$ is a ${\tx{Promise},}$ ${f}$ executes when the promise is resolved and receives the result, ${g}$ executes when the promise is rejected and receives the error.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ${p\mc\tx{catch}\px{f,g}}$                                                          | Equivalent to ${\tx{then}\px{\tx{null},g}.}$ Used when we're only interested in errors.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+#### Async and Await 
+Promises can also be instantiated by including the ${\tx{asnyc}}$ keyword to function definitions.
+
+<Algo>
+
+1. __const__ ${f = \tx{ async } \px{\dk} \nc \set{code}}$ _returns a promise_
+2. ${f\px{\dk}\mc\tx{then}\px{code}\mc\tx{catch}\px{code}}$ _access usual promise properties_
+
+</Algo>
+
+~example~. An example closer to a real-world application:
+
+<Algo>
+
+1. __const__ ${login = \tx{ async } \px{username,\dk password} \nc \lbrace}$
+	1. __if__ ${\px{!username ~||~ !password}}$ __throw__ ${\string{Incorrect username or password}}$
+	2. __else if__ ${\px{\tx{valid}\px{password}}}$ __return__ ${\string{Welcome!}}$
+	3. __else__ __throw__ ${\string{invalid password}}$
+2. ${\rbrace}$
+
+</Algo>
+
+The ${\tx{await}}$ keyword ensures a function is exected _only if_ a specified promise is resolved.
+Below are two code blocks that achieve the same effect.
+
+<Grid cols={2}><Algo>
+
+1. __const__ ${f = \px{x,delay} \nc}$ `{`
+	1. __return__ ${\tx{new Promise}\px{resolve, reject} \nc }$ `{`
+		1. setTimeout`(`${\px{\dk} \nc }$ `{`
+			1. ${\tx{console}\mc\tx{log}\px{x};}$
+			2. ${resolve\px{\dk};}$
+		2. `}, `${delay}$`)`
+	2. `})`
+2. `}`
+3. __const__ ${g = \px{\dk} \nc}$ `{`
+	1. ${f\px{1,1000}}$
+		1. ${\mc\tx{then}\px{\px{\dk}\nc f\px{2,1000}}}$
+		2. ${\mc\tx{then}\px{\px{\dk}\nc f\px{3,1000}}}$
+		3. ${\mc\tx{then}\px{\px{\dk}\nc f\px{4,1000}}}$
+		4. ${\mc\tx{then}\px{\px{\dk}\nc f\px{5,1000}}}$
+4. `}`
+
+</Algo><Algo>
+
+1. __const__ ${f = \px{x,delay} \nc}$ `{`
+	1. __return__ ${\tx{new Promise}\px{resolve, reject} \nc }$ `{`
+		1. setTimeout`(`${\px{\dk} \nc }$ `{`
+			1. ${\tx{console}\mc\tx{log}\px{x};}$
+			2. ${resolve\px{\dk};}$
+		2. `}, `${delay}$`)`
+	2. `})`
+2. `}`
+3. __const__ ${g = \tx{ async }\px{\dk} \nc}$ `{`
+	1. ${\tx{await } f(1,1000)}$
+	2. ${\tx{await } f(2,1000)}$
+	3. ${\tx{await } f(3,1000)}$
+	4. ${\tx{await } f(4,1000)}$
+	5. ${\tx{await } f(5,1000)}$
+4. `}`
+
+
+</Algo></Grid>
+
+The ${\tx{async}}$ keyword allows us to write functions that specifically handle fetch requests:
+
+<Algo>
+
+1. __const__ ${\tx{requestData} = \tx{ async } \px{url} \nc }$ `{`
+	1. __const__ ${response = \tx{ await } ~ \tx{fetch}(url)}$
+	2. __const__ ${json = \tx{ await } ~ response\mc\tx{json}\px{\dk}}$
+	3. __return__ ${json}$
+2. `}`
+
+</Algo>
+
+## Symbols 
+A basic use case for symbol data: Ensuring that keys are _unique_.
+
+~example~. We write create an object:
+
+<Algo>
+
+1. __const__ ${k = \tx{Symbol}\px{\lq k \rq}}$
+2. __const__ ${obj = \lbrace}$
+	1. ${\ix{k}: \quad \tx{true}}$
+3. ${\rbrace}$
+
+</Algo>
+
+The key ${\lq k \rq}$ is completely unique. A user _cannot_ write ${obj\ix{k} = \tx{false}.}$ 
+
+
+
+
+

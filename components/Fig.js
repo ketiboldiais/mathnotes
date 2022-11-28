@@ -3,6 +3,7 @@ import Image from "next/image";
 import styles from "../styles/Fig.module.css";
 
 export const Fig = ({
+	children,
 	link,
 	caption = "Figure",
 	width = 30,
@@ -13,10 +14,11 @@ export const Fig = ({
 	fit = "cover",
 	marginTop = 0,
 	marginBottom = 0,
+	className=''
 }) => {
 	return (
 		<figure
-			className={styles.fig}
+			className={className ? className : styles.fig}
 			style={{
 				width: `${width}%`,
 				height: `${height}%`,
@@ -33,6 +35,7 @@ export const Fig = ({
 				layout={layout}
 				objectFit={fit}
 			/>
+			{children}
 		</figure>
 	);
 };

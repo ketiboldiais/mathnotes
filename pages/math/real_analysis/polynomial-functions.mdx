@@ -13,7 +13,7 @@ _These notes cover polynomial functions_.
 2. [Horizontal and Vertical Lines](#horizontal-and-vertical-lines)
 	1. [Monotonicity of Linear Functions](#monotonicity-of-linear-functions)
 	2. [Examples of Linear Functions](#examples-of-linear-functions)
-	3. [${\bm{x}}$-intercept](#bmx-intercept)
+	3. [𝑥-intercept](#𝑥-intercept)
 	4. [Derivatives of Linear Functions](#derivatives-of-linear-functions)
 	5. [Parallel and Parpendicular Lines](#parallel-and-parpendicular-lines)
 3. [Exponent Properties](#exponent-properties)
@@ -23,8 +23,8 @@ _These notes cover polynomial functions_.
 	3. [Trinomials](#trinomials)
 	4. [Polynomials](#polynomials)
 	5. [Multiplying Polynomials](#multiplying-polynomials)
-	6. [Dividing Polynomials](#dividing-polynomials)
 5. [Quadratic Functions](#quadratic-functions)
+	1. [Graphs of Quadratics](#graphs-of-quadratics)
 
 
 > __~definition~.__ Let ${p}$ be a function, where ${\tx{dom}{\px{p}} \subseteq \reals}$ and ${\tx{codom}\px{p} \subseteq \reals.}$ Then ${p}$ is a polynomial function if ${\ell}$ is of the form:
@@ -109,7 +109,7 @@ $$
 $$
 </Grid>
 
-### ${\bm{x}}$-intercept
+### 𝑥-intercept
 > __definition.__ Let ${\ell\px{x}=ax ~\pl~ b}$ be a linear function, with ${\tx{dom}\px{\ell} \subseteq \reals}$ and ${\tx{codom}\px{\ell} \subseteq \reals.}$ The ${x}$-intercept of ${\ell}$ is the set ${\set{x \in \tx{dom}{\px{f}} : \ell{\px{x}}=0}.}$
 
 ~example~. Let ${f(x)=2x ~\pl~ 1.}$ The ${x}$-intercept is ${\set{\mi\frac{1}{2}},}$ since:
@@ -334,30 +334,6 @@ $$
 
 Notice that we included the signum for each term. Redundant as it may be, one of the most common mistakes in binomial multiplication is losing track of the signs. It's best to append every signum, then polish afterwards. Algebraic manipulation is similar to writing. Being concise requires trimming details, and if we trim the details too early, we increase the risk of error. On the topic of error, the "FOIL" method is the most common method taught in elementary schools, but in this author's experience, it is by far the most error-prone method. The method is essentially an arc diagram, which is _not_ an object humans are very good at processing. Accordingly, we won't address it here.
 
-### Dividing Polynomials
-We should also be comfortable with polynomial division.
-
-~example~. ${\dfrac{2x^3+5x^2+x-2}{x+2}.}$ We will analyze this step by step.
-1. Set up:
-
-$$
-	{x + 2} \space \begin{array}{|c}\hline
-	{2x^3} & \pl & {5x^2} & \pl & {x} & \mi & {2} 
-	\end{array}
-$$
-
-2. Now divide the dividend's leading term ${(2x^3)}$ by the leading term of the divisor ${(x)}$. We have: ${\dfrac{2x^3}{x} = \dfrac{2xx\xcancel{x}}{x}=2x^2.}$ We place this term above the dividend's term of equal degree:
-
-
-$$
-	{x + 2} \space \begin{array}{|c}
-	~ & ~ & {2x^2} & ~ &  ~ & ~ & ~\\
-	\hline
-	{2x^3} & \pl & {5x^2} & \pl & {x} & \mi & {2} 
-	\end{array}
-$$
-
-3. Multiply the new term by the divisor.
 
 ## Quadratic Functions
 > __~definition: quadratic function~.__ Let ${q}$ be a fuction with ${\tx{dom}\px{q} \subseteq \reals}$ and ${\tx{codom}\px{q} \subseteq \reals.}$ Given ${x \in \tx{dom}\px{q},}$ if ${q}$ is of the form
@@ -367,4 +343,35 @@ $$
 > $$
 > 
 > where ${a,}$ ${b,}$ and ${c}$ are constants with ${a \neq 0,}$ then we say that ${q}$ is a _quadratic function_. The term ${ax^2}$ is called the _quadratic term_, the term ${bx}$ is called the _linear term_, and the term ${c}$ is called the _constant term_. By definition, a quadratic function is a polynomial of degree 2.
+
+### Graphs of Quadratics
+
+<Grid cols={1}>
+<Plot data={[
+	{f:(x)=>(x-2)**2-4},
+	{f:2, dash:3, color:'var(--lightBlue)'},
+	{p:[2,-4]},
+	{p:[0,0]},
+	{p:[4,0]},
+]} width={300} height={250} m={0} scale={50} domain={[-7,7]}/>
+<figcaption>${f(x)=x^2-4x}$</figcaption>
+</Grid>
+
+## Derivatives of Polynomials
+
+<Grid cols={2}>
+
+> __~theorem~.__ Let ${p(x) = ax^b}$ be a polynomial function, where ${a}$ is a constant coefficient and ${b}$ is a constant exponent. Then
+> 
+> $$
+> 	\di{}{x} \px{ax^b} = bax^{b-1}.
+> $$
+
+> __~theorem~.__ Let ${c}$ be a constant. Then
+> 
+> $$
+> 	\di{}{x} c = 0.
+> $$
+
+</Grid>
 

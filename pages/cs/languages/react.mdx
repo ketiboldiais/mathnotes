@@ -1,0 +1,69 @@
+# React
+
+_This note presents a brief overview of React._
+
+## Virtual DOM
+In React, we can create visual components in JSX.[^jsx_note] E.g.,
+
+$$
+	\lt\tx{Banana}\gt\lt\texttt{/}\tx{Banana}\gt 
+$$
+
+[^jsx_note]: JSX is a macronym: JavaScript XML, where XML is an acronym for _Extensible Markup Language_.
+
+The code above is sent to various build tools (e.g., Babel). These builders take the code, make a call to ${\tx{document}\mc\tx{createElement}}$ with the tag name as an argument, alongside the element's properties and children. The output is a valid DOM element (JSX is not valid HTML). 
+
+React's general flow is as follows. First, we create an _element object_. The structure:
+
+<Algo>
+
+1. __const__ ${element}$ `=` `{`
+	1. ${type}$: ${\df{string}}$
+	2. ${props}$: `{`
+		1. ${title}$: ${\df{string}}$
+		2. ${children}$: ${\df{any}}$
+	3. `}`
+2. `}`
+
+</Algo>
+
+The _type_ property maps to a DOM node (e.g., ${\string{h1},}$ ${\string{p},}$ etc.) The _props_ property maps to all the properties we want associated with the DOM node. The _children_ property maps to the DOM node's children. When React receives this object, it creates a DOM node with the _element_ object's properties bound, appending the children accordingly.
+
+<Algo>
+
+1. __const__ ${node}$ `=` ${\tx{document}\mc\tx{createElement}\px{element\mc{type}}}$
+2. ${node\ix{\lq title \rq}}$ `=` ${element\mc{props}\mc{title}}$
+3. __cont__ ${nodeChildren}$ `=` ${\tx{document}\mc{f}\px{c}}$
+4. ${text{\ix{\lq nodevalue \rq}}}$ `=` ${element\mc{props}\mc{children}}$
+5. ${node\mc\tx{appendChild}\px{nodeChildren}}$
+
+</Algo>
+
+On line 3, ${f}$ represents some DOM method applicable to the type of children ${c.}$ It may be ${\tx{document}\mc\tx{createTextNode}.}$ Once all of this is done, results are appended to the container designated as ${\string{root}.}$
+
+<Algo>
+
+1. __const__ ${root}$ `=` ${\tx{document}\mc\tx{getElementById}\px{\string{root}}}$
+2. ${root\mc\tx{appendChild}\px{node}}$
+
+</Algo>
+
+The most interesting aspect of this control flow is handling the ${children}$ property. Because of HTML's nested structure, the children themselves may have children. We can handle this easily with recursion. If we encapsulate the code above with a ${\tx{render}}$ function, we can recursively call ${\tx{render}}$ on each child of a given ${children}$ value.
+
+Problem: Recursion is expensive. When the given JavaScript engine encounters these recursive calls, separate working stacks are generated for each call, with their own argument and local variable segments. With a large amount of children, these recursive calls will cause a noticeable delay in rendering. Because of this issue, React breaks the rendering down into smaller pieces, rather than employing blind recursion. The decomposition is done with a _fiber tree data structure_.
+
+
+## Hooks
+### useState
+> __~syntax~.__ Let ${S}$ be a sequence of states of a machine ${P.}$ ${(s_1, \ldots, s_n)}$ with ${n \in \nat.}$ Let ${x}$ be a _variable_, let ${f}$ be a function of ${x}$ with ${f}$ a subroutine of ${P.}$ and let ${v}$ be the value of ${x}$ at state ${s_1.}$ Then the syntax
+> $$
+> 	\tx{const } \ix{x, f} = \tx{useState}\px{v} \\
+> $$
+> Binds ${v}$ to ${x}$ at ${s_1,}$ and for each ${s_{1 \lt i \le n}}$ of ${P,}$ the function ${f}$ mutates ${x.}$ The variable ${x}$ is visible to all subroutines of ${P.}$
+
+React's ${\tx{useState}}$ hook is somewhat similar to a public method in languages like ${\tx{C}\inc}$. In short, it creates a record, or struct, containing state variables (or, in OOP terms, public properties). The property is the key ${x,}$ and we can mutate ${x}$ with ${f.}$ Hence, calls to ${\tx{useState}}$ must always be made at the top level of module scope without conditions.
+
+
+
+
+

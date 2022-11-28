@@ -26,6 +26,7 @@ export const Graph = ({
 	edgeLength = 30,
 	collisionRadius = 20,
 	margin = 0,
+	noCirc=false,
 	marginTop = margin,
 	marginRight = margin,
 	marginBottom = margin,
@@ -131,9 +132,11 @@ export const Graph = ({
 			);
 
 		// the node circles
-		nodeEnter
-			.append("circle")
-			.attr("r", (d) => (d.r || d.r===0 ? d.r : nodeRadius));
+			nodeEnter
+				.append("circle")
+				.attr("r", (d) => (d.r || d.r === 0 ? d.r : nodeRadius))
+				.attr("class", noCirc ? "no-circle" : "graph-node-circle")
+				
 
 		// if the node is radial, append an additional circle
 		// yields a "radar" effect
@@ -193,10 +196,13 @@ export const Graph = ({
 			.filter((d) => d.id)
 			.append("g")
 			.attr("class", "edgeLabel")
+			.attr('foo', (d) => console.log(d))
 			.each(function (d, i) {
 				const graphId = Trim(id, [/ /]);
+				let x = d.ex !== undefined ? d.ex : 0;
+				let y = d.ey !== undefined ? d.ey : 0;
 				let sel = select(this);
-				MathText( sel, d.id, fontSize - 0.3, 10, 10, `${graphId}-${d.id}-${i}`, "black",);
+				MathText( sel, d.id, fontSize, 50, 10, `${graphId}-${d.id}-${i}`, "black","white",x,y);
 			});
 		force.on("tick", function () {
 			let edgeSelection;

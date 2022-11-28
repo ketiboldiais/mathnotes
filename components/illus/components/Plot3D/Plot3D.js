@@ -4,59 +4,28 @@ import { Base } from "../base/Base";
 import { generatePlotPoints } from "./generatePlotPoints/generatePlotPoints";
 import { renderSurface } from "./renderSurface/renderSurface";
 import { colorFunction } from "./colorFunction/colorFunction";
-import { axisBottom, axisLeft, axisTop, scaleLinear, select } from "d3";
+import { scaleLinear, select } from "d3";
 
 export const Plot3D = ({
 	functions = [],
-	width = 600,
-	height = 600,
+	wh=[500,500],
+	width = wh[0],
+	height = wh[1],
 	scale = 100,
 	containerWidth = scale,
 	containerHeight,
-	marginTop = 60,
-	marginRight = 60,
-	marginBottom = 60,
-	marginLeft = 60,
+	m=10,
+	marginTop = m,
+	marginRight = m,
+	marginBottom = m,
+	marginLeft = m,
 	margins = [marginTop, marginRight, marginBottom, marginLeft],
 	yaw = 0.5,
-	pitch = 0.5,
+	pitch = 0.6,
 	helpers = false,
-	xDomain = [-10, 10],
-	yDomain = [-2, 2],
-	zRange = xDomain,
-	xTickCount = 10,
-	yTickCount = 2,
-	zTickCount = 10,
 }) => {
 	const Plot3DFigure = useRef();
 	const _svg = svg(width, height, margins);
-	const xLowerBound = xDomain[0];
-	const zLowerBound = zRange[0];
-	const xUpperBound = xDomain[1];
-	const yUpperBound = yDomain[1];
-	const zUpperBound = zRange[1];
-	const xScale = scaleLinear(
-		[xLowerBound, xUpperBound],
-		[0, _svg.width - margins[2]],
-	);
-	const yScale = scaleLinear([0, yUpperBound], [0, margins[0]]);
-	const zScale = scaleLinear(
-		[zLowerBound, zUpperBound],
-		[_svg.height, 0],
-	);
-	const xAxis = axisBottom(xScale)
-		.tickSizeInner(3)
-		.tickSizeOuter(0)
-		.ticks(xTickCount);
-	const yAxis = axisTop(yScale)
-		.tickSizeInner(3)
-		.tickSizeOuter(0)
-		.ticks(yTickCount);
-	const zAxis = axisLeft(zScale)
-		.tickSizeInner(3)
-		.tickSizeOuter(0)
-		.ticks(zTickCount);
-
 	useEffect(() => {
 		const canvas = select(Plot3DFigure.current).select("g.svgElement");
 		const plot3d = canvas.append("g").attr("class", "plot3d");
@@ -71,21 +40,11 @@ export const Plot3D = ({
 				.enter()
 				.append("path")
 				.attr("d", (d) => d.path)
-				.attr("fill", (d) => colorFunction(d.data));
+				.attr("fill", (d) => colorFunction(d.data))
+				.attr('stroke', 'black')
+				.attr('stroke-width',2)
 		}
-		const plotAxes = plot3d.append("g").attr("class", "plot3dAxes");
-		const xAxisGroup = plotAxes
-			.append("g")
-			.attr("class", "3dPlot_xAxis")
-			.attr("transform", `${translate(0, _svg.height)} rotate(10)`);
-		xAxisGroup.call(xAxis);
-		const yAxisGroup = plotAxes
-			.append("g")
-			.attr("class", "3dPlot_yAxis")
-			.attr("transform", `rotate(-10)`);
-		yAxisGroup.call(yAxis);
-		const zAxisGroup = plotAxes.append("g").attr("class", "3dPlot_zAxis");
-		zAxisGroup.call(zAxis);
+
 
 		if (helpers) canvasHelper(Plot3DFigure, _svg, margins);
 	});

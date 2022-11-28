@@ -105,16 +105,18 @@ const withMDX = createMDX({
 						"\\Uu": "\\mathcal{U}", "\\Vv": "\\mathcal{V}",
 						"\\Ww": "\\mathcal{W}", "\\Xx": "\\mathcal{X}",
 						"\\Yy": "\\mathcal{Y}", "\\Zz": "\\mathcal{Z}",
+						
 
 						// number sets
 						"\\com": "\\mathbb{C}",
 						"\\uint": "\\mathbb{Z}",
-						"\\pint": "\\mathbb{Z}^+",
-						"\\nint": "\\mathbb{Z}^-",
+						"\\pint": "\\mathbb{Z}_+",
+						"\\nint": "\\mathbb{Z}_-",
 						"\\primes": "\\mathbb{P}",
 						"\\nat": "\\natnums",
 						"\\rat": "\\mathbb{Q}",
 						"\\field": "\\mathbb{F}",
+						"\\bool": "\\mathbb{B}",
 
 						// combinatorics
 						"\\sib": "~{\\small{{\\succ}{#1}{\\prec}}}~",
@@ -150,6 +152,7 @@ const withMDX = createMDX({
 						"\\ll": "\\lim\\limits_{#1 \\to #2}",
 						"\\gcd": "\\text{gcd}\\left( #1 \\right)",
 						"\\tmod": "~\\texttt{\\%}~",
+						"\\ptg": "\\texttt{\\%}",
 						"\\test": "~\\stackrel{?}{#1}~",
 						"\\tnote": "\\overbrace{#1}^{\\text{#2}}",
 						"\\bnote": "\\underbrace{#1}_{\\text{#2}}",
@@ -208,6 +211,10 @@ const withMDX = createMDX({
 
 						// linguistics
 						"\\string": "\\text{\\textquotedblleft}\\text{#1}\\text{\\textquotedblright}",
+						"\\lq": "\\text{\\textquotedblleft}",
+						"\\rq": "\\text{\\textquotedblright}",
+						"\\lsq": "\\text{\\textquoteleft}",
+						"\\lrq": "\\text{\\textquoteright}",
 						"\\phone": "\\Braket{\\texttt{#1}}",
 
 						// numbers
@@ -293,6 +300,7 @@ const withMDX = createMDX({
 						"\\fun": "\\bf{function}}~~{\\tt{#1}}{\\ar{#2}",
 						"\\let":"{#1} \\gets {#2}",
 						"\\df":"\\textup{#1}",
+						"\\cv":"\\textmd{#1}",
 						"\\if":"\\textup{if}~",
 						"\\then":"\\textup{then}~",
 						"\\else":"\\textup{else}~",
@@ -311,8 +319,8 @@ const withMDX = createMDX({
 						"\\reach":"\\textup{reach}",
 						"\\capa":"\\textup{capacity}",
 						"\\list":"\\textup{list}",
-						"\\inc":"\\texttt{++}",
-						"\\dec":"\\texttt{--}",
+						"\\inc":"\\texttt{+=}",
+						"\\dec":"\\texttt{-=}",
 
 						// fonts
 						"\\tx":"\\text{#1}",
@@ -329,11 +337,11 @@ const withMDX = createMDX({
 						"\\band": "~\\texttt{\\&}~",
 						"\\bls": "~\\texttt{<<}~",
 						"\\ltn": "\\texttt{<}",
-						"\\lte": "\\texttt{<=}",
+						"\\lte": "{\\small \\le}",
 						"\\gtn": "\\texttt{>}",
-						"\\gte": "\\texttt{>=}",
+						"\\gte": "{\\small \\ge}",
 						"\\brs": "~\\texttt{>>}~",
-						"\\con": "⧺",
+						"\\con": "\\texttt{++}",
 
 						// geometry
 						"\\vc":"\\vec{#1}",
@@ -361,9 +369,17 @@ const withMDX = createMDX({
 						"\\yd": "{\\fcolorbox{black}{ffe8c0}{$#1$}}",
 						"\\gd": "{\\fcolorbox{black}{c5eac5}{$#1$}}",
 						"\\wd": "{\\fcolorbox{black}{cacaca}{$#1$}}",
+								
+						// etc/vtc
+						"\\etc": "\\ldots",
+						"\\vtc": "\\vdots",
+							
 
 						// set theory
 						"\\card": "\\texttt{\\#}",
+						"\\part": "\\space{{\\sqsubset}\\mathllap{\\footnotesize\\texttt{+}}}\\space",
+						"\\npart": "\\space{{\\not\\sqsubset}\\mathllap{\\footnotesize\\texttt{+}}}\\space",
+						"\\dk": "\\space\\space",
 						"\\ct": "\\text{n}\\left(#1\\right)",
 						"\\kper": "{\\_{#1}{\\text{P}}_{#2}}",
 						"\\count": "\\text{\\#}",
@@ -374,8 +390,6 @@ const withMDX = createMDX({
 						"\\nin": "\\notin",
 						"\\lt": "~\\texttt{<}~",
 						"\\gt": "~\\texttt{>}~",
-						"\\le": "~\\texttt{≦}~",
-						"\\ge": "~\\texttt{≧}~",
 						"\\eq": "~\\texttt{=}~",
 						"\\are": "\\subset",
 						"\\arent": "~\\cancel{\\subset}~",

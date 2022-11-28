@@ -1,0 +1,90 @@
+# Nonrelational Databases
+
+
+## Preliminaries
+> __~definition: hash function~.__ A _hash function_ is a function ${h: A \to B}$ where ${A}$ is the set of all bitstrings of arbitrary length, and ${B}$ the set of all bitstrings of length ${k \in \nat.}$ We call each ${a \in A}$ a _message_, and each ${b \in B}$ a _digest_.
+
+> __~definition: hash table~.__ A _hash table_ ${\Hh}$ is a structure ${(K,V,h,M),}$ where ${K}$ is a set of symbols called _keys_, ${V}$ is a set data objects, ${h}$ is a hash function, and ${M = \set{(h\px{k}, v) : k \in K \land v \in V}}$ with the condition that, if ${(h\px{k},v) \in M}$ and ${(h\px{k},w) \in M,}$ then ${v = w.}$ That is, ${M}$ is an injection from ${K}$ to ${V.}$ We call each pair ${(h\px{k}, v)}$ a _key-value pair_, the set ${K}$ the _keyspace_ of ${\Hh,}$ the set ${V}$ the _codomain_ of ${\Hh,}$ and the set ${M}$ the _map_ of ${\Hh.}$
+
+## Nonrelational vs. Relational Databases
+Relational databases are _normalized_ — data is broken down into as many small parts as possible, so there is little to no data duplication. The problem with relational databases: They are CPU intensive. Nonrelational databases curb this intensity by consuming more memory.
+
+## Document Model Databases
+> __~definition: document data model~.__ Let ${R}$ be a set of records. A _document data model_ is a model of ${R}$ with the grammar of sets and hash tables.
+
+~example~.
+
+<Grid cols={2}>
+
+$$
+	\begin{array}{c:c:c}
+	\tx{name} & \tx{id} & \tx{email} \\ \hline
+	\tx{Ann} & \tx{2172811} & \tx{anna@mail} \\ \hdashline
+	\tx{Ren} & \tx{3371811} & \tx{ren@mail} \\ \hdashline
+	\tx{Luke} & \tx{1035291} & \tx{luk@mail}
+	\end{array} \\[1em]
+	\textit{relational model}
+$$
+
+$$
+\small
+\tx{Ann's document} \mapsto \lset{\ax{
+\tx{name} & \mapsto & \tx{Ann} \\
+\tx{id} & \mapsto & \tx{2172811} \\
+\tx{email} & \mapsto & \tx{anna@mail}
+}}
+\\[1em]
+\tx{Ren's document} \mapsto \lset{\ax{
+\tx{name} & \mapsto & \tx{Ren}  \\
+\tx{id} & \mapsto & \tx{3371811} \\
+\tx{email} & \mapsto & \tx{ren@mail}
+}}
+\\[1em]
+\tx{Luke's document} \mapsto \lset{\ax{
+\tx{name} & \mapsto & \tx{Luke} \\
+\tx{id} & \mapsto & \tx{1035291} \\
+\tx{email} & \mapsto & \tx{luk@mail}
+}} \\[1em]
+\normalsize{\textit{document model}}
+$$
+
+</Grid>
+
+~remark~. When working with nonrelational databases, there are a few rules to keep in mind.
+
+> __~rule 1~.__ The data model cannot have joins.
+
+> __~rule 2~.__ How the application consumes data determines the data model.
+
+## Datatypes
+Because nonrelational databases are fairly recent, datatypes vary across systems. In these materials, we will use _Firebase_ as an example.
+
+### Firebase Datatypes
+Firebase has the following datatypes.
+
+| Datatypes   | Description                                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------------------- |
+| `number`    | Numeric datatype                                                                                              |
+| `string`    | String datatype                                                                                               |
+| `boolean`   | true/false                                                                                                    |
+| `map`       | hash table                                                                                                    |
+| `array`     | dynamic array                                                                                                 |
+| `null`      | null                                                                                                          |
+| `geopoint`  | ${(a,b)}$ where ${a}$ is a number corresponding to latitude, and ${b}$ is a number corresponding to longitude |
+| `timestamp` | timestamp data                                                                                                |
+| `reference` | path to an existing document                                                                                  |
+
+## Modelling Techniques
+### Embedding
+With embedding, we insert data objects directly on a single document, instead of creating separate documents for each data object.
+
+~example~. Let ${\Oo}$ be a set of blog posts and let ${d}$ be a document in ${d.}$ Each blog post in ${\Oo}$ is a triple ${(title,tags),}$ where ${title}$ is the blog post title and ${tags}$ is a set of tags. Then we embed ${\Oo}$ by creating a single document for each post, with the fields ${title}$ and ${tags.}$ The alternative approach is to create separate collections for the tags, and have each document comprise only of the ${title.}$ 
+
+~remark~. Embedding is the most performance approach. But, because we cannot query embedded data, we must read the entire document if we want specific data. This approach is also only feasible if the dataset is small enough to fit in 1 megabyte.
+
+### Root Collection
+We create a separate collection for a particular field, then include a reference (URL) to associated data.
+
+~example~. Using the blog post example, we create a collection called _Tags_, then create documents for each tag, with the fields ${name}$ and ${url,}$ where ${url}$ is a path to the tag. We also create a collection called _Posts_, which contains documents for each blog post. The blog post documents contain ${title}$ and an array called ${tags.}$ The elements of the array are the tag names. Notice that this creates a many-to-many relation.
+
+

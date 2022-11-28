@@ -1,4 +1,5 @@
 import {Tree} from "../../../components/illus/components/Tree/Tree";
+import {Plot,Lattice} from "../../../components/Hago/index";
 
 <Head>
 	<title>Dynamic Programming</title>
@@ -12,7 +13,16 @@ _This note presents an overview of dynamic programming_.
 1. [Sequence Generation: Fibonacci Numbers](#sequence-generation-fibonacci-numbers)
 2. [Memoization](#memoization)
 3. [Decision Trees](#decision-trees)
-	1. [Minimum Change Problem](#minimum-change-problem)
+4. [Knapsack Problems](#knapsack-problems)
+5. [Partset Verification](#partset-verification)
+	1. [Branching Factors](#branching-factors)
+	2. [Minimum Change Problem](#minimum-change-problem)
+6. [Counting Lattice Paths](#counting-lattice-paths)
+	1. [Boolean Lattice Paths](#boolean-lattice-paths)
+	2. [Maximal Path Sum](#maximal-path-sum)
+	3. [Maximum Non-neighbor Sum](#maximum-non-neighbor-sum)
+	4. [Counting Perfect Square Parts](#counting-perfect-square-parts)
+7. [Counting Standard Young Tableaux](#counting-standard-young-tableaux)
 
 ## Sequence Generation: Fibonacci Numbers
 Perhaps the best introduction to dynamic programming is the procedure for generating the Fibonacci numbers. Below is a straightforward, recursive approach:
@@ -59,7 +69,16 @@ This algorithm is elegant, but it _will_ hang for sufficiently large ${n.}$ The 
 	{child:'\\text{fib}(0)_23', parent: '\\text{fib}(2)_3',ant:'\\text{fib}(0)'},
 ]} anon={true} fs={0.65} r={2.5} width={350} id={'fibtree1'}/>
 
-All of these nodes are _distinct function calls_. Given that we make 2 calls for every call, this algorithm has a time complexity of order ${\bigO{2^n},}$ and the space complexity is the height of the tree, ${\bigO{n},}$ where ${n}$ is the input index. It's no surprise that this approach will eventually (in fact, rather quickly) hang.
+<Grid cols={2} d={'flex'} rc={[40,60]}>
+
+All of these nodes are _distinct function calls_. Given that we make 2 calls for every call, this algorithm has a time complexity of order ${\bigO{2^n},}$ and the space complexity is the height of the tree, ${\bigO{n},}$ where ${n}$ is the input index. It's no surprise that this approach will eventually (in fact, rather quickly) hang — exponential functions grow shockingly fast.
+
+<div>
+<Plot data={[{f:(x)=>2**x,disc:40,r:0.2,class:'red'}]} domain={[0,5]} range={[0,20]} width={300} height={200}/>
+<figcaption>The sequence ${a_n = 2^n}$</figcaption>
+</div>
+
+</Grid>
 
 ## Memoization
 Examining the call tree, we see numerous duplicates:
@@ -118,9 +137,16 @@ Above, all of the filled nodes correspond to ${\tx{fib}}$ calls that are _unnece
 Employing memoization, the algorithm's time complexity reduces to an order of ${\bigO{n}}$ (space complexity remains of order ${\bigO{n}}$).
 
 ## Decision Trees
-> __~definition: palette~.__ Let ${Z}$ be a set of positive integers, let ${n}$ and ${x}$ be positive integers. We say that a set ${Z}$ is a _palette_ of ${x}$ if it contains ${k \in \pint}$ elements such that ${\tsum{i=1}{k} z_i = x}$ with ${\tsum{j=1}{n}z_jz_j = x,}$ where ${z_i, z_j \in Z.}$ If ${Z}$ is a palette of ${x,}$ we write ${\df{palette}\px{Z,x} = 1.}$ If ${Z}$ is not a palette of ${x,}$ we write ${\df{palette}\px{Z,x}=0.}$
+> __~decision tree~.__ Let ${T = (V,E)}$ be a rooted binary tree with a set of vertices ${V}$ and a set of edges ${E.}$ We call ${T}$ a _decision tree_ if each nonleaf ${\set{n \in V:\deg\px{n} \neq 1}}$ represents a variable, each leaf ${\set{\ell \in V:\deg\px{\ell}=1}}$ represents a Boolean 1 or 0 (i.e., true or false), and each edge ${\e \in E}$ represents a a value that a nonleaf ${n}$ can take.
 
-~example~. ${\df{palette}\px{\set{1,2,3},5} = 1,}$ since:
+## Knapsack Problems
+
+## Partset Verification
+> __~definition: partition~.__ Let ${z}$ be a positive integer. A _partition_ of ${z}$ is a sequence of ${n}$ positive integers ${\lambda = \ix{\lambda_1, \ldots, \lambda_n}}$ satisfying the relation ${0 \le \lambda_1 \le \ldots \le \lambda_n}$ and ${z = \lambda_1 + \ldots + \lambda_n.}$ We call each term of ${\lambda}$ a _part_ of ${z.}$ If ${\lambda}$ is a partition of ${n,}$ then we write ${\lambda \tf z.}$
+
+> __~definition: partset~.__ Let ${Z}$ be a set of positive integers, let ${n}$ and ${x}$ be positive integers. We say that a set ${Z}$ is a _partset_ of ${x}$ if ${Z}$ contains a subset ${Z' \subseteq Z}$ whose elements may form a partition of ${x.}$ If ${Z}$ is a partset of ${x,}$ then we write ${Z \part x.}$ Otherwise, we write ${Z \npart x.}$
+
+~example~. ${\set{1,2,3} \part 5,}$ since:
 
 $$
 	\eqs{
@@ -134,10 +160,7 @@ $$
 
 > __~problem: palette verification~.__ Does there exist an algorithm that returns true if a set of positive integers ${Z}$ is a palette of a natural number ${x,}$ and false otherwise?
 
-The palette verification problem can be modelled with a __*decision tree*__.
-
-> __~decision tree~.__ Let ${T = (V,E)}$ be a rooted binary tree with a set of vertices ${V}$ and a set of edges ${E.}$ We call ${T}$ a _decision tree_ if each nonleaf ${\set{n \in V:\deg\px{n} \neq 1}}$ represents a variable, each leaf ${\set{\ell \in V:\deg\px{\ell}=1}}$ represents a Boolean 1 or 0 (i.e., true or false), and each edge ${\e \in E}$ represents a a value that a nonleaf ${n}$ can take.
-
+The palette verification problem can be modelled with a decision tree.
 Below are the decision trees for two example ${\df{palette}}$ values. The left decision tree corresponds to a ${\df{palette}}$ value of false, and the right decision tree corresponds to a ${\df{palette}}$ value of true.
 
 
@@ -174,10 +197,10 @@ Below are the decision trees for two example ${\df{palette}}$ values. The left d
 		{child:410, parent:1, n:0, el: '-1', class: 'nil'},
 ]} tx={-11} r={3} id={'pv1'} wh={[480,220]} scale={100} fs={0.8}/>
 $$
-	\df{palette}(\set{4,6,10},15) = \tx{false}
+	\set{4,6,10} \npart 15
 $$
 $$
-	\df{palette}(\set{1,2,3},4) = \tx{true}
+	\set{1,2,3} \part 4
 $$
 </Grid>
 
@@ -256,7 +279,7 @@ Branching factors lead to the notion of __*combinatorial explosions*__ — probl
 ### Minimum Change Problem
 The minimum change problem is stated as follows.
 
-> __~problem: minimum coins~.__ Given a set ${C}$ of ${n}$ positive integers, each representing a coin—${C=\set{c_1, \ldots, c_n}}$—and a positive integer ${A}$ representing an amount, what is the smallest [bag](./../../math/set_theory/bags) of ${c}$ elements that sum to ${A?}$
+> __~problem: minimum coins~.__ Given a set ${C}$ of ${x}$ positive integers, each representing a coin—${C=\set{c_1, \ldots, c_n}}$—and a positive integer ${a}$ representing an amount, what is the size of the smallest [bag](./../../math/set_theory/bags) of ${c_i \in C}$ that sum to ${A?}$
 
 ~example~. Suppose ${A = 4,}$ and ${C = \set{1,2,3}.}$ Then the smallest bag is ${\tup{3^11^1},}$ since ${3 + 1 = 4.}$ We can model this problem with the decision tree below. The problem's solution, then, is the shortest path from the root ${\set{4}}$ to a leaf ${\set{0}.}$ We've colored a few such paths in the decision tree.
 
@@ -280,7 +303,34 @@ The minimum change problem is stated as follows.
 
 Like the palette problem, we use 0 as the base case. Next question: How do we get the shortest path? The shortest path is the path with the least amount of edges from the root to a leaf. Remember that every vertex of a tree is a tree itself. Thus, given a vertex with ${n}$ children, the shortest path is the path to a vertex that is either a leaf, or, if not a leaf, the child closest to a leaf. How do we know which child is closest to a leaf? By comparing the values they're assigned. Given a set ${C}$ of ${n}$ children, the shortest path runs through ${\min\set{C}.}$ Thus, because every recursive call returns 0, we want to add one to each caller (a nonleaf) to the returned value of its callee. In other words, if the callee is a leaf, we return 0. If the callee is a nonleaf, we return the minimum of its callees, plus one.
 
-Without memoization, this is a problem that leads to a combinatorial explosion: The time complexity is of order ${\bigO{n^A}}$ and the space complexity is of order ${\bigO{A},}$ where ${n}$ is the size of ${C}$—the number of coin denominations—and ${A}$ is the target sum. So, alongside writing the recursive function, we must also identify the duplicate trees. Such trees correspond to unnecessary operations. Examining the tree, we can spot a few duplicates:
+<Algo>
+
+> __~algorithm: minimum change~.__ Let ${a}$ be a positive integer and let ${C}$ be an array ${\ix{c_0, \ldots, c_{\ell-1}}}$ of length ${\ell,}$ comprising positive integers. The function ${\df{minch}}$ takes ${a}$ and ${C,}$ and returns ${\df{minch}(a,C) = n,}$ where ${n}$ is the minimum number of elements ${c_{0 \le i \lt \ell}}$ that sum to ${a.}$ If no such elements exist, then we define ${\df{minch}(a,c)=-1.}$
+
+- __Procedure__: ${\df{minch}}$
+- __Input__: ${a,}$ a positive integer, and ${C,}$ an array of positive integers.
+- __Output__: ${n,}$ a natural number, or ${-1.}$
+
+1. __function__ ${\df{minch}\px{a,C}}$
+	1. ${\let{memo}{\df{new hashmap}}}$
+	2. ${\let{\ell}{\df{length}\px{c}}}$
+	3. __function__ ${f\px{c}}$ _auxiliary_
+		1. __if__ ${c \in memo}$ __then return__ ${memo\ix{c}}$
+		2. __else if__ ${c \lt 0}$ __then return__ ${\infty}$
+		3. __else__
+			1. ${\let{n}{\infty}}$
+			2. __for__ ${\let{i}{0},\dk{i \lt \ell,}\dk{i\inc}}$
+				1. ${\let{x}{1 + f\px{a - c\ix{i}}}}$
+				2. ${\let{n}\min\set{n,x}}$
+			3. ${\let{memo\ix{n}}{n}}$
+			4. __return__ ${n}$
+	4. ${\let{\image}{f(a)}}$
+	5. __if__ ${\image = \infty}$ __then__ ${\image = \mi 1}$
+	6. __else return__ ${\image}$
+
+</Algo>
+
+Without memoization, this is a problem that leads to a combinatorial explosion: The time complexity is of order ${\bigO{x^a}}$ and the space complexity is of order ${\bigO{a},}$ where ${n}$ is the size of ${C}$—the number of coin denominations—and ${a}$ is the target sum. So, alongside writing the recursive function, we must also identify the duplicate trees. Such trees correspond to unnecessary operations. Examining the tree, we can spot a few duplicates:
 
 <Tree data={[
 	{child:4,parent:''},
@@ -299,3 +349,323 @@ Without memoization, this is a problem that leads to a combinatorial explosion: 
 	{child:1,parent:4},
 		{child:'10',parent:1,n:0,tc:'out'},
 ]}tx={-15}r={3}id={'minchange2'}wh={[400,210]}margin={10}/>
+
+Pruning these branches, a memoized implementation brings the time complexity to ${\bigO{ax}}$ with the space complexity remaining at ${\bigO{a},}$ where ${a}$ is the amount and ${x}$ is the number of coins.
+
+## Counting Lattice Paths
+> __~definition~.__ Let ${M}$ be an ${m \times n}$ grid. A _lattice path_ is a path from ${(0,0)}$ to ${(n,m)}$ such that ${y_i \ge x_i}$ for all points ${(x_i,y_i)}$ on the path.
+
+Note that this definition implies: We can only move ${\ix{0,\mi 1}}$ (down one point) or ${\ix{\pl 1, 0}}$ (right one point). In algebraic terms, the points along the path always lie (weakly) above the line ${y = x.}$
+
+### Boolean Lattice Paths
+> __~definition~.__ Let ${M}$ be an ${m \times n}$ Boolean grid. A _Boolean lattice path_ is a lattice path ${b_M}$ on ${M}$ such that, for every point ${(x_j,y_k)}$ of ${b_M,}$ the element ${M_{j,k} = 1.}$
+
+> __~problem: lattice path counting~.__ Given an ${m \times n}$ grid ${M,}$ is there an algorithm that determines how many Boolean lattice paths lie on ${M?}$
+
+~example~. In the matrices below, the filled points correspond to 0s, and the white points correspond to 1s. There are five ways to go from the top-left point ${(0,0)}$ to the bottom-right point ${(2,2).}$
+
+<Grid cols={3}>
+<Lattice data={[
+	{xy:[2,2],class:'dst',d:false},
+	[0,2],
+	[0,1],
+	[0,0],
+	[2,0],
+	[1,0],
+]}id={'lattice1'}xMax={3}yMax={3} idx={true} rix={-1}/>
+<Lattice data={[
+	{xy:[2,2],class:'dst',d:false},
+	[0,2],
+	[1,2],
+	[1,1],
+	[1,0],
+	[2,0],
+]}id={'lattice2'}xMax={3}yMax={3} idx={true} rix={-1}/>
+<Lattice data={[
+	{xy:[2,2],class:'dst',d:false},
+	[0,2],
+	[0,1],
+	[1,1],
+	[1,0],
+	[2,0],
+]}id={'lattice3'}xMax={3}yMax={3} idx={true} rix={-1}/>
+<Lattice data={[
+	{xy:[2,2],class:'dst',d:false},
+	[0,2],
+	[0,1],
+	[1,1],
+	[2,1],
+	[2,0],
+]}id={'lattice4'}xMax={3}yMax={3} idx={true}/>
+<Lattice data={[
+	{xy:[2,2],class:'dst',d:false},
+	[0,2],
+	[1,2],
+	[1,1],
+	[2,1],
+	[2,0],
+]}id={'lattice5'}xMax={3}yMax={3} idx={true} rix={-1}/>
+</Grid>
+
+As usual, this problem reeks of combinatorial propellant. Fortunately, the move restrictions provide a safety valve. Because we can only move down 1 or right 1 but not both, we can reduce the problem to a decision tree.
+
+<Tree data={[
+	{child: '(0,0)', parent:''},
+	{child: '(1,0)', parent:'(0,0)'},
+		{child: '(2,0)', parent:'(1,0)'},
+			{child: '(2,1)', parent:'(2,0)'},
+				{child: '(2,2)', parent:'(2,1)'},
+		{child: '(1,1)', parent:'(1,0)'},
+			{child: '(1,1),(2,1)', parent:'(1,1)', n:'(2,1)'},
+				{child: '(2,2),(1,1),(2,1)', parent:'(1,1),(2,1)', n:'(2,2)'},
+			{child: '(1,1),(1,2)', parent:'(1,1)', n:'(1,2)'},
+				{child: '(2,2),(1,1),(1,2)', parent:'(1,1),(1,2)', n:'(2,2)'},
+	{child: '(0,1)', parent:'(0,0)'},
+		{child: '(1,1),(0,1)', parent:'(0,1)', n:'(1,1)'},
+			{child: '(2,1),(1,1),(0,1)', parent:'(1,1),(0,1)', n:'(2,1)'},
+				{child: '(2,2),(2,1),(1,1),(0,1)', parent:'(2,1),(1,1),(0,1)', n:'(2,2)'},
+			{child: '(1,2),(1,1),(0,1)', parent:'(1,1),(0,1)', n:'(1,2)'},
+				{child: '(1,2),(2,1),(1,1),(0,1)', parent:'(1,2),(1,1),(0,1)', n:'(2,2)'},
+]} tx={-35} scale={70} fs={0.8} id={'mazetree1'}/>
+
+When we hit the pair ${(2,2),}$ we know that we've encountered the bottom right cell. From there, we return 1. At each parent node, we sum the returned value of its descendants. Notice that this corresponds to the _height_ of the tree:
+
+
+<Tree data={[
+	{child: '(0,0)', parent:''},
+	{child: '(1,0)', parent:'(0,0)'},
+		{child: '(2,0)', parent:'(1,0)'},
+			{child: '(2,1)', parent:'(2,0)'},
+				{child: '(2,2)', parent:'(2,1)'},
+		{child: '(1,1)', parent:'(1,0)'},
+			{child: '(1,1),(2,1)', parent:'(1,1)', n:'(2,1)'},
+				{child: '(2,2),(1,1),(2,1)', parent:'(1,1),(2,1)', n:'(2,2)'},
+			{child: '(1,1),(1,2)', parent:'(1,1)', n:'(1,2)'},
+				{child: '(2,2),(1,1),(1,2)', parent:'(1,1),(1,2)', n:'(2,2)'},
+	{child: '(0,1)', parent:'(0,0)'},
+		{child: '(1,1),(0,1)', parent:'(0,1)', n:'(1,1)'},
+			{child: '(2,1),(1,1),(0,1)', parent:'(1,1),(0,1)', n:'(2,1)'},
+				{child: '(2,2),(2,1),(1,1),(0,1)', parent:'(2,1),(1,1),(0,1)', n:'(2,2)'},
+			{child: '(1,2),(1,1),(0,1)', parent:'(1,1),(0,1)', n:'(1,2)'},
+				{child: '(1,2),(2,1),(1,1),(0,1)', parent:'(1,2),(1,1),(0,1)', n:'(2,2)'},
+]} tx={-35} scale={60} fs={0.7} markHeight={true} id={'mazetree2'} anon={true}/>
+
+Without memoization, a recursive implementation would be of order ${\bigO{2^{r+c}},}$ where ${r}$ is the number of rows, and ${c}$ is the number of columns. The space complexity is of order ${\bigO{r+c},}$ corresponding to the height of the tree.
+
+<Algo>
+
+> __~algorithm: maze path count i~.__  Let ${M}$ be an ${m \times n}$ maze. Then the function ${\df{mazepathcount}}$ returns the number of paths from the top-left cell ${M_{0,0}}$ to the bottom-right cell ${M_{{m-1},{n-1}}.}$
+
+1. __function__ ${\df{mazepathcount}\px{M}}$
+	1. ${\let{m}{\len\px{M}}-1}$
+	2. ${\let{n}{\len\px{M\ix{0}}}-1}$
+	3. ${\let{memo}{\df{new hashmap}}}$
+	4. __function__ ${f\px{r,c}}$
+		1. ${\let{r~is~invalid~index}{(r \lt 0) \lor (m \lt r)}}$
+		2. ${\let{c~is~invalid~index}{(c \lt 0) \lor (n \lt c)}}$
+		3. __if__ ${(r~is~ivalid~index) \lor (c~is~invalid~index)}$ __then return__ 0
+		4. __else if__ ${(M\ix{r}\ix{c} = 0)}$ __then return__ 0
+		5. __else if__ ${(r = m \land c = n)}$ __then return__ 1
+		6. __else if__ ${(\px{r,c} \in memo)}$ __then return__ ${memo\ix{\px{r,c}}}$
+		7. __else__
+			1. ${\let{count}{f(r+1,c) + f(r,c+1)}}$
+			2. ${\let{memo\ix{\px{r,c}}}{count}}$
+			3. __return__ ${count}$
+	5. __return__ ${f\px{0,0}}$
+
+</Algo>
+
+With memoization, we bring the time complexity into quadratic time — ${\bigO{rc}.}$ This comes at the cost of an increased space complexity, ${\bigO{rc},}$ since we must store the respective computations for each row-column pairs in the hashmap.
+
+### Maximal Path Sum
+Extending on the maze path problem, suppose the maze's points mapped to values. The __*maximal path sum (~mps~)*__ is the path from the top-left corner to the bottom-right corner that yields the largest possible sum.
+
+~example~. For the grid ${G}$ below, ${\df{mps}=18.}$
+
+$$
+	\ax{
+		\no{1}1 & \no{1}3 & 12 \\
+		\no{1}5 & \no{1}1 & \no{2}1 \\
+		\no{1}3 & \no{1}6 & \no{2}1 \\
+	}
+$$
+
+<Minutiae>
+
+The solution to this problem merely builds off of the last problem.
+
+<Algo>
+
+1. __function__ ${\df{mps}(G)}$
+	1. ${\let{memo}{\df{new map}}}$
+	2. ${\let{row_{max}}{\len{G}-1}}$
+	3. ${\let{col_{max}}{\len{G\ix{0}}-1}}$
+	4. __function__ ${f\px{r,c}}$
+		1. __if__ ${r \lt 0 \lor row_{max} \lt r}$ __return 0__
+		2. __if__ ${c \lt 0 \lor col_{max} \lt c}$ __return 0__
+		3. __if__ ${r=row_{max} \land c=col_{max}}$ __return__ ${G\ix{r}\ix{c}}$
+		4. __if__ ${(r,c) \in memo}$ __return__ ${memo\ix{(r,c)}}$
+		5. ${\let{sum}{G\ix{r}\ix{c} + \max\set{f(r+1,c), f(r,c+1)}}}$
+		6. ${\let{memo\ix{(r,c)}}{sum}}$
+		7. __return__ ${sum}$
+	5. __return__ ${f(0,0)}$
+
+</Algo>
+
+
+</Minutiae>
+
+
+### Maximum Non-neighbor Sum
+Let ${A}$ be an array of natural numbers. Construct an algorithm that returns the largest possible sum of non-adjacent terms of ${A.}$ The sum may comprise of any number of terms, so long as such terms are non-adjacent.
+
+~example~. ${\ix{2,4,5,12,7} \mapsto 16,}$ since ${4+12=16.}$
+
+~example~. ${\ix{7,5,5,12,17,29} \mapsto 48,}$ since ${29+12+7=48.}$
+
+Suppose ${A = \ix{2,4,5,12,7}.}$ The maximum sum depends on which elements of the array are valid terms. Following the problem statement, valid terms are not adjacent to one another. Thus, to find the maximum sum, we must first make a decision: Given an element ${a_i,}$ which elements can we add to ${a_i,}$ and which elements are prohibited? We can view this as a decision tree. We're first given the array ${A.}$ We then decide: Do we want to include the first element of ${A?}$ If we do, then ${a_0 = 2}$ is our first term, and we consider the subarray starting at ${a_2.}$ If we do not, then we consider the subarray starting at ${a_1.}$ For each subarray, we ask the same question: Do we include the first element or not? In the case where we do not take the first element of a singleton (1 element array), we take 0.
+
+<Tree data={[
+	{child: '[2,4,5,12,7]', parent: '', dy:-12,dx:-35, n: '\\texttt{[}2,4,5,12,7\\texttt{]}'},
+	{child: '[5,12,7]',parent: '[2,4,5,12,7]', el: '\\texttt{+}2', n: '\\texttt{[}5,12,7\\texttt{]}'},
+		{child:'[7]', parent: '[5,12,7]', el: '\\texttt{+}5', dx:-8, n:'\\texttt{[}7\\texttt{]}'},
+			{child:'[~]_7a', parent:'[7]', el: '\\texttt{+}7', n:'\\varnothing',dx:-5,dy:-15},
+			{child:'[~]_7b', parent:'[7]', n:'\\varnothing',dx:-8,dy:-15},
+		{child:'[12,7]', parent: '[5,12,7]', dx:-15, n:'\\texttt{[}12,7\\texttt{]}'},
+			{child:'[12,7]_a', parent:'[12,7]',n:'\\varnothing',dx:-3,el:'\\texttt{+}12',dy:-15},
+			{child:'[12,7]_b', parent:'[12,7]',n:'\\texttt{[}7\\texttt{]}',dx:-12},
+				{parent:'[12,7]_b', child:'[7]_[12,7]_a',dx:-8,n:'\\varnothing',el:'\\texttt{+}7',dy:-15},
+				{parent:'[12,7]_b', child:'[7]_[12,7]_b',dx:-8,n:'\\varnothing',dy:-15},
+	{child: '[4,5,12,7]',parent: '[2,4,5,12,7]',n:'\\texttt{[}4,5,12,7\\texttt{]}'},
+		{child:'[12,7]_1', parent: '[4,5,12,7]', n:'\\texttt{[}12,7\\texttt{]}',dx:-15, el: '\\texttt{+}4'},
+			{parent:'[12,7]_1', child: '[~~]_[12,7]_1', n:'\\varnothing',dx:-2, el: '\\texttt{+}12',dy:-15},
+			{parent:'[12,7]_1', child: '[7]_[12,7]_1', n:'\\texttt{[}7\\texttt{]}',dx:-10},
+				{child:'[a]_[7]_[12,7]_1', parent: '[7]_[12,7]_1', n:'\\varnothing',dx:-3,el:'\\texttt{+}7',dy:-15},
+				{child:'[b]_[7]_[12,7]_1', parent: '[7]_[12,7]_1', n:'\\varnothing',dx:-8,dy:-15},
+		{child:'[12,7]_2', parent: '[4,5,12,7]', n:'\\texttt{[}5,12,7\\texttt{]}',dx:-15},
+			{parent:'[12,7]_2', child: '[12,7]_2_left', n:'\\texttt{[}7\\texttt{]}',dx:-8,el:'\\texttt{+}5',dy:-10},
+				{child:'[12,7]_2_left_left', parent: '[12,7]_2_left', n:'\\varnothing',dx:-2,el:'\\texttt{+}7',dy:-15},
+				{child:'[12,7]_2_left_right', parent: '[12,7]_2_left', n:'\\varnothing',dx:-8,dy:-15},
+			{parent:'[12,7]_2', child: '[12,7]_2_right', n:'\\texttt{[}12,7\\texttt{]}',dx:-15},
+				{child:'[12,7]_2_right_left', parent: '[12,7]_2_right', n:'\\varnothing',dx:-4,el:'\\texttt{+}12',dy:-15},
+				{child:'[12,7]_2_right_right', parent: '[12,7]_2_right', n:'\\texttt{[}7\\texttt{]}',dx:-12},
+					{parent:'[12,7]_2_right_right', child: '[12,7]_2_right_right_left', n:'\\varnothing',dx:-5,el:'\\texttt{+}7',dy:-15},
+					{parent:'[12,7]_2_right_right', child: '[12,7]_2_right_right_right', n:'\\varnothing',dx:-8, dy:-15},
+]} flat={true} r={15} tx={-30} height={300} width={600} fs={0.8} id={'maxnnsum1'}/>
+
+Now, we want the maximum possible sum of the non-adjacent elements. This means that, at each ancestor,
+we take the maximum return value among the descendants plus the value of the first element of the subarray.
+Thus, in the decision tree below, each edge corresponds to the returned value.
+
+<Tree data={[
+	{child: '[2,4,5,12,7]', parent: '', dy:-12,dx:-35, n: '\\texttt{[}2,4,5,12,7\\texttt{]}',ant:'~max\\texttt{=}16~',tx:45,ty:-12},
+	{child: '[5,12,7]',parent: '[2,4,5,12,7]', el: '12\\texttt{+}2', n: '\\texttt{[}5,12,7\\texttt{]}',ant:'max\\texttt{=}12',tx:25,ty:-6},
+		{child:'[7]', parent: '[5,12,7]', el: '7\\texttt{+}5', dx:-8, n:'\\texttt{[}7\\texttt{]}'},
+			{child:'[~]_7a', parent:'[7]', el: '7', n:'\\varnothing',dx:-5,dy:-15},
+			{child:'[~]_7b', parent:'[7]', el:'0', n:'\\varnothing',dx:-8,dy:-15},
+		{child:'[12,7]', parent: '[5,12,7]', dx:-15, n:'\\texttt{[}12,7\\texttt{]}',el:'12',ant:'max\\texttt{=}12',tx:30,ty:-6},
+			{child:'[12,7]_a', parent:'[12,7]',n:'\\varnothing',dx:-3,el:'12',dy:-15},
+			{child:'[12,7]_b', parent:'[12,7]',n:'\\texttt{[}7\\texttt{]}',dx:-12,el:'7'},
+				{parent:'[12,7]_b', child:'[7]_[12,7]_a',dx:-8,n:'\\varnothing',el:'7',dy:-15},
+				{parent:'[12,7]_b', child:'[7]_[12,7]_b',dx:-8,n:'\\varnothing',dy:-15,el:'0'},
+	{child: '[4,5,12,7]',parent: '[2,4,5,12,7]',n:'\\texttt{[}4,5,12,7\\texttt{]}',el:'16',ant:'max\\texttt{=}16',tx:40,ty:-6},
+		{child:'[12,7]_1', parent: '[4,5,12,7]', n:'\\texttt{[}12,7\\texttt{]}',dx:-15, el: '4\\texttt{+}12',ant:'max\\texttt{=}12',tx:30,ty:-6},
+			{parent:'[12,7]_1', child: '[~~]_[12,7]_1', n:'\\varnothing',dx:-2, el: '12',dy:-15},
+			{parent:'[12,7]_1', child: '[7]_[12,7]_1', n:'\\texttt{[}7\\texttt{]}',dx:-10,el:'7'},
+				{child:'[a]_[7]_[12,7]_1', parent: '[7]_[12,7]_1', n:'\\varnothing',dx:-3,el:'7',dy:-15},
+				{child:'[b]_[7]_[12,7]_1', parent: '[7]_[12,7]_1', n:'\\varnothing',dx:-8,dy:-15,el:'0'},
+		{child:'[12,7]_2', parent: '[4,5,12,7]', n:'\\texttt{[}5,12,7\\texttt{]}',dx:-15,el:'12',ant:'max\\texttt{=}12',tx:40,ty:-6},
+			{parent:'[12,7]_2', child: '[12,7]_2_left', n:'\\texttt{[}7\\texttt{]}',dx:-8,el:'5\\texttt{+}7',dy:-10},
+				{child:'[12,7]_2_left_left', parent: '[12,7]_2_left', n:'\\varnothing',dx:-2,el:'7',dy:-15},
+				{child:'[12,7]_2_left_right', parent: '[12,7]_2_left', n:'\\varnothing',dx:-8,dy:-15,el:'0'},
+			{parent:'[12,7]_2', child: '[12,7]_2_right', n:'\\texttt{[}12,7\\texttt{]}',dx:-15,el:'12',ant:'max\\texttt{=}12',tx:30,ty:-6},
+				{child:'[12,7]_2_right_left', parent: '[12,7]_2_right', n:'\\varnothing',dx:-4,el:'12',dy:-15},
+				{child:'[12,7]_2_right_right', parent: '[12,7]_2_right', n:'\\texttt{[}7\\texttt{]}',dx:-12, el:'7',ant:'max\\texttt{=}7',tx:10,ty:-6},
+					{parent:'[12,7]_2_right_right', child: '[12,7]_2_right_right_left', n:'\\varnothing',dx:-5,dy:-15,el:'7'},
+					{parent:'[12,7]_2_right_right', child: '[12,7]_2_right_right_right', n:'\\varnothing',dx:-8, dy:-15,el:'0'},
+]} flat={true} r={15} tx={-30} height={350} width={610} fs={0.8} id={'maxnnsum2'} ex={-4} ey={-10}/>
+
+Without memoization, a recursive algorithm yields a time complexity of order ${\bigO{2^n}}$ and a space complexity of order ${\bigO{n},}$ where ${n}$ is the length of ${A}$ (the number of elements in ${A}$). With memoization—alongside ensuring that we _do not_ make copies of ${A}$—we have a time complexity of ${\bigO{n}}$ and a space complexity of ${\bigO{n}.}$
+
+<Algo>
+
+1. __function__ ${\df{nonadjsum}(A):}$
+	1. ${\let{memo}{\df{new hashmap}}}$
+	2. ${\let{L}{\len{A}}}$
+	3. __function__ ${f(index):}$
+		1. __if__ ${index \in memo}$ __then return__ ${memo\ix{index}}$
+		2. __if__ ${index \ge L}$ __return__ ${0}$
+		3. ${\let{include}{A\ix{index}} + f(index+2)}$
+		4. ${\let{exclude}{A\ix{index}} + f(index+1)}$
+		5. ${\let{result}{\max(include,exclude)}}$
+		6. ${\let{memo}{\df{insert}~(index,result)}}$
+		7. __return__ ${result}$
+	4. __return__ ${f(0)}$
+
+</Algo>
+
+
+### Counting Perfect Square Parts
+__~problem~.__ Given a natural number ${n,}$ state an algorithm that determines the minimum number of perfect squares that sum to ${n.}$ 
+
+Approach: For a given ${n,}$ subtract perfect squares up to ${n}$ until we arrive at 0. The least amount of subtractions corresponds to the minimum number of perfect squares that sum to ${n.}$ As indicated by the tree below, this is undoubtedly a problem that results in a combinatorial explosion.
+
+<Tree data={[
+	{child: 10, parent:'', dx:-25, dy:-15},
+	{child: '10-9', parent:10, n:9, el:'\\texttt{-}1'},
+		{parent: '10-9', child:'10-9-8', n:8, el:'\\texttt{-}1'},
+			{child: '10-9-8-7', parent:'10-9-8', n:7, el:'\\texttt{-}1'},
+				{parent: '10-9-8-7', child:'10-9-8-7-6', n:6, el:'\\texttt{-}1'},
+					{child: '10-9-8-7-6-5', parent:'10-9-8-7-6', n:5, el: '\\texttt{-}1'},
+						{parent: '10-9-8-7-6-5', child:'10-9-8-7-6-5-4', n:4, el: '\\texttt{-1}'},
+							{child: '10-9-8-7-6-5-4-3', parent:'10-9-8-7-6-5-4', n:3, el: '\\texttt{-}1'},
+								{parent: '10-9-8-7-6-5-4-3', child:'10-9-8-7-6-5-4-3-2', n:2, el: '\\texttt{-}1'},
+									{child: '10-9-8-7-6-5-4-3-2-1', parent:'10-9-8-7-6-5-4-3-2', n:1, el: '\\texttt{-}1'},
+										{parent: '10-9-8-7-6-5-4-3-2-1', child:'10-9-8-7-6-5-4-3-2-1-0', n:0, el: '\\texttt{-}1'},
+							{child: '10-9-8-7-6-5-4-3-0', parent:'10-9-8-7-6-5-4', n:0, el: '\\texttt{-}4'},
+						{parent: '10-9-8-7-6-5', child:'10-9-8-7-6-5-1', n:1, el: '\\texttt{-}4'},
+							{child: '10-9-8-7-6-5-1-0', parent:'10-9-8-7-6-5-1', n:0, el: '\\texttt{-}1'},
+					{child: '10-9-8-7-6-2', parent:'10-9-8-7-6', n:2, el: '\\texttt{-}4'},
+						{parent: '10-9-8-7-6-2', child:'10-9-8-7-6-2-1', n:1, el: '\\texttt{-}1'},
+							{child: '10-9-8-7-6-2-1-0', parent:'10-9-8-7-6-2-1', n:0, el: '\\texttt{-}1'},
+				{parent: '10-9-8-7', child:'10-9-8-7-3', n:3, el: '\\texttt{-}4'},
+					{child: '10-9-8-7-3-2', parent:'10-9-8-7-3', n:2, el: '\\texttt{-}1'},
+						{parent: '10-9-8-7-3-2', child:'10-9-8-7-3-2-1', n:1, el: '\\texttt{-}1'},
+							{child: '10-9-8-7-3-2-1-0', parent:'10-9-8-7-3-2-1', n:0, el:'\\texttt{-}1'},
+			{child: '10-9-8-4', parent:'10-9-8', n:4, el:'\\texttt{-}4'},
+				{parent: '10-9-8-4', child:'10-9-8-4-3', n:3, el:'\\texttt{-}1'},
+					{child: '10-9-8-4-3-2', parent:'10-9-8-4-3', n:2, el:'\\texttt{-}1'},
+						{parent: '10-9-8-4-3-2', child:'10-9-8-4-3-2-1', n:1, el: '\\texttt{-}1'},
+							{child: '10-9-8-4-3-2-1-0', parent:'10-9-8-4-3-2-1', n:0, el:'\\texttt{-}1'},
+				{parent: '10-9-8-4', child:'10-9-8-4-0', n:0, el: '\\texttt{-}4'},
+		{parent: '10-9', child:'10-9-5', n:5, el: '\\texttt{-}4'},
+			{child: '10-9-5-4', parent:'10-9-5', n:4, el:'\\texttt{-}1'},
+				{parent: '10-9-5-4', child:'10-9-5-4-3', n:3, el:'\\texttt{-}1'},
+					{child: '10-9-5-4-3-2', parent:'10-9-5-4-3', n:2, el: '\\texttt{-}1'},
+						{parent: '10-9-5-4-3-2', child:'10-9-5-4-3-2-1', n:1, el: '\\texttt{-}1'},
+							{child: '10-9-5-4-3-2-1-0', parent:'10-9-5-4-3-2-1', n:0, el:'\\texttt{-}1'},
+				{parent: '10-9-5-4', child:'10-9-5-4-0', n:0, el: '\\texttt{-}4'},
+			{child: '10-9-5-1', parent:'10-9-5', n:1, el:'\\texttt{-}4'},
+				{parent: '10-9-5-1', child:'10-9-5-1-0', n:0, el:'\\texttt{-}1'},
+		{parent: '10-9', child:'10-9-9', n:0, el:'\\texttt{-}9', ex:12},
+	{child: '10-6', parent:10, n:6, el:'\\texttt{-}4'},
+		{parent: '10-6', child:'10-6-5', n:5, el: '\\texttt{-}1'},
+			{child: '10-6-5-4', parent:'10-6-5', n:4, el:'\\texttt{-}1'},
+				{parent: '10-6-5-4', child:'10-6-5-4-3', n:3, el:'\\texttt{-}1'},
+					{child: '10-6-5-4-3-2', parent:'10-6-5-4-3', n:2, el:'\\texttt{-}1'},
+						{parent: '10-6-5-4-3-2', child:'10-6-5-4-3-2-1', n:1, el:'\\texttt{-}1'},
+							{child: '10-6-5-4-3-2-1-0', parent:'10-6-5-4-3-2-1', n:0, el: '\\texttt{-}1'},
+				{parent: '10-6-5-4', child:'10-6-5-4-0', n:0, el: '\\texttt{-}4'},
+			{child: '10-6-5-1', parent:'10-6-5', n:1, el: '\\texttt{-}4'},
+				{parent: '10-6-5-1', child:'10-6-5-1-0', n:0, el: '\\texttt{-}1'},
+		{parent: '10-6', child:'10-6-2', n:2, el: '\\texttt{-}4'},
+			{child: '10-6-2-1', parent:'10-6-2', n:1, el: '\\texttt{-}1'},
+				{parent: '10-6-2-1', child:'10-6-2-1-0', n:0, el: '\\texttt{-}1'},
+	{child: '10-1', parent:10, n:1, el: '\\texttt{-}9'},
+		{parent: '10-1', child:'10-1-0', n:0, el:'\\texttt{-}1'},
+]} width={650} height={550} fs={0.75} ex={-8} ey={-5} tx={-18}/>
+
+A non-memoized brute force approach to this problem yields an interesting time complexity: ${\bigO{\floor{\sqrt{n}}^n}.}$ This time complexity results from the fact that for each node ${n,}$ there are ${\floor{\sqrt{n}}}$ perfect squares that come before ${n.}$ The space complexity is of order ${\bigO{n},}$ corresponding to the height of the decision tree — the longest path from the root to a 0 is the path comprising successive ${\mi 1}$s.
+
+## Counting Standard Young Tableaux
+> __~definition: young diagram~.__ A _Young diagram_ is a finite collection of boxes arranged in left-justified rows, such that, if the number of boxes in row ${r_{i}}$ is less than or equal to the number of boxes in ${r_{j},}$ then ${r_i}$ is placed atop ${r_j.}$ A partition ${\lambda = (\lambda_1,\ldots,\lambda_{\ell})}$ has a Young diagram of ${\ell}$ rows and ${\lambda_{1 \le i \le \ell}}$ boxes in the ${\ith{i}}$ row.

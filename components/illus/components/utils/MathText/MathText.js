@@ -9,12 +9,15 @@ export const MathText = (
 	height = 1,
 	id,
 	color,
+	background='inherit',
+	x=0,
+	y=0,
 ) => {
 	const foreignObject = selection
 		.append("foreignObject")
 		.attr("width", width)
-		.attr("x", 0)
-		.attr("y", 0)
+		.attr("x",x)
+		.attr("y",y)
 		.style("overflow", "visible")
 		.attr("height", height);
 	// div element
@@ -22,6 +25,7 @@ export const MathText = (
 		.append("xhtml:div")
 		.attr("id", id)
 		.style("font-size", `${fontSize}rem`)
+		.style("background-color", background)
 		.style("padding", "0")
 		.style("color", color)
 		.style("position", "fixed")

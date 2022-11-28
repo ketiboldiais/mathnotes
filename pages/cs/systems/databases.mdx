@@ -1,0 +1,44 @@
+<Head>
+	<title>Databases</title>
+	<meta name={`description`} content={`Notes on databases.`}/>
+</Head>
+
+# Databases
+
+This note volume presents an overview of databases. This introductory page presents a high-level overview of databases.
+
+## Definitions
+### Models
+> __~definition: language~.__ A _language_ is a set of strings ${\Ll \subseteq \Sigma^*,}$ where ${\Sigma}$ is an alphabet and ${\Sigma^*}$ is the set of all strings over ${\Sigma.}$
+
+> __~definition: context-free grammar~.__ A _context-free grammar_ is a quadruple ${\Gg = (\Sigma,V,R,S),}$ where ${\Sigma}$ is an alphabet whose tokens are called _terminals_, ${V}$ is a finite set of tokens called _variables_ with ${\Sigma \cap V = \nil,}$ ${R}$ is an equivalence class of strings over ${\Sigma \dup V,}$ and ${S \in V}$ is a start variable. We call a string of terminals or nonterminals on ${\Gg}$ a _sentence_.
+
+> __~definition: model~.__ A _model_ ${\Mm}$ is a structure ${(\cv{O}, \Rr, \Gg, I),}$ where ${\cv{O}}$ is a collection of objects, ${\Rr}$ is a collection of relations on ${\cv{O},}$ ${\Gg}$ is a context-free grammar, and ${I}$ is a class of functions mapping sentences in ${\Gg}$ to ${\cv{O}}$ or ${\Rr.}$
+
+~example~. Let ${P}$ be a set of persons. We can determine can construct sentences about the persons and the relations between persons in ${P}$ with the grammar of _mathematical relations_. Doing so, we must follow the inference rules of _set theory_. Alternatively, we may construct sentences following the grammar of _graph theory_ — treat the persons as vertices, and relations as edges.
+
+### Data Models
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1668905834/algodiagrams/dbm-systems_mbkn5u.svg"}
+	imwidth={674}
+	imheight={272}
+	caption={"data models"}
+	width={50}
+	className={'float-right'}
+>
+	<figcaption>Various types of data models and their instances.</figcaption>
+</Fig>
+
+> __~definition: data model~.__ A _data model_ is a model whose collection of objects ${\cv{O}}$ is a finite set of data objects.
+
+## Databases
+> __~definition: database~.__ A _database_ is a structure ${(\Mm \models \cv{D},\Oo)}$ where ${\Mm \models \cv{D}}$ is a finite set of records modelled by a data model ${\Mm,}$ and ${\Oo}$ is a set of operations on ${\Mm \models \cv{D}.}$
+
+> __~definition: database system~.__ A _database system_ is a program ${\mo{DS}=(\mo{D},\mo{P}),}$ where ${\mo{D}}$ is a set of databases and ${\mo{P}}$ is a set of operations on ${\mo{P}.}$
+
+> __~definition: database management system~.__ A _database management system_ is an application ${\mo{DBMS} = (\mo{DS},\mo{J},\mo{M}),}$ where ${\mo{DS}}$ is a database system, ${\mo{J}}$ is a set of jobs, and ${\mo{M}}$ is a machine executing each job ${j \in \mo{J}.}$
+
+~informal~. A _database_ is just a set of records. Nothing more. A _database system_ is a program that comprises a database and a set of operations on that database. Those operations are defined according to some model — a set of axioms and inference rules. The model may be the theory of mathematical relations, graph theory, network theory, etc. A _database management system_ is an application that implements a _database system_. Recall that an application is a program that requires an operating system to execute.
+
+## Database Systems
+~remark~. Most database systems were originally designed with magnetic disks in mind. That isn't necessarily the case today, but the original constraints of magnetic disks result in DBMS APIs breaking from APIs we're used to.

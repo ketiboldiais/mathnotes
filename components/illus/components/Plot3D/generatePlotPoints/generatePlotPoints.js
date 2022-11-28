@@ -1,25 +1,5 @@
 import { setValue } from "../../utils/setValue/setValue";
-import { ticks } from "d3";
-const functions = [
-	{
-		f: (x, y) => x ** 2 - y ** 2,
-		xDomain: [-20, 20],
-		xRange: [-20, 20],
-		yDomain: [-20, 20],
-		yRange: [-20, 20],
-		xPrecision: 100,
-		yPrecision: 100,
-	},
-	{
-		f: (x, y) => x ** 2 - y ** 2,
-		xDomain: [-20, 20],
-		xRange: [-20, 20],
-		yDomain: [-20, 20],
-		yRange: [-20, 20],
-		xPrecision: 100,
-		yPrecision: 100,
-	},
-];
+
 
 export const generatePlotPoints = (functionEntry) => {
 	let f = functionEntry.f;

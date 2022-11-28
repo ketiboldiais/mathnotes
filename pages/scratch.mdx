@@ -1,6 +1,41 @@
 import { Graph } from "../components/illus/components/Graph/Graph";
+import {Tree} from "../components/illus/components/Tree/Tree";
 import { Plot } from "../components/Hago";
 
 
 _todo: minimum bridge_
 
+
+## Overview of Numbers
+We begin with informal definitions of numbers.
+
+> __~natural numbers~.__ The set of numbers ${\set{0,1,2,3,\ldots}}$ is the set of natural numbers, denoted ${\nat.}$
+
+> __~integers~.__ The set of numbers ${\set{\ldots,\mi 3,\mi 2,\mi 1,0,1,2,3,\ldots}}$ is the set of integers, denoted ${\uint.}$ Because of how the integers are constructed, the naturals are _embedded_ in the integers, and this is commonly expressed with the notation ${\nat \subset \uint.}$
+
+> __~rationals~.__ The set of rationals is the set of numbers ${\set{p,q \in \uint \rid \set{0} : p/q},}$ denoted ${\rat.}$ Because of how the rationals are constructed, the integers are _embedded_ in the rationals; commonly expressed with the notation ${\uint \subset \rat.}$
+
+> __~irrationals~.__ If a number ${n}$ is not rational number, then we say that ${n}$ is an _irrational number_, denoted ${\mathbb{I}.}$
+
+> __~reals~.__ The set of integers, rationals, and irrationals is called the set of _real numbers_, denoted ${\reals.}$ Hence, we have ${\nat \subset \uint \subset (\rat \dup \mathbb{I}) \subset \reals}$ (note the disjoint union of the rationals and irrationals).
+
+
+### Number Systems
+Informally, a number system is a set of rules dictating how numbers are represented. It's best to think of this in terms of symbols. In a _unary system_, we only have one symbol to represent one unit. As such, we say that the _base unit_ of the unary system is one. Suppose that symbol is ${\wc.}$ To represent zero, we write nothing. To represent the number one, we write ${\wc.}$ To represent two, we write, ${{\wc}{\wc}.}$ And so on.
+
+| ~number~ | ~unary~                       |
+| -------- | ----------------------------- |
+| zero     |                               |
+| one      | ${\wc}$                       |
+| two      | ${{\wc}{\wc}}$                |
+| three    | ${{\wc}{\wc}{\wc}}$           |
+| four     | ${{\wc}{\wc}{\wc}{\wc}}$      |
+| five     | ${{\wc}{\wc}{\wc}{\wc}{\wc}}$ |
+
+Now suppose we had two symbols: ${\wc}$ and ${\bc.}$ With two symbols, we represent zero with ${\wc,}$ and one with ${\bc.}$
+
+
+| ~number~ | ~binary~  | ~unary~ |
+| -------- | --------- | ------- |
+| zero     | ${\wc}$   |         |
+| one      | ${{\bc}}$ |         |

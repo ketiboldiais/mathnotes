@@ -8,6 +8,7 @@
 	.page {
 		background-color: var(--background-color);
 		box-shadow: var(--card);
+		/* margin:0; */
 		margin: 1em auto;
 		padding: 2em;
 		padding-bottom: 20em;
@@ -40,20 +41,13 @@
 	}
 	@media (min-width: 900px) {
 		.page {
-			width: 50%;
-			margin-left: 30%;
+			margin-left: 25vw;
 		}
-		.page>section {
-			width: 100%;
-			margin: 0 auto;
-		}
-	}
-	@media (min-width: 500px){
-		.page { padding: 3em 4em; }
 	}
 	@media (max-width: 500px) {
-		.page>section {
-			width: 90%;
-			margin: 0 auto;
+		.page {
+			margin: 0;
+			padding: 3em;
 		}
 	}
+	

@@ -1,0 +1,62 @@
+# Introduction
+_This note covers an overview of cryptography._
+
+## Terminology
+> __~definition~.__ A _message_ is a triple ${M = (P,A,B,\Xx),}$ where ${P}$ is a set of information called _plaintext_, ${A}$ is an object called the _sender_, ${B}$ is an object called the _recipient_, and ${\Xx}$ is an object called the _attacker_ Unless otherwise stated, we use the variable ${M}$ to denote a plaintext message, ${A}$ to denote a sender, ${B}$ to denote the recipient, and ${\Xx}$ to denote the attacker.
+
+A _message_ is a general construct. It may be a sequence of characters (e.g., a text message, email, or credit card number) or a set of frequencies (radio waves, sound waves, etc.) The recipient ${B}$ can be a set of objects. E.g., an email from ${A}$ to ${B_1,}$ with a Cc (carbon copy) to a third party ${B_2.}$ Likewise, the attacker ${\Xx}$ may be a set of objects. E.g., a communication between war allies, subject to attack from one or more enemies ${x \in \Xx.}$ If, and only if, a plaintext ${P}$ sent by ${A}$ is received only by ${B}$ (i.e., not by ${\Xx}$), then we say that ${M}$ is __*secure*__.
+
+> __~definition: encryption~.__ A function ${e: (M \times K_e) \to C,}$ where ${M}$ is a set of plaintext, ${K_e}$ is a set of objects called _keys_, and ${C}$ is a set of objects called _ciphertext_. We call ${K_e}$ the _encryption keyspace_ of ${e,}$ each ${k_e \in K_e}$ an _encryption key_, and the procedure of ${e}$ _encryption_.
+
+> __~definition: decryption~.__ A function ${d: (C \times K_d) \to M,}$ where ${C}$ is a set of objects called _ciphertext_, ${K_d}$ is a set of _keys_, and ${M}$ is the set of plaintext. We call ${K_d}$ the _decryption keyspace_ of ${d,}$ each ${k_d \in K_d}$ a _decryption key_, and the procedure of ${d}$ _decryption_. 
+
+> __~notation~.__ Given a message ${M,}$ we denote ${C = e(M,k_e)}$ as the encryption of ${M}$ into the ciphertext ${C,}$ and ${M = d(C,k_d) = d(e(M,k_e), k_d)}$ as the decryption of ${M}$ into the plaintext ${M.}$
+
+> __~definition: cryptosystem~.__ A _cryptosystem_ is a sextuple ${\CC = (\Mm, \Cc, e, d, \Kk_e, \Kk_d)}$ where ${\Mm}$ is a set of plaintext messages, ${\Cc}$ is their corrresponding set of ciphertext, ${e}$ is the encryption transformation with keyspace ${\Kk_e,}$ and ${d}$ is the decryption transformation with ${\Kk_d.}$
+
+If an attacker ${\Xx}$ only obtains a ciphertext ${C,}$ then we say that ${\Xx}$ has executed a __*ciphertext only attack*__. If the attacker ${\Xx}$ obtains a pair ${(M,C)}$ with ${M \in \Mm}$ we say that ${\Xx}$ has executed a __*known plaintext attack*__. If the attacker ${\Xx}$ obtains a pair ${(M,C)}$ where ${M \in \Mm}$ or ${M \notin \Mm,}$ then we say that ${\Xx}$ has executed a __*chosen plaintext attack*__.
+
+> __~definition: cryptography~.__ The study of encryptions and their corresponding decryptions.
+
+> __~definition: cryptanalysis~.__ The study of obtaining a plaintext ${P}$ given its corresponding ciphertext ${C,}$ without a priori knowledge of ${e,}$ ${d,}$ ${k_e,}$ or ${k_d.}$
+
+> __~definition: cryptology~.__ The union of cryptography and cryptanalysis.
+
+## Applications of Cryptography 
+### Authentication
+> __~authentication~.__ Given objects ${X}$ and ${Y,}$ verifying that ${X = Y.}$
+
+~example~. Given ${X = (\string{jdoe},\space\string{nxD2fy3b2})}$ and ${Y = \string{John Doe},}$ verifying that ${X=Y.}$
+
+## Limitations of Cryptography
+Cryptography is not a panacea for malice. There are many other ways to obtain private information outside of attacking a cryptosystem.
+
+~social engineering~. One approach is to take advantage of human nature. The attacker may befriend ${A,}$ ${B,}$ or a third party related to ${A}$ or ${B,}$ earn their trust, and obtain the desired information directly. None of this involves breaking the cryptosystem.
+
+~software bugs~. Poorly designed software, outside of the cryptosystem, can _leak_ the information. For example, revealing too much information in error messages, allowing attackers to trigger buffer overflows, accidentally publishing sensitive code to the public, or neglecting to remove logging instructions in production. This is an industrial engineering issues, not a cryptographic one.
+
+~dangerous software achitecture~. As systems grow increasingly complex, the number of edge cases grows, and with more edge cases, the higher the risk of states going awry. For example, storing passwords directly on a database is _never_ a good idea. Hyper-sensitive data like passwords should be _encrypted_ by default, and _decrypted_ only in a very small number of cases.
+
+## Kerckhoff's Principle
+> __~kerckhoff's principle~.__ A cryptosystem should be secure even if everything about the system — except the decryption key ${k_d}$ — is known to an attacker.
+
+Kerckhoff's principle leads to two fundamental tenets in cryptography. It is imperative that we _never_ violate them.
+
+> __~tenet i~.__ We never use proprietary encryption algorithms.
+
+> __~tenet ii~.__ We never use encryption algorithms constructed personally in real-world applications.
+
+These two rules stem from a history that, unfortunately, consistently repeats itself. Because proprietary encryption algorithms are not known to the public, they are not subject to rigorous testing or peer review. The same goes for encryption algorithms personally constructed. Without testing and peer review, we state, axiomatically, that the encryption _always fails_. Examples of proprietary encryption algorithms include GEA/1 and GEA/2, widely used by network service providers. They have been broken over and over again.
+
+## Symmetric Cryptosystems
+A cryptosystem where ${A}$ and ${B}$ have a shared key ${k}$ for both encryption and decryption is called _symmetric cryptosystem_.
+
+> __~definition: symmetric cryptosystem~.__ A cryptosystem where, for any ${k_e \in \Kk_e}$ and any ${k_d \in \Kk_d,}$ it follows that ${k_e = k_d.}$ Given a symmetric cryptosystem, the procedure of ${e \in \CC}$ is called _symmetric encryption_.
+
+## Asymmetric Cryptosystems
+A cryptosystem where ${k_e \neq k_d}$ is called an _asymmetric cryptosystem_. Because ${k_e \neq k_d,}$ ${A}$ only has an encryption key ${k_e,}$ and ${B}$ only has the decryption key ${k_d.}$ In practice, asymmetric cryptosystems are also called _public key cryptosystems_, because ${k_e}$ is made public — any entity has access to ${k_e.}$
+
+> __~definition: asymmetric cryptosystem~.__ A cryptosystem where, for any ${k_e \in \Kk_e}$ and any ${k_d \in \Kk_d,}$ it follows that ${k_e \neq k_d.}$ Given a symmetric cryptosystem, the procedure of ${e \in \CC}$ is called _asymmetric encryption_.
+
+
+ 

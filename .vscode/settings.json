@@ -1,0 +1,41 @@
+{
+  "editor.wordWrap": "wordWrapColumn",
+  "workbench.colorTheme": "Gray Matter Light",
+  "editor.fontSize": 16,
+  "[markdown]": {
+    "editor.wordWrap": "wordWrapColumn"
+  },
+  "editor.bracketPairColorization.enabled": false,
+  "editor.tokenColorCustomizations": {
+    "comments": "#838383",
+    "textMateRules": [
+      {
+        "scope": "meta.embedded.block.katex markup.inserted.math.display.markdown markup.quote.markdown text.html.markdown foregroundmarkup.inserted",
+        "settings": {
+          "fontStyle": ""
+        }
+      },
+      {
+        "scope": "markup.heading.markdown",
+        "settings": {
+          "foreground": "#cb2b12",
+          "fontStyle": "bold"
+        }
+      }
+      // {
+      // "scope": ["entity.name.tag","punctuation.definition.tag.begin","punctuation.definition.tag.end"],
+      // "settings": {
+      // "foreground": "#7d7d7dca",
+      // "fontStyle": ""
+      // }
+      // },
+      // {
+      // "scope":"markup.quote",
+      // "settings": {
+      // "foreground": "#FFFF",
+      // "fontStyle": ""
+      // }
+      // }
+    ]
+  }
+}

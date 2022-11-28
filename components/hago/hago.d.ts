@@ -94,7 +94,7 @@ export declare interface AVLTreeProps extends BaseProps {
     render?: renderOptions[];
 }
 
-export declare const AxisHorizontal: ({ domain, range, tickSep, markerStart, markerEnd, removeEndTicks, dx, dy, tx, axisLabelArray, fitContent, latex, textAnchor, fontsize, }: AxisProps) => ReactElement;
+export declare const AxisHorizontal: ({ domain, range, tickSep, removeEndTicks, dx, dy, tx, axisLabelArray, fitContent, latex, textAnchor, fontsize, }: AxisProps) => ReactElement;
 
 export declare interface AxisProps {
     domain: number[];
@@ -115,7 +115,7 @@ export declare interface AxisProps {
     fontsize?: number;
 }
 
-export declare const AxisVertical: ({ domain, range, tickSep, markerStart, markerEnd, removeEndTicks, dx, dy, offsetTick, fitContent, latex, textAnchor, fontsize, }: AxisProps) => ReactElement;
+export declare const AxisVertical: ({ domain, range, tickSep, removeEndTicks, dx, dy, offsetTick, fitContent, latex, textAnchor, fontsize, }: AxisProps) => ReactElement;
 
 /**
  * @description Hago API
@@ -413,6 +413,14 @@ export declare type EllipticalArc = {
     end: Point;
 };
 
+declare type Euclid = {
+    s: string;
+    xy: number[];
+    xys: number[][];
+    r: number;
+    class: string;
+};
+
 export declare function formatStackData(userInputDataArray: StackData): any[];
 
 /**
@@ -445,8 +453,10 @@ export declare interface FrameProps {
 export declare type FunctionDatum = {
     f: Function;
     scale?: number;
+    r?: number;
     color?: string;
     dash?: number;
+    disc?: number;
     secant?: SecantDatum;
     integrate?: [number, number, Integral];
     domain?: [number, number];
@@ -645,7 +655,7 @@ export declare function getSum(list: number[]): number;
  * @public Graph
  * Creates a new graph diagram.
  */
-export declare function Graph({ data, className, isDirected, id, straightEdge, width, height, scale, cwidth, cheight, radius, fontSize, textOffsetX, textOffsetY, blast, edgeLength, repulsion, marginTop, marginBottom, marginRight, marginLeft, margins, }: GraphProps): JSX.Element;
+export declare function Graph({ data, className, id, straightEdge, width, height, scale, cwidth, cheight, radius, fontSize, textOffsetX, textOffsetY, blast, edgeLength, repulsion, marginTop, marginBottom, marginRight, marginLeft, margins, }: GraphProps): JSX.Element;
 
 /**
  * @public GraphProps
@@ -876,6 +886,8 @@ export declare type Label = string | {
     textAnchor?: 'start' | 'middle' | 'end';
 };
 
+export declare const Latex: ({ text, width, offset, dx, dy, height, fontsize, color, fitContent, textAlign, block, }: LatexProps) => JSX.Element;
+
 export declare interface LatexProps {
     text: string;
     offset: {
@@ -893,12 +905,18 @@ export declare interface LatexProps {
     block?: boolean;
 }
 
-export declare function Lattice({ data, className, id, width, height, xMax, yMax, scale, cwidth, cheight, marginTop, marginRight, marginBottom, marginLeft, margins, }: LatticeProps): JSX.Element;
+export declare function Lattice({ data, idx, rix, cix, className, noedges, id, xMax, yMax, width, height, wh, scale, cwidth, cheight, margin, marginTop, marginRight, marginBottom, marginLeft, margins, }: LatticeProps): JSX.Element;
 
 export declare interface LatticeProps extends BaseProps {
-    data: [number, number][];
+    data: [(number | TUPLE), (number | TUPLE)][];
     xMax: number;
     yMax: number;
+    wh: [number, number];
+    noedges: boolean;
+    margin: number;
+    idx: boolean | number;
+    rix: boolean | number;
+    cix: boolean | number;
 }
 
 export declare function Line({ start, end, color, strokeWidth, dash, markerEnd, markerStart, shapeRendering, }: LineProps): JSX.Element;
@@ -1231,7 +1249,7 @@ export declare interface PathProps {
     strokeWidth?: number;
 }
 
-export declare const Plot: ({ data, className, id, domain, range, ticks, xTicks, yTicks, axesLabels, samples, width, height, scale, cwidth, cheight, marginTop, marginRight, marginBottom, marginLeft, margins, }: PlotProps) => JSX.Element;
+export declare const Plot: ({ data, className, id, sc, xs, ys, domain, range, ticks, xTicks, yTicks, axesLabels, samples, width, height, wh, scale, cwidth, cheight, m, marginTop, marginRight, marginBottom, marginLeft, margins, }: PlotProps) => JSX.Element;
 
 export declare function Plot3D({ cameraParams, z, segments, xMin, gridColor, xMax, xRange, yMin, yMax, yRange, scale, size, }: {
     cameraParams?: {
@@ -1257,7 +1275,12 @@ export declare function Plot3D({ cameraParams, z, segments, xMin, gridColor, xMa
  * @public
  */
 export declare interface PlotProps extends BaseProps {
-    data?: (FunctionDatum | ParametricFunctionDatum | VectorFunctionDatum | TextDatum | PointDatum)[];
+    data?: (FunctionDatum | ParametricFunctionDatum | TextDatum | PointDatum | Euclid)[];
+    sc?: 'linear' | 'square' | 'log';
+    xs?: 'linear' | 'square' | 'log';
+    ys?: 'linear' | 'square' | 'log';
+    wh?: [number, number];
+    m?: number;
     domain?: [number, number];
     range?: [number, number];
     ticks?: number;
@@ -1791,20 +1814,15 @@ export declare interface TreeProps extends BaseProps {
     heightStartsAt?: number;
 }
 
-export declare type TupleXY = [number, number];
-
-export declare type VectorFunctionDatum = {
-    vx: Function;
-    vy: Function;
-    m?: Function;
-    s?: number;
-    maxMagnitude?: number;
-    scale?: number;
-    color?: string;
-    integrate?: [number, number, Integral];
-    integrationColor?: string;
-    id?: string;
+declare type TUPLE = {
+    xy: [number, number][];
+    t?: string;
+    class?: string;
+    d?: boolean;
+    fs?: number;
 };
+
+export declare type TupleXY = [number, number];
 
 export declare type VerticalLineTo = {
     V: Point;

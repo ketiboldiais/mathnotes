@@ -142,3 +142,36 @@ A key theorem in real analysis is the _Bolzano-Weierstrass Theorem_. In short: E
 ## Infinite Series
 Summing an infinite sequence of numbers returns an _infinite series_. We saw that with infinite sequences, there may or may not be a limit. If there is a limit, then the sequence converges. If there isn't, then the sequence diverges. A similar idea is at play with infinite series.
 
+### Geometric Series
+> __~definition: geometric series~.__ The _geometric series_ is a series of the form
+> 
+> $$
+> 	\dsum{n=1}{\infty} ar^{n-1} a + ar + ar^2 + ar^3 + \ldots + ar^{n-1} + \ldots
+> $$
+> 
+> where ${a}$ and ${r}$ are real constants and ${a \neq 0.}$
+
+### Telescoping Series
+> __~definition: telescoping series~.__ The _telescoping series_ is a series of the form
+> 
+> $$
+> 	\dsum{n=1}{\infty} \frac{1}{n\px{n+1}}.
+> $$
+
+### 𝑛th Term Test
+> __~theorem~.__ Let ${a_n}$ be a sequence. If ${\dsum{n=1}{\infty}a_n}$ converges, then ${\ll{n}{\infty}a_n = 0.}$
+
+> __~theorem~.__ Let ${a_n}$ be a sequence. If ${\ll{n}{\infty}a_n}$ does not exist, or if ${\ll{n}\infty a_n \neq 0,}$ then ${\dsum{n=1}{\infty}a_n}$ diverges.
+
+### Combining Series
+> __~theorem~.__ Let ${\sum a_n = A}$ and ${\sum b_n = B}$ be convergent series. Then the following rules hold.
+> 
+> $$
+> 	\sum\px{a_n + b_n} = \sum{a_n} + \sum{b_n} = A + B. \\[2em]
+> 	\sum\px{a_n - b_n} = \sum{a_n} - \sum{b_n} = A - B. \\[2em]
+> 	\sum ka_n = k \sum a_n = k A.
+> $$
+
+> __~corollary~.__ Every nonzero constant multiple of a divergent series diverges.
+
+> __~corollary~.__ If ${\sum a_n}$ converges and ${\sum b_n}$ diverges, then ${\sum \px{a_n + b_n}}$ and ${\sum \px{a_n - b_n}}$ diverge.

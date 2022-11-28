@@ -1,22 +1,22 @@
-import { CartProd, Plot } from "../../../components/hago";
-import { Plot as Plot2 } from "../../../components/illus/components/Plot/Plot";
+import { Plot } from "../../../components/hago";
+import { BarPlot } from "../../../components/illus/components/BarPlot/BarPlot";
 
 <Head>
-	<title>Probability Introduction</title>
-	<meta name={`description`} content={`Notes on probability.`}/>
+  <title>Probability Introduction</title>
+  <meta name={`description`} content={`Notes on probability.`} />
 </Head>
 
-# Probability
+# Classical Probability
 
 _These notes provide an overview of probability._
 
 1. [Primitives](#primitives)
-	1. [Set Notation](#set-notation)
-	2. [Theorems of Set Theory](#theorems-of-set-theory)
-	3. [Definitions](#definitions)
+   1. [Set Notation](#set-notation)
+   2. [Theorems of Set Theory](#theorems-of-set-theory)
+   3. [Definitions](#definitions)
 
 ## Primitives
-Broadly, probability comprises three types: (1) _classical probability_ — 
+Broadly, probability comprises three types: (1) _classical probability_ —
 probability theory premised on a finite number of equally likely possible
 outcomes. E.g., What is the probability of pulling an ${(\tx{ace}, \spades)}$
 from a standard deck? (2) _frequentist probability_ — probability theory
@@ -29,30 +29,30 @@ the previous two types.
 We begin with some set notation we will use extensively.
 
 > __~notation~.__ Given the non-empty set ${A}$ and the non-empty set ${B,}$ we define the following notations:
-> 
-| ~notation~                      | ~meaning~                                                                                                                                                                          |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ${a \in A}$                     | ${a}$ is an element of ${A.}$                                                                                                                                                      |
-| ${b \in B}$                     | ${b}$ is an element of ${B.}$                                                                                                                                                      |
-| ${A \cup B}$                    | ${\set{x : x \in A ~\tx{ or }~} x \in B}$                                                                                                                                          |
-| ${A \cap B}$                    | ${\set{x : x \in A ~\tx{ and }~} x \in B}$                                                                                                                                         |
-| ${A \rid B}$                    | ${\set{x : x \in A ~\tx{ and }~} x \notin B}$                                                                                                                                      |
-| ${A \dif B}$                    | ${\set{x : x \in A ~\tx{ xor }~} x \in B}$                                                                                                                                         |
-| ${\nix{A}}$                     | ${\set{x : x \notin A}}$                                                                                                                                                           |
-| ${A \subset B}$                 | If ${x \in A,}$ then ${x \in B.}$                                                                                                                                                  |
-| ${A \not\subset B}$             | If ${x \in A,}$ then ${x \notin B.}$                                                                                                                                               |
-| ${A = B}$                       | If ${x \in A,}$ then ${x \in B,}$ and if ${x \in B,}$ then ${x \in A.}$                                                                                                            |
-| ${A \neq B}$                    | If ${x \in A,}$ then ${x \notin B,}$ and if ${x \in B,}$ then ${x \notin A.}$                                                                                                      |
-| ${A \subseteq B}$               | ${A \subset B}$ or ${A = B.}$                                                                                                                                                      |
-| ${\abs{A}}$                     | The number of elements of ${A.}$                                                                                                                                                   |
-| ${\abs{B}}$                     | The number of elements of ${B.}$                                                                                                                                                   |
-| ${f: A \leftrightsquigarrow B}$ | A set ${f,}$ whose elements are pairs ${(a,b),}$ where ${a \in A}$ and ${b \in B,}$ such that ${(a,b)}$ satisfies a condition ${C.}$ We call this set a _relation_.                |
-| ${f: A \mapsto B}$              | A relation ${f,}$ where the condition ${C}$ is: For all ${a \in A}$ and for all ${b_1,b_2 \in B,}$ if ${(a,b_1) \in f,}$ then ${(a,b_2) \notin f.}$ We call this set a _function_. |
-| ${f: A \inj B}$                 | A function ${f}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _at most once_. We call this set an _injection_.                          |
-| ${f: A \surj B}$                | A function ${f,}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _at least once_. We call this set a _surjection_.                        |
-| ${f: A \bij B}$                 | A function ${f,}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _exactly once_. We call this set a _bijection_.                          |
-| ${\ar{a \le i \le b : P(x_i)}}$ | The sequence ${(x_a, \ldots, x_b)}$ where each ${x_i}$ is defined by the expression ${P(x_i).}$                                                                                    |
-| ${\ix{n}}$                      | The sequence ${(0 \le i \lt n : x_i).}$ That is, ${(0,1,2,3,4,\ldots,n-1).}$                                                                                                       |
+>
+> | ~notation~                      | ~meaning~                                                                                                                                                                          |
+> | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+> | ${a \in A}$                     | ${a}$ is an element of ${A.}$                                                                                                                                                      |
+> | ${b \in B}$                     | ${b}$ is an element of ${B.}$                                                                                                                                                      |
+> | ${A \cup B}$                    | ${\set{x : x \in A ~\tx{ or }~} x \in B}$                                                                                                                                          |
+> | ${A \cap B}$                    | ${\set{x : x \in A ~\tx{ and }~} x \in B}$                                                                                                                                         |
+> | ${A \rid B}$                    | ${\set{x : x \in A ~\tx{ and }~} x \notin B}$                                                                                                                                      |
+> | ${A \dif B}$                    | ${\set{x : x \in A ~\tx{ xor }~} x \in B}$                                                                                                                                         |
+> | ${\nix{A}}$                     | ${\set{x : x \notin A}}$                                                                                                                                                           |
+> | ${A \subset B}$                 | If ${x \in A,}$ then ${x \in B.}$                                                                                                                                                  |
+> | ${A \not\subset B}$             | If ${x \in A,}$ then ${x \notin B.}$                                                                                                                                               |
+> | ${A = B}$                       | If ${x \in A,}$ then ${x \in B,}$ and if ${x \in B,}$ then ${x \in A.}$                                                                                                            |
+> | ${A \neq B}$                    | If ${x \in A,}$ then ${x \notin B,}$ and if ${x \in B,}$ then ${x \notin A.}$                                                                                                      |
+> | ${A \subseteq B}$               | ${A \subset B}$ or ${A = B.}$                                                                                                                                                      |
+> | ${\abs{A}}$                     | The number of elements of ${A.}$                                                                                                                                                   |
+> | ${\abs{B}}$                     | The number of elements of ${B.}$                                                                                                                                                   |
+> | ${f: A \leftrightsquigarrow B}$ | A set ${f,}$ whose elements are pairs ${(a,b),}$ where ${a \in A}$ and ${b \in B,}$ such that ${(a,b)}$ satisfies a condition ${C.}$ We call this set a _relation_.                |
+> | ${f: A \mapsto B}$              | A relation ${f,}$ where the condition ${C}$ is: For all ${a \in A}$ and for all ${b_1,b_2 \in B,}$ if ${(a,b_1) \in f,}$ then ${(a,b_2) \notin f.}$ We call this set a _function_. |
+> | ${f: A \inj B}$                 | A function ${f}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _at most once_. We call this set an _injection_.                          |
+> | ${f: A \surj B}$                | A function ${f,}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _at least once_. We call this set a _surjection_.                        |
+> | ${f: A \bij B}$                 | A function ${f,}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _exactly once_. We call this set a _bijection_.                          |
+> | ${\ar{a \le i \le b : P(x_i)}}$ | The sequence ${(x_a, \ldots, x_b)}$ where each ${x_i}$ is defined by the expression ${P(x_i).}$                                                                                    |
+> | ${\ix{n}}$                      | The sequence ${(0 \le i \lt n : x_i).}$ That is, ${(0,1,2,3,4,\ldots,n-1).}$                                                                                                       |
 
 ### Theorems of Set Theory
 Below is a list of several useful theorems from set theory.
@@ -73,7 +73,6 @@ Below is a list of several useful theorems from set theory.
 | Domination Law 4   | ${S \subseteq U \nc \nil \rid S = \nil}$   |
 
 ### Definitions
-
 Below are definitions used extensively throughout the notes.
 
 > __~experiment~.__ An _experiment_ is any procedure that (1) can be repeated, and (2) has a well-defined set of all possible outcomes.
@@ -104,6 +103,8 @@ Simple events are also called _samples_, _sample points_, or _points_.
 
 > __~compound event~.__ An event comprising two or more outcomes is called a _compound event_.
 
+
+
 > __~event notations~.__ Given the events ${A}$ and ${B}$ of a sample space ${\Omega,}$ we use the following notations to denote compound events of ${A}$ and ${B:}$
 >
 > | ~notation~      | ~event~               |
@@ -119,7 +120,7 @@ Simple events are also called _samples_, _sample points_, or _points_.
 > __~probability~.__ Let ${E}$ be an event where ${E \subset \Omega.}$ The _probability_ of ${E,}$ denoted ${\pb{E},}$ is a ratio of the cardinality of ${E}$ to the cardinality of ${\Omega.}$ That is,
 
 $$
-	\pb{E} = \frac{\tx{number of outcomes in } E}{\tx{number of outcomes in } \Omega} 
+	\pb{E} = \frac{\tx{number of outcomes in } E}{\tx{number of outcomes in } \Omega}
 	= \frac{\abs{E}}{\abs{\Omega}}.
 $$
 
@@ -132,4 +133,172 @@ It's helpful to think of probabilities as physical weights (in a classical sense
 ~example~. What is the probability of rolling a 1 or 2 on a six-sided die? The sample space is ${\set{1,2,3,4,5,6}.}$ The event ${\set{1,2}}$ has a cardinality of 2. Hence, we have ${\pb{1,2} = 2/6 = 1/3.}$
 
 ~remark on percentages~. Generally, we express probabilities in terms of rational numbers. There isn't anything wrong with using percentages, but it can lead to confusion, given the different contexts in which percentages are used. In some contexts, they're used to denote fractions, in others, measures of change. For example, suppose we're told that ${\pb{A}=40\%,}$ and that an event ${B}$ has a ${25\%}$ higher probability than ${A.}$ Does this mean ${\pb{B}=40\% + (25\% \times 40\%)=50\%,}$ or that ${\pb{B}=25\% + 40\%=65\%?}$ The matter is resolved by making additional statements for clarification, but we don't need to make such statements if we simply used rationals.
+
+## Enumerating Events
+### Sequence
+> __~definition: sequence~.__ A _sequence_ is an arrangement of objects in a definite order, possibly containing duplicates.
+
+#### Counting Sequences
+> __~theorem~.__ Let ${P}$ be an experiment of ${\px{k_1, k_2, \ldots, k_{n-1}, k_n}}$ steps, where each step ${k_i}$ consists of ${d}$ decisions, regardless of the decision at ${k_{i-1}.}$ Then there are
+> 
+> $$
+>   d_1 \times d_2 \times \ldots \times d_{n-1} \times d_n
+> $$
+> 
+> possible outcomes of ${P.}$
+
+### Permutation
+> __~definition: permutation~.__ A _permutation_ is an arrangement of objects in a definite order, without duplicates.
+
+#### Counting Permutations 
+> __~theorem~.__ Let ${P}$ be an experiment of ${\px{k_1, k_2, \ldots, k_{n-1}, k_n}}$ steps, such that, if a decision ${n_i}$ was made at step ${k_i,}$ the decision ${n_i}$ cannot be made at ${k_j}$ for all ${j \gt i.}$ Then there are
+> 
+> $$
+>   n! = n \times (n-1) \times (n-2) \times \ldots \times 3 \times 2 \times 1
+> $$
+> 
+> possible outcomes of ${P.}$ We define ${0! = 1.}$
+
+> __~theorem~.__ Let ${S}$ be a set of ${n}$ decisions. Let ${P}$ be an experiment of making ${k}$ decisions from ${S}$ in permutation. Then there are
+> 
+> $$
+>   _nP_k = \frac{n!}{\px{n - k}!}
+> $$
+> 
+> possible outcomes of ${P.}$
+
+### Combinations
+> __~definition: combination~.__ A _combination_ is a selection of objects without regard to order.
+
+> __~theorem~.__ Let ${S}$ be a set of ${n}$ options. Let ${P}$ be an experiment of choosing ${k}$ options from ${S.}$ Then there are
+> 
+> $$
+>   _nC_k = \dbinom{n}{k} = \frac{n!}{k!\px{n-k}!}
+> $$
+> 
+> possible outcomes of ${P.}$
+
+## Classical Theorems
+
+### Uniform Distribution
+> __~definition: uniform distribution~.__ Let ${\Omega}$ be a sample space of ${n}$ outcomes. The _uniform distribution_ assigns the probability of ${1/n}$ to each outcome ${\textmd{O} \in \Omega.}$
+
+### Probability of an Event
+__~definition~.__ The probability of an event ${E}$ is the sum of the probabilities of the outcomes in ${E:}$
+
+$$
+  \pb{E} = \dsum{\textmd{O}~\in E}{}\pb{\textmd{O}}.
+$$
+
+> __~theorem~.__ Let ${E_1, E_2, \ldots, E_n}$ be disjoint events in a sample space ${\Omega.}$ Then
+
+$$
+  \pb{\bigcup\limits_{i}E_i} = \dsum{i}{}\pb{E_i}.
+$$
+
+### Probability of ${\bm{A}}$ or ${\bm{B}}$
+The probability of ${A}$ _or_ ${B}$ occurring results from the sum rule of combinatorics.
+
+> __~theorem~.__ let ${E_1}$ and ${E_2}$ be events in a sample space ${\Omega.}$ Then ${\pb{E_1 \cup E_2} = \pb{E_1} + \pb{E_2} - \pb{E_1 \cap E_2}.}$
+
+### Conditional Probability
+> __~definition: conditional probability~.__ Let ${A}$ and ${B}$ be events in a sample space ${\Omega}$ with ${\pb{B} \gt 0.}$ The _conditional probability of ${A}$ given ${B}$_, denoted ${\pb{A \mid B},}$ is defined by setting
+>
+> $$
+>   \pb{A \mid B} = \frac{\pb{A \cap B}}{\pb{B}}.
+> $$
+>
+> If ${\pb{B} = 0,}$ then the conditional probability of ${A}$ given ${B}$ is undefined.
+
+### Independent Events
+> __~definition~.__ Let ${A}$ and ${B}$ be events in a sample space ${\Omega.}$ We say that ${A}$ and ${B}$ are _independent_ if, and only if, ${\pb{A \cap B} = \pb{A} \by \pb{B}.}$
+
+## Random Variables
+<Fig
+  link={"https://res.cloudinary.com/sublimis/image/upload/v1668575374/math/random-variable_vstl0v.svg"}
+  imwidth={202}
+  imheight={110}
+  caption={"discrete random variable"}
+  width={30}
+  className='float-right'
+/>
+
+> __~definition: random variable~.__ Let ${\Ee}$ be an experiment whose outcomes are a sample space ${\Omega,}$ such that ${\pb{s}}$ is defined for each outcome ${s \in U.}$ A _random variable_ is a function ${X}$ that associates a real number ${X\px{s}}$ with each ${s \in \Omega.}$
+
+
+~example~. ${\Ee}$ is an experiment of surveying the ages of residents in a neighborhood with sample space ${\Omega}$ and ${A}$ is a function mapping ${s \in \Omega}$ to ${R \subset \reals.}$ The random variable ${A\px{s}}$ is an age, where ${s}$ is an outcome of the sample space of ${\Ee.}$ Its codomain may include ${A\px{s_1} = 27}$ or ${X\px{s_2} = 34}$ or ${X\px{s_3} = 85.}$ It depends on the sample space.
+
+~example~. There may be more than one random variable for a given sample space. Let ${\Ee}$ be the same experiment as the previous example, with sample space ${\Omega.}$ Let ${\cash{}}$ be a function from ${\Omega}$ to ${\tx{income} \subset \reals.}$ Then ${\tx{income}}$ may include ${\cash{\px{s_1}} = 40~000,}$ ${\cash{\px{s_2}} = 80~000,}$ or ${\cash{\px{s}} = 1~150~000.}$ Again, it depends on the sample space.
+
+~remark~. The name _random variable_ is a misnomer. It isn't random, and it isn't a variable. It is a function from the sample space to real numbers.
+
+~remark~. There's a difference between a _random variable_ and the _value of a random variable_. A _random variable_ is a function. Per set theory, it is a set of pairs ${(a,b),}$ where ${a = s}$ is an element of the domain — the sample space of an experiment — and ${b = X\px{s}}$ is an element of the codomain — the real numbers. The distinction is akin to a subroutine in computer programming.
+
+<Algo>
+
+1. __import__ ${survey}$ _suppose ${survey}$ is an array_
+2. __function__ ${X(s)}$ _the subroutine ${X}$_
+    1. __return__ ${survey\ix{s}}$ _the return of ${X}$ given ${s}$_
+
+</Algo>
+
+### Functions of Random Variables
+> __~definition~.__ Let ${X}$ be a random variable. Then ${f \circ X}$ is called a _function of a random variable_. I.e., ${\dom{f} = \tx{codom}\px{X}.}$ The codomain of ${f}$ may be reals, integers, rationals, or natural numbers.
+
+~example~. Let ${\Ee}$ be an experiment of taking the weights of passengers on an amusement park ride with sample space ${\Omega}$ and a random variable ${X: \Omega \mapsto \df{weight} \subset \reals.}$ Let ${f}$ be a function from ${\df{weight}}$ to ${\pint.}$ Then ${f(w) = \ceil{w}}$ is a function of a random variable.
+
+### Discrete vs. Continuous Random Variables
+<Fig
+  link={"https://res.cloudinary.com/sublimis/image/upload/v1668575377/math/discrete-random-variable_h4qork.svg"}
+  imwidth={206}
+  imheight={122}
+  caption={'discrete random variable'}
+  width={40}
+  className='float-right'
+/>
+
+> __~definition: discrete random variable~.__ A _discrete random variable_ is a random variable whose range is finite or countably infinite.
+
+> __~definition: continuous random variable~.__ A _continuous random variable_ is a random variable whose codomain is a set of reals.
+
+We address discrete random variables first then continuous random variables. Propositions about continuous random variables build upon the propositions about discrete random variables, and discrete random variables tend to be easier to reason about.
+
+### Probability Mass Function
+<Fig
+  link={"https://res.cloudinary.com/sublimis/image/upload/v1668599050/math/distribution_dtze75.svg"}
+  imwidth={229}
+  imheight={217}
+  caption={'probability distrubtion'}
+  width={40}
+  className='float-right'
+/>
+
+> __~definition: probability mass function~.__ Let ${X}$ be a random variable such that ${x \in \tx{codom}\px{X}.}$ A _probability mass function (PMF),_ denoted ${P_X,}$ is a function from ${\tx{codom}{\px{X}} \mapsto \ix{0,1}.}$ That is, ${P_X\px{x}}$ is the probability of ${X}$ returning the value ${x.}$
+
+~example~. Let ${\Ee}$ be the following experiment. Given a coin, let ${\H}$ be heads and let ${\T}$ be tails. Continue to flip the coin until it lands ${\H.}$ The experiment ${\Ee}$ records the number of flips it takes to get ${\H.}$
+
+1. What are the possible outcomes of this this experiment? Let ${X}$ be a random variable. We can land ${\H}$ on the first flip. In this case, the random variable ${X}$ takes the value one: ${P_X\px{\H}=1.}$ We can also land ${\H}$ on the second flip. The random variable takes the value two: ${P_X\px{\T\H} = 2.}$ Or the third flip: ${P_X\px{\T\T\H}=3.}$ In general:
+$$
+  P_X\px{\tnote{\T,\ldots,\T,}{$k-1$ times}\H} = k
+$$
+2. What is the probability mass function of ${X?}$ By definition, the probability mass function ${P_X}$ is the probability that ${X}$ returns the value ${k.}$ To obtain the outcome ${X(s) = k,}$ where ${s}$ is an outcome of ${\Ee,}$ is to obtain the sequence ${\T,\ldots,\T,\H.}$ The probability of obtaining this sequence is given by the geometric formula ${(1 - p)^{k-1}p.}$ Hence, we have the probability mass function ${P_X(k) = (1 - p)^{k-1}p.}$
+
+### Expected Value
+
+<div className={'float-right'}>
+<BarPlot data={[
+  ["1",1/6],
+  ["2",1/2],
+  ["3",1/3],
+]} wh={[300,300]} margins={[30,0,30,200]} scale={200}/>
+</div>
+
+~example~. A game: 1/6 of the time, the payout is ${\cash{1}.}$ 1/2 of time, the payout is ${\cash{2}.}$ 1/3 of the time, ${\cash{4}.}$
+
+~question~. Playing ${n}$ times (where ${n}$ is very large), what's the average payout? ${(1/6)(\cash{1}) + (1/2)(\cash{2}) + (1/3)(\cash{4}) = \cash{2.5}.}$
+
+The value 2.5 is an example of a __*random variable*__.
+
+
+
 

@@ -1,0 +1,308 @@
+# Relational Databases
+
+
+
+## Preliminaries
+### 𝑛-ary Relations
+> __~definition: token~.__ A _token_ is a set of symbols that a machine can read and write.
+
+> __~definition: alphabet~.__ An _alphabet_ is a a finite set of tokens, denoted ${\Sigma.}$
+
+> __~definition: string~.__ A _string_ is a sequence ${s_1,\ldots,s_n,}$ where each ${s_i}$ is a token of an alphabet ${\Sigma.}$ We denote the set of all strings over ${\Sigma}$ with the notation ${\Sigma^*.}$
+
+> __~definition: ${n}$-ary relation~.__ Let ${S_1, \ldots, S_n}$ be sets. An ${n}$-ary relation is a set
+> $$
+> 	\dprod{i=1}{n} S_i = S_1 \times \ldots \times S_n
+> $$
+> where each ${x \in \tprod{i=1}{n}S_i}$ is an ${n}$-tuple. We call the natural number ${n}$ the _arity_ of the relation.
+
+> __~convention~.__ We will use the variable ${\cv{R}}$ exclusively for ${n}$-ary relations. If the arity of ${\cv{R}}$ must be made explicit, we write ${\cv{R}_n.}$
+
+### Records
+> __~definition: record~.__ Let ${S = \set{s_1, \ldots, s_n}}$ be a set of ${n}$ symbols, and let ${\cv{O} = \set{\Oo_1 \ldots \Oo_n}}$ be data types, for all ${1 \le i \le n.}$ A _record_ is tuple of the set ${(s_1 \times \Oo_1) \times \ldots \times (s_n \times \Oo_n).}$ We call the set ${S}$ the _attribute set_, the set ${\cv{O}}$ the _data domain_, each symbol in ${S}$ an _attribute_, and each object of type ${\cv{O}_i}$ a _datum_.
+
+~example~. ${(\tx{name} \mapsto \string{Jo}, \tx{age} \mapsto 32, \tx{email} \mapsto \string{jo@mail.com})}$ is a record. The keyspace is ${\set{\tx{name}, \tx{age}, \tx{email}},}$ and the data is ${\set{\string{Jo}, \string{age}, \string{jo@mail.com}}.}$ The key ${\tx{name}}$ maps to the datatype ${\df{string},}$ the key ${\tx{age}}$ maps to the datatype ${\nat,}$ and the key ${\tx{email}}$ maps to the datatype ${\df{string}.}$
+
+
+> __~definition: entry~.__ Given a record ${r = (s_1 \mapsto {\Oo}_1, \ldots s_n \mapsto {\Oo}_n),}$ we call each mapping ${s_i \mapsto {\Oo}_i}$ an _entry_ of the record ${r.}$
+
+The difference between records and tuples is that a record is a tuple of pairs ${(s,d),}$ where ${s}$ is a symbol and ${d}$ is an object. Each pair in a record is called an _entry_. Records provide a way for us to use non-numeric indices, not necessarily ordered, to specify particular tuples or entries. Thus, given a tuple ${t,}$ the notation ${t\ix{A}}$ denotes the data value mapped to by ${A.}$
+
+~example~. The record ${(\tx{name} \mapsto \tx{Ai}, \tx{age} \mapsto 32, \tx{response} \mapsto \tx{true})}$ comprises the entries ${(name, \tx{Ai}),}$ ${(age, 32),}$ and ${(response, \tx{true}).}$
+
+> __~definition: relation schema~.__ A _relation schema_ is a triple ${(N,K,T),}$ where ${N}$ is the relation's symbol, ${K}$ is the _attribute set_ of ${\cv{R},}$ and ${T}$ is the set of types mapped to by the attributes in ${K.}$
+
+### Tables
+> __~definition: table~.__ Let ${\cv{R}}$ be an ${n}$-ary relation, with ${\abs{\cv{R}} = k.}$ A _table_ is a ${(k+1) \times n}$ matrix, where ${k+1}$ is the number of rows, and ${n}$ is the number of columns. Given a record ${R = (r_1, \ldots, r_n)}$ in ${\cv{R},}$ the first row comprises the symbols ${(s_1, \ldots, s_n),}$ such that ${s_1 \times \ldots \times s_n = \tx{dom}\px{\cv{R}}.}$ We call the first row the _intension_ of the table, and all other rows _extensions_ of the table. The table's intension corresponds to the relation's _attributes_. The set of all extensions corresponds to the set of all tuples comprising the relation, called the relation's _instance_.
+ 
+$$
+\small\mx{
+	s_1 & s_2 & {\ldots} & s_{n-1} & s_n \\
+	r_{1_1} & r_{1_2} & {\ldots} & r_{1_{n-1}} & r_{1_n} \\
+	r_{2_1} & r_{2_2} & {\ldots} & r_{2_{n-1}} & r_{2_n} \\
+	r_{3_1} & r_{3_2} & {\ldots} & r_{3_{n-1}} & r_{3_n} \\
+	{\vdots} & {\vdots} & {\vdots} & {\vdots} & {\vdots} \\
+	r_{k_1} & {r_{k_2}} & {\ldots} & r_{k_{n-1}} & r_{k_n}
+}
+$$
+
+
+~example~. Below is a portion of some table containing records of arity 3. The first row is the set of symbols ${\set{\df{state},\df{pop\texttt{\small/}nat.pop},\df{gdp\texttt{\small/}nat.gdp}}.}$ These symbols denote the _domains_ of each component. I.e., the table's _keys_.
+
+$$
+\mx{
+\begin{array}{c:c:c}
+	\df{state} & \df{pop\texttt{\small/}nat.pop} & \df{gdp\texttt{\small/}nat.gdp} \\ \hline
+	\df{ca} & {11.8} & {14.5} \\ \hdashline
+	\df{tx} & {8.7} & {8.7} \\ \hdashline
+	\df{ny} & {6.4} & {8.1} \\ \hdashline
+	\df{fl} & {6.4} & {5.3} \\ \hdashline
+	\df{il} & {3.8} & {4.1} \\ \hdashline
+	\df{pa} & {4.8} & {3.7} \\ \hdashline
+	\df{ga} & {3.1} & {2.9} \\ \hdashline
+	\df{nj} & {2.7} & {2.9} \\ \hdashline
+	{\vdots} & {\vdots} & {\vdots}
+\end{array}}
+$$
+
+
+
+### Primary Keys
+> __~definition: primary key~.__ Let ${\cv{R}}$ be an ${n}$-ary relation with domain ${\dom{\cv{R}} = s_1 \times \ldots \times s_n.}$ We say that ${\cv{R}}$ contains a _primary key_ if, and only if, there exists a key ${s_i \in \dom{\cv{R}}}$ such that, given any pair of records ${r_i}$ and ${r_j}$ in ${\cv{R},}$ ${r_{i_k} \neq r_{j_k}.}$ That is, no two records share the same value for the attribute ${s_i.}$
+
+~example~. In the previous table, the key ${\df{state}}$ is a primary key, since no two records have the same value for ${\df{state}.}$ The remaining keys are _not_ primary keys, since the records ${(\df{ny},6.4,8.1)}$ and ${(\df{fl},6.4,5.3)}$ share the same value for the key ${\df{pop\texttt{\small/}nat.pop},}$ and the records ${(\df{ga},3.1,2.9)}$ and ${(\df{nj},2.7,2.9)}$ share the same value for the key ${\df{gdp\texttt{/}nat.gdp}.}$
+
+### Foreign Keys
+> __~definition: foreign key~.__ Let ${\cv{A}}$ be a relation with a primary key ${k_a}$ and let ${k_b}$ be a relation with a primary key ${\cv{B}\ix{k}.}$ A _foreign key_ is a primary key of the relation ${\cv{C} = \cv{A}\ix{k} \times \cv{B}\ix{k}.}$
+
+~example~. Foreign keys are what we use to construct new tables from existing tables. For example, let
+
+$$
+	\cv{A} = \mx{
+		\begin{array}{c:c:c:c}
+			a & b & c & d \\ \hline
+			81 & 17 & 9 & 3 \\ \hdashline
+			91 & 64 & 2 & 1 \\ \hdashline
+			75 & 29 & 4 & 0
+		\end{array}
+	}
+	\quad
+	\cv{B} = \mx{
+		a & b & x & y \\ \hline
+		81 & 17 & 4 & 1 \\ \hdashline
+		91 & 64 & 5 & 1 \\ \hdashline
+		75 & 29 & 1 & 0
+	}
+$$
+
+then the key ${j}$ in the relation ${\cv{C}}$ is a foreign key.
+
+$$
+	\cv{C} = \mx{
+		\begin{array}{c:c:c}
+		j & a & b \\ \hline
+		119 & 81 & 17 & \\ \hdashline
+		121 & 91 & 64 & \\ \hdashline
+		351 & 75 & 29
+		\end{array}
+	}
+$$
+
+### Operations on Records
+#### Selection
+> __~definition: selection~.__ Let ${P}$ be a set of propositions. The _select_ operator ${\sigma_c}$ returns a subset ${\sigma_c\px{\cv{R}} \subseteq \cv{R},}$ where each tuple in ${\sigma_c\px{\cv{R}}}$ satisfies the relation condition ${c \in P.}$
+
+~example~. Let
+
+$$
+\cv{R} = \lset{\ax{
+	(17,42,31) \\
+	(27,91,0) \\
+	(42,51,19) \\
+}} \in A \times B \times C
+$$
+
+then:
+
+$$
+	\eqs{
+		\sigma_{t \in A}(\cv{R}) &= \set{(17),(42),(31)}, \\
+		\sigma_{t \in B}(\cv{R}) &= \set{(42),(91),(0)}, \\
+		\sigma_{t \in C}(\cv{R}) &= \set{(31),(0),(19)}, \\
+		\sigma_{t \in A \times B}(\cv{R}) &= \set{(17,42),(27,91),(42,51)}, \\
+		\sigma_{t \in B \times C}(\cv{R}) &= \set{(42,31), (91,0), (51,19)}, \\
+		\sigma_{t \in A \times C}(\cv{R}) &= \set{(17,31), (27,0), (42,19)}, \\
+		\sigma_{(t \in A \cap B) \land (t \in \nix{A})}(\cv{R}) &= \set{(42,91), (42,51), (42,31), (42,31),(42,0),(42,19)}. \\
+	}
+$$
+
+#### Intersection 
+> __~definition: intersection~.__ Let ${\cv{R}}$ be relation with tuples of the form ${(r_1, \ldots, r_n)}$ and let ${\cv{S}}$ be a relation with tuples of the form ${(s_1, \ldots, s_n).}$ Then the relation ${\cv{R} \cap \cv{S}}$ is the set of all tuples of the form ${(r_1 = s_1, \ldots, r_n = s_n).}$
+
+#### Projection
+> __~definition: projection~.__ Let ${n}$ and ${m}$ be positive integers with ${m \le n.}$ Let ${X = (x_1,\ldots,x_n)}$ be an ${n}$-tuple of a relation ${\cv{R}_n.}$ The operation of _projection_ ${\pi_{i_1,\ldots,i_m}}$ is an ${m}$-ary whose tuples are of the form: ${(x_{i_1},\ldots,x_{i_m}),}$ where each ${x_{i_k}}$ is the corresponding component of ${X.}$
+
+ 
+~example~. ${\pi_{1}\set{(a,b,c)} = \set{(a,b,c) \mapsto (a)}.}$
+
+~example~. ${\pi_{2}\set{(a,b,c)} = \set{(a,b,c) \mapsto (b)}.}$
+
+~example~. ${\pi_{3}\set{(a,b,c)} = \set{(a,b,c) \mapsto (c)}.}$
+
+~example~. ${\pi_{4}\set{(a,b,c)} = \nil.}$
+
+~example~. ${\pi_{1,3}\set{(a,b,c)} = \set{(a,b,c) \mapsto (a,c)}.}$
+
+~example~.
+
+$$
+\pi_{1,3}\set{(2,3,0,4), (a,b,c,d), (x_1,x_2,x_3,x_4)} =
+\lset{\ax{
+	(2,3,0,4) & \mapsto & (2,0) \\
+	(a,b,c,d) & \mapsto & (a,c) \\
+	(x_1,x_2,x_3,x_4) & \mapsto & (x_1,x_3)
+}}
+$$
+
+#### Equijoin
+> __~definition: equijoin~.__ Let ${\cv{A}_n}$ be an ${n}$-ary relation, and let ${\cv{B}_m}$ be an ${m}$-ary relation. Let ${k}$ be a positive integer, such that ${k \le n}$ and ${k \le m.}$ Suppose the tuples of ${\cv{A}_n}$ are of the form ${(a_{1}, \ldots, a_{n},x_1,\ldots,x_n),}$ and suppose the tuples of ${\cv{B}_m}$ are tuples of the form ${(x_1,\ldots,x_m, b_{1}, \ldots, b_{m}).}$ The _equijoin_ ${\cv{J}_{i_1=j_1},\ldots,{i_k=j_k}}$ is a subset of ${\cv{A}_n \times \cv{B}_m,}$ whose elements are tuples of the form:
+> 
+> $$
+> 	(a_1,\ldots,a_{n-k},x_1,\ldots,x_n, b_1,\ldots,b_{m-k}).
+> $$
+> 
+> By definition, ${\cv{J}}$ has an arity of ${(m + n) - k.}$ We denote the equijoin of relations ${\cv{A}}$ and ${\cv{B}}$ with the notation ${\cv{A} \Join \cv{B}.}$
+
+
+
+~example~. Let
+
+$$
+	\cv{A} = \lset{\begin{array}{c:c:c:c}
+	a & b & c & d \\ \hdashline
+	\J & 7 & \pi & \tx{true} \\ \hdashline
+	\K & 8 & \phi & \tx{false} \\ \hdashline
+	\L & 3 & \alpha & \tx{false} \\ \hdashline
+	\N & 1 & \omega & \tx{true}
+	\end{array}}
+\quad
+	\cv{B} = \lset{\begin{array}{c:c}
+	g & h \\ \hdashline
+	7 & \tx{yes} \\ \hdashline
+	8 & \tx{yes} \\ \hdashline
+	3 & \tx{yes} \\ \hdashline
+	1 & \tx{no}
+	\end{array}}
+$$
+
+then:
+
+$$
+	\cv{A} \Join_{b=g} \cv{B} = \lset{\begin{array}{c:c:c:c:c}
+	a & b & c & d & h \\ \hdashline
+	\J & 7 & \pi & \tx{true} & \tx{yes} \\ \hdashline
+	\K & 8 & \phi & \tx{false} & \tx{yes} \\ \hdashline
+	\L & 3 & \alpha & \tx{false} & \tx{yes} \\ \hdashline
+	\N & 1 & \omega & \tx{true} & \tx{no}
+	\end{array}}
+$$
+
+
+## Preliminaries
+> __~definition: relational data model~.__ Let ${R}$ be a set of records. A _relational data model_ is a model of ${R}$ with the grammar of relations and tables.
+
+## SQL 
+__*SQL (Standard Query Language)*__ is a context-free grammar for relational data models. Modern SQL traces its origins to IBM's 1974 _~sequel~ (Structured English Query Language)_ language (hence SQL's pronunciation "sequel"). Below is an SQL expression that creates a database. Each capitalized word is a keyword in the language.
+
+### Basic Syntax
+
+> ${\sd{\df{create database}\dk D;}}$
+>
+> > Creates a new database named ${D.}$ No spaces allowed, convention is underscores.
+
+> ${\sd{\df{drop database}\dk D;}}$
+>
+> > Destroys the existing database ${D.}$
+
+> ${\sd{\df{create table}\px{n_1 \space t_1, \ldots, n_2 \space t2};}}$
+>
+> > Creates a table with the column names ${n_1, \ldots, n_2,}$ each with the data type ${t_1, \ldots, t_2}$ respectively.
+
+> ${\sd{\df{insert into} \dk T \dk \px{c_1, \ldots, c_n} \df{ values } \px{v_1, \ldots, v_n};}}$
+>
+> > Given the table ${T,}$ inserts into columns ${c_1, \ldots, c_n}$ the values ${v_1, \ldots, v_n}$ respectively.
+
+> ${\sd{\df{select} \dk c_1, \ldots, c_n \dk \df{from} \dk T;}}$
+>
+> > Given the table ${T,}$ select all rows corresponding to the columns ${c_1, \ldots, c_n.}$
+
+> ${\sd{\df{select} \dk \mo{*} \dk \df{from} \dk T;}}$
+>
+> > Select every row in ${T.}$
+
+> ${\sd{\df{alter table} \dk T \dk \df{add} \dk c_1~t_1, \ldots, c_n~t_n;}}$
+>
+> > Given the table ${T,}$ inserts new columns ${c_1, \ldots, c_n,}$ with types ${t_1, \ldots, t_n}$ respectively. If the table has existing rows, the new cells are set to ${\df{null}.}$
+
+> ${\sd{\df{update} \dk T \dk \df{set} \dk c_a = v_a \dk \df{where} \dk c_k = v_k;}}$
+>
+> > Select all rows whose column ${c_k}$ is the value ${v_k.}$ For all those rows, update the column ${c_a}$ to the value ${v_a.}$
+
+> ${\sd{\small \df{update} \dk T \dk \df{set} \dk c_a = v_a \dk \df{where} \dk c_1 = v_1 \dk \df{or} \dk c_2 = v_2 \dk \df{or} \dk \ldots \dk \df{or} \dk c_n = v_n;}}$
+> 
+> > Update multiple rows.
+
+> ${\sd{\small \df{select} \dk \mo{*} \dk \df{from} \dk T \dk \df{where} \dk k \dk \df{like} \dk C;}}$
+>
+> > Select all rows whose value for the column ${k}$ satisfies the condition ${C.}$
+
+
+> ${\sd{\small \df{select} \dk \mo{*} \dk \df{from} \dk T \dk \df{order by} \dk k \dk order;}}$
+>
+> > Select all rows with the column ${k,}$ sorted in ${order.}$ Order can be ${\df{DEC}}$ (descending) or ${\df{ASC}}$ (ascending).
+
+> ${\sd{\small \df{select} \dk \mo{*} \dk T_1 \dk \df{join} \dk T_2 \dk \df{on} \dk T_1\mc k = T_2 \mc k}}$
+>
+> > Selects all rows from the join of tables ${T_1}$ and ${T_2}$ with the foreign key (shared column) ${k.}$
+
+
+~example~. A very simple table for user login data:
+
+<Algo>
+
+1. ${\df{create table}}$ ${login}$ `(`
+	1. ${id}$ ~serial~ ~not null~ ~primary key~,
+	2. ${hash}$ ~varchar~ `(100)` ~not null~,
+	3. ${username}$ ~text~ ~unique not null~
+2. `);`
+
+</Algo>
+
+The datatype ~serial~ is an autoincrementing integer value. The expression ~not null~ means ${\lq}$This field cannot be ~null~.${\rq}$ I.e., the field must have a value. The expression ~primary key~ tells the system: ${\lq}$This is what identifies each row of this table uniquely.${\rq}$ The expression ~varchar~`(100)` corresponds to a string datatype whose length is anywhere between 1 and 100 inclusive, and ~not null~ ensures that the field _hash_ cannot be empty.
+
+
+### Datatypes
+SQL has many datatypes. Below are a few.
+
+| __Datatype__                     | __Description__                                                                            |
+| -------------------------------- | ------------------------------------------------------------------------------------------ |
+| ${\df{char}\px{n}}$              | Where ${n \in \pint,}$ a string of length ${n.}$                                           |
+| ${\df{varchar}\px{n}}$           | Where ${n \in \pint,}$ a string of length ${L,}$ where ${0 \le L \le n.}$                  |
+| ${\df{enum}\px{v_1,\ldots,v_n}}$ | A value from the set ${\set{v_1, \ldots, v_n},}$ where ${v_n}$ is a string or number.      |
+| ${\df{int}}$                     | Integers.                                                                                  |
+| ${\df{decimal}}$                 | Decimal numbers with fixed precision.                                                      |
+| ${\df{float}}$                   | Decimal numbers with floating point precision.                                             |
+| ${\df{date}}$                    | Value of the form ${yyyy{\mi}mm{\mi}dd}$ where ${y,m,d \in \nat.}$                         |
+| ${\df{timestamp}}$               | A value of the form ${yyyy{\mi}mm{\mi}dd~{aa}:{bb}:{cc},}$ where ${y,m,d,a,b,c \in \nat.}$ |
+| ${\df{boolean}}$                 | true or false                                                                              |
+
+~files~. Notice that none of datatypes correspond to files. Database systems are not designed to support files storage. If we want a database to "store files" we store the _paths_ to the files as strings, where the path to the file is the file's URL on some file storage server elsewhere. This is an important point to keep in mind. Database servers do not store files. They store raw data.
+
+### Inserting Data 
+> __~syntax~.__ Let ${table}$ be the name of an existing table. Then the syntax
+> 
+> $$
+> 	\df{insert into } table \dk \px{a_1, \ldots, a_n} \dk \df{values} \dk \px{v_1, \ldots, v_n};
+> $$
+> 
+> inserts the values ${(v_1, \ldots, v_n)}$ into ${table,}$ ${v_1,\ldots,v_n}$ correspond to the attributes ${a_1, \ldots, a_n.}$

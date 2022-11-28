@@ -7,8 +7,9 @@ This chapter provides notes on trigonometry.
 
 ## Angles
 
-If two rays originate from the same point, they form an __angle__.
+If two rays originate from the same point, they form an __angle__. The ray lying along the 𝑥-axis is called the __initial side__. The ray that "sweeps out" is called the __terminal side__. The distance between these two rays is an __angle__. When terminal side sweeps out _counter-clockwise_, we have a positive angle measure. And when it sweeps out _clockwise_, we have a negative angle measure: If we sweep the terminal side all the way around to the initial side, we get ${360^\circ.}$
 
+<Grid cols={3}>
 <Plot
 	geo={[
 		{
@@ -22,15 +23,8 @@ If two rays originate from the same point, they form an __angle__.
 	noTicks={true}
 	width={250}
 	height={250}
-	scale={60}
+	scale={100}
 />
-
-The ray lying along the 𝑥-axis is called the __initial side__. The ray that
-"sweeps out" is called the __terminal side__. The distance between these
-two rays is an __angle__. When terminal side sweeps out
-_counter-clockwise_, we have a positive angle measure. And when it sweeps
-out _clockwise_, we have a negative angle measure:
-
 <Plot
 	geo={[
 		{
@@ -44,12 +38,8 @@ out _clockwise_, we have a negative angle measure:
 	noTicks={true}
 	width={250}
 	height={250}
-	scale={60}
+	scale={100}
 />
-
-If we sweep the terminal side all the way around to the initial side, we
-get ${360^\circ:}$
-
 <Plot
 	geo={[
 		{
@@ -63,29 +53,12 @@ get ${360^\circ:}$
 	noTicks={true}
 	width={250}
 	height={250}
-	scale={60}
+	scale={100}
 />
+</Grid>
 
-If we swept a fourth of the way, we get ${90^\circ,}$ given that:
 
-$$
-	\dfrac{360}{4} = 90
-$$
-
-And if we swept half-way, we'd get ${180^\circ}$ (this is where the notion
-of a line having ${180^\circ}$ comes from):
-
-$$
-	\dfrac{360}{2} = 180
-$$
-
-At this point, we should probably ask: Why 360? No real reason, really. At
-least not mathematically. We use 360 because the Mesopotamians — a cradle
-of both human civilization and mathematics — employed a sexigesimal system
-(a system of base 60). The idea of a circle comprising ${360}$ degrees
-stuck long after the Mesopotamians disappeared because later civilizations
-found the the unit incredibly helpful. ${360}$ is considered a _highly
-composite integer_. That is, an integer with many divisors:
+If we swept a fourth of the way, we get ${90^\circ,}$ given that ${\frac{360}{4} = 90.}$ And if we swept half-way, we'd get ${180^\circ}$ (this is where the notion of a line having ${180^\circ}$ comes from) ${\frac{360}{2} = 180.}$ At this point, we should probably ask: Why 360? No real reason, really. At least not mathematically. We use 360 because the Mesopotamians — a cradle of both human civilization and mathematics — employed a sexigesimal system (a system of base 60). The idea of a circle comprising ${360}$ degrees stuck long after the Mesopotamians disappeared because later civilizations found the the unit incredibly helpful. ${360}$ is considered a _highly composite integer_. That is, an integer with many divisors:
 
 $$
 	\begin{Bmatrix}
@@ -97,25 +70,7 @@ $$
 	\end{Bmatrix}
 $$
 
-And with more divisors, splitting the pie "fairly" is much easier. We
-appreciate that ease far more when we realize that arithmetic was done with
-Roman numerals up until the 15th century. It's not so easy to give someone
-XVth of something (the division algorithm didn't exist yet). But, if we can
-pretend that something is a pie — 360 — it _does_ become easy: There are XV
-of XXIV total, so just give them a XXIV.
-
-The problem with degrees: They truly have no meaning. It's an entirely
-arbitrary choice. We could have just as easily gotten stuck with ${100}$ or
-${720.}$ Had the Mayans taken the mantle, we might be using some multiple
-of 20 today.
-
-Because 360 is an entirely arbitrary choice, degrees have no meaningful,
-reason-grounded connections to other branches of mathematics. And because
-those connections aren't there, degrees lead to nothing but pain when we
-want to _actually_ talk about angles. That is, treating them as genuine
-mathematical objects, worthy of study, rather than just some convenience in
-life. To give a brief glimpse of this suffering, here's a famous equation,
-using degrees:
+And with more divisors, splitting the pie "fairly" is much easier. We appreciate that ease far more when we realize that arithmetic was done with Roman numerals up until the 15th century. It's not so easy to give someone XVth of something (the division algorithm didn't exist yet). But, if we can pretend that something is a pie — 360 — it _does_ become easy: There are XV of XXIV total, so just give them a XXIV. The problem with degrees: They truly have no meaning. It's an entirely arbitrary choice. We could have just as easily gotten stuck with ${100}$ or ${720.}$ Had the Mayans taken the mantle, we might be using some multiple of 20 today. Because 360 is an entirely arbitrary choice, degrees have no meaningful, reason-grounded connections to other branches of mathematics. And because those connections aren't there, degrees lead to nothing but pain when we want to _actually_ talk about angles. That is, treating them as genuine mathematical objects, worthy of study, rather than just some convenience in life. To give a brief glimpse of this suffering, here's a famous equation, using degrees:
 
 $$
 	\sin x^\circ =
@@ -136,28 +91,19 @@ $$
 $$
 
 ## Trigonometric Ratios
-
 In the triangle below, ${\triangle abc}$ and ${\triangle (a+e)d(c+f)}$ are,
 proportionally, exactly the same. This is because of the property of
 _similarity_.
 
 <Fig
 link={"https://res.cloudinary.com/sublimis/image/upload/v1662512136/math/triangle_xqi0l8.svg"}
-imwidth={"214"} imheight={"172"} caption={"triangle"} width={"40"} />
+imwidth={214} imheight={172} caption={"triangle"} width={25} />
 
 The concepts of sine, cosine, tangent,  are simply ratios of the sides of
 the triangles.
 
 ### Sine
-
-A helpful mnemonic for sine: "Snakes often hide." (sine, opposite,
-hypotenuse).
-
-<dfn>
-
-__sine.__ Let ${\theta}$ be an interior angle of a right triangle. Then the sine
-of ${\theta,}$ denoted ${\sin \theta,}$ is the ratio of the length of the side
-opposite the angle to the length of the hypotenuse.
+> __~sine~.__ Let ${\theta}$ be an interior angle of a right triangle. Then the sine of ${\theta,}$ denoted ${\sin \theta,}$ is the ratio of the length of the side opposite the angle to the length of the hypotenuse.
 
 <Grid cols={2}>
 
@@ -167,21 +113,13 @@ $$
 
 <Fig
 link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/sine_v6pwlu.svg"}
-imwidth={"205"} imheight={"181"} caption={"sine"} width={"100"}/>
+imwidth={"205"} imheight={"181"} caption={"sine"} width={50}/>
 
 </Grid>
 
-</dfn>
 
 ### Cosine
-
-Cosine: "Centipedes adorn hell." (cosine, adjacent, hypotenuse).
-
-<dfn>
-
-__cosine.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
-cosine of ${\theta,}$ denoted ${\cos \theta,}$ is the ratio of the length of the
-side adjacent to the angle to the length of the hypotenuse.
+> __~cosine~.__ Let ${\theta}$ be an interior angle of a right triangle. Then the cosine of ${\theta,}$ denoted ${\cos \theta,}$ is the ratio of the length of the side adjacent to the angle to the length of the hypotenuse.
 
 <Grid cols={2}>
 
@@ -191,21 +129,13 @@ $$
 
 <Fig
 link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/cos_ahktua.svg"}
-imwidth={"205"} imheight={"181"} caption={"cosine"} width={"100"}/>
+imwidth={"205"} imheight={"181"} caption={"cosine"} width={50}/>
 
 </Grid>
 
-</dfn>
 
 ### Tangent
-
-Tangent: "Termites offend ants" (tangent, opposite, adjacent).
-
-<dfn>
-
-__tangent.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
-tangent of ${\theta,}$ denoted ${\tan \theta,}$ is the ratio of the length of
-the side opposite to the angle to the length of the side adjacent.
+> __~tangent~.__ Let ${\theta}$ be an interior angle of a right triangle. Then the tangent of ${\theta,}$ denoted ${\tan \theta,}$ is the ratio of the length of the side opposite to the angle to the length of the side adjacent.
 
 <Grid cols={2}>
 
@@ -215,21 +145,12 @@ $$
 
 <Fig
 link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/tan_k58thc.svg"}
-imwidth={"205"} imheight={"181"} caption={"tangent"} width={"100"}/>
+imwidth={"205"} imheight={"181"} caption={"tangent"} width={50}/>
 
 </Grid>
 
-</dfn>
-
 ### Cotangent 
-
-Cotangent: "Cottages are ominous." (cotangent, adjacent, opposite).
-
-<dfn>
-
-__cotangent.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
-cotangent of ${\theta,}$ denoted ${\cot \theta,}$ is the ratio of the length of
-the side adjacent to the angle to the length of the side opposite.
+> __~cotangent~.__ Let ${\theta}$ be an interior angle of a right triangle. Then the cotangent of ${\theta,}$ denoted ${\cot \theta,}$ is the ratio of the length of the side adjacent to the angle to the length of the side opposite.
 
 <Grid cols={2}>
 
@@ -239,21 +160,12 @@ $$
 
 <Fig
 link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/cot_eo7ouk.svg"}
-imwidth={"205"} imheight={"181"} caption={"cotangent"} width={"100"}/>
+imwidth={"205"} imheight={"181"} caption={"cotangent"} width={50}/>
 
 </Grid>
 
-</dfn>
-
 ### Secant
-
-Secant: "Secure houses always" (secant, hypotenus, adjacent).
-
-<dfn>
-
-__secant.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
-secant of ${\theta,}$ denoted ${\sec \theta,}$ is the ratio of the length of
-the hypotenuse to the length of the side adjacent to ${\theta.}$
+> __~secant~.__ Let ${\theta}$ be an interior angle of a right triangle. Then the secant of ${\theta,}$ denoted ${\sec \theta,}$ is the ratio of the length of the hypotenuse to the length of the side adjacent to ${\theta.}$
 
 <Grid cols={2}>
 
@@ -263,21 +175,12 @@ $$
 
 <Fig
 link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/sec_lb2qme.svg"}
-imwidth={"205"} imheight={"181"} caption={"secant"} width={"100"}/>
+imwidth={"205"} imheight={"181"} caption={"secant"} width={50}/>
 
 </Grid>
 
-</dfn>
-
 ### Cosecant
-
-Cosecant: "Coruscant helped Obiwan" (cosecant, hypotenuse, opposite).
-
-<dfn>
-
-__cosecant.__ Let ${\theta}$ be an interior angle of a right triangle. Then the
-cosecant of ${\theta,}$ denoted ${\csc \theta,}$ is the ratio of the length of
-hypotenuse to the angle to the length of the side opposite to ${\theta.}$
+> __~cosecant~.__ Let ${\theta}$ be an interior angle of a right triangle. Then the cosecant of ${\theta,}$ denoted ${\csc \theta,}$ is the ratio of the length of hypotenuse to the angle to the length of the side opposite to ${\theta.}$
 
 <Grid cols={2}>
 
@@ -287,11 +190,9 @@ $$
 
 <Fig
 link={"https://res.cloudinary.com/sublimis/image/upload/v1663084332/math/csc_u1jzxa.svg"}
-imwidth={"205"} imheight={"181"} caption={"cosecant"} width={"100"}/>
+imwidth={"205"} imheight={"181"} caption={"cosecant"} width={50}/>
 
 </Grid>
-
-</dfn>
 
 For the rest of these materials, we will use the following variables:
 
@@ -303,13 +204,11 @@ $$
 	}
 $$
 
-
 ## Ratio Identities
-
-Recall that the divison identity from real number arithmetic tells us that:
+Recall that the divison identity from real number arithmetic tells us that
 
 $$
-	\dfrac{a}{b} = \dfrac{ \dfrac{a}{c}  } { \dfrac{b}{c} } = \dfrac{a}{\cancel{c}} \cdot \dfrac{\cancel{c}}{b} 
+	\dfrac{a}{b} = \dfrac{ \dfrac{a}{c}  } { \dfrac{b}{c} } = \dfrac{a}{\cancel{c}} \cdot \dfrac{\cancel{c}}{b}
 $$
 
 where ${a,b,c \in \R}$ and ${c \neq 0.}$ We can thus rewrite many of the
@@ -318,58 +217,56 @@ identities_.
 
 ### Tangent-sine-cosine Relation (TSCR)
 
-Because tangent is defined as:
+<Grid cols={2}>
 
-$$
-	\tan \theta = \dfrac{\Oo}{A}
-$$
+> __~lemma: tscr~.__ ${\quad \tan \theta = \dfrac{\sin \theta}{\cos \theta}. }$
 
-the division identity allows us to write the right-hand side as:
 
-$$
-	\tan \theta = \dfrac{\Oo}{A} = \dfrac{\dfrac{\Oo}{H}}{\dfrac{A}{H}}
-$$
+> ~proof~. Because tangent is defined as: ${\tan \theta = \frac{\Oo}{A},}$ the division identity allows us to write the right-hand side as:
+> 
+> $$
+> 	\tan \theta = \dfrac{\Oo}{A} = \dfrac{\dfrac{\Oo}{H}}{\dfrac{A}{H}}.
+> $$
+> 
+> The numerator and denominator are the definitions of sine and cosine:
+> 
+> $$
+> 	\sin \theta = \dfrac{\Oo}{H} \quad\quad \cos \theta = \dfrac{A}{H}.
+> $$
 
-Notice that the numerator and denominator are the definitions of sine and cosine:
-
-$$
-	\sin \theta = \dfrac{\Oo}{H} \\[1em]
-	\cos \theta = \dfrac{A}{H}
-$$
-
-Thus, we have the relationship:
-
-$$
-	\tan \theta = \dfrac{\sin \theta}{\cos \theta} 
-$$
+</Grid>
 
 ### Cotangent-tangent Relation (CTR)
 
-Cotangent is often characterized as the inverse of tangent. Why? Recall that the cotangent is defined as:
+<Grid cols={2}>
 
-$$
-	\cot \theta = \dfrac{A}{\Oo}
-$$
+> __~lemma: ctr~.__ ${\quad \cot \theta = \dfrac{1}{\tan \theta}.}$
 
-Using the division identity, we can rewrite right-hand side as:
+> ~proof~. By definition, ${\cot \theta = \frac{A}{\Oo}.}$ Using the division identity, we can rewrite right-hand side as:
+> 
+> $$
+> 	\cot \theta = \dfrac{\dfrac{A}{A}}{\dfrac{\Oo}{A}} = \dfrac{1}{\dfrac{\Oo}{A}}.
+> $$
+> 
+> By definition, the denominator is ${\tan \theta:}$
+> 
+> $$
+> 	\cot \theta = \dfrac{1}{\tan \theta}.
+> $$
 
-$$
-	\cot \theta = \dfrac{\dfrac{A}{A}}{\dfrac{\Oo}{A}} = \dfrac{1}{\dfrac{\Oo}{A}}
-$$
+</Grid>
 
-That denominator is simply tangent:
 
-$$
-	\cot \theta = \dfrac{1}{\tan \theta}
-$$
+
+
+
 
 ### Cotangent-Cosine-Sine Relation (CCSR)
-
 From the relationship of tangent to sine and cosine, we can also define
-cotangent as:
+cotangent as
 
 $$
-	\cot \theta = \dfrac{1}{\tan \theta} = \dfrac{1}{\dfrac{\sin \theta}{\cos \theta}}
+	\cot \theta = \dfrac{1}{\tan \theta} = \dfrac{1}{\dfrac{\sin \theta}{\cos \theta}}.
 $$
 
 This reduces to:
@@ -378,48 +275,38 @@ $$
 	\cot \theta = \dfrac{\cos \theta}{\sin \theta}
 $$
 
+__~ccsr~.__ ${\cot \theta = \dfrac{\cos \theta}{\sin \theta}.}$
+
 ### Secant-cosine Relation (SCR)
-
-The definition of secant tells us that:
-
-$$
-	\sec \theta = \dfrac{H}{A}
-$$
-
-Using the division identity, we get:
+The definition of secant tells us that ${\sec \theta = \frac{H}{A}.}$ Using the division identity, we have
 
 $$
-	\sec \theta = \dfrac{\dfrac{H}{H}}{\dfrac{A}{H}} = \dfrac{H}{\cancel{H}} \cdot \dfrac{\cancel{H}}{A}
+	\sec \theta = \dfrac{\dfrac{H}{H}}{\dfrac{A}{H}} = \dfrac{H}{\cancel{H}} \cdot \dfrac{\cancel{H}}{A}.
 $$
 
 The denominator in the rewritten expression is simply cosine:
 
 $$
-	\sec \theta = \dfrac{1}{\cos \theta}
+	\sec \theta = \dfrac{1}{\cos \theta}.
 $$
+
+> __~scr~.__ ${\sec \theta = \dfrac{1}{\cos \theta}.}$
 
 ### Cosecant-sine Relation (CSR)
-
-Cosecant is defined as:
-
-$$
-	\csc \theta = \dfrac{H}{\Oo}
-$$
-
-Rewriting the right-hand side with the division identity, we get:
+Cosecant is defined as ${\csc \theta = \dfrac{H}{\Oo}.}$
+Rewriting the right-hand side with the division identity, we get
 
 $$
-	\csc \theta = \dfrac{\dfrac{H}{H}}{\dfrac{\Oo}{H}} = \dfrac{H}{\cancel{H}} \cdot \dfrac{\cancel{H}}{\Oo}
+	\csc \theta = \dfrac{\dfrac{H}{H}}{\dfrac{\Oo}{H}} = \dfrac{H}{\cancel{H}} \cdot \dfrac{\cancel{H}}{\Oo}.
 $$
 
 That denominator can be expressed as sine:
 
 $$
-	\csc \theta = \dfrac{1}{\sin \theta}
+	\csc \theta = \dfrac{1}{\sin \theta}.
 $$
 
 ### Tangent-cosecant-secant Relation (TCSR)
-
 From [CSR](#cosecant-sine-relation-csr), we know that:
 
 $$
@@ -941,19 +828,14 @@ $$
 
 ## Sum and Difference Formulas
 
-While the identities we've derived thus far have taken us a long way, we want
-more. To propel us even further, let's see what else we can get out of the unit
-circle.
-
-Suppose there are two points on the graph of ${x^2 + y^2 = 1,}$ separated by a
-distance ${d.}$
+While the identities we've derived thus far have taken us a long way, we want more. To propel us even further, let's see what else we can get out of the unit circle. Suppose there are two points on the graph of ${x^2 + y^2 = 1,}$ separated by a distance ${d.}$
 
 <Fig
 	link={"https://res.cloudinary.com/sublimis/image/upload/v1663094930/math/sum_diff_A_pypyyv.svg"}
 	imwidth={"256"}
 	imheight={"241"}
 	caption={"circle 1"}
-	width={"60"}
+	width={30}
 />
 
 Keeping the points separated by the distance ${d}$ and changing the angle to
@@ -964,7 +846,7 @@ ${\alpha - \beta,}$ we get:
 	imwidth={"316"}
 	imheight={"241"}
 	caption={"circle 2"}
-	width={"70"}
+	width={30}
 />
 
 Applying the distance formula for the two points on the first graph, we have:

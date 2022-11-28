@@ -38,22 +38,7 @@ $$
 	}
 $$
 
-This keeps getting closer and closer to two. Moreover, the distance between each term, ${\abs{x_n-{x_{n-1}}}}$ where ${n \in \pint,}$ keeps getting smaller and smaller. Visually, we might think of it like:
-
-$$
-	\ldots \ldots \ldots
-	\circ~~~~~~~~
-	\circ~~~~~~
-	\circ~~~~
-	\circ~~~~
-	\circ~~
-	\circ~
-	\circ
-	\circ
-	\circ{\circ}\mathllap{\circ}~{\large 2}~\ldots \ldots \ldots
-$$
-
-So, there's clearly some sort of sequence. But it's a very peculiar sequence, because the distance between the terms gets smaller and smaller. Augustin-Louis Cauchy (1789-1857) — the French mathematician credited with noticing and building upon this pattern with a definition. Before we get to that definition, we start with some definitions.
+This keeps getting closer and closer to two. Moreover, the distance between each term, ${\abs{x_n-{x_{n-1}}}}$ where ${n \in \pint,}$ keeps getting smaller and smaller. So, there's clearly some sort of sequence. But it's a very peculiar sequence, because the distance between the terms gets smaller and smaller. Some definitions:
 
 > __~absolute value~.__ Let ${x \in \rat.}$ If ${x \gt 0,}$ then ${\abs{x} = x.}$ If ${x=0,}$ then ${\abs{x} = 0.}$ If ${x \lt 0,}$ then ${\abs{x} = -x.}$
 
@@ -115,7 +100,7 @@ The notion of closeness leads to a few helpful lemmas.
 
 From that definition, we have the _Cauchy sequence_:
 
-> __cauchy sequence.__ A sequence ${(x_n)_{n \in \pint}}$ is a _Cauchy sequence_ if, and only if: For any rational ${\varepsilon \gt 0,}$ there exists an integer ${N \in \pint,}$ such that, if ${n,m \ge N,}$ then ${\abs{x_n-x_m} \lt \varepsilon.}$
+> __~cauchy sequence~.__ A sequence ${(x_n)_{n \in \pint}}$ is a _Cauchy sequence_ if, and only if: For any rational ${\varepsilon \gt 0,}$ there exists an integer ${N \in \pint,}$ such that, if ${n,m \ge N,}$ then ${\abs{x_n-x_m} \lt \varepsilon.}$
 
 Note what this preliminary definition is trying to capture — the behavior we saw earlier. Cauchy chose the symbol ${\varepsilon}$ to denote "error" — that teeny-tiny bit separating ${x_n}$ and ${x_m.}$  Now, remember that sequences are functions. Cauchy's sequence says: There's some positive integer ${N}$ (some _index_), where, for function arguments ${n}$ or ${m}$ greater than ${N}$ (any two indices on or after ${N}$), we're going to see this behavior where ${\abs{x(n) - x(m)}}$ (the distance between the rationals ${x_n}$ and ${x_m}$) is _always_ less than _any_ distance we can think of (the distance ${\varepsilon}$). That is, for any two terms after the index ${N,}$ no matter what ${\varepsilon}$ someone picks  — "they're separated by ${\varepsilon}$" — we can always go back and tell them, "No, they're actually closer than that." That's all ${\varepsilon}$ is — how separated the terms are.
  
@@ -134,32 +119,30 @@ This seems like a complicated definition. Let's compare its logical form to the 
 
 Do we see how this definition is different? It hones in on that ${x_m}$ term from the Cauchy sequence — the term that "comes after" ${x_n.}$ Why the quotes? We're putting quotes around that phrase because we're now going to add a bit more nuance. Suppose we're not the pizza buyers, but the pizza sellers. Would we be upset if an employee accidentally delivered a 32-inch pizza instead of the 16-inch? Sure. How about an 18-inch pizza? Perhaps. How about 16.000000001? Hopefully not. The same idea applies here. The ${x_n}$ isn't necessarily 15.99999. It could also be 16.00000001. When we say that a sequence _converges_, we're saying that all of the sequence elements, eventually, are _tantamount_ to ${a,}$ before or after ${a.}$
 
-All that said, we have to be careful with our language. At no point — never ever ever — is ${x_n = a.}$ It's why we use the phrase "tantamount to" rather than "same" or "indistinguishable." Clearly 15.999999999 and 16 are distinguishable. One has that symbol "5" and the other "6." The word _tantamount_ means "virtually the same as," which is exactly the phrasing we want.
-
-Putting it all together, we get something that looks like the following:
+All that said, we have to be careful with our language. At no point — never ever ever — is ${x_n = a.}$ It's why we use the phrase "tantamount to" rather than "same" or "indistinguishable." Clearly 15.999999999 and 16 are distinguishable. One has that symbol "5" and the other "6." The word _tantamount_ means "virtually the same as," which is exactly the phrasing we want. All together, we have the visual:
 
 $$
 	\ldots
 	\stackrel{\stackrel{\normalsize a-\varepsilon}{\mid}}{\ws}
-	\circ~~~~~~~~~~
-	\circ~~~~~~~~
-	\circ~~~~~~
-	\circ~~~~
-	\circ~~
-	\circ~
-	\circ
+	{\circ}~~~~~~~~~~
+	{\circ}~~~~~~~~
+	{\circ}~~~~~~
+	{\circ}~~~~
+	{\circ}~~
+	{\circ}~
+	{\circ}
 	\stackrel{\stackrel{\normalsize a}{\mid}}{\ws}
-	\circ
-	~\circ
-	~~~~\circ
-	~~~~~~\circ
-	~~~~~~~~\circ
-	~~~~~~~~~~\circ
+	{\circ}
+	~{\circ}
+	~~~~{\circ}
+	~~~~~~{\circ}
+	~~~~~~~~{\circ}
+	~~~~~~~~~~{\circ}
 	\stackrel{\stackrel{\normalsize a+\varepsilon}{\mid}}{\ws}
 	\ldots
 $$
 
-The red dots comprise a region called the _epsilon neighborhood_ of ${a.}$ What the convergence definition tells us is, if a sequence ${(x_n)}$ converges, there are only so many points outside this neighborhood. That is, there are _finitely many_ points outside the neighborhood. In contrast, no matter how small we make ${\varepsilon,}$ we're always going to find a term closer to ${a.}$ An often cited example of a convergent sequence is ${(1/n).}$ Examine its values:
+The dots comprise a region called the _epsilon neighborhood_ of ${a.}$ What the convergence definition tells us is, if a sequence ${(x_n)}$ converges, there are only so many points outside this neighborhood. That is, there are _finitely many_ points outside the neighborhood. In contrast, no matter how small we make ${\varepsilon,}$ we're always going to find a term closer to ${a.}$ An often cited example of a convergent sequence is ${(1/n).}$ Examine its values:
 
 | ${n}$                | 1   | 10  | 100  | 1000  | ${10~000}$ | ${100~000}$ | ${1~000~000}$ |
 | -------------------- | --- | --- | ---- | ----- | ---------- | ----------- | ------------- |

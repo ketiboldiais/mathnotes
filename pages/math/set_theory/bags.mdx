@@ -11,7 +11,7 @@ If we agree to follow axiomatic set theory, then the _set_ is the simplest mathe
 ## Definition
 Because sets are what underlie every mathematical object, we can't just introduce bags out of thin air. Instead, we must construct them in terms of sets.
 
-> __~definition: bag~.__ A _bag_ is an ordered pair ${B=(A,m),}$ where ${A}$ is a set of elements, and ${m}$ is a function from ${A}$ to ${\pint.}$ The function ${m}$ is called the _multiplicity_ of ${A,}$ where ${m(a)}$ corresponds to the number of occurrences of ${a.}$ The set ${A}$ is called the _support_ of ${B,}$ and is denoted and defined as ${\df{supp}~B := \set{x \in A : m(a) \gt 0}.}$ Thus, the bag ${B}$ may be represented as
+> __~definition: bag~.__ A _bag_ is an ordered pair ${B=(A,m),}$ where ${A}$ is a set of elements, and ${m}$ is a function from ${A}$ to ${\nat.}$ The function ${m}$ is called the _multiplicity_ of ${A,}$ where ${m(a)}$ corresponds to the number of occurrences of ${a.}$ The set ${A}$ is called the _support_ of ${B,}$ and is denoted and defined as ${\df{supp}~B := \set{x \in A : m(a) \gt 0}.}$ Thus, the bag ${B}$ may be represented as
 > 
 > $$
 > 	\lset{a_1^{m(a_1)}, a_2^{m(a_2)}, \ldots, a_{n-1}^{m(n-1)}, a_n^{m(a_n)}},
@@ -31,4 +31,13 @@ Because sets are what underlie every mathematical object, we can't just introduc
 
 ~example~. ${\df{supp}\tup{a^2b^2c^1} = \set{a,b,c}}$
 
+> __~definition: bag size~.__ Given a bag ${B,}$ the number of elements in ${B}$ is called the _size_ of ${B,}$ and is defined as ${\tx{size}B = \tsum{x \in B}{} m(x).}$
 
+~example~. ${\tx{size}\tup{x^1y^3z^2} = \tup{x,y,y,y,z,z} = 1+3+2=6.}$
+
+### Number of Possible Bags
+> __~theorem~.__ Given ${n}$ elements, the number of ${k}$-element bags is given by the relation:
+> 
+> $$
+> 	\dbinom{k+n-1}{k,n-1} = \dfrac{(k+n-1)}{k!(n-1)!}.
+> $$

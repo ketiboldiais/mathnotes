@@ -14,6 +14,9 @@ _This note presents an overview of vectors._
 4. [Vector Lists](#vector-lists)
 5. [Linear Combinations](#linear-combinations)
 6. [Spans](#spans)
+7. [Spanning Set](#spanning-set)
+8. [Finite-dimension Vector Spaces](#finite-dimension-vector-spaces)
+9. [Polynomials](#polynomials)
 
 ## Vector Space
 > __~vector space~.__ A _vector space_ ${\Vv}$ is an algebra ${(V,S,\set{\by,+}).}$ The set ${V}$ is a collection of objects called _vectors_, and ${S}$ is a collection of objects called _scalars_. The operation ${+}$ is a function called _vector addition_, which assigns to each pair of elements ${\uu, \vv \in V}$ an element ${\uu + \vv \in V.}$ The operation ${\by}$ is a function called _scalar multiplication_, which assigns to each ${a \in S}$ and to each ${\vv \in V,}$ an element ${a \by \vv \in V.}$ Given a vector space ${\Vv,}$ the following properties hold.
@@ -157,9 +160,36 @@ $$
 
 Namely, ${\set{{a_1 \eq 6, a_2 \eq 5}}.}$
 
+> __~lemma: vectors in ${\field^3}$~.__ Let ${\vv = \ix{x,y,z} \in \field^3.}$ If ${z = 0,}$ then ${\vv}$ can be expressed as the linear combination
+> 
+> $$
+> 	a_1\ix{x,0,0} + a_2 \ix{0,y,0} = \ix{x,y,0}.
+> $$
+
+In short, given a vector list of ${\vv}$ in ${\field^n,}$ if ${\vv = a_1v_1 + \ldots a_nv_n,}$ where each ${a_{1 \le i \le n}}$ is a scalar, then ${\vv}$ is a linear combination.
+
 ## Spans
-__~definition: span~.__ Let ${[\vv_1, \ldots, \vv_n]}$ be a list of vectors in ${\Vv.}$ The set of all linear combinations of ${[\vv_1, \ldots, \vv_n]}$ is called the __*span*__ of ${[\vv_1, \ldots, \vv_n],}$ denoted ${\tx{span}\px{\vv_1, \ldots, \vv_n}.}$ The span of the empty vector list, is defined to be ${\set{0}.}$
+> __~definition: span~.__ Let ${[\vv_1, \ldots, \vv_n]}$ be a list of vectors in ${\Vv.}$ The set of all linear combinations of ${[\vv_1, \ldots, \vv_n]}$ is called the _span_ of ${[\vv_1, \ldots, \vv_n],}$ denoted ${\tx{span}\px{\vv_1, \ldots, \vv_n}.}$ The span of the empty vector list, is defined to be ${\set{0}.}$
 
 ~example~. Let ${\vv \eq \ix{2,1,\mi3}}$ and let ${\ix{1,-2,4}.}$ Then ${\ix{17,-4,2} \in \tx{span}(\vv, \ww).}$
 
-> __~theorem~.__ Given a list of vectors ${\AA = \ix{\vv_1, \ldots, \vv_2}}$ in ${\field^n,}$ ${\tx{span}(\AA)}$ is the smallest subspace of ${\field^n}$ containing all the vectors of ${\AA.}$
+> __~theorem~.__ Given a list of vectors ${\VV = [\vv_1, \ldots, \vv_2]}$ in ${\field^n,}$ ${\tx{span}(\VV)}$ is the smallest subspace of ${\field^n}$ containing all the vectors of ${\VV.}$
+
+~proof~. Let ${\tx{span}(\vv_1,\ldots,\vv_n)}$ be a subspace of ${\field^n.}$ Because ${0\v_1 + \ldots + 0\vv_n = {\bf0},}$ it follows that ${\tx{span}(\vv_1,\ldots,\vv_n)}$ contains the additive identity. Since ${(a_1\vv_1+\ldots+a_n\vv_n)+(c_1\vv_1+\ldots+c_n\vv_n)\eq(a_1+c_1)\vv_1+\ldots+(a_n+c_n)\vv_n,}$ it is true that ${\tx{span}(\vv_1,\ldots,\vv_n)}$ is closed under addition. Given that ${k(a_1\vv_1+\ldots+a_n\vv_n)=ka_1\vv_1+\ldots+ka_n\vv_n,}$ it is true that ${\tx{span}(\vv_1,\ldots,\vv_n)}$ is closed under multiplication. Accordingly, ${\tx{span}(\vv_1,\ldots,\vv_n)}$ is a subspace. Given ${\vv_j = (0,0,\ldots,0,a_j),}$ it follows that ${\vv_j}$ is a linear combination of ${[\vv_1,\ldots,\vv_n].}$ Hence, every ${\vv_j}$ is a linear combination of ${[\vv_1,\ldots,\vv_n]}$ Because every ${\vv_j}$ is a linear combination of ${[\vv_2,\ldots,\vv_n],}$ it follows that ${\tx{span}(\vv_1,\ldots,\vv_n)}$ contains every ${\vv_j.}$ Since scalar multiplication and addition is closed for subspaces, every subspace of ${\field^n}$ comprising ${\vv_j}$ contains ${[\vv_1,\ldots,\vv_n].}$ Therefore, ${\tx{span}(\vv_1,\ldots,\vv_n)}$ is the smallest subspace of ${\field^n}$ containing ${[\vv_1,\ldots,\vv_n].}$ ${\small\bs}$
+
+## Spanning Set
+> __~definition~.__ Let ${\VV = [\vv_1, \ldots, \vv_n]}$ be a list of vectors in ${\Vv.}$ If ${\tx{span}\px{\VV} = \Vv,}$ we say that ${\VV}$ is the _spanning set_ of ${\Vv,}$ or that ${\VV}$ _spans_ ${\Vv.}$
+
+## Finite-dimension Vector Spaces
+> __~definition~.__ A vector space ${\Vv}$ is _finite-dimensional_ if, and only if, ${\Vv}$ has a spanning set. That is, there is some list of vectors ${\VV = [\vv_1 \in \Vv, \ldots, \vv_n \in \Vv]}$ such that that ${\tx{span}\px{\VV} =\Vv.}$
+
+## Polynomials
+> __~definition~.__ Let ${f}$ be a function from ${\field}$ to ${\field.}$ We say that ${f}$ is a _polynomial_ if, and only if, there exist ${a_0,\ldots,a_n \in \field}$ such that
+> 
+> $$
+> 	f(x) = a_0 + a_1x + a_2x^2 + \ldots + a_{n-1}x^{n-1} + a_nx^n
+> $$
+> 
+> for all ${x \in \field.}$
+
+> __~notation~.__ The notation ${\P\px{\field^n}}$ denotes the set of all polynomials ${f(x) = a_0 + a_1x + \etc + a_nx^n.}$

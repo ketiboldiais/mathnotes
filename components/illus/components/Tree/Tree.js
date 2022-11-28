@@ -16,14 +16,20 @@ import { select, stratify, tree } from "d3";
 
 export const Tree = ({
 	data = [],
+	elw=50,
+	elh=10,
+	elbg='var(--background-color)',
 	label = "",
 	width = 450,
 	height = width/2,
 	wh = [width,height],
+	ex=0,
+	ey=0,
 	tw,
 	th,
 	id=`bbbb`,
 	anon=false,
+	flat=false,
 	scale=70,
 	sibsep=1,
 	nsibsep=1.1,
@@ -35,9 +41,8 @@ export const Tree = ({
 	labelOffsetX = 0,
 	labelOffsetY = 0,
 	r = 4,
-	nodeColor = "#ffffff",
+	nodeColor = "var(--background-color)",
 	edgeColor = "#000000",
-	nodeStrokeColor = edgeColor,
 	markBalanceFactor = false,
 	markHeight = false,
 	markDepth = false,
@@ -47,7 +52,6 @@ export const Tree = ({
 	ty=-7,
 	heightFontSize = 10,
 	heightTextColor = edgeColor,
-	hideNodeCircles = false,
 	balanceFactorFontSize = 0.7,
 	levelLineColor = "grey",
 	levelTextColor = "grey",
@@ -93,7 +97,6 @@ export const Tree = ({
 	const renderTree = () => {
 		const canvas = select(TreeFigure.current).select("g.svgElement");
 		const tree = canvas.append("g").attr("class", className.tree.canvas);
-
 		// links
 		const links = tree.append("g").attr("class", className.tree.edgeGroup);
 		links
@@ -137,7 +140,7 @@ export const Tree = ({
 			.data(_nodes)
 			.enter()
 			.append("g")
-			.attr('class', (d) => d.class ? d.class : d.treeClass)
+			.attr('class', (d) => d.class ? (flat ? d.class + " " + "no-circle" : d.class) : d.treeClass)
 		const annotations=tree
 			.append("g")
 			.selectAll('ants')
@@ -147,30 +150,30 @@ export const Tree = ({
 			.filter((d) => !d.data.display)
 			.filter((d) => !d.data.label)
 			.append('g')
-			.attr('transform', d=>`translate(${d.x},${d.y})`)
 			.attr('class', 'node-label')
 		annotations
 			.attr("transform", (d) => {
-				const x = d.data.dx ? d.data.dx : d.x + r * 2;
-				const y = d.data.dy ? d.data.dy : d.y - r * 1.5;
-				return translate(x, y);
+				const xoffset = d.data.tx!==undefined ? d.data.tx : 0;
+				const yoffset = d.data.ty !==undefined ? d.data.ty : 0;
+				const x = d.x + xoffset;
+				const y = d.y + yoffset;
+				return translate(x,y);
 			})
 			.each(function (d, i) {
 				const graphId = Trim(id, [/ /]);
 				let sel = select(this);
 				MathText(sel,d.data.ant,fs,50,50,`${graphId}-${d.id}-${i}`,"initial");
 			});		
-		nodes
-			.filter((d) => d.data.display !== "none")
-			.filter((d) => !d.data.display)
-			.filter((d) => !d.data.noCircle)
-			.filter((d) => !d.data.type)
-			.append("circle")
-			.attr("fill", hideNodeCircles ? "inherit" : nodeColor)
-			.attr("r", r)
-			.attr("cx", (d) => d.x)
-			.attr("cy", (d) => d.y)
-			.attr("stroke", hideNodeCircles ? "none" : nodeStrokeColor)
+			nodes
+				.filter((d) => d.data.display !== "none")
+				.filter((d) => !d.data.display)
+				.filter((d) => !d.data.noCircle)
+				.filter((d) => !d.data.type)
+				.append("circle")
+				.attr("fill", flat ? "var(--background-color)" : nodeColor)
+				.attr("r", r)
+				.attr("cx", (d) => d.x)
+				.attr("cy", (d) => d.y)
 
 		// node labels
 		if (!anon) {
@@ -198,16 +201,20 @@ export const Tree = ({
 			.filter((d) => d.target.edgeLabel)
 			.append('g')
 			.attr('transform', (d) => {
+				let xoffset = d.target.data.ex ? ex + d.target.data.ex : ex;
+				let yoffset = d.target.data.ey ? ey + d.target.data.ey : ey;
 				const x1 = d.source.x;
 				const y1 = d.source.y;
 				const x2 = d.target.x;
 				const y2 = d.target.y;
-				return translate((x1+x2)/2, (y1+y2)/2)
+				return translate(((x1+x2)/2)+xoffset, ((y1+y2)/2)+yoffset)
 			})
-			.each(function (d, i) {
+			.each(function (d,i) {
 				const graphId = Trim(id, [/ /]);
+				const ecw=d.target.data.elw ? d.target.data.elw + elw : elw;
+				const ech=d.target.data.elh ? d.target.data.elh + elh : elh;
 				let sel = select(this);
-				MathText( sel, d.target.edgeLabel, fs, 50, 50, `${graphId}-${d.target.edgeLabel}-${i}`, "black");
+				MathText( sel, d.target.edgeLabel, fs, ecw, ech, `${graphId}-${d.target.edgeLabel}-${i}`, "black", elbg);
 			});
 				
 		
@@ -232,7 +239,7 @@ export const Tree = ({
 
 	useEffect(() => {
 		if (TreeFigure.current) renderTree();
-	});
+	},[]);
 	return (
 		<Base
 			id={TreeFigure}

@@ -1,0 +1,41 @@
+# Fourier Transforms
+_This note covers an overview of Fourier transforms_.
+
+## Preliminaries
+Recall:
+
+> __~definition: even function~.__ Let ${f}$ be a function in ${\reals.}$ Then ${f}$ is an _even function_ iff ${f(-x) = x}$ for all ${x \in \tx{dom}\px{f}.}$
+
+
+> __~definition: odd function~.__ Let ${f}$ be a function in ${\reals.}$ Then ${f}$ is an _odd function_ iff ${f(-x) = -f(x)}$ for all ${x \in \tx{dom}\px{f}.}$
+
+> __~theorem~.__ Let ${f}$ be an odd function. Then
+> 
+> $$
+> 	\integral{-p}{p} f(x)~{\d}x = 0.
+> $$
+
+
+> __~theorem~.__ Let ${f}$ be an even function. Then
+> 
+> $$
+> 	\integral{-p}{p} f(x)~{\d}x = 2 \integral{0}{p} f(x) ~ {\d}x.
+> $$
+
+> __~definition: periodic function~.__ Let ${f}$ be a function in ${\reals.}$ We say that ${f}$ is a _periodic function_ if there exists a positive number ${t}$ such that ${f\px{x + t} = f\px{x}}$ for all ${x \in \tx{dom}\px{f}.}$ Where ${T}$ is the set of all numbers ${k}$ such that ${f\px{x+k} = f\px{x},}$ we call the number ${\min{\set{T}}}$ the _period_ of ${f.}$
+
+## Fourier Series
+__~definition~.__ Let ${p}$ be positive constant and ${f}$ a periodic function with period ${2p,}$ defined on the open interval ${\px{-p,p}.}$ The _Fourier series_ of ${f}$ is the infinite series
+
+$$
+	f(x) = \frac{a_0}{2} + \dsum{n=1}{\infty}a_n \cos \ar{\frac{n\pi x}{p}} 
+	+ \dsum{n=1}{\infty}b_n \sin \ar{\frac{n \pi x}{p}}
+$$
+
+where ${a_0,}$ ${a_n,}$ and ${b_n}$ are _Fourier coefficients_ of ${f,}$  given by the formulas
+
+$$
+	a_0 = \frac{1}{p} \integral{-p}{p} f(x) ~ {\d}x, \\[2em]
+	a_n = \frac{1}{p} \integral{-p}{p} f(x) \cos \ar{\frac{n \pi x}{p}} ~ {\d}x, \\[2em]
+	b_n = \frac{1}{p} \integral{-p}{p} f(x) \sin \ar{\frac{n \pi x}{p}} ~ {\d}x. \\[2em]
+$$

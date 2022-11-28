@@ -1,9 +1,15 @@
-import React, { useRef, useEffect } from "react"; import { Base } from
-"../base/Base"; import { renderAngle, renderArea,
-renderAxes, renderRectangle, renderCircle, renderRay, renderLabel, renderLine,
-renderPoint, renderLineSegment, renderBracket, } from "./renderers"; import {
-svg, getPropertyValues, canvasHelper } from "../utils"; import {
-generateFunctionData } from "./generateFunctionData/generateFunctionData";
+import React, { useRef, useEffect } from "react";
+import { Base } from "../base/Base";
+import {
+	renderAngle, renderArea,
+	renderAxes, renderRectangle,
+	renderCircle, renderRay, renderLabel, renderLine,
+	renderPoint,
+	renderLineSegment,
+	renderBracket,
+} from "./renderers";
+import { svg, getPropertyValues, canvasHelper } from "../utils";
+import { generateFunctionData } from "./generateFunctionData/generateFunctionData";
 import { computePath } from "./computePath/computePath";
 import { axisBottom, axisLeft, scaleLinear, select } from "d3";
 
@@ -31,7 +37,7 @@ export const Plot = ({
 	yLabel = { text: "y" },
 	fontSize = 0.6,
 	tickFontSize = 0.8,
-	axesColor = "var(--text-color)",
+	axesColor = "var(--powder)",
 	plotLineColor = "firebrick",
 	strokeWidth = 1,
 	marginTop = 10,

@@ -9,10 +9,9 @@ import { Col } from "../../../components/Col";
 # Complexity Analysis
 This section provides a general overview of algorithmic analysis in programming terms. We present the motivating question, its answer, as well as illustrations of the answer applied. The materials that follow assume a basic understanding of functions, limits, sequences, and series (i.e., comfort with ideas from a basic calculus and discrete mathematics course). For a thorough mathematical justification of algorithmic analysis,
 
-1. [Foundational Mathematics](#foundational-mathematics)
-2. [Knuth's Model](#knuths-model)
-3. [Complexity Functions](#complexity-functions)
-4. [Asymptotic Notations](#asymptotic-notations)
+1. [Knuth's Model](#knuths-model)
+2. [Complexity Functions](#complexity-functions)
+3. [Asymptotic Notations](#asymptotic-notations)
 	1. [Limit-based Definitions](#limit-based-definitions)
 		1. [Asymptotic Similarity](#asymptotic-similarity)
 		2. [Asymptotic Equivalence](#asymptotic-equivalence)
@@ -26,8 +25,8 @@ This section provides a general overview of algorithmic analysis in programming 
 		4. [Big Theta Notation](#big-theta-notation)
 		5. [Little O Notation](#little-o-notation)
 		6. [Little Omega Notation](#little-omega-notation)
-5. [Relationships Between Asymptotic Notations](#relationships-between-asymptotic-notations)
-6. [Common Time Complexities](#common-time-complexities)
+4. [Relationships Between Asymptotic Notations](#relationships-between-asymptotic-notations)
+5. [Common Time Complexities](#common-time-complexities)
 	1. [Constant Order: ${\bigO{1}}$](#constant-order-bigo1)
 	2. [Logarithmic Orders: ${\bigO{\log{n}}}$](#logarithmic-orders-bigologn)
 	3. [Linear Orders: ${\bigO{n}}$](#linear-orders-bigon)
@@ -36,8 +35,8 @@ This section provides a general overview of algorithmic analysis in programming 
 	6. [Quadratic Orders: ${\bigO{n^2}}$](#quadratic-orders-bigon2)
 	7. [Exponential Orders: ${\bigO{2^n}}$](#exponential-orders-bigo2n)
 	8. [Factorial Orders: ${\bigO{n!}}$](#factorial-orders-bigon)
-7. [Common Problem Patterns](#common-problem-patterns)
-8. [Limitations of Asymptotic Notations](#limitations-of-asymptotic-notations)
+6. [Common Problem Patterns](#common-problem-patterns)
+7. [Limitations of Asymptotic Notations](#limitations-of-asymptotic-notations)
 
 The most pertinent concern for analyzing algorithms is _efficiency_. One measure of efficiency is the amount of _time_ an algorithm takes to execute. That is, how long it takes given algorithm to solve a particular problem. To do so, however, we need some agreed-upon method for quantifying "speed." We can't rely on timing from start to finish if we want to compare algorithms across different machines, since every machine is different. Solving some differential equation on a small mobile phone will be slower than running the same operation on a super computer. Although it may be useful to know how fast the search runs on just one device model, it's not the principal concern in the analysis of algorithms. We want generality.
 
@@ -102,9 +101,6 @@ $$
 $$
 
 The final expression gives us the algorithm's runtime function as a closed form expression: ${t(n) = 4(n+1).}$ This is still just an estimate. If we wanted to be even more accurate, we would count the number of ~jump~ instructions executed by loop. And if we wanted to be even more accurate, we would count the number of calls to RAM the CPU made to retrieve data not found in its registers. And if we wanted to be even more accurate, we would count the number of steps the CPU took to check its processor registers, the number of steps needed to run through the cache hierarchy, and so on. The point is, counting steps will always be an estimation at best. This doesn't mean that step counting is a useless exercise. In fact, we'll often use step counting to build a base case or to build some intuition. Our final description, however, will be a _complexity function_. Before we ever analyze an algorithm, however, there's something else we must do — prove that the algorithm exists in the first place.
-
-## Foundational Mathematics
-The materials in this volume assume elementary mathematical constructs. These constructs may be found via [this reference](./../../math/reference).
 
 ## Knuth's Model
 Modern analysis of algorithms is based on Donald Knuth's work, found throughout his (gargantuan) series of ~the art of computer programming~. In sum, we  analyze algorithms by running through the checklist below, _in order_:

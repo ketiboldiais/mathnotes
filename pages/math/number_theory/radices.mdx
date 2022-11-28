@@ -7,17 +7,10 @@
 _The following are notes on radices._
 
 1. [Notation and Terminology](#notation-and-terminology)
+2. [Number Systems](#number-systems)
 	1. [Numerals](#numerals)
 	2. [Base Conversion Algorithm](#base-conversion-algorithm)
 	3. [Number of Digits](#number-of-digits)
-2. [Binary Arithmetic](#binary-arithmetic)
-	1. [Binary Set Union](#binary-set-union)
-	2. [Binary Intersection](#binary-intersection)
-	3. [Binary Set Minus](#binary-set-minus)
-	4. [Binary Remainder](#binary-remainder)
-	5. [At Least One is False](#at-least-one-is-false)
-	6. [Must Both Be False](#must-both-be-false)
-	7. [At Least One is False](#at-least-one-is-false-1)
 
 ## Notation and Terminology
 Before we examine the substantive material, below is a quick review of some notation:
@@ -47,6 +40,76 @@ $$
 ~example~. ${\trunc{3.14} = 3.}$
 
 ~example~. ${\trunc{-2.9} = -2.}$
+
+## Number Systems
+Consider the following set of points:
+
+$$
+	\sd{\ax{{\wc} \dk\dk {\wc} {\wc} \dk{\wc} ~~ {\wc} ~~~{\wc} \\ {\wc} \quad{\wc} {\wc} \quad{\wc} ~ {\wc} \quad {\wc} {\wc} \\ {\wc} \dk{\wc} \space {\wc} ~{\wc} ~~~ {\wc}\quad{\wc} \\ \dk{\wc} \quad{\wc}\\ {\wc}\dk{\wc}{\wc} ~{\wc} ~~~ {\wc}~~{\wc}~~~~~{\wc}{\wc}{\wc}\\ \quad{\wc} \dk {\wc} ~~~~~~~{\wc} ~ {\wc}{\wc}\dk{\wc}\quad {\wc}}}
+$$
+
+Truly, this looks tedious to count. It is easier to count the points if they're organized into bundles:
+
+$$
+	\eqs{\tx{bundles of 2 }&{\ax{
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		\sd{{\wc}{\wc}}
+		{{{\wc}}}
+	}}
+	\\
+	\tx{bundles of 3 }&{\ax{
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}}
+	{{\wc}}
+	}}
+	\\
+	\tx{bundles of 10 }&{\ax{
+	\sd{{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}}
+	\sd{{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}}
+	{{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}{\wc}}
+	}}}
+$$
+
+Suppose the set contained ${3572}$ points. If our bundle size is 10, we can count the number of points by bundling:
+
+1. Make 357 bundles of ${10^1}$ points. This leaves ${2 = 2 \times 10^0}$ points remainder.
+2. Of the 357 bundles, make 35 bundles of ${10^2}$ points. This leaves ${7 \times 10^1}$ points remainder.
+3. Of the 35 bundles, make 3 bundles of ${10^3}$ points. This leaves ${5 \times 10^2}$ points remainder.
+4. Because there are only 5 bundles remaining, we stop counting, and sum the total:
+
+
+
+
+
+
+
 
 ### Numerals
 Recall that the division theorem provides the following:
@@ -121,88 +184,3 @@ $$
 
 
 
-## Binary Arithmetic
-It's helpful to know the basic powers of two for this section:
-
-| ~power~    | ~decimal~ |
-| ---------- | --------- |
-| ${2^0}$    | 1         |
-| ${2^1}$    | 2         |
-| ${2^2}$    | 4         |
-| ${2^3}$    | 8         |
-| ${2^4}$    | 16        |
-| ${2^5}$    | 32        |
-| ${2^6}$    | 64        |
-| ${2^7}$    | 64        |
-| ${2^8}$    | 128       |
-| ${2^9}$    | 512       |
-| ${2^{10}}$ | 1024      |
-| ${2^{11}}$ | 2048      |
-| ${2^{12}}$ | 4096      |
-
-Below are the definitions of bitwise operations.
-
-> __bitwise operations.__ Let ${(n)_2 = (a_{n-1},a_{n-1},\ldots,a_2,a_1,a_0)}$ and ${(m)_2 = (b_{n-1},b_{n-1},\ldots,b_2,b_1,b_0)}$ be binary integers, such that each ${a_i}$ and ${b_i}$ is a bit (1 or 0 but not both), for all ${0 \le i \le n,}$ where ${i,n \in \nat.}$ The following definitions apply for each bit ${a}$ and ${b.}$
-> 
-> $$
-> 	\eqs{
-> 		\bnot a &= 1 - a \equiv \df{not}~ a \\
-> 		a \bor b &= \max{(a,b)} \equiv a ~\df{or} ~ a \\
-> 		a \band b &= \min{(a,b)} \equiv a ~\df{and} ~ b \\
-> 		a \bxor b &= \abs{a-b}  \equiv a ~\df{xor} ~ b \\ 
-> 	}
-> $$
-> 
-> Given ${A, B \in 2^{\nat},}$ the operations are defined as follows:
-> 
-> $$
-> 	\eqs{
-> 		\bnot a &= 1 - a \equiv \df{not}~ a \\
-> 		a \bor b &= \max{(a,b)} \equiv a ~\df{or} ~ a \\
-> 		a \band b &= \min{(a,b)} \equiv a ~\df{and} ~ b \\
-> 		a \bxor b &= \abs{a-b}  \equiv a ~\df{xor} ~ b \\ 
-> 	}
-> $$
-
-The bitwise operators apply to bits (base expansions) of integers, not the integers themselves. 
-
-### Binary Set Union
-The ${A \bor B}$ operation is equivalent to ${A \cup_{2} B}$ (the binary union of ${A}$ and ${B}$).
-
-### Binary Intersection
-The ${A \band B}$ operation is equivalent to ${A \cap_{2} B}$ (the binary intersection of ${A}$ and ${B}$).
-
-### Binary Set Minus
-Given two binary sets ${A}$ and ${B,}$ the binary set minus (${A \rid_{2} B}$) is expressed as ${A \band (\bnot B).}$
-
-### Binary Remainder
-Given binary variables ${a}$ and ${n,}$ the binary remainder of ${a}$ and ${n}$ can be computed as follows:
-
-$$
-	a \rem n \equiv a \band (n-1).
-$$
-
-~example~. ${6 \band (2-1)=6 \rem 2=0.}$
-
-~example~. ${7 \band (2-1) = 7 \rem 2=1.}$
-
-### At Least One is False
-The expression below returns true if _at least one_ of ${a}$ and ${b}$ is 0. Note the different symbols, these are logical operators, not bitwise. The phrase "at least one of" can always be translated in terms of "nand."
-
-$$
-	\neg(a \land b).
-$$
-
-### Must Both Be False
-Given two binary variables ${a}$ and ${b,}$ the expression below returns true if both ${a}$ and ${b}$ are false.
-
-$$
-	[(a \bor b)=0].
-$$
-
-### At Least One is False
-Given two variables ${a}$ and ${b,}$ the expression below returns true if exactly one of the values is false.
-
-$$
-	[(\neg a) \bxor (\neg b)].
-$$

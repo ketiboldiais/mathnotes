@@ -1,26 +1,188 @@
 import { Mem } from "../../../components/hago";
 
 <Head>
-	<title>Recursion</title>
-	<meta name={`description`} content={`Notes on recursion.`}/>
+	<title>Functional Programming</title>
+	<meta name={`description`} content={`Notes on functional programming.`}/>
 </Head>
 
-# Recursion
+# Functional Programming
 
 _This chapter covers notes on recursion._
 
-1. [Recursion Theorem](#recursion-theorem)
-2. [Writing Recursive Functions](#writing-recursive-functions)
+1. [Basic Definitions](#basic-definitions)
+	1. [Functions](#functions)
+	2. [Recursion Theorem](#recursion-theorem)
+	3. [Language](#language)
+	4. [Lambda Calculus](#lambda-calculus)
+		1. [Abstraction](#abstraction)
+		2. [Beta Reduction](#beta-reduction)
+	5. [Currying](#currying)
+	6. [Type System](#type-system)
+	7. [Atoms](#atoms)
+2. [Lists](#lists)
+	1. [Operations on Lists](#operations-on-lists)
+3. [Orders of Functions](#orders-of-functions)
 
-## Recursion Theorem
-Recursion is a mathematical theorem implied by the construction of the natural numbers. Recall the theorem's statement:
+## Basic Definitions
+### Functions
+> __~definition: function~.__ A _function_ is an assignment from a set ${A}$ to a set ${B,}$ such that each element of ${A}$ is mapped to a unique element of ${B.}$
 
-> __recursion theorem.__ Let ${\Ss}$ be a set with ${x \in \Ss}$ and the injective function ${f : \Ss \inj \Ss.}$ Then there exists a function ${g : \nat \to X}$ such that
+### Recursion Theorem
+> __~recursion theorem~.__ Let ${\Ss}$ be a set with ${x \in \Ss}$ and the injective function ${f : \Ss \inj \Ss.}$ Then there exists a function ${g : \nat \to X}$ such that
+>  
+> 1. ${g(0) = x,}$ and
+> 2. ${\forall n \in \nat [g(n + 1) = f(g(n))].}$
+
+### Language
+> __~definition: token~.__ A _token_ is any symbol that may be processed by a machine.
+
+> __~definition: alphabet~.__ An _alphabet_ is a finite set of tokens.
+
+> __~definition: natural sequence~.__ For ${n \in \nat,}$ the notation ${\ix{n}}$ denotes the well-ordered set ${\set{k \in \nat}: 1 \le k \le n,}$ with ${\ix{0} = \nil.}$ We call each number in the natural sequence an _index_.
+
+> __~definition: word~.__ Let ${k}$ be an index, and let ${x}$ be a token in some alphabet ${\Aa}$ without the token ${\lq \epsilon. \rq}$  A _word_ is a map ${w : \ix{n} \to \Aa : k \mapsto w(k),}$ where ${k \in \ix{n}.}$ That is, ${w}$ is any set of ordered pairs ${(k,x)}$ such that, if ${(k,x) \in w}$ and ${(k,x') \in w,}$ then ${x = x'.}$ We denote the token at index ${k}$ with the notation ${w(k) = x,}$ the empty bitstring with the symbol ${\epsilon,}$ and we the number ${n}$ the _length_ of the word ${w.}$
+
+> __~definition: language~.__ A _language_ is a set of words ${\Ll \subseteq \Sigma^*,}$ where ${\Sigma}$ is an alphabet and ${\Sigma^*}$ is the set of all strings over ${\Sigma.}$
+
+> __~definition: context-free grammar~.__ A _context-free grammar_ is a quadruple ${\Gg = (\Aa,\Vv,\Ww,s),}$ where ${\Aa}$ is an alphabet whose tokens are called _terminals_, ${\Vv}$ is a finite set of tokens called _variables_ with ${\Aa \cap \Vv = \nil,}$ ${\Ww}$ is a set of equivalence classes of words over ${\Aa \dup \Vv,}$ and ${s \in \Vv}$ is a start variable. We call a word of terminals or nonterminals on ${\Gg}$ a _sentence_.
+
+### Lambda Calculus
+#### Abstraction
+> __~definition~.__ An _abstraction_ is a pair ${\px{\lambda x,e_x},}$ where ${\lambda x}$ is called the _head_ of the abstraction, and ${e_x}$ is a word with ${x}$ called the _body_ of the abstraction. We denote an abstraction with the notation ${\lambda x \mc e_x,}$ where ${\lambda}$ demarcates the beginning of the head, and ${\mc}$ demarcates the beginning of the body. Given the head ${\lambda x,}$ ${x}$ is a called a _parameter_. The value mapped to the parameter is called an _argument_. Given the body ${x,}$ if ${x}$ contains a symbol contained in its head, we call such a symbol a _bound variable_. If ${x}$ contains a symbol not contained in the head, we call the symbol a _free variable_.
+
+~remark~. All abstractions are functions, but not all functions are abstractions. First, abstractions have no names. E.g., when we write ${f(x) = x^2,}$ the function's name is ${f.}$ As an abstraction: ${\lambda x \mc x^2.}$ Because of this property, we may also call abstractions _anonymous functions_. Second, abstractions take _only one argument_. In mathematics, we have functions such as ${f(x,y) = x^2 + y^2.}$ For now, we will say that this is not permitted.
+
+~example~. ${\lambda x \mc x}$ is an abstraction with one bound variable, ${x.}$
+
+~example~. ${\lambda x \mc xy}$ is an abstraction with one bound variable ${x}$ and one free variable ${y.}$
+
+#### Beta Reduction
+> __~definition~.__ Let ${\px{\lambda x \mc e_x} \px{v}}$ be an abstraction. Let ${v}$ be input fed to the head. The _beta reduction_ of ${\lambda x \mc e_x}$ is defined as follows.
 > 
-> > (1) ${g(0) = x,}$ and
-> >
-> > (2) ${\forall n \in \nat [g(n + 1) = f(g(n))].}$
+> 1. Examine the body ${e_x,}$ reading from left to right.
+> 2. If a bound variable ${x}$ is encountered, replace ${x}$ with the argument ${v.}$
+> 3. If a free variable is encountered, continue.
+> 3. After the last bound ${x}$ has been replaced, return ${b.}$
 
-## Writing Recursive Functions
-Many authors recommend treating recursive functions as definitions, and to stop thinking of them as procedures. _This is bad, bad advice_. The premise is, because recursion is a method of constructing definitions in mathematics, we should think of them as definitions rather than procedures. But the premise is fundamentally flawed, because procedure is precisely why recursive definitions are so useful — they tell us _what to do next_ to construct a particular object. Moreover, rigorous recursive definitions in mathematics rarely come from a simple "What is the base case?" followed by "What is ${x?}$" Look at any mathematician working on a rigorous definition, and you'll find piles of papers filled with trial-and-error calculations. We _always_ look at the recursive function as a procedure.
+~example~. ${\px{\lambda x \mc x} \px{2} = 2.}$
+
+~example~. ${\px{\lambda n \mc n + 2} \px{8} = 8 + 2.}$
+
+~example~. ${\px{\lambda a \mc a} \px{\lambda b \mc b} = \lambda b \mc b.}$
+
+~example~. From the definition, beta-reduction is left-associative.
+
+$$
+\eqs{
+\px{\lambda x \mc x}\px{\lambda y \mc y}z
+&= \px{\lambda y \mc y} z &\dk \color{grey}{x := \lambda y \mc y} \\
+&= z &\dk \color{grey}{y := z}
+}
+$$
+
+~example~. ${\px{\lambda x \mc x y}z = zy.}$ We cannot replace ${y}$ because it is a free variable.
+
+### Currying
+> __~notation~.__ The expression ${\lambda xy \mc xy}$ is shorthand for the abstraction ${\lambda x \mc \px{\lambda y \mc xy}.}$
+
+~example~.
+
+$$
+\eqs{
+	\px{\lambda xy \mc xy} \px{1,2}
+	&= \px{\lambda x \mc \px{\lambda y \mc x y}} \px{1,2} \\
+	&= \px{\out{\lambda x} \mc \px{\lambda y \mc \out{x}^1 y}} \px{\out{1},2} \\
+	&= \px{\lambda y \mc 1 y} \px{2} \\
+	&= \px{\out{\lambda y} \mc 1 \out{y}^2} \px{2} \\
+	&= 1 \dk 2 \\
+}
+$$
+
+~example~.
+
+$$
+\eqs{
+	\px{\lambda xy \mc xy}\px{\lambda z \mc a} \px{1}
+	&= \px{\lambda x \px{\lambda y \mc xy}}\px{\lambda z \mc a} \px{1} \\
+	&= \px{\out{\lambda x} \px{\lambda y \mc \tnote{\out{x}}{$\px{\lambda z \mc a}$}y}}\out{\px{\lambda z \mc a}} \px{1} \\
+	&= \px{\lambda y \mc \px{\lambda z \mc a}y} \px{1} \\
+	&= \px{\out{\lambda y} \mc \px{\lambda z \mc a}\out{y}^1} \out{\px{1}} \\
+	&= \px{\lambda z \mc a} \dk 1 \\
+	&= a
+}
+$$
+
+~example~. _Currying_ is the process of decomposing a function that takes multiple arguments into a sequence of functions that take only one argument.
+
+$$
+	f\px{x,y} \mapsto x^2 + y^2
+	\dk
+	\xRightarrow{curry}
+	\dk
+	f\px{x} \mapsto f\px{y} \mapsto x^2 + y^2
+$$
+
+~application~. Why might we want to use currying from an applied perspective? Two reasons: (1) It allows us to write much more generic procedures, and (2) it provides caching. For reason (1):
+
+<Algo>
+
+1. __function__ ${f\px{x}}$
+	1. __return__ ${\px{y} \mapsto (x \rem y = 0)}$
+
+</Algo>
+
+The function ${f}$ is essentially a _function factory_ — it produces functions whose body is of the form ${x \rem y = 0.}$ Thus, we can mass produce functions of this form with ease:
+
+<Algo>
+
+1. __function__ ${multipleof2 := f(2)}$
+2. ${multipleof2\px{18}}$ _true_
+3. ${multipleof2\px{19}}$ _false_
+4. __function__ ${multipleof3 := f(3)}$
+5. ${multipleof3\px{21}}$ _true_
+6. __function__ ${multipleof4 := f(4)}$
+7. ${multipleof4\px{19}}$ _false_
+
+</Algo>
+
+For reason (2):
+
+<Algo>
+
+1. __function__ ${expensiveComputation\px{x}}$
+	1. ${\let{z}{expensiveOps}\px{x}}$
+	2. __return__ ${\px{y} \mapsto z + y}$
+
+</Algo>
+
+When we write ${f = expensiveComputation\px{v},}$ we perform the expensive computation ${v}$ immediately. This effectively caches the result, reducing the cost of performing the operation elsewhere.
+
+### Type System
+> __~definition: type-system~.__ A _type-system_ is the collection of all the possible domains and codomains of functions under discussion. If a function's domain and codomain is not within the type-system, then the function is considered _undefined_. We call each set in the type-system a _type_.
+
+
+### Atoms
+> __~definition: atom~.__ An _atom_ is an element of a type that cannot be further simplified.
+
+## Lists
+> __~definition~.__ A _list_ is a sequence of objects ${(x_1, \ldots, x_n).}$ There exists a list of no objects, called the _empty list_, denoted ${\nil.}$ We call ${x_1}$ the _head_ of the list, and ${x_n}$ the _tail_ of the list.
+
+~example~. ${(1,2,3,4)}$ is a list of integers.
+
+~example~. ${\string{hello}}$ is a list of symbols. We call this particular list a _string_.
+
+### Operations on Lists
+Below are basic operations on lists.
+
+
+## Orders of Functions
+> __~definition: first-order function~.__ A _first-order function_ is a function that maps primitive data values to primitive data values. That is, a function that takes atoms as arguments and returns atoms as values.
+
+> __~definition: higher-order function~.__ A _higher-order function_ is a function that maps functions to either functions or atoms. I.e., a function that takes functions as arguments and returns either functions or atoms as values.
+
+~example~. Differentiation is a function that takes a function and returns a function.
+
+~example~. Indefinite integration is a function that takes a function and returns a function.
+
+~example~. Definite integration is a function that takes a function and returns an atom (some number).
 

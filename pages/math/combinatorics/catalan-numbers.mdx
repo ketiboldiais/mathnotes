@@ -1,0 +1,215 @@
+import {Lattice} from "../../../components/Hago/index";
+
+# Lattice Paths
+_This note presents an overview of Catalan numbers_.
+
+1. [Dyck Paths](#dyck-paths)
+
+> __~lattice path~.__ A _lattice path_ is a sequence ${P=((x_0,y0), (x_1,y_1), \ldots,(x_k,y_k)),}$ where each ${x_i}$ and ${y_i}$ is an integer, such that ${(x_i,y_i)=(x_{i-1} + 1, y_{i-1}),}$ or ${(x_i,y_i)=(x_{i-1},y_{i-1}+1),}$ for all ${i \in \nat : i \ge 1.}$ 
+
+~example~. Lattice paths on a ${5 \times 5}$ grid:
+
+<Grid cols={4}>
+<Lattice data={[
+	[0,0],[0,1],[1,1],[1,2],[1,3],[2,3],[2,4],[3,4],[4,4]
+]} id={'lattice1'}xMax={5}yMax={5}
+/>
+<Lattice data={[
+	[0,0],[0,1],[0,2],[0,3],[0,4],[4,4],
+]} id={'lattice2'}xMax={5}yMax={5}
+/>
+<Lattice data={[
+	[0,0],[0,1],[1,1],[1,2],[2,2],[2,3],[3,3],[3,4],[4,4]
+]} id={'lattice3'}xMax={5}yMax={5}
+/>
+<Lattice data={[
+	[0,0],[1,0],[1,1],[2,1],[2,2],[3,2],[3,3],[4,3],[4,4]
+]} id={'lattice4'}xMax={5}yMax={5}
+/>
+</Grid>
+
+In short, they're dots marking the vertices along a path, where, at each vertex, we can only move right by 1, or up by 1. It's likely not apparent, but these paths are closely related to binomial coefficients. While lattice diagrams are helpful, it's often easier to express them as words. If we start at some point ${(a,b)}$ we can denote the path to some other point ${(c,d)}$ with the letters ${N}$ (_north_) and ${E}$ (_east_). For example, if we start at the bottom-left point for the the lattice path:
+
+<Lattice data={[
+	[0,0],[0,1],[0,2],[1,2],[1,3],[2,3]
+]}id={'lattice5'}xMax={3}yMax={4} scale={40} idx={true}/>
+
+we may denote it as: ${NNENE.}$ Viewed this way, we can see that this is an alphabet with two letters. If we want a lattice path from ${(0,0)}$ to ${(a,b),}$ we need ${a}$ of the ${E}$ steps and ${b}$ of the ${N}$ steps. Which in turn means that there, at most, ${\binom{a+b}{a,b}}$ lattice paths to get from ${(0,0)}$ to ${(a,b).}$
+
+> __~lattice path count~.__ For all ${a,b \in \nat,}$ there are
+> 
+> $$
+>    \dbinom{a+b}{a,b} = \dfrac{(a+b)!}{a!b!}
+> $$
+> 
+> lattice paths from ${(0,0)}$ to ${(a,b).}$
+
+## Dyck Paths
+> __~definition~.__ An _${n}$-Dyck path_ is a lattice path from ${(0,0)}$ to ${(n,n)}$ such that ${y_i \ge x_i}$ for all points ${(x_i,y_i)}$ on the path.
+
+In other words, an ${n}$-Dyck path is a lattice path that always stays above the the real line ${y = x.}$ For example, below are some ${n}$-Dyck paths for a ${4 \times 4}$ grid, alongside their move sequences.
+
+
+<Grid cols={2}>
+<Lattice data={[
+	{xy:[0,0], class:'dash'},
+	{xy:[1,1], class:'dash'},
+	{xy:[2,2], class:'dash'},
+	{xy:[3,3], class:'dash'},
+	[0,0],
+	[1,0],
+	[1,1],
+	[2,1],
+	[2,2],
+	[3,2],
+	[3,3],
+]}id={'dyck1'}xMax={4}yMax={4} scale={80} idx={true}/>
+
+<Lattice data={[
+	{xy:[0,0], class:'dash'},
+	{xy:[1,1], class:'dash'},
+	{xy:[2,2], class:'dash'},
+	{xy:[3,3], class:'dash'},
+	[0,0],
+	[1,0],
+	[1,1],
+	[3,1],
+	[3,3],
+]}id={'dyck2'}xMax={4}yMax={4} scale={80} idx={true}/>
+
+$$
+	ENENEN
+$$
+
+$$
+	ENEENN
+$$
+
+<Lattice data={[
+	{xy:[0,0], class:'dash'},
+	{xy:[1,1], class:'dash'},
+	{xy:[2,2], class:'dash'},
+	{xy:[3,3], class:'dash'},
+	[0,0],
+	[3,0],
+	[3,3],
+]}id={'dyck3'}xMax={4}yMax={4} scale={80} idx={true}/>
+
+<Lattice data={[
+	{xy:[0,0], class:'dash'},
+	{xy:[1,1], class:'dash'},
+	{xy:[2,2], class:'dash'},
+	{xy:[3,3], class:'dash'},
+	[0,0],
+	[2,0],
+	[2,1],
+	[3,1],
+	[3,2],
+	[3,3],
+]}id={'dyck4'}xMax={4}yMax={4} scale={80} idx={true}/>
+
+$$
+	EEENNN
+$$
+
+$$
+	EENENN
+$$
+
+</Grid>
+
+Notice that there are always as many east ${E}$ movements as there are north ${N}$ movements.
+
+> __~question~.__ Given ${n \times n}$ grid, how man Dyck paths are there from ${(0,0)}$ to ${(n,n)}$?
+
+The French mathematician Desire Andre answered this question in the late 1800s.
+
+__~theorem~.__ Given an ${n \times n}$ grid with ${n \ge 0,}$ the number of ${n}$-Dyck paths from ${(0,0)}$ to ${(n,n)}$ is the _${\ith{n}}$ Catalan number_
+
+$$
+	C_n = \dbinom{2n}{n} - \dbinom{2n}{n+1} = \dfrac{(2n)!}{n!(n+1)!}.
+$$
+
+The idea starts with the following. We know how many paths there are from ${(0,0)}$ to ${(n,n)}$ — it's the number of lattice paths from ${(0,0)}$ to ${(n,n).}$ Namely, ${\frac{(a+b)!}{a!b!} = \frac{2n!}{n!n!}.}$ Call this ${T.}$ The number of Dyck paths, then, ${B = T - A,}$ where ${A}$ is the number of lattice paths _above_ the diagonal and ${B}$ is the number of lattice paths _below_ the diagonal. The question then, is, how do we count ${A?}$ Let's begin by constructing a path that _isn't_ a Dyck path. We then mark the first point where we violate the definition. That is, the first point where we cross the diagonal. Here, that's ${(5,6).}$
+
+<Lattice data={[
+	{xy:[0,0], class:'dash'},
+	{xy:[1,1], class:'dash'},
+	{xy:[2,2], class:'dash'},
+	{xy:[3,3], class:'dash'},
+	{xy:[4,4], class:'dash'},
+	{xy:[5,5], class:'dash'},
+	{xy:[6,6], class:'dash'},
+	{xy:[6,6], class:'dash'},
+	{xy:[7,7], class:'dash'},
+	{xy:[8,8], class:'dash'},
+	{xy:[9,9], class:'dash'},
+	{xy:[0,0]},
+	{xy:[1,0]},
+	{xy:[2,0]},
+	{xy:[3,0]},
+	{xy:[3,1]},
+	{xy:[3,2]},
+	{xy:[4,2]},
+	{xy:[5,2]},
+	{xy:[5,3]},
+	{xy:[5,4]},
+	{xy:[5,5]},
+	{xy:[5,6], class: 'red'},
+	{xy:[5,7]},
+	{xy:[6,7]},
+	{xy:[6,8]},
+	{xy:[6,9]},
+	{xy:[9,9]},
+]}id={'dyckproof1'}xMax={10}yMax={10} scale={40} idx={true}/>
+
+From the violating point ${(5,6),}$ we construct a _reflection_ of the path we took. That is, for each ${N,}$ we take ${E}$ instead, and for each ${E,}$ we take ${N}$ instead. For example, starting from the point ${(5,6),}$ we took the turn sequence: ${NENNEEE.}$ So, to perform the reflection, we start at ${(5,6)}$ and take the turn sequence ${ENEENNN.}$
+
+<Lattice data={[
+	{xy:[0,0], class:'dash'},
+	{xy:[1,1], class:'dash'},
+	{xy:[2,2], class:'dash'},
+	{xy:[3,3], class:'dash'},
+	{xy:[4,4], class:'dash'},
+	{xy:[5,5], class:'dash'},
+	{xy:[6,6], class:'dash'},
+	{xy:[6,6], class:'dash'},
+	{xy:[7,7], class:'dash'},
+	{xy:[8,8], class:'dash'},
+	{xy:[9,9], class:'dash'},
+	{xy:[0,0]},
+	{xy:[1,0]},
+	{xy:[2,0]},
+	{xy:[3,0]},
+	{xy:[3,1]},
+	{xy:[3,2]},
+	{xy:[4,2]},
+	{xy:[5,2]},
+	{xy:[5,3]},
+	{xy:[5,4]},
+	{xy:[5,5]},
+	{xy:[5,6], class: 'red'},
+	{xy:[5,7]},
+	{xy:[6,7]},
+	{xy:[6,8]},
+	{xy:[6,9]},
+	{xy:[9,9]},
+	{xy:[5,6], class: 'red redline', g:1},
+	{xy:[6,6], class: 'red redline'},
+	{xy:[6,7], class: 'red redline'},
+	{xy:[7,7], class: 'red redline'},
+	{xy:[8,7], class: 'red redline'},
+	{xy:[8,8], class: 'red redline'},
+	{xy:[8,9], class: 'red redline'},
+	{xy:[8,10], class: 'red redline'},
+]}id={'dyckproof2'}xMax={11}yMax={11} scale={40} idx={true}/>
+
+Notice that this puts us at the position ${(n-1,n+1).}$
+Suppose ${A}$ is the set of all lattice paths from ${(0,0)}$ to ${(n,n),}$
+and ${B}$ is the set of all lattice paths from ${(0,0)}$ to ${(n-1,n+1).}$
+Let ${C}$ be the set of all Dyck paths of order ${n.}$
+Since all Dyck paths are lattice paths and since all lattice paths from ${(0,0)}$ to ${(n,n)}$ either cross ${y=x}$ or do not cross ${y=x,}$ we have a set ${D = A \rid C}$ such that ${D}$ is the set of all paths from ${(0,0)}$ to ${(n,n)}$ that do not cross ${y=x.}$ The difference rule tells us that ${\abs{C} = \abs{A}-\abs{D},}$ yielding
+
+$$
+	\abs{C} = \dbinom{2n}{n} - \dbinom{2n}{n+1} = \dfrac{(2n)!}{n!(n+1)!}.
+$$

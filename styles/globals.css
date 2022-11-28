@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');
+
 /* Font Imports */
 	@font-face {
 		font-family: 'Latin Modern';
@@ -72,7 +74,8 @@
 
 
 	/* Core Colors */
-	--background-color: #ffffff;
+	/* --background-color: rgb(251,255,244); */
+	--background-color: white;
 	--text-color: black;
 	--nav-content-background-color: rgb(255, 255, 255);
 	--card: 1px 5px 9px 3px rgba(73, 73, 73, 0.659);
@@ -91,7 +94,7 @@
 
 	/* Box Shadows */
 	--box-shadow: 0px 1px 0 #bbbbbb, 1px 1px 2px #868686;
-	--drop-shadow: 3px 3px 2px rgba(0, 0, 0, .7)
+	--drop-shadow: 3px 3px 2px rgba(0, 0, 0, .7);
 	--box-shadow-hover: 1px 1px 2px rgb(228, 228, 228);
 	--box-shadow-border: 1px solid #ececec;
 	--box-shadow-pressed: inset 0.063rem 0.063rem 0.125rem #858585,
@@ -100,98 +103,6 @@
 	--page-box-shadow: 0px 1px 1px #b5b5b5, 1px 1px 4px #c6c6c6;
 
 /* Color Palette */
-	/* Binary Trees */
-		--binary-tree-edge-color: firebrick;
-		--binary-tree-node-fill-color: tomato;
-		--binary-tree-text-color: white;
-	/* Tree */
-		--tree-edge-color: firebrick;
-		--tree-node-fill-color: tomato;
-		--tree-text-color: var(--white);
-		--tree-annotation-color: var(--text-color);
-		--tree-height-color: var(--text-color);
-		--tree-depth-color: var(--text-color);
-		--tree-level-color: var(--text-color);
-		--tree-balance-factor-color: var(--text-color);
-		--tree-imbalance-factor-color: firebrick;
-		--tree-balance-factor-color: var(--green);
-		--tree-node-mark-fill: var(--blue);
-		--tree-node-mark-stroke: var(--darkBlue);
-		--tree-node-mark-text: var(--white);
-	
-	/* MTrees */
-		--mtree-edge-color: var(--text-color);
-		--mtree-node-fill-color: var(--background-color);
-		--mtree-text-color: var(--text-color);
-
-	/* Sequences */
-		--sequenceElementFill: var(--white);
-		--sequenceElementStroke: var(--black);
-		--sequenceElementTextColor: var(--black);
-		--sequenceElementIndexColor: var(--lightGrey);
-		--sequenceAnnotationColor: var(--red);
-
-	/* Matrices */
-		--matrixElementFill: var(--white);
-		--matrixElementStroke: var(--black);
-		--matrixElementTextColor: var(--black);
-		--matrixIndexColor: var(--lightGrey);
-		--matrixFocusFillColor: var(--black);
-		--matrixFocusTextColor: var(--orange);
-
-	/* Linked Lists */
-		--linkedListDataFieldFill: var(--white);
-		--linkedListDataFieldTextColor: var(--text-color);
-		--linkedListNextFieldFill: var(--paleBlue);
-		--linkedListLinkColor: var(--darkRed);
-		--linkedListIndexColor: var(--lightGrey);
-
-	/* Circular Linked Lists */
-		--circularListDataFieldFill: var(--white);
-		--circularListDataFieldTextColor: var(--text-color);
-		--circularListNextFieldFill: var(--paleBlue);
-		--circularListLinkColor: var(--darkRed);
-		--circularListIndexColor: var(--lightGrey);
-
-	/* Doubly Linked Lists */
-		--doublyLinkedListDataFieldFill: var(--white);
-		--doublyLinkedListTextColor: var(--text-color);
-		--doublyLinkedListNextFieldFill: var(--paleBlue);
-		--doublyLinkedListPrevFieldFill: var(--paleBlue);
-		--doublyLinkedListLinkColor: var(--darkRed);
-		--doublyLinkedListIndexColor: var(--red);
-
-	/* Stacks */
-		--stackFrameFill: var(--darkRed);
-		--stackFrameText: var(--white);
-
-	/* Queues */
-		--queuerFill: var(--white);
-		--queuerTextColor: var(--black);
-		--queuerIndexFill: var(--paleBlue);
-		--queuerIndexTextColor: var(--white);
-		--queuerAnnotationColor: var(--red);
-		--queuerFocusRedFill: var(--darkRed);
-		--queuerFocusRedStroke: var(--darkRed);
-	/* Circular Queues */
-		--circularQueuerFill: var(--paleGreen);
-		--circularQueuerStroke: var(--darkGreen);
-		--circularQueuerTextColor: var(--darkGreen);
-		--circularQueuerIndexColor: var(--lightGrey);
-	/* Parse Tree */
-		--parseTreeEdgeColor: var(--darkRed);
-		--parseTreeTextColor: var(--text-color);
-	/* Dot Plot */
-		--dotPlotCircleFill: var(--background-color);
-		--dotPlotCircleStroke: var(--darkGreen);
-		--dotPlotAxisColor: var(--darkGreen);
-	/* Plot */
-		--point-fill-color: var(--darkRed);
-		--point-stroke-color: var(--darkRed);
-		--plot-axes-color: rgb(0, 0, 0);
-	/* Flow */
-		--flow-stroke-color: var(--text-color);
-		--flow-fill-color: var(--background-color);
 	/* Bipartite Graph */
 		--bipartite-node-fill: #FFE69A;
 		--bipartite-node-stroke: #EC994B;
@@ -230,14 +141,15 @@
 		margin-top: -0.5em;
 		margin-left: 0.5em;
 	}
+	
 /* List Styles */
 	ol {
 		margin: 0;
 		padding: 0;
-		padding-left: 1.5em;
+		padding-left: 1rem;
 	}
 	/* p+ol li::marker {font-size: 0.95rem;font-family:'Latin Modern';} */
-	p+ol li { margin:0;list-style:decimal;}
+	p + ol li { list-style:decimal;}
 	p+ol li li {list-style:lower-alpha;}
 	p+ol li li li {list-style:decimal; }
 	p+ol li li li li {list-style:upper-alpha; }
@@ -246,7 +158,7 @@
 	ul li::marker {font-size: 0.7em;}
 /* Table */
 	table {
-		margin: 4% auto;
+		margin: 1% auto;
 		font-size: 0.95em;
 		border-collapse: collapse;
 	}
@@ -304,9 +216,8 @@
 	}
 	h1 {
 		text-align: center;
-		border-top: solid thin grey;
-		border-bottom: solid thin grey;
-		margin-bottom: 1rem;
+		margin: 2rem auto;
+		width:fit-content;
 	}
 	h2 {counter-increment: part;        counter-reset: subpart;}
 	h3 {counter-increment: subpart;     counter-reset: chapter;}
@@ -345,16 +256,12 @@
 			width: fit-content;
 		}
 /* KaTeX */
-	:not(.illus) span.katex {font-size: 0.98em;}
+	:not(.illus) span.katex {font-size: 1em;}
 	span.mbin {font-family: 'Latin Modern';}
-	span.mord.text {font-family: 'Latin Modern';}
-	/* .illus span.katex {font-size: 0.6em;} */
-	.Plot span.mord.texttt {
-		font-family: var(--mono) !important;
-		/* font-size: 0.5em; */
-	}
-	.katex .mord.text {
-		/* font-size: 1em; */
+	span.textmd {
+		font-family: 'Parisienne';
+		font-size: 1em;
+		font-weight: 600;
 	}
 	div.math.math-display {
 		overflow-x: auto;
@@ -362,41 +269,16 @@
 	}
 	.Plot span.mord.text {
 		font-family: var(--serif);
-		/* font-size: 0.6em; */
-	}
-/* DIV FLOATS */
-	div.fr {
-		float: right;
-		width: 40%;
-	}
-	div.fr p {
-		text-align: center;
-		font-size: 0.9em;
-		color:rgb(109, 151, 147);
 	}
 /* Table of Contents */
-	h1+p+ol,.outline ol,.outline ul {
-		padding:0 0 0 2em; 
-		margin:0;
-		font-size: 0.85rem;
+	h1 + p + ol {
+		margin: 0.8em;
+		font-size: 0.95rem;
+		columns: 3;
 	}
-	h1+p+ol a {
+	h1 + p + ol a {
 		text-decoration: unset;
-		/* font-family: 'Latin Modern'; */
 	}
-	h1+p+ol,.outline {
-		margin: 1em 0 !important;
-		/* border: solid thin grey; */
-		/* float: right; */
-		/* column-count: 3; */
-	}
-	.outline ol li {font-weight: bold;}
-	.outline ol li li {font-weight: normal;}
-	.outline ol {list-style: decimal;}
-	.outline ol ol {list-style: upper-alpha;}
-	.outline ol ol ol {list-style: lower-roman;}
-	.outline ol ol ol ol {list-style: lower-alpha;}
-	.outline ol ol ol ol ol {list-style: decimal;}
 /* Hago Table */
 	.hagoTable {
 		border: none !important;
@@ -479,16 +361,12 @@
 	figcaption {
 		display: block;
 		text-align: center;
-		font-size: 0.9em;
-		margin: 0;
+		font-size: 0.8em;
+		font-style: italic;
+		margin: 4px auto;
 		padding: 0;
 	}
-	.grid-container {
-		height:fit-content;
-	}
-	.grid_map_container {
-		height: min-content;
-	}
+	
 /* Frame */
 	table.frame {
 		border: solid thin grey;
@@ -556,21 +434,38 @@
 	div.obj ol li li li::before { padding-right: 3em; }
 	div.obj ol li li li li::before { padding-right: 4em; }
 	div.obj ol li li li li li::before { padding-right: 5em; }
-
+	/* Grid Map */
+		.grid-container {
+			height:fit-content;
+		}
+		.grid_map_container {
+			height: min-content;
+		}
+		.grid-container ol {
+			/* padding: 0; */
+			/* padding-left: 1em; */
+		}
+		.grid-container ol li {
+			/* font-size: 0.9em; */
+		}
+		.grid-container ol li li { list-style-type: lower-alpha; }
+		.grid-container ol li li li { list-style-type: lower-roman; }
+		.grid-container ol li li li li { list-style-type: decimal; }
 /* Algorithms */
 	div.algo {
 		counter-reset: lineNumber -1;
 		border-top: solid thin lightgray;
 		border-bottom: solid thin lightgray;
 		padding: 0 0 1em 0;
-		width: 80%;
-		margin: 1em auto;
+		/* width: 80%; */
+		margin: 1em 1.5em;
 		font-size: 0.9em;
 	}
 	div.algo blockquote {
 		margin: 0;
 		padding: 0;
 		font-size: 1.1em;
+		border-bottom: solid thin lightgray;
 	}
 	/* div.algo small { font-size: 1.1em; } */
 	div.algo p {
@@ -598,7 +493,7 @@
 	}
 	div.algo ol ol {border-left: solid thin rgb(226, 226, 226);} 
 	div.algo ol { margin-left: 1em; }
-	div.algo code, div.algo li em {
+	div.algo li em {
 		font-family: var(--serif);
 		color: rgb(146, 171, 182);
 		font-style: italic;
@@ -621,6 +516,9 @@
 		/* margin-left: 1em; */
 	}
 	/* katex override */
+	span.texttt {
+		font-family: 'Latin Modern';
+	}
 	span.textup {
 		font-family: "CMU Serif";
 		font-weight: 400;
@@ -636,7 +534,7 @@
 	div.algo p:first-child {
 		padding: 2px 0;
 		margin-bottom: 5px;
-		border-bottom: solid thin lightgrey;
+		/* border-bottom: solid thin lightgrey; */
 		font-size: 1em;
 	}
 	div.algo li>p {
@@ -658,31 +556,10 @@
 		padding: 0 !important;
 		margin: 1px 0 !important;
 	}
-
-
-	div.lay3 {
-		width: fit-content;
-		margin: 0 auto;
-		display: flex;
-		flex-direction: column;
-	}
-/* Flex layout */
-	div.lay3 article {
-		display: flex;
-		padding: 0 1%;
-	}
-	div.lay3 section {
-		flex: 1;
-		margin: 0 1%;
-		border-bottom: solid thin lightgrey;
-	}
-	div.lay3 article:first-child section {
-		border-top: solid thin lightgray;
-	}
 /* Pre Tag (Code Block) */
 	code {
-		font-family: 'Latin Modern';
-		font-size: 1em;
+		font-family: 'CMU Typewriter';
+		font-size: 0.85em;
 		white-space: pre;
 	}
 	pre {
@@ -697,7 +574,9 @@
 		line-height: 1.2 !important;
 	}
 	pre code {
-		font-family: 'Latin Modern';
+		/* font-family: 'Latin Modern'; */
+		font-family: 'Fira Code';
+		font-size: 0.75em;
 	}
 	pre:not(.language-rust) {
 		height: 100%;
@@ -747,193 +626,11 @@
 			display: block;
 			margin: 0 auto;
 		}
-	/* Sequence */
-		.Sequence .blue rect {
-			fill: var(--powder);
-		}
-		.Sequence .red rect {
-			fill: var(--red);
-		}
-		.Sequence .green rect {
-			fill: var(--lightGreen);
-		}
-		.Sequence .grey rect {
-			fill: var(--lightGrey);
-		}
 	/* Text Elements */
 		.illus text,
 		.hago text {
 			font-family: "CMU Serif";
 			/* font-size: 1em; */
-		}
-	/* Sequence Styles */
-		.sequenceElement rect {
-			fill: var(--sequenceElementFill);
-			stroke: var(--sequenceElementStroke);
-		}
-		.Sequence .red rect {
-			fill: firebrick;
-		}
-		.Sequence .red text {
-			fill: white;
-		}
-		.sequenceElementText text {
-			fill: var(--sequenceElementTextColor);
-		}
-		.sequenceAnnotationText text {
-			fill: var(--sequenceElementTextColor);
-		}
-		.sequenceIndexText text {
-			fill: var(--sequenceElementIndexColor);
-			font-family: var(--serif);
-		}
-		.sequencePointers line {
-			stroke: var(--sequenceElementStroke);
-		}
-		.Sequence marker {
-			fill: var(--sequenceElementStroke);
-		}
-		.sequencePointers text {
-			fill: var(--sequenceElementStroke);
-		}
-	/* Matrix Styles */
-		.matrix { }
-		.matrixElement rect {
-			fill: var(--matrixElementFill);
-			stroke: var(--matrixElementStroke);
-		}
-		.matrixElement text {
-			fill: var(--matrixElementTextColor);
-		}
-		.matrixIndices text {
-			fill: var(--matrixIndexColor);
-			font-family: var(--serif);
-		}
-		.matrix .mark rect { fill: var(--matrixFocusFillColor); }
-		.matrix .mark text { fill: var(--matrixFocusTextColor); }
-	/* Linked List Styles */
-		.linkedList text {
-			font-size: 0.7em;
-		}
-		.linkedListDataField rect {
-			fill: var(--linkedListDataFieldFill);
-			stroke: var(--text-color);
-		}
-		.linkedListDataField text { fill: var(--linkedListDataFieldTextColor); }
-		.linkedListNextField rect {
-			fill: var(--linkedListNextFieldFill);
-			stroke: var(--text-color);
-		}
-		.linkedListLink line {stroke: var(--linkedListLinkColor)}
-		#linkedListArrow {fill: var(--linkedListLinkColor)}
-		.linkedListLink circle {fill: var(--linkedListLinkColor)}
-		.linkedListIndex text {
-			fill: var(--linkedListIndexColor);
-			font-family: var(--serif);
-		}
-		.linkedListAnnotation text {fill: var(--linkedListLinkColor);}
-
-	/* Circular List Styles */
-		.circularListDataField rect {
-			fill: var(--circularListDataFieldFill);
-			stroke: var(--text-color);
-		}
-		.circularList text {
-			fill: var(--circularListDataFieldTextColor);
-			font-size: 0.7em;
-		}
-		.circularListIndex text {
-			fill: var(--circularListIndexColor);
-			font-family: var(--serif);
-		}
-		.circularListNextField rect {
-			fill: var(--circularListNextFieldFill);
-			stroke: var(--text-color);
-		}
-		.circularListLink line,
-		.circularListLink path {
-			stroke: var(--circularListLinkColor);
-		}
-		.circularListLink circle {
-			fill: var(--circularListLinkColor);
-		}
-		#circularListArrow {
-			fill: var(--circularListLinkColor);
-		}
-	/* Doubly Linked List Styles */
-		.doublyLinkedListDataField rect {
-			fill: var(--doublyLinkedListDataFieldFill);
-			stroke: var(--text-color);
-		}
-		.doublyLinkedListPrevField rect {
-			fill: var(--doublyLinkedListPrevFieldFill);
-			stroke: var(--text-color);
-		}
-		.doublyLinkedListNextField rect {
-			fill: var(--doublyLinkedListNextFieldFill);
-			stroke: var(--text-color);
-		}
-		.doublyLinkedList text {
-			fill: var(--doublyLinkedListTextColor);
-		}
-		.doublyLinkedListLink line{
-			stroke: var(--doublyLinkedListLinkColor);
-		}
-		.doublyLinkedListLink circle {
-			fill: var(--doublyLinkedListLinkColor);
-		}
-		.doublyLinkedListLink path {
-			stroke: var(--doublyLinkedListLinkColor);
-		}
-		#doublyLinkedListNextArrow {
-			fill: var(--doublyLinkedListLinkColor);
-		}
-		#doublyLinkedListPrevArrow {
-			fill: var(--doublyLinkedListLinkColor);
-		}
-	/* Queuer Styles */
-		.queuer rect {
-			fill: var(--queuerFill);
-			stroke: var(--text-color);
-		}
-		.queuer text {
-			fill: var(--queuerTextColor);
-			font-size: 1.2rem;
-		}
-		.queuerIndex text,
-		.queuer.red .queuerIndex text {
-			fill: var(--queuerIndexTextColor);
-		}
-		.queuerIndex text {
-			font-family: var(--serif);
-		}
-		.queuer.red text {
-			fill: var(--red);
-		}
-		.queueAnnotation text {
-			fill: var(--queuerTextColor);
-			font-size: 1.3rem;
-		}
-		.queuerIndex rect {
-			fill: var(--queuerIndexFill);
-		}
-		.queuer.red rect {
-			stroke: var(--queuerFocusRedStroke);
-		}
-		.queuer.red .queuerIndex rect {
-			fill: var(--queuerFocusRedFill);
-		}
-	/* Circular Queues */
-		.circularQueuer path {
-			fill: var(--circularQueuerFill);
-			stroke: var(--circularQueuerStroke);
-		}
-		.circularQueuer text {
-			fill: var(--circularQueuerTextColor);
-		}
-		.circularQueuerIndex text {
-			fill: var(--circularQueuerIndexColor);
-			font-family: var(--serif);
 		}
 	/* DotPlot */
 		.dotPlotBin circle {
@@ -978,11 +675,6 @@
 			stroke: var(--point-stroke-color);
 		}
 		.plot .ex circle { fill: var(--background-color); }
-		.plotAxes text, .plot3dAxes text { fill: var(--plot-axes-color) }
-		.plotAxes span.katex {color: var(--plot-axes-color)}
-		.plotAxes path, .plot3dAxes path { stroke: var(--plot-axes-color) }
-		.plotAxes line, .plot3dAxes line { stroke: var(--plot-axes-color) }
-		.Plot marker {fill: var(--plot-axes-color)}
 	/* Table Matrix */
 		.TableMatrix {
 			width: fit-content !important;
@@ -1002,6 +694,7 @@
 		}
 	/* Trees */
 		.tree line, .tree circle { stroke: rgb(127, 127, 127); }
+		.tree .no-circle circle {stroke: white}
 		.tree .nil circle {fill: rgb(139, 139, 139); stroke: rgb(21, 21, 21)}
 		.tree .red circle {fill: rgb(252, 215, 210); stroke: rgb(168, 24, 24)}
 		.tree .green circle {fill: rgb(219, 243, 220); stroke: rgb(59, 124, 61)}
@@ -1015,6 +708,7 @@
 		.tree .out, .tree .out span.katex {opacity: 0.2;}
 	/* Graphs */
 		.Graph circle {fill: var(--background-color); stroke: var(--lightBlue)}
+		.Graph .no-circle {stroke: var(--background-color)}
 		.Graph path {stroke: var(--lightBlue);}
 		.Graph .graphEdge {stroke: var(--lightBlue);}
 		.Graph .katex { color: var(--text-color); font-size: 2em;}
@@ -1030,11 +724,7 @@
 		.Graph .red line { stroke: rgb(189, 30, 30); stroke-width: 1;}
 		.Graph .dash line { stroke-dasharray: 3; }
 		.Graph .ptr circle {stroke:var(--background-color)}
-	/* Digraph */
-		.Digraph text {fill: var(--text-color)}
-		.digraphEdges path {stroke: var(--tree-edge-color)}
-		.Digraph marker {fill: var(--tree-edge-color)}
-		.digraphNodes circle {stroke: var(--tree-edge-color)}
+	/* Bipartite */
 		.BipartiteNodes circle {
 			fill: var(--bipartite-node-fill);
 			stroke: var(--bipartite-node-stroke);
@@ -1044,8 +734,6 @@
 		.Bipartite #BipartiteArrowEnd {fill: var(--bipartite-edge-color)}
 		.Bipartite #BipartiteArrowStart {fill: var(--bipartite-edge-color)}
 		.bipartiteGroup rect { stroke: var(--bipartite-edge-color); }
-	/* Bar Plot */
-		.bar-plot-bar rect {fill: var(--tree-node-fill-color)}
 	/* Grid Table */
 		table.grid {
 			table-layout: fixed;
@@ -1061,30 +749,23 @@
 		table.grid td.blue {background-color: var(--powder)}
 	/* core */
 		.hago text { fill: var(--text-color); }
-	/* Plot */
-		.hago .hago_y_axis path {stroke: var(--plot-axes-color)}
-		.hago .hago_y_axis line {stroke: var(--plot-axes-color)}
-		.hago .hago_x_axis path {stroke: var(--plot-axes-color)}
-		.hago .hago_x_axis line {stroke: var(--plot-axes-color)}
+/* Hago Plot */
+		.no-axis .hago_y_axis {display:none;}
+		.no-axis .hago_x_axis {display:none;}
+		.hago .hago_y_axis path {stroke: var(--text-color)}
+		.hago .hago_y_axis line {stroke: var(--text-color)}
+		.hago .hago_x_axis path {stroke: var(--text-color)}
+		.hago .hago_x_axis line {stroke: var(--text-color)}
+		.Plot2 .red circle {fill: gold; stroke:firebrick}
+		.Plot2 .blue circle {fill: aquamarine; stroke:blue}
 		.hago .riemann_sums line:nth-child(1) {
-			stroke:gold;
+			stroke:black;
 			stroke-opacity: 0.1;
 		}
 		.hago .riemann_sums line:nth-child(2) {
-			stroke:gold;
+			stroke:black;
 			stroke-opacity: 0.5;
 		}
-	/* stack */
-		.hago_mem rect { stroke: var(--text-color); }
-		.hago .red .memory_cell_address rect { fill: firebrick; }
-		.hago .green .memory_cell_address rect { fill: rgb(16, 138, 27); }
-		.hago .blue .memory_cell_address rect { fill: teal; }
-		.hago .red .memory_cell_value rect { fill: rgb(255, 198, 188); }
-		.hago .green .memory_cell_value rect { fill: rgb(209, 242, 209); }
-		.hago .blue .memory_cell_value rect { fill: rgb(208, 237, 239); }
-		.hago .red .memory_cell_address text { fill: var(--white); }
-		.hago .green .memory_cell_address text { fill: var(--white); }
-		.hago .blue .memory_cell_address text { fill: var(--white); }
 	/* Cartesian Product */
 		.hago_CartProd td {
 			text-align: center;
@@ -1181,11 +862,6 @@
 		fill: var(--background-color);
 		stroke: var(--text-color);
 	} 
-/* Float Right Container */
-	div.float-right {
-		float: right;
-		width: 60%;
-	}
 /* Number Line */
 	div.number-line {
 		margin: 5% 0; 
@@ -1218,34 +894,45 @@
 		border-spacing: 5px;
 		font-size: 1em;
 	}
-
+	
+/* Trace */
 	table.trace td {
 		border: 0 !important;
 	}
-	table.trace tr:last-child td {
-		/* border-bottom: 0; */
+/* Illus Bar Plot */
+	.bar-plot-bar rect {
+		fill: grey;
 	}
-/* div.tile */
-	div.tile {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: space-evenly;
+/* Hago Lattice */
+	.Hago_Lattice circle.red {
+		fill: var(--beigegold);
+		stroke: var(--darkRed);
 	}
-	div.tile>div {
-		padding: 1em 0.5em;
-		margin: 1% 0;
-		width: 40%;
-		height: fit-content;
+	.Hago_Lattice .dst {
+		fill: tomato;
+	}
+	line.dash {
+		stroke-dasharray: 2;
+	}
+	line.redline {
+		stroke: tomato;
+		stroke-width: 2;
 	}
 
-
+/* float right */
+	.float-right {
+		float: right;
+		clear:left;
+	}
+	.float-right .illusFigure {
+		width: 200px;
+	}
 /* Media Queries */
 	@media (min-width:501px) {
 		html {font-size: 13px;}
 	}
 	@media (max-width: 500px) {
-		html {font-size: 11px;}
+		html {font-size: 9px;}
 		div.algo {width:95%}
 		div.ltb table {
 			width: 100%;
@@ -1258,4 +945,3 @@
 			flex-direction: column;
 		}
 	}
-	

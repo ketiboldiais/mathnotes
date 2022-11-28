@@ -1,0 +1,32 @@
+# Fiber Tree
+_This note presents an overview of fiber trees._
+
+## Overview
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1668801146/cs/fiber-tree_hpkimu.svg"}
+	imwidth={122}
+	imheight={89}
+	caption={'fiber-tree'}
+	width={20}
+	className='float-right'
+>
+	<figcaption>
+		A fiber tree with root ${r}$ and vertices ${v_1,}$ ${v_2,}$ ${v_3,}$ ${v_4,}$ ${v_5,}$ and ${v_6.}$
+	</figcaption>
+</Fig>
+
+> __~definition: fiber tree~.__ A _fiber tree_ is a directed tree with the following properties.
+> 
+> 1. There exists a single node with an in-degree of 0, called the _root_.
+> 2. All vertices other than the root have an out-degree of at least 1, and an in-degree of at least 1.
+> 3. If a vertex ${v}$ is a parent, then there exists a directed edge between ${v}$ and its child.
+> 4. If a vertex ${c}$ is a child, then there exists a directed edge between ${c}$ and its parent.
+> 5. If a vertex ${s}$ is a sibling, then there exists a directed edge between ${s}$ and all its siblings.
+
+~case~. The Document Object Model (DOM) can be interpreted as a fiber tree.
+
+~case~. React's virtual DOM is implemented as a fiber tree.
+
+
+
+

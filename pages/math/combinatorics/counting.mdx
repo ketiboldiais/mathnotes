@@ -28,7 +28,6 @@ This chapter covers notes on basic counting.
 8. [Bitstrings](#bitstrings)
 9. [Compositions](#compositions)
 10. [Anagrams](#anagrams)
-11. [Lattice Paths](#lattice-paths)
 
 The materials on this page restrict themselves to _countable sets_. We define a countable set as follows:
 
@@ -735,66 +734,3 @@ anagrams.
 
 
 
-## Lattice Paths
-
-Below are a few examples of lattice paths:
-
-<Grid cols={3}>
-
-$$
-   \ax{
-      \circ & \bullet & \bullet \\
-      \bullet & \bullet & \circ \\
-      \bullet & \circ & \circ \\
-      \bullet & \circ & \circ \\
-   }
-$$
-
-$$
-   \ax{
-      \circ & \circ & \bullet \\
-      \circ & \bullet & \bullet \\
-      \circ & \bullet & \circ \\
-      \bullet & \bullet & \circ \\
-   }
-$$
-
-
-$$
-   \ax{
-      \bullet & \bullet & \bullet \\
-      \bullet & \circ & \circ \\
-      \bullet & \circ & \circ \\
-      \bullet & \circ & \circ \\
-   }
-$$
-
-</Grid>
-
-In short, they're dots marking the vertices
-along a path, where, at each vertex, we can only move
-right by 1, or up by 1. It's likely not apparent, but
-these paths are closely related to binomial coefficients.
-
-> __~lattice path~.__ A _lattice path_ is a sequence ${P=((x_0,y0), (x_1,y_1), \ldots,(x_k,y_k)),}$ where each ${x_i}$ and ${y_i}$ is an integer, such that ${(x_i,y_i)=(x_{i-1} + 1, y_{i-1}),}$ or ${(x_i,y_i)=(x_{i-1},y_{i-1}+1),}$ for all ${i \in \nat : i \ge 1.}$ 
-
-While lattice diagrams are helpful, it's often easier to express them as words. If we start at some point ${(a,b)}$ we can denote the path to some other point ${(c,d)}$ with the letters ${N}$ (_north_) and ${E}$ (_east_). For example, if we start at the bottom-left point for the the lattice path:
-
-$$
-   \ax{
-      \circ & \bullet & \bullet \\
-      \bullet & \bullet & \circ \\
-      \bullet & \circ & \circ \\
-      \bullet & \circ & \circ \\
-   }
-$$
-
-we may denote it as: ${NNENE.}$ Viewed this way, we can see that this is an alphabet with two letters. If we want a lattice path from ${(0,0)}$ to ${(a,b),}$ we need ${a}$ of the ${E}$ steps and ${b}$ of the ${N}$ step. Which in turn means that there, at most, ${\binom{a+b}{a,b}}$ lattice paths to get from ${(0,0)}$ to ${(a,b).}$
-
-> __~lattice path count~.__ For all ${a,b \in \nat,}$ there are
-> 
-> $$
->    \dbinom{a+b}{a,b} = \dfrac{(a+b)!}{a!b!}
-> $$
-> 
-> lattice paths from ${(0,0)}$ to ${(a,b).}$

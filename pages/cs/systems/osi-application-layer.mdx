@@ -1,5 +1,3 @@
-import {Graph} from "../../../components/illus/components/Graph/Graph";
-
 <Head>
 	<title>Application Layer</title>
 	<meta name={`description`} content={`Notes on the OSI application layer.`}/>
@@ -9,45 +7,20 @@ import {Graph} from "../../../components/illus/components/Graph/Graph";
 
 _All of the code illustrations on this page are written in pseudocode._
 
-Under the OSI model, the application layer consists of all the user-facing
-network programs we're familiar with: email, web browsing, online gaming,
-teleconferencing, and so on. This chapter provides an overview of the
-application layer.
-
-<div className="outline">
-
 1. [Application Architectures](#application-architectures)
 	1. [Client-server Applications](#client-server-applications)
 	2. [P2P Applications](#p2p-applications)
+		1. [Unavailability](#unavailability)
 	3. [Hybrid Applications](#hybrid-applications)
-2. [Processes](#processes)
-3. [Sockets](#sockets)
-4. [Web Browsing](#web-browsing)
-	1. [HTTP Connections](#http-connections)
-		1. [Nonpersistent HTTP](#nonpersistent-http)
-		2. [Persistent HTTP](#persistent-http)
-			1. [Persistent HTTP without Pipelining](#persistent-http-without-pipelining)
-			2. [Persistent HTTP with Pipelining](#persistent-http-with-pipelining)
-5. [Browser Workflow](#browser-workflow)
-	1. [HTTP Request Message](#http-request-message)
-		1. [HTTP Methods](#http-methods)
-	2. [Reading the HTTP Response Message](#reading-the-http-response-message)
-6. [Cookies](#cookies)
-7. [Web Caches](#web-caches)
+	4. [Web Applications](#web-applications)
 
-</div>
-
+Under the OSI model, the application layer consists of all the user-facing network programs we're familiar with: email, web browsing, online gaming, teleconferencing, and so on. This chapter provides an overview of the application layer.
 
 ## Application Architectures
-
-Network applications can be classified in terms of their _architecture_. The
-three most common architectures are _client-server_, _peer-to-peer (P2P)_, and
-_hybrid_ (a combination of client-server and P2P).
+Network applications can be classified in terms of their _architecture_. The three most common architectures are _client-server_, _peer-to-peer (P2P)_, and _hybrid_ (a combination of client-server and P2P).
 
 ### Client-server Applications
-
-Under the client-server architecture, applications are built with the following
-assumptions:
+Under the client-server architecture, applications are built with the following assumptions:
 
 - There are two systems, a _server_ and a _client_.
 - The network program lives in the client.
@@ -64,200 +37,67 @@ architecture: web browsing, media streaming, email, and so on.
 
 ### P2P Applications
 
-Under the P2P architecture, applications are built with the following
-assumptions:
+> __~definition: peer-to-peer application~.__ Let ${N = (P_N,L_N)}$ be a graph, where ${P_N}$ is a set of machines called _peers_, and ${L_N}$ is a set of edges incident to peers called _connections_. A _peer-to-peer application_ is a program ${(N,\Oo),}$ where ${\Oo}$ is a set of operations operating on ${N,}$ executable by all ${p \in P.}$
 
-- All nodes on the network are called _peers_.
-- To get data from another system, a system directly asks the relevant system.
+~remark~. From the definition above, in a P2P application, peers obtain data by directly reqesting the data from another peer.
 
-P2P applications are highly scalable, but very difficult to manage. Classic
-examples of P2P applications include Bitorrent and the former Limewire. P2P
-applications are often further classified as either _pure P2P_ and _impure P2P_.
-This classification stems from how P2P applications address the issue of
-_unavailability_.
+~example~. _Bitorrent_ is a P2P application.
 
-The problem of unavailability is best revealed by way of an example. Suppose A,
-B, and C are three separate systems, each with data the others want: A has math
-textbook pdfs, B has mp3 files of some math podcasts, and C has some mp4 videos
-of math lectures. The three systems decide to form a network where they can
-each freely transfer data among one another without restriction. These transfers
-are made by a small program the three systems wrote called _Lemonwire_,
-installed on each system. 
+~example~. The now-defunct application _Limewire_ was a P2P application.
 
-The _Lemonwire_ program is simply a folder with three subfolders: A, B, C. The A
-folder contains A's pdfs, the B folder contains B's mp3s, and the C folder
-contains C's mp4s. As long as the system hosting the data is turned on, the
-other systems can look inside _Lemonwire_ and access their data. All together,
-the _Lemonwire_ program is considered a _pure P2P application_.
+#### Unavailability
+> __~definition: peer resource~.__ Let ${A = (N,\Oo)}$ be a P2P application. A _peer resource_ is a relation ${R_N: P_N \sim P_r}$ where ${P_r}$ is a set of data objects.
 
-All goes well, until one day, A suddenly goes offline for maintenance. Weeks go
-by, and A still hasn't come back. During that time, B and C have no access to
-books. When A returns, the three systems decide to have a meeting. They agree
-that the weeks without books was unacceptable, and that they need a way to
-ensure it doesn't happen. Their solution: We'll set up a fourth system D that
-(1) all of us have access to, and (2) contains all of our data. We'll then
-rewrite _Lemonwire_ to contain only a single folder D. With this change,
-_Lemonwire_ is now an _impure P2P application_.
+~example~. ${A}$ is a P2P application comprising three machines ${\set{a,b,c},}$ with the peer resource ${R_N = \set{(a,\tx{mp3 files}), (b, \tx{pdf files}), (c, \tx{mp4 files})}.}$
 
-Things go smoothly, and both B and C take their much-needed repair vacations.
-Then one day, D breaks down. Now none of them have books, music, or movies. Once
-again they call a round table, and come up with another solution: Let's get more
-systems on our network. Because they'll be accomodating more systems, A, B, and
-C rewrite _Lemonwire_: If a system wants some data, they send a request for the
-data to the systems they're linked to. If a system on the network has the data
-requested, it responds with the data.
+~example~. Using the previous example scenario, if machine ${a}$ wants ${\tx{mp4 files},}$ ${a}$ must invoke ${R_N(c) = \tx{mp4 files}.}$
 
-A, B, and C, however, don't have the money to hook all of these systems to their
-network. So, they decide to hook on to the Internet. They then upload
-_Lemonwire_ on Github, and advertise it as "the math knowledge network." Now
-they're back to a pure P2P application.
+> __~lemma~.__ Let ${A = (N,\Oo)}$ be a P2P application, with ${P_N'}$ denoting the state of the peer network ${P_N}$ at time ${t,}$ and ${P_N''}$ denoting the state of ${P_N}$ at time ${t + n,}$ where ${n \in \pint.}$ If ${P_N'' = P_N' \rid p_i,}$ where ${p_i}$ is some peer, then ${R_N}$ is _strictly injective_.
 
-Lemonwire works well, but it's fundamentally limited: They can only get data
-back from a system that's agreed to grant access. For example, let's say
-_Lemonwire_'s network grows steadily, becoming the graph: 
+~proof~. Since ${\abs{P_N''} \lt \abs{P_r''}}$ (there are strictly less peers than there are peer resources), at least one peer resource is not mapped to.
 
-<Graph data={[
-	{link: [`A`, `B`]},
-	{link: [`B`, `C`]},
-	{link: [`A`, `C`]},
-	{link: [`A`, `E`]},
-	{link: [`E`, `C`]},
-	{link: [`C`, `D`]},
-	{link: [`D`, `F`]},
-	{link: [`E`, `F`]},
-	{link: [`F`, `G`]},
-]}
- id={"p2p1"}
- collisionRadius={40}
- straightEdges={true}
- edgeLength={40}
- scale={45}
- width={320}
- height={320}
-/>
+> __~unavailability algorithm~.__ An _unavailability algorithm_ is an algorithm that ensures every resource ${r}$ in ${P_r}$ is related to a peer ${p \in P_N,}$ even if ${\abs{P_N} \lt \abs{P_r}?}$
 
-In the graph above, A has no connection to G. There's no way for A to get G's
-data, and there's no way for G to get A's data. Why? Because A doesn't know G's
-IP address. With just A, B, and C, it was simple enough, because they all had
-links to one another, and it was easy to keep track of each other's IP address.
-But _Lemonwire_ has changed. The nodes above are linked through the Internet,
-and their IP addresses are constantly changing. At this point, A, B, and C must
-now balance the tradeoffs of [network topologies](#network-topology). 
+~remark~. Unavailability algorithms create a distinction between _pure P2P applications_ and _impure P2P applications_.
 
-One solution to this problem is by having one node that's connected to all of
-the nodes (a [star topology](#star-topology)). This makes the architecture look
-more like the client-server model, but not quite (the nodes can still talk to
-another directly). But if this approach is taken, _Lemonwire_ runs into all of
-the problems we saw with the client-server model: Heavy traffic to a single
-node, and potentially disastrous consequences if that well-connected node goes
-offline.
+~example~. The _Lemonwire_ program is simply a folder with three subfolders: A, B, C. The A folder contains A's pdfs, the B folder contains B's mp3s, and the C folder contains C's mp4s. As long as the system hosting the data is turned on, the other systems can look inside _Lemonwire_ and access their data. All together, the _Lemonwire_ program is considered a _pure P2P application_. All goes well, until one day, A suddenly goes offline for maintenance. Weeks go by, and A still hasn't come back. During that time, B and C have no access to books. When A returns, the three systems decide to have a meeting. They agree that the weeks without books was unacceptable, and that they need a way to ensure it doesn't happen. Their solution: We'll set up a fourth system D that (1) all of us have access to, and (2) contains all of our data. We'll then rewrite _Lemonwire_ to contain only a single folder D. With this change, _Lemonwire_ is now an _impure P2P application_.
 
-Another solution is to have all of the nodes connected to one another (a [mesh
-topology](#mesh-topology)). This achieves _robustness_, but it's unlikely that
-A, B, and C have the money and human resources to implement and maintain that
-kind network.
+Things go smoothly, and both B and C take their much-needed repair vacations. Then one day, D breaks down. Now none of them have books, music, or movies. Once again they call a round table, and come up with another solution: Let's get more systems on our network. Because they'll be accomodating more systems, A, B, and C rewrite _Lemonwire_: If a system wants some data, they send a request for the data to the systems they're linked to. If a system on the network has the data requested, it responds with the data. A, B, and C, however, don't have the money to hook all of these systems to their network. So, they decide to hook on to the Internet. They then upload _Lemonwire_ on Github, and advertise it as "the math knowledge network." Now they're back to a pure P2P application. Lemonwire works well, but it's fundamentally limited: They can only get data back from a system that's agreed to grant access.
 
-Yet another solution is to change the way requests are sent. In all of the
-preceding approaches, A, B, and C, were directly sending requests to one
-another. Instead of this method, they could just _flood_ the network with the
-request. That is, the request is sent to every single node on the network: A
-sends it to B and C, and B and C immediately send the request to all of their
-neighbors. There are several problems with this approach. The first is security.
-Perhaps A wants a file about physics, but doesn't want others on the network to
-know he's interested in applied mathematics. The second problem is processing
-waste. With flooding, the nodes forwarding the request have no idea whether the
-sender got what they requested for. A could have received the data they
-requested 10 minutes ago, but nodes elsewhere are still forwarding the request
-further. The classic example of a flooding application is Gnutella.
+One solution to this problem is by having one node that's connected to all of the nodes (a [star topology](#star-topology)). This makes the architecture look more like the client-server model, but not quite (the nodes can still talk to another directly). But if this approach is taken, _Lemonwire_ runs into all of the problems we saw with the client-server model: Heavy traffic to a single node, and potentially disastrous consequences if that well-connected node goes offline. Another solution is to have all of the nodes connected to one another (a [mesh topology](#mesh-topology)). This achieves _robustness_, but it's unlikely that A, B, and C have the money and human resources to implement and maintain that kind network.
 
-One way to get around these costs is through _distributed hashing_.  The idea
-here is, whenever a new node joins the network, it submits a list of all the
-files it can share, along with its IP address. That information is placed in a
-table called a _distributed hash table_, which every node on the network holds.
-If a node wants a particular file, it searches inside its distributed hash
-table. If it finds the file, it gets the hosting system's IP address, and sends
-a request there. The problem with this approach: That hash table is potentially
-too large to fit on a consumer system like a laptop.
+Yet another solution is to change the way requests are sent. In all of the preceding approaches, A, B, and C, were directly sending requests to one another. Instead of this method, they could just _flood_ the network with the request. That is, the request is sent to every single node on the network: A sends it to B and C, and B and C immediately send the request to all of their neighbors. There are several problems with this approach. The first is security. Perhaps A wants a file about physics, but doesn't want others on the network to know he's interested in applied mathematics. The second problem is processing waste. With flooding, the nodes forwarding the request have no idea whether the sender got what they requested for. A could have received the data they requested 10 minutes ago, but nodes elsewhere are still forwarding the request further. The classic example of a flooding application is Gnutella.
 
-Because of this memory constraint, the distributed hashing approach is instead
-implemented statistically: Each new node still provides a list of the files it
-can share, but only _some_ of the nodes on the network actually hold the hash
-table (perhaps a large data server somewhere). When a node on the network wants
-certain data, it searches the hash table hosted on the data server. The costs to
-this approach: It's extremely tricky to implement and must be constantly
-monitored. The servers have to be spread out in such a way that the packets
-comprising the search query don't take too long. One of the first distributed
-hashing applications was Napster. Its success and expansive network cemented
-distributed hashing's place as a popular implementation today, as well as
-sparking the U.S. government's interest in regulating online piracy.
+One way to get around these costs is through _distributed hashing_.  The idea here is, whenever a new node joins the network, it submits a list of all the files it can share, along with its IP address. That information is placed in a table called a _distributed hash table_, which every node on the network holds. If a node wants a particular file, it searches inside its distributed hash table. If it finds the file, it gets the hosting system's IP address, and sends a request there. The problem with this approach: That hash table is potentially too large to fit on a consumer system like a laptop.
+
+Because of this memory constraint, the distributed hashing approach is instead implemented statistically: Each new node still provides a list of the files it can share, but only _some_ of the nodes on the network actually hold the hash table (perhaps a large data server somewhere). When a node on the network wants certain data, it searches the hash table hosted on the data server. The costs to this approach: It's extremely tricky to implement and must be constantly monitored. The servers have to be spread out in such a way that the packets comprising the search query don't take too long. One of the first distributed hashing applications was Napster. Its success and expansive network cemented distributed hashing's place as a popular implementation today, as well as sparking the U.S. government's interest in regulating online piracy.
 
 ### Hybrid Applications 
+Some applications are implemented with a _hybrid architecture_: A combination of client-server and P2P. Examples of hybrid applications include Skype, Internet Relay Chats (IRC), and various Internet telephony applications. With the hybrid architecture, there's a single server that keeps track of which nodes are on the network. If a node A wants data from a node B on the network, it sends a request to the server. Upon receiving the request, the server checks if B is connected to the network. If B is connected, the server establishes a direct connection between A and B. Otherwise, no connection is made, and A is out of luck.
 
-Some applications are implemented with a _hybrid architecture_: A combination of
-client-server and P2P. Examples of hybrid applications include Skype, Internet
-Relay Chats (IRC), and various Internet telephony applications.
 
-With the hybrid architecture, there's a single server that keeps track of which
-nodes are on the network. If a node A wants data from a node B on the
-network, it sends a request to the server. Upon receiving the request, the
-server checks if B is connected to the network. If B is connected, the server
-establishes a direct connection between A and B. Otherwise, no connection is
-made, and A is out of luck.
+### Web Applications
+Recall some basic definitions.
+
+> __~definition: file~.__ A _file_ is a triple ${(N,D,R),}$ where ${N}$ is a symbol called the _filename_, ${D}$ is an array of bytes, and ${R}$ is a non-empty set of instructions called a _file format_.
+
+> __~convention~.__  We will denote an arbitrary file with the variable syntax ${{n}\mc{x}.}$ The variable name ${{n}}$ is called a _filename_, and the symbol ${\mc{x}}$ is called a _filename extension_, corresponding to the instruction set ${R.}$
+
+~example~. ${{n}\mc{\tx{cpp}}}$ indicates a file named ${n,}$ to be interpreted with the file format ${\tx{cpp}.}$
+
+
+~example~. ${{index}\mc{\tx{html}}}$ indicates a file named ${index,}$ to be interpreted with the file format ${\tx{html}.}$
+
 
 ## Processes
+As we mentioned several sections ago, when we say that a node communicates to another node, what we really mean is that a process one system communicates to a process on another system. A _process_ is a program running within a system — Chrome, Firefox, Spotify, Windows Update, the Apple App Store, etc. When a process communicates with a process in the same system, we call that communication an _interprocess communication_. For example, if we download a PDF file from Chrome and Adobe Acrobat opens after a complete download, we have an interprocess communication between two programs on the same system. Namely, Chrome and Adobe Acrobat. The link between these two programs is the _operating system_.
 
-As we mentioned several sections ago, when we say that a node communicates to
-another node, what we really mean is that a process one system communicates to a
-process on another system. A _process_ is a program running within a system —
-Chrome, Firefox, Spotify, Windows Update, the Apple App Store, etc.
-
-When a process communicates with a process in the same system, we call that
-communication an _interprocess communication_. For example, if we download a PDF
-file from Chrome and Adobe Acrobat opens after a complete download, we have an
-interprocess communication between two programs on the same system. Namely,
-Chrome and Adobe Acrobat. The link between these two programs is the _operating
-system_.
-
-When a process communicates with a process on a different system, we call that
-communication a _message_. For example, if we enter cnn.com in Safari and
-an HTML file loads, there is a message transmitted between our laptop and the
-server that hosts the HTML file. In this case, there are two processes
-communicating with one another: a client process (the tab open in Safari) and a
-server process (perhaps some Apache program that's constantly waiting for, and
-processing requests).
+When a process communicates with a process on a different system, we call that communication a _message_. For example, if we enter cnn.com in Safari and an HTML file loads, there is a message transmitted between our laptop and the server that hosts the HTML file. In this case, there are two processes communicating with one another: a client process (the tab open in Safari) and a server process (perhaps some Apache program that's constantly waiting for, and processing requests).
 
 ## Sockets
+As we know, we can write programs that take user input. We can also write write programs that send data to another program. Some parts of the program only take input. These are called _entry points_. Other parts of the program only return outputs, and we call these _exit points_. However, there may also be parts of the program where data can enter _and_ exit. We call these _access points_. Network applications use a special kind of access point called a _socket_. Sockets are characterized by the use of a particular protocol — at the application layer, a set of rules and procedures that impose requirements for entry and exit. One such requirement is addressing. Data can only get to a process if the operating system knows which process to send it to. And data can only get to an operating system if the sending node knows which system to send it to. And data can only get to the sending node if the router knows which router to send it to. Thus, we can only transmit data to and from different systems if we have a way to address all these different entities. This is where protocols come in.
 
-As we know, we can write programs that take user input. We can also write write
-programs that send data to another program. Some parts of the program only take
-input. These are called _entry points_. Other parts of the program only return
-outputs, and we call these _exit points_. However, there may also be parts of
-the program where data can enter _and_ exit. We call these _access points_.
-
-Network applications use a special kind of access point called a _socket_.
-Sockets are characterized by the use of a particular protocol — at the
-application layer, a set of rules and procedures that impose requirements for
-entry and exit.
-
-One such requirement is addressing. Data can only get to a process if the
-operating system knows which process to send it to. And data can only get to an
-operating system if the sending node knows which system to send it to. And data
-can only get to the sending node if the router knows which router to send it to.
-Thus, we can only transmit data to and from different systems if we have a way
-to address all these different entities. This is where protocols come in.
-
-To identify a process, we give each process a _port number_. Once we give a
-process that port number, we say that the process _listens_ at that port number.
-For example, an HTTP server process (e.g., the program that processed our
-CNN.com request) listens at port number 80. A mail server process (e.g., the
-Gmail program that process our sent and received emails), listens at port number 25. Which numbers go to which process is determined by an _addressing protocol_.
-
-Addressing protocols take care of locating. But there's also the issue of
-_message formatting_. Becauses processes live on potentially entirely different
-systems with entirely different implementations, it's unlikely that the raw data
-coming out of a sending process can be understood by the receiving the process.
-_RFCs (Requests for Comments)_ provide a common format by establishing rules on
-the following points: 
+To identify a process, we give each process a _port number_. Once we give a process that port number, we say that the process _listens_ at that port number. For example, an HTTP server process (e.g., the program that processed our CNN.com request) listens at port number 80. A mail server process (e.g., the Gmail program that process our sent and received emails), listens at port number 25. Which numbers go to which process is determined by an _addressing protocol_. Addressing protocols take care of locating. But there's also the issue of _message formatting_. Becauses processes live on potentially entirely different systems with entirely different implementations, it's unlikely that the raw data coming out of a sending process can be understood by the receiving the process. _RFCs (Requests for Comments)_ provide a common format by establishing rules on the following points: 
 
 1. What are the types of messages exchanged? E.g., request and response.
 2. What is the message syntax? I.e., what fields must the data contain, and how
@@ -267,16 +107,7 @@ interpret the data in those fields.
 4. What do I do if ${x}$ happens? These are rules about how a process should
 request and respond to messages.
 
-Examples of RFCs include HTTP and SMTP (more on this later). We have rules for
-locating and rules for formatting. What else do we need? Well, we also need
-rules for message transport.
-
-Network programs are built to provide some sort of network application, and
-those applications vary. Some applications are tolerant of small amounts of data
-loss (e.g., music streaming; there's only so much the human ear can pick up).
-Other applications have zero tolerance (e.g., file sharing). Some applications
-are tolerant of delays (e.g., emailing), others are intolerant
-(e.g., live online gaming).
+Examples of RFCs include HTTP and SMTP (more on this later). We have rules for locating and rules for formatting. What else do we need? Well, we also need rules for message transport. Network programs are built to provide some sort of network application, and those applications vary. Some applications are tolerant of small amounts of data loss (e.g., music streaming; there's only so much the human ear can pick up). Other applications have zero tolerance (e.g., file sharing). Some applications are tolerant of delays (e.g., emailing), others are intolerant (e.g., live online gaming).
 
 A third parameter separate from loss and timing is bandwidth. Some applications
 use very little bandwidth (Internet telephony), and others use whatever
@@ -287,30 +118,11 @@ matter. To illustrate, consider the following scenario:
 
 > Devin, a TikTok addict, is looking for an internet service provider. Two companies, A and B approach her. A says, "We can give you 1000 bits per second." B says, "We can give you 1 millisecond packet latency." Should Devin go with A or B?
 
-Devin should go with B. Why? Because B's offer is a much stronger guarantee than
-A's. A guarantee of 1 millisecond packet latency automatically implies that,
-when Devin receives data, she will get all 1000 bits in one second. I.e., 1000
-bits per second. A's guarantee of 100 bits per second, however, does not
-make nearly as strong of a guarantee that all 100 bits will arrive in one
-second.
+Devin should go with B. Why? Because B's offer is a much stronger guarantee than A's. A guarantee of 1 millisecond packet latency automatically implies that, when Devin receives data, she will get all 1000 bits in one second. I.e., 1000 bits per second. A's guarantee of 100 bits per second, however, does not make nearly as strong of a guarantee that all 100 bits will arrive in one second.
 
-Why? Let's consider an alternative hypothetical. Developer Devin is comparing
-two different, somewhat unusual, job offers from two companies, X and Y. X says,
-"We provide 1 vacation per year, as long as the vacations are 1 year apart." Y
-says, "We provide 10 vacations for 10 years." These are two different
-statements. One is "1 vacation per year", the other is "10 vacations for 10
-years." Setting aside potential labor law issues, Company Y might require Devin
-to work for a little over 9 years without seeing a vacation. Company X, however,
-guarantees that Devin will get 1 vacation for each year.
+Why? Let's consider an alternative hypothetical. Developer Devin is comparing two different, somewhat unusual, job offers from two companies, X and Y. X says, "We provide 1 vacation per year, as long as the vacations are 1 year apart." Y says, "We provide 10 vacations for 10 years." These are two different statements. One is "1 vacation per year", the other is "10 vacations for 10 years." Setting aside potential labor law issues, Company Y might require Devin to work for a little over 9 years without seeing a vacation. Company X, however, guarantees that Devin will get 1 vacation for each year.
 
-The same idea applies to the two ISP offers. B's offer guarantees that Devin
-will get 1000 packets every second. For applications like video sharing, this
-is desirable. The video plays as bits come in. A's offer, however, does not make
-nearly as strong of a guarantee — it could be the case that 1000 bits arrive at
-the very last second, and the videos Devin wants to watch must buffer before
-they start playing.
-
-Below is a comparison of some common applications:
+The same idea applies to the two ISP offers. B's offer guarantees that Devin will get 1000 packets every second. For applications like video sharing, this is desirable. The video plays as bits come in. A's offer, however, does not make nearly as strong of a guarantee — it could be the case that 1000 bits arrive at the very last second, and the videos Devin wants to watch must buffer before they start playing. Below is a comparison of some common applications:
 
 | Application           | Tolerates Data Loss? | Bandwidth         | Tolerates Delays?                                                  |
 | --------------------- | -------------------- | ----------------- | ------------------------------------------------------------------ |
@@ -322,8 +134,7 @@ Below is a comparison of some common applications:
 | gaming                | yes                  | few kbps upstream | very little (100s milliseconds)                                    |
 | instant messaging     | no                   | elastic           | yes and no (depends on the users; some are fine with slow replies) |
 
-A developer can ensure their application's requirements are met by ensuring that
-its dependencies conform to a particular _transport protocol_. The two most
+A developer can ensure their application's requirements are met by verifying that its dependencies conform to a particular _transport protocol_. The two most
 common being TCP and UDP: 
 
 | Application            | Application Layer Protocol          | Transport Protocol |
@@ -335,14 +146,16 @@ common being TCP and UDP:
 | video/sound streaming  | proprietary (e.g., RealNetworks)    | TCP or UDP         |
 | Internet telephony     | proprietary (e.g., Vonage, Dialpad) | TCP or UDP         |
 
-Now that we have a general idea of how the application layer works, let's look at some of the most common web applications.
+
+
+
+
+
 
 ## Web Browsing
+> __~definition: webpage~.__ A _web page_ is a file restricted by the HTTP protocol.
 
-To help our discussion, let's define a few terms upfront. A _web page_ is a
-collection of data objects. Crudely, we can think of it like a `struct` in C.
-The data objects inside this struct are references (weak pointers) to data. What
-we're analogizing to as a `struct` is a _base HTML file_.
+We can think of a webpage as a `struct` in C. The data objects inside this struct are references (weak pointers) to data. What we're analogizing to as a `struct` is a _base HTML file_.
 
 ```rust
 index.html {
@@ -370,36 +183,11 @@ Below are some examples.
 | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | Chrome, Firefox, Safari, Opera, Vivaldi, Min, Edge, Internet Explorer | Nginx, Apache Server, Apache Tomcat, Cloudflare Server, LiteSpeed, OpenResty, Google Server, Microsoft-IIS |
 
-Both web browsers and web servers follow the HTTP protocol in communicating with
-one another. The requests for data sent by the browser are called _HTTP
-requests_, and the responds sent by the web server are called _HTTP responses_.
+Both web browsers and web servers follow the HTTP protocol in communicating with one another. The requests for data sent by the browser are called _HTTP requests_, and the responds sent by the web server are called _HTTP responses_. The HTTP protocol is built on top of the TCP protocol. To establish communication, a process on the client system first creates a socket. This socket will serve as the access point for the data to be transferred. Next, the process initiates a TCP connection to the server. This is done by sending a request to establish the connection. If the server accepts, the connection is established, and HTTP messages are then exchanged between the two processes. Once the data transmission concludes, the TCP connection is closed.
 
-The HTTP protocol is built on top of the TCP protocol. To establish
-communication, a process on the client system first creates a socket. This
-socket will serve as the access point for the data to be transferred. Next, the
-process initiates a TCP connection to the server. This is done by sending a
-request to establish the connection. If the server accepts, the connection is
-established, and HTTP messages are then exchanged between the two processes.
-Once the data transmission concludes, the TCP connection is closed.
-
-Under the HTTP protocol, the server does not store data about past client
-requests. Thus, serves that follow the HTTP protocol (called _HTTP servers_) are
-often characterized as stateless. Even if a client process ${P}$ asks for
-weather.com at 8 A.M.  every day, to the server, each request appears as if the
-user is asking for weather.com for the first time. In fact, it runs even deeper
-than that — it's as if the server is encountering ${P}$ for the very first time.
-
-Why are they stateless? This question is best answered by considering what might
-happen if they weren't stateless. I.e., if they were _stateful_. A stateful
-server would be incredibly complicated. It needs sophisticated garbage
-collection to help manage its memory usage, methods of ensuring the client and
-itself are on the same page in the event it crashes, and methods for balancing
-its resources between processing requests and managing state. All but the most
-resource-laden applications can afford to implement and maintain stateful
-servers.
+Under the HTTP protocol, the server does not store data about past client requests. Thus, serves that follow the HTTP protocol (called _HTTP servers_) are often characterized as stateless. Even if a client process ${P}$ asks for weather.com at 8 A.M.  every day, to the server, each request appears as if the user is asking for weather.com for the first time. In fact, it runs even deeper than that — it's as if the server is encountering ${P}$ for the very first time. Why are they stateless? This question is best answered by considering what might happen if they weren't stateless. I.e., if they were _stateful_. A stateful server would be incredibly complicated. It needs sophisticated garbage collection to help manage its memory usage, methods of ensuring the client and itself are on the same page in the event it crashes, and methods for balancing its resources between processing requests and managing state. All but the most resource-laden applications can afford to implement and maintain stateful servers.
 
 ### HTTP Connections
-
 There are two types of HTTP connections: (1) _nonpersistent HTTP_ and (2)
 _persistent HTTP_. Nonpersistent HTTP is governed by HTTP/1.0 protocol, and
 persistent HTTP is governed by HTTP/1.1. Most connections today require HTTP/1.1
@@ -456,23 +244,12 @@ $$
 	\T_{\text{response}} = 2\T_{\text{round}} + \T_{\text{file}}
 $$
 
-Notice that if we had five objects to download, we'd get ${\T_{\text{response}}
-\times 5,}$ and if we had a hundred, we'd get ${\T_{\text{response}} \times 5}$
-
-We wouldn't be wrong in characterizing this as an awfully inefficient method of
-transmitting data. But, we must keep context in mind. In the Internet's
-nursery years, it was astonishing that we could somehow get a digital image in
-Dallas, Texas to Ithaca, New York. At the time, the bar was to just get the
+Notice that if we had five objects to download, we'd get ${\T_{\text{response}} \times 5,}$ and if we had a hundred, we'd get ${\T_{\text{response}} \times 5}$ We wouldn't be wrong in characterizing this as an awfully inefficient method of transmitting data. But, we must keep context in mind. In the Internet's nursery years, it was astonishing that we could somehow get a digital image in Dallas, Texas to Ithaca, New York. At the time, the bar was to just get the
 transmission to occur — much like getting a parser to parse just one keyword.
 
 #### Persistent HTTP
 
-Within about three years of HTTP/1.0's release (yes, three — we aren't kidding
-when we say the Internet develops rapidly), people realized nonpersistent HTTP
-wasn't it. This led to HTTP/1.1 — the protocol governing _persistent HTTP_.
-There are two varities of persistent HTTP: (1) _persistent HTTP with pipelining_
-(we'll refer to this as _pipelined HTTP_ for short), and (2) _persistent
-HTTP without pipelining_ (we'll refer to this as _Nonpipelined HTTP_).
+Within about three years of HTTP/1.0's release (yes, three — we aren't kidding when we say the Internet develops rapidly), people realized nonpersistent HTTP wasn't it. This led to HTTP/1.1 — the protocol governing _persistent HTTP_. There are two varities of persistent HTTP: (1) _persistent HTTP with pipelining_ (we'll refer to this as _pipelined HTTP_ for short), and (2) _persistent HTTP without pipelining_ (we'll refer to this as _Nonpipelined HTTP_).
 
 ##### Persistent HTTP without Pipelining
 
@@ -534,15 +311,7 @@ certain parts:
 	</tbody>
 </table>
 
-Each of these parts communicates a particular piece of information: The _scheme_
-communicates the protocol used to get the data (in this case, the HTTP
-protcol). The _hostname_ communicates where the data exists (a system named
-`www.site.com`). And the _path_ communicates what data we're asking for from
-that system.
-
-Receiving the string, the browser splits the string into the aforementioned
-parts. This can be as simple as using a string split method, or a more
-complicated parsing method. E.g., in pseudocode:
+Each of these parts communicates a particular piece of information: The _scheme_ communicates the protocol used to get the data (in this case, the HTTP protcol). The _hostname_ communicates where the data exists (a system named `www.site.com`). And the _path_ communicates what data we're asking for from that system. Receiving the string, the browser splits the string into the aforementioned parts. This can be as simple as using a string split method, or a more complicated parsing method. E.g., in pseudocode:
 
 ```rust
 function request(string url) {
@@ -554,15 +323,7 @@ function request(string url) {
 }
 ```
 
-Above, our hypothetical browser uses a function called `request` that takes a
-string argument (the URL entered by the user). This function is called when the
-user hits enter.
-
-Once the input string is parsed, the browser must execute a _system call_ — a
-request to the operating system (OS) — to establish a TCP connection with the
-server named `www.site.com`. To do so, the browser must instantiate a _socket_.
-Sockets are generally provided by some socket library (e.g., Python's `socket`
-library). The code might look something like:
+Above, our hypothetical browser uses a function called `request` that takes a string argument (the URL entered by the user). This function is called when the user hits enter. Once the input string is parsed, the browser must execute a _system call_ — a request to the operating system (OS) — to establish a TCP connection with the server named `www.site.com`. To do so, the browser must instantiate a _socket_. Sockets are generally provided by some socket library (e.g., Python's `socket` library). The code might look something like:
 
 ```rust
 import socketLib
@@ -582,26 +343,7 @@ function request(string url) {
 }
 ```
 
-Again, this is just pseudocode. How a browser creates its sockets entirely
-depends on its implementation language and the libraries it uses, if any. That
-said, many of the socket APIs will look similar to the pseudocode above.
-
-All sockets have an _address family_, which indicates how a machine can be
-found. In the code above, we've indicated `AF_INET`, the address family for IPv4
-addresses. Other address families include `AF_INET6` (for IPv6 addreses) and
-`AF_BLUETOOTH` (for Bluetooth addresses).
-
-Sockets also have a _type_. This indicates what kind of data format will be
-transmitted. In this case, we've indicated `SOCK_STREAM`, which corresponds to
-the TCP protocol data ("the data will be transmitted as packets").  There's also
-`SOCK_DGRAM`, corresponding to the UDP protocol ("the data will be transmitted
-as datagrams").
-
-Finally, sockets have a _transport_ protocol, as we know. This indicates the
-transport protocol for trasmitting the data. Above, we've indicated
-`IPPROTO_TCP` (another protocol options might be `IPPROTO_UDP`).
-
-Once the socket is instantiated, it makes a call to the operating system:
+Again, this is just pseudocode. How a browser creates its sockets entirely depends on its implementation language and the libraries it uses, if any. That said, many of the socket APIs will look similar to the pseudocode above. All sockets have an _address family_, which indicates how a machine can be found. In the code above, we've indicated `AF_INET`, the address family for IPv4 addresses. Other address families include `AF_INET6` (for IPv6 addreses) and `AF_BLUETOOTH` (for Bluetooth addresses). Sockets also have a _type_. This indicates what kind of data format will be transmitted. In this case, we've indicated `SOCK_STREAM`, which corresponds to the TCP protocol data ("the data will be transmitted as packets").  There's also `SOCK_DGRAM`, corresponding to the UDP protocol ("the data will be transmitted as datagrams"). Finally, sockets have a _transport_ protocol, as we know. This indicates the transport protocol for trasmitting the data. Above, we've indicated `IPPROTO_TCP` (another protocol options might be `IPPROTO_UDP`). Once the socket is instantiated, it makes a call to the operating system:
 
 ```rust
 import socketLib
@@ -623,38 +365,13 @@ function request(string url) {
 }
 ```
 
-Receiving the system call, the OS sends the host name to a DNS (Domain Name
-System) server. This is a web application elsewhere that converts the host name
-into a _destination IP address_ (perhaps something like `159.89.245.44`). The
-DNS looks up the host name in its directory, and sends the corresponding IP
-address back to the OS. We can actually see this at work with the `dig` command:
+Receiving the system call, the OS sends the host name to a DNS (Domain Name System) server. This is a web application elsewhere that converts the host name into a _destination IP address_ (perhaps something like `159.89.245.44`). The DNS looks up the host name in its directory, and sends the corresponding IP address back to the OS. We can actually see this at work with the `dig` command:
 
 ```bash
 $ dig +short sublimis.com
 159.89.245.44
 ```
-Above, the `sublimis.com` reduces to the IP address `159.89.245.44`.
-
-Once the operating system receives the IP address, it must make a decision:
-Should I use to establish a wired or wireless connection with this IP address?
-The OS makes this decision by examining a _routing table_.  Again, the details
-behind this routing table are complex and left to a later chapter, but in short,
-this table provides information that allows the operating system to determine
-the fastest way to get signals to the destination IP address.
-
-Let's say the OS goes with wireless. The OS prepares a request to establish a
-TCP connection. Using its device drivers, the bits comprising this data are
-eventually transformed to signals and emitted over the air. Those signals are
-picked up by a nearby access point (e.g., a WiFi receiver), which transforms
-them back into data. That receiver sees the IP address, and sends forwards them
-to next system along the route, all the way to the server's IP address. As we
-saw earlier, once this message gets to the server, it must either agree or
-disagree to establishing a TCP connection.
-
-Let's say it agrees. The server sends back its "Ok" response to the OS, and the
-OS sends its response to the browser: "You're now connected to `159.89.245.44`".
-One program we can use to see this process at work is `Telnet` (installation may
-be required).
+Above, the `sublimis.com` reduces to the IP address `159.89.245.44`. Once the operating system receives the IP address, it must make a decision: Should I use to establish a wired or wireless connection with this IP address? The OS makes this decision by examining a _routing table_.  Again, the details behind this routing table are complex and left to a later chapter, but in short, this table provides information that allows the operating system to determine the fastest way to get signals to the destination IP address. Let's say the OS goes with wireless. The OS prepares a request to establish a TCP connection. Using its device drivers, the bits comprising this data are eventually transformed to signals and emitted over the air. Those signals are picked up by a nearby access point (e.g., a WiFi receiver), which transforms them back into data. That receiver sees the IP address, and sends forwards them to next system along the route, all the way to the server's IP address. As we saw earlier, once this message gets to the server, it must either agree or disagree to establishing a TCP connection. Let's say it agrees. The server sends back its "Ok" response to the OS, and the OS sends its response to the browser: "You're now connected to `159.89.245.44`". One program we can use to see this process at work is `Telnet` (installation may be required).
 
 ```bash
 $ telnet sublimis.com
@@ -664,12 +381,7 @@ Connected to sublimis.com.
 
 ### HTTP Request Message
 
-Above, we see that a TCP connection has been established with `sublimis.com`.
-Once a connection is established, the browser requests for the webpage from the
-server by specifying its _path_. Most websites have a default path (e.g., an
-`index.html` file) aliased the host name entered. This request is a data object
-called an _HTTP request message_. This object looks something like the
-following (note that there's a black lank after the last visible line):
+Above, we see that a TCP connection has been established with `sublimis.com`. Once a connection is established, the browser requests for the webpage from the server by specifying its _path_. Most websites have a default path (e.g., an `index.html` file) aliased the host name entered. This request is a data object called an _HTTP request message_. This object looks something like the following (note that there's a black lank after the last visible line):
 
 ```rust
 GET /dir/index.html HTTP/1.1
@@ -708,30 +420,10 @@ function request(string url) {
 				"Host: {}\r\n\r\n".format(host).encode("utf8"))
 }
 ```
-A few things to note about this illustration. Notice the use of the return
-character, `\r`. This is how we demarcate the start and end of a request. Next,
-notice the call to `encode()`. For this pseudocode library, this call converts
-the strings into raw bytes, using an _encoding scheme_ called UTF-8. This is a
-standardized mapping of integers to leters. These raw bytes are received by the
-server process on the other end, which has its own program for _decoding_ the
-bytes received.
-
-At this point, it should be even more clear why we need protocols. Both the
-browser and the server have agreed to the format above. Thus, when it receives
-the bytes in the example, it knows to interpret specific bytes as communicating
-specific pieces of information. Without protocols, neither client nor server
-would have any idea what they're sending to one another.
+A few things to note about this illustration. Notice the use of the return character, `\r`. This is how we demarcate the start and end of a request. Next, notice the call to `encode()`. For this pseudocode library, this call converts the strings into raw bytes, using an _encoding scheme_ called UTF-8. This is a standardized mapping of integers to leters. These raw bytes are received by the server process on the other end, which has its own program for _decoding_ the bytes received. At this point, it should be even more clear why we need protocols. Both the browser and the server have agreed to the format above. Thus, when it receives the bytes in the example, it knows to interpret specific bytes as communicating specific pieces of information. Without protocols, neither client nor server would have any idea what they're sending to one another.
 
 #### HTTP Methods
-
-HTTP request messages are requests for the server to _do something_.
-HTTP establishes what clients can ask the server to do. These are called _HTTP Methods_. In the last pseudocode example, we used the HTTP _GET_ method.
-
-Another method is called _POST_. Where _GET_ is used to _receive_ data from the
-server, the _POST_ method is used to _send_ data from the server. For example,
-inputting a credit card number on an eCommerce site, submitting our email to a
-subscription service, or publishing a Tweet. This message has the following
-format:
+HTTP request messages are requests for the server to _do something_. HTTP establishes what clients can ask the server to do. These are called _HTTP Methods_. In the last pseudocode example, we used the HTTP _GET_ method. Another method is called _POST_. Where _GET_ is used to _receive_ data from the server, the _POST_ method is used to _send_ data from the server. For example, inputting a credit card number on an eCommerce site, submitting our email to a subscription service, or publishing a Tweet. This message has the following format:
 
 ```rust
 POST /dir/register.asp HTTP/1.1
@@ -770,29 +462,15 @@ function post(string url) {
 				"Host: {}\r\n\r\n".format(host).encode("utf8"))
 }
 ```
-
-Other methods include _PUT_, which uploads a file to the server (e.g., uploading
-a file to some cloud storage) and _DELETE_, which deletes the file on the
-server, as specified in the URL field (e.g., deleting a file from cloud
-storage).
+Other methods include _PUT_, which uploads a file to the server (e.g., uploading a file to some cloud storage) and _DELETE_, which deletes the file on the server, as specified in the URL field (e.g., deleting a file from cloud storage).
 
 ### Reading the HTTP Response Message
-
-Once the server receives the client's HTTP request, it forms its own response
-message, and sends it back to the client. To read this response, the browser
-uses its socket to create a file-like data object (we can think of it like a
-struct):
+Once the server receives the client's HTTP request, it forms its own response message, and sends it back to the client. To read this response, the browser uses its socket to create a file-like data object (we can think of it like a struct):
 
 ```rust
 let response = socket.makefile("r", encoding="utf8", newline="\r\n");
 ```
-This object contains all of the bytes sent from the server, as well as an API
-for parsing and interpreting the bytes. Groups of bytes map to certain pieces of
-information, and those groups are delineated with new lines.
-
-The first line corresponds to an _HTTP Status Code_. HTTP provides numerous
-status codes, but only a subset is used extensively. Commonly used codes
-include:
+This object contains all of the bytes sent from the server, as well as an API for parsing and interpreting the bytes. Groups of bytes map to certain pieces of information, and those groups are delineated with new lines. The first line corresponds to an _HTTP Status Code_. HTTP provides numerous status codes, but only a subset is used extensively. Commonly used codes include:
 
 | Status Code | Name                       | Meaning                                                                               |
 | ----------- | -------------------------- | ------------------------------------------------------------------------------------- |
@@ -849,29 +527,9 @@ function request(string url) {
 }
 ```
 
-Assuming all goes well, the browser stores the information received in some data
-structure of key-value pairs (where the key is a header and the value is the
-associated data), likely using a hash table variant.
+Assuming all goes well, the browser stores the information received in some data structure of key-value pairs (where the key is a header and the value is the associated data), likely using a hash table variant. There numerous HTTP responses headers, but there are two that are particularly important to browsers: _transfer-encoding_ and _content-encoding_.  The transfer-encoding header tells the browser what encoding the server used to transfer the requested data object. The browser needs this information because the bytes contained in the response's _body_ (the field containing the requested data object) can be formatted in many different ways. It might be chopped into smaller pieces (`transfer-encoding: chunked`), compressed (`transfer-encoding: compressed`), gzipped (`transfer-encoding: gzip`), or deflated (`transfer-encoding: deflate`). Each of these options uses a particular algorithm for encoding and decoding the data object.
 
-There numerous HTTP responses headers, but there are two that are particularly
-important to browsers: _transfer-encoding_ and _content-encoding_.  The
-transfer-encoding header tells the browser what encoding the server used to
-transfer the requested data object. The browser needs this information because
-the bytes contained in the response's _body_ (the field containing the requested
-data object) can be formatted in many different ways. It might be chopped into
-smaller pieces (`transfer-encoding: chunked`), compressed
-(`transfer-encoding: compressed`), gzipped (`transfer-encoding: gzip`), or
-deflated (`transfer-encoding: deflate`). Each of these options uses a particular
-algorithm for encoding and decoding the data object.
-
-The _content-encoding_ header takes the same values as _transfer-encoding_ and
-communicates the same kind of information. The reason the browser needs both
-these headers is that servers are free to use either of the two. Most servers
-today use _content-encoding_, but because of the possibility of a server using
-_transfer encoding_, checking both of these headers is the only way to ensure
-the browser uses the correct decoding scheme.
-
-Once the headers have been read, the browser proceeds to read the body:
+The _content-encoding_ header takes the same values as _transfer-encoding_ and communicates the same kind of information. The reason the browser needs both these headers is that servers are free to use either of the two. Most servers today use _content-encoding_, but because of the possibility of a server using _transfer encoding_, checking both of these headers is the only way to ensure the browser uses the correct decoding scheme. Once the headers have been read, the browser proceeds to read the body:
 
 ```rust
 // inside the request() function
@@ -890,17 +548,7 @@ parser_). This leads to the world of _browser engineering_, a field onto itself
 and far outside the scope of this chapter.
 
 ## Cookies
-
-Earlier, we mentioned that under the HTTP protocol, servers are essentially
-stateless. Having state, however, would be extremely useful: It allows user to
-pick up where they left off the last time they used the network application.
-While server-side state isn't feasible for extremely large applications, such
-applications can achieve a similiar beneft through _cookies_.
-
-Generally, a cookie is a key-value pair, where the key is a host name, and the
-value is some integer. The cookies are kept in some container with fast read and
-write times — e.g., a hash table — colloquially called a _cookie jar_. We can
-imagine it as looking something like:
+Earlier, we mentioned that under the HTTP protocol, servers are essentially stateless. Having state, however, would be extremely useful: It allows user to pick up where they left off the last time they used the network application. While server-side state isn't feasible for extremely large applications, such applications can achieve a similiar beneft through _cookies_. Generally, a cookie is a key-value pair, where the key is a host name, and the value is some integer. The cookies are kept in some container with fast read and write times — e.g., a hash table — colloquially called a _cookie jar_. We can imagine it as looking something like:
 
 ```terminal
 let COOKIE_JAR = {
@@ -931,50 +579,48 @@ function request() {
 	}
 }
 ```
-The cookie jar is maintained, as long as the user doesn't clear it (e.g., when
-clearing Chrome's browser history, there's an option to clear "Cookies and other
-site data").
-
-Using the example cookie jar above, let's say the site is Amazon. The user
-puts some items in the cart and leaves without purchasing. The next time the
-user visits Amazon, the browser will send an HTTP request with _Cookie_ header:
+The cookie jar is maintained, as long as the user doesn't clear it (e.g., when clearing Chrome's browser history, there's an option to clear "Cookies and other site data"). Using the example cookie jar above, let's say the site is Amazon. The user puts some items in the cart and leaves without purchasing. The next time the user visits Amazon, the browser will send an HTTP request with _Cookie_ header:
 
 ```rust
 "GET ... cookie: 1678 \n ... "
 ```
-When Amazon receives this cookie, it sees the cookie field and looks up the
-value in its database. If it finds the value, it retrieves the user's associated
-data (e.g., what product number was last left in their cart). If Amazon doesn't
-see the cookie, it assumes that the client is an entirely new user and creates a
-new cookie for the user. Each time the server receives HTTP requests, it updates
-the data associated with the user.
+When Amazon receives this cookie, it sees the cookie field and looks up the value in its database. If it finds the value, it retrieves the user's associated data (e.g., what product number was last left in their cart). If Amazon doesn't see the cookie, it assumes that the client is an entirely new user and creates a new cookie for the user. Each time the server receives HTTP requests, it updates the data associated with the user. Cookies make the web feel seamless and personalized. They allow developers to implement subtle and convenient features that we often take for granted — watching a YouTube video or Netflix movie right where we left off, keeping things in our shopping cart, getting suggestions in Google search, ensuring the webpage is rendered according to user preferences (e.g., executing optimizations for blind users or rendering the page according to the user's spoken language), and many others.
 
-Cookies make the web feel seamless and personalized. They allow developers to
-implement subtle and convenient features that we often take for granted —
-watching a YouTube video or Netflix movie right where we left off, keeping
-things in our shopping cart, getting suggestions in Google search, ensuring the
-webpage is rendered according to user preferences (e.g., executing optimizations
-for blind users or rendering the page according to the user's spoken language),
-and many others.
-
-On the other hand, cookies also raise numerous privacy concerns. It's not always
-clear what data a network application tracks or _shares_ with other
-applications. In 2011, the European Union enacted the General Data Protection
-Regulation (colloquially called the _EU Cookie Law_), which requires data
-controllers (entities that gather data from EU residents) to ask for consent
-before using cookies. Given how many end users there are in the EU, this has led
-to what's steadily becoming the Internet's bumpersticker: "We use cookies to
-improve your experience on our site and to show you relevant advertising."
+On the other hand, cookies also raise numerous privacy concerns. It's not always clear what data a network application tracks or _shares_ with other applications. In 2011, the European Union enacted the General Data Protection Regulation (colloquially called the _EU Cookie Law_), which requires data controllers (entities that gather data from EU residents) to ask for consent before using cookies. Given how many end users there are in the EU, this has led to what's steadily becoming the Internet's bumpersticker: "We use cookies to improve your experience on our site and to show you relevant advertising."
 
 ## Web Caches
+> __~definition: max output rate~.__ Let ${S}$ be a server with a maximum processing speed ${S_p}$, and let ${L}$ be a link of bandwidth ${L_b.}$ Then the rate at which ${S}$ sends data through ${L}$ is the minimum of ${S_p}$ and ${L_b.}$
 
-As we know from computer architecture, a _cache_ is a region of memory ${R_n}$
-that serves as a larger storage area for a region ${R_{n+1}}$ closer to the
-processor. The closer we store data to the processor, the faster it is for the
-processor to process the data. This same idea extends to networking: If a
-particular data object is being requested so often, a typical modern server will
-store the data object in its cache. For example, if a server at MIT notices that
-some UIUC professor's lecture notes page is constantly being accessed, the MIT
-server will likely cache that page. This has several benefits: (1) It gives the
-users faster access time, and (2) it allows the server to focus on traffic that
-must go out beyond its LAN.
+> __~definition: request rate~.__ The _average request rate_ is a ratio ${\dfrac{R}{T},}$ where ${T}$ is a unit of time, and ${R}$ is a positive integer corresponding to the number of requests in one ${T.}$ We denote the average request rate with the notation ${Rr_{\avg}.}$
+
+As we know from computer architecture, a _cache_ is a region of memory ${R_n}$ that serves as a larger storage area for a region ${R_{n+1}}$ closer to the processor. The closer we store data to the processor, the faster it is for the processor to process the data. This same idea extends to networking: If a particular data object is being requested so often, a typical modern server will store the data object in its cache. For example, if a server at MIT notices that some UIUC professor's lecture notes page is constantly being accessed, the MIT server will likely cache that page. This has several benefits: (1) It gives the users faster access time, and (2) it allows the server to focus on traffic that must go out beyond its LAN. Large networks will often contain several _proxy servers_ — servers that cache heavily requested data objects.
+
+$$
+	\ax{
+		~ & \tx{client} & ~ \\
+		~ & \updownarrow & ~  \\
+		\tx{client} & \leftrightarrow \tx{proxy server} \leftrightarrow & \tx{client} \\
+		~ & \updownarrow & ~ \\
+		~ & \tx{origin server} & ~ \\
+	}
+$$
+
+Caching has several benefits: (1) reducion of the response time for client requests; (2) reduction of traffic on a provider's access link; (3) allows poorer, or budding, content providers to effectively deliver content. The third point is particularly important today. Many startups do not have the financial means of supporting heavy network traffic. By default, the more traffic the venture receives, the more bandwidth required. And increased bandwidth isn't cheap. Caching provides the alternative—rather than buying more bandwidth, rely on the proxy server.
+
+> __~case study~.__ Let ${\Oo}$ be a network of origin servers, and let ${N}$ be a network connected to ${\Oo}$ by an edge denoted ${\df{access~link}.}$  Suppose ${F}$ is the set of data objects requested by the clients on ${N,}$ such that, for each data object ${f \in F,}$ the average size of ${f}$ is ${b}$ bits. Suppose further that the delay from a router in ${N}$ to a server in ${\Oo}$ is ${k}$ seconds, and that the average request rate from a browser in ${N}$ to a server in ${\Oo}$ is ${Rr_{\avg}}$ bits per second. Then the following conclusions are true.
+>
+> ${\df{i}.}$ The total traffic ${\T_r}$ generated (utilization of LAN) is ${Rr_{\avg} \times b.}$ 
+>
+> ${\df{ii}.}$ Following ${\df{i},}$ the local area network utilizes ${\ar{\dfrac{Rr_{\avg} \times b}{100}}\ptg}$ of load.
+>
+> ${\df{iii}.}$ The network ${N}$ uses ${100\ptg}$ of ${\df{access~link}.}$
+> 
+> ${\df{iv}.}$ The total delay ${\D}$ is given by:
+> > 
+> > $$
+> > 	\D = \df{net}_{d} + k + \df{lan}_d,
+> > $$
+> > 
+> where ${\df{net}_d}$ is the _internet delay_, ${k}$ is the _access delay_, and ${\df{lan}_d}$ is the _LAN delay_.
+
+Notice that with just one link connecting ${N}$ to the origin servers, all the total traffic ${\T_r}$ rests on the single edge ${\df{access~link}.}$ Recall that if the ratio ${\frac{\tx{in}}{\tx{out}} \approx 1,}$ then the average queueuing delay grows extremely large.

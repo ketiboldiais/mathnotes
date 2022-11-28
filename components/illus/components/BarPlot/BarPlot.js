@@ -32,37 +32,39 @@ export const BarPlot = ({
 	data,
 	colorWeight = [],
 	xTickRotate = 0,
-	xAxisLabel = "x",
-	yAxisLabel = "y",
+	xAxisLabel,
+	yAxisLabel,
 	width = 500,
 	height = 450,
-	containerWidth,
+	scale=100,
+	wh=[width,height],
+	containerWidth=scale,
 	containerHeight,
-	margins = [70, 70, 70, 70],
+	margin=70,
+	margins = [margin, margin, margin, margin],
 }) => {
 	const ref = useRef();
 	const _data = formatData(data);
-	const _svg = svg(width, height, margins);
+	const _svg = svg(wh[0], wh[1], margins);
 
 	const _yMin = setValue(getArrayMin(getPropertyValues(_data, "y")));
 	const _yMax = setValue(getArrayMax(getPropertyValues(_data, "y")));
 
 	const xScale = scaleBand()
 		.domain(getPropertyValues(_data, "x"))
-		.range([0, _svg.width], 0.05)
+		.range([0, _svg.width])
 		.padding(0.05);
-	const yScale = scaleLinear
+	const yScale = scaleLinear()
 		.domain([0, _yMax])
 		.range([_svg.height, 0]);
 	const color = colorWeight
-		? ScaleLinear().domain([_yMin, _yMax]).range(colorWeight)
+		? scaleLinear().domain([_yMin, _yMax]).range(colorWeight)
 		: "salmon";
 	const xAxis = axisBottom().scale(xScale);
 	const yAxis = axisLeft().scale(yScale);
 
 	useEffect(() => {
 		const BarPlot = select(ref.current).select("g.svgElement");
-
 		const bars = BarPlot.selectAll("rectangles")
 			.data(_data)
 			.enter()
