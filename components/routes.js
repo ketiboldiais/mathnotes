@@ -304,7 +304,9 @@ const Routes = [
       // { name: "Functional Programming Techniques", path: `${cs}${asy}functional_programming` },
       // { name: "TypeScript", path: `${cs}${asy}typescript` },
       // ]},
-      { name: "Cryptography", path: `${cs}${cry}intro` },
+      { name: "Cryptography & Security", path: `${cs}${cry}intro`, children: [
+        { name: "Web Security", path: `${cs}${cry}web-security` },
+      ]},
       {
         name: "Languages/Frameworks",
         path: `${cs}${lang}preface`,

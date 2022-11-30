@@ -403,6 +403,8 @@ The bytes of a memory buffer are just ones and zeroes. Nothing more. Thus, for p
 
 ~remark~. The processes ${A}$ and ${B}$ may be on the same machine, or they may be on entirely separate machines, possibly thousands of miles apart. In the latter case, suppose ${A}$ lives on ${M_1}$ and ${B}$ lives on ${M_4.}$ ${A}$ and ${B}$ are connected via through the processes on intermediary machines: ${A}$ of ${M_1}$ connects to ${B}$ of ${M_2,}$ ${B}$ of ${M_2}$ connects to ${A}$ of ${M_3,}$ ${A}$ of ${M_3}$ connects to ${B}$ of ${M_4.}$
 
+
+
 #### TCP Sockets
 Think of a simple console program that takes user input and returns screen outputs through `stdin` and `stdout`. For such a program, the input is the keyboard and the ouput is the screen. Webservers operate on the same principles, but with different endpoints: The input and output is a system _port_ (an entry point for network connections). A __*socket*__ is an interface that makes communications on different machines look similar to basic file I/O.
 
@@ -554,16 +556,22 @@ The kernel represents a process as a _process control block (PCB)_. This is a se
 All PCB's are kept in a data structure maintained by the kernel's __*scheduler*__. The scheduler decides which process gets CPU access next, as well as which process gets RAM access next. We call the event of switching from a process ${P_1}$ to a process ${P_2}$ a __*context switch*__. Consider a user typing code on Emacs while watching a tutorial on YouTube. Those are two different processes. Setting aside multicore processors, the Emacs process and the web browser tab process are two independent processes. They _do not_ execute simultaneously. Instead, the kernel switches CPU and RAM access quickly enough to create an _illusion_ of simultaneous execution. Timing these switches is a major challenge for OS designers. If the kernel switches too rapidly, more time is spent on switching and less time is spent on executing, leading to slow execution times. If the kernel switches too slowly, concurrent processes become choppy or slow.
 
 ### Process Lifecycle
-When a process starts, the kernel places it on the ready queue. When the last process's time is up, the scheduler takes the next process, and runs a thread of that process: Load the thread's state (register, PC, stack pointer values) into CPU and load the environment (process's memory space). Now the process is _executing_ (since a thread of the process is executing). A running process has three possible outcomes: _exit_ (the process terminates), _interrupt_ (e.g., throwing an exception, keydown, keyup, etc; the scheduler places the process back on to the ready queue), or _waiting_ (the browser's renderer waiting for incoming data; the scheduler places the process on the waiting queue). If the anticipated event occurs, the waiting process is put back on to the ready queue. Notice that an interrupt doesn't just halt the CPU. Interrupts, like all events, must wait in line.
+When a process starts, the kernel places it on the ready queue. When the last process's time is up, the scheduler takes the next process, and dispatches it to the CPU — load the register states, program counter, and any other bits the CPU needs to execute the process.
+
+The running process has three possible outcomes: __~exit~__ (the process terminates), __~interrupt~__ (e.g., throwing an exception, keydown, keyup, etc; the scheduler places the process back on to the ready queue), __~waiting~__ (the browser's renderer waiting for incoming data; the scheduler places the process on the waiting queue), or any other state the OS designers have specified. If an awaited event occurs, an interrupt may occur. The scheduler takes the running process out and dispatches the waiting process.
+
+~remark~. Note that an interrupt doesn't just halt the CPU. Interrupts, like all events, must wait in line.
 
 The ready and waiting queues aren't the only queues. There are USB queues, Disk queues, Ethernet queues, WiFi queues, Bluetooth queues, etc. These interface-specific queues are usually handled by _device drivers_. The device drivers then interact with the OS's scheduler.
 
 ~remark~. The data structure used to implement the queues depends on the OS's scheduling policy. Common implementations are singly- and doubly-linked lists.
 
-There's something very important to keep in mind about all of this: _Both the OS and threads run on the same CPU._ Thus, when a given thread is running, the OS isn't running. And when the OS is running, no threads are running. Remember that the OS is a program like everything else (granted, a very special kind of program).
+~question~. This picture maps to a one-process-one-thread scenario. Where do threads fit in this picture?
+
+~detail~. Before we answer the question above, we acknowledge a fact: Both the OS and user threads run on the same CPU. Thus, when a given thread is running, the OS isn't running. And when the OS is running, no user threads are running. The OS is a program like everything else (granted, a very special kind of program).
 
 ~question~. How does the OS—or more generally, a dispatcher—get control back?
 
-First, differentiate between two kinds of events: __*Internal events*__ (events where a thread returns control voluntarily) and __*external events*__ (events where a thread is preempted; control is taken).
+Two approaches: (1) Ensure that every thread voluntarily returns control, of (2) ensure that every thread is subservient to the OS, and the OS can seize control under certain conditions. Events where a running thread voluntarily returns control are called _internal events_. Events where control is taken from a running thread are called _external events_.
 
-~example~. A thread requesting I/O for a file on disk is an internal event. The thread yields to the disk processes. Waiting on a signal and executing `yield` are all internal events. The `yield` function provided by C tells the scheduler that it will voluntarily give up the CPU if need be (useful for operations that may take hours or days to run).
+~example~. A process requesting I/O for a file on disk is an internal event. The process yields to a disk process. Waiting on a signal and executing `yield` are all internal events. The `yield` function provided by C tells the scheduler that it will voluntarily give up the CPU if need be (useful for operations that may take hours or days to run).

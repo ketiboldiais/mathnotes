@@ -1,0 +1,401 @@
+<Head>
+	<title>Web Security</title>
+	<meta name={`description`} content={`Notes on web security.`}/>
+</Head>
+
+# Web Security
+_This note is an overview of web security._
+
+1. [Definitions](#definitions)
+2. [Network Flow](#network-flow)
+	1. [Browser UI](#browser-ui)
+	2. [Browser Engine](#browser-engine)
+	3. [DNS Lookup](#dns-lookup)
+	4. [DNS Server](#dns-server)
+	5. [Network Hops](#network-hops)
+	6. [Server Acceptance](#server-acceptance)
+	7. [Client HTTP Request](#client-http-request)
+	8. [Server HTTP Response](#server-http-response)
+
+
+## Definitions
+> __~definition: threat~.__ A potential event that may harm an entity.
+
+> __~definition: vulnerability~.__ A weakness of a resource depended on by an entity.
+
+> __~definition: exploit~.__ The methods of taking advantage of an exploit.
+
+## Network Flow
+Cutting all details, below is a general overview of what happens when we type a URL and press enter. Note that the browser engines are multithreaded applications. The renderer, however, is a single-threaded process. Thus, while the renderer will attempt to display a site as soon as possible, it must wait for external resources (e.g., CSS stylesheets and JavaScript files) to arrive if the HTML parser encounters them (hence the name _render-blocking resource_).
+
+_Note_. The term _networker_ is nonstandard. We use it to refer to the browser's _network module_ — the browser's program that handles network connections.
+
+1. The browser's networker executes a DNS lookup for the hostname (e.g., `example.com`) to get an IP address (`1.2.3.4`).
+2. The system sends the request to the local DNS.
+3. The local DNS performs a recursive solve.
+4. The DNS returns the IP address.
+2. The browser's networker module forks a child process with a TCP socket to the received IP address. That child process will receive bytes from port 80 (the HTTP port).
+3. The browser's networker sends a handshake request to the server specified by the IP address.
+4. If the server accepts: The server forks a child process with a specific port number, and sends an acknowledgment to the browser. That acknowledgment specifies which port the browser must communicate with for the remainder of the session.
+5. The browser receives the request and writes to the socket a string corresponding to an HTTP request for some file ${F.}$ The bytes comprising to that string are sent to the server.
+6. If the browser is authorized to read ${F,}$ the server's child process writes a string to its own socket. That string's bytes to HTTP response headers and a body (${\of{F}}$ contents).
+7. The browser's networker receives the bytes, decodes them into strings, and sends the strings to the browser's _renderer_.
+8. The browser renderer receives the strings and reads the MIME (Multipurpose Internet Mail Extension) type.
+	- If the MIME type is `text/html`, the renderer sends the string to the HTML parser.
+		1. The HTML parser reads the strings and outputs DOM nodes (structs designed under the Document Object Model). 
+		2. If the parser encounters external resources—e.g., `style.css` (a CSS file) or `app.js` (a JavaScript file)—the renderer notifies the engine, the engine notifies the networker, and steps (1) through (7) are repeated.
+		3. The DOM nodes are sent to the renderer, which builds the _content tree_ (the HTML document's logical structure).
+		4. For DOM nodes with a display property (e.g., a `ParagraphNode` but not the `HTMLNode`), the renderer also builds a _render tree_ — a tree where each node represents a rectangle and visual attributes. The attributes have default values, overwritten by inline-styles and CSS style sheets.
+	- If the MIME type is `application/javascript`, the renderer sends the string to the JavaScript engine.
+		- The JavaScript engine interprets the JavaScript code.
+	- If the MIME type is `text/css`, the renderer sends the string to the CSS parser.
+9. The renderer executes the _layout process_ — each node in the render tree is given exact coordinates to appear on the screen.
+10. The renderer traverses the render tree, and using each node's data, executes a _paint method_, prompting the system to manipulate pixels within the browser tab currently in view. To the user, this appears as the site requested.
+
+### Browser UI 
+Billy opens a new tab on his web browser, clicks the address bar, and types `caltech.edu`. Billy hits enter.
+
+### Browser Engine
+The browser takes this URL and parses Billy's input string. Checks are made: If the string includes `https`, then this is an HTTP request. If the string is just `http`, warn Billy that they're attempting to communicate over an unsecure connection. Here, Billy's string makes no specification, so the hypothetical browser defaults to `https`.
+
+### DNS Lookup
+The browser engine takes the parsed string and executes a `getaddrinfo` call, corresponding to a DNS lookup.
+
+```
+struct addrinfo *lookup_host(char* host_name, char* port) {
+	struct addrinfo *server;
+	struct addrinfo hints;
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints._ai_socktype = SOCK_STREAM;
+	int rv = getaddrinfo(host_name, port_name, &hints, &server);
+	if (rv != 0) {
+		printf("getaddrinfo failed: %s\n", gai_strerror(rv));
+		return NULL;
+	}
+	return server;
+}
+...
+lookup_host("https://www.caltech.edu", "80");
+```
+When the kernel sees that there's data to send to the network interface, it first checks if the requested data is cached. If it is, it immediately returns the data. Otherwise, it sends the bytes comprising the lookup request to the network interface. The network interface recognizes the request as a UDP packet, so it sends the bytes immediately without restriction. Assume the data isn't cached.
+
+### DNS Server
+The request gets to Billy's closest DNS host (the _local DNS_), and the host's machine takes the request. The DNS sees `https://www.caltech.edu` and executes a _DNS recursive solver_ — an API method that sends queries to servers elsewhere. First, the DNS checks if `caltech.edu` exists in its _root nameserver_, the DNS server's default server. There is no such name, so the DNS server asks the `.com` nameserver. Again there is no such name. The server finally asks the `caltech.edu` nameserver. This server does respond and returns the corresponding address. Why does the DNS make all these calls? Because the DNS cannot possibly hold every domain name — there are anywhere between 300 to 370 million names, with many of those names mapping to multiple IP addresses.
+
+~vulnerabilities~. Because the bytes send to and from DNS servers are UDP segments, they can easily be intercepted. Moreover, because UDP is a connectionless protocol, once the segments are intercepted, an attacker can take the segments, specify a different IP address, and return it to Billy's computer. This is a form of __*packet sniffing*__, and it applies to all packets that travel along a wireless medium. Alternatively, the attacker can change DNS records, such that every IP address returned points to the attacker's chosen server. This kind of attack is called __*DNS hijacking*__. The malicious IP address might belong to a server hosting a caltech-lookalike waiting for Billy's credentials. Fortunately, Caltech uses HTTPS—a protocol where the browser requires a particular bytestream to serve as proof of identity—which ensures that Billy's computer communicates with the real `caltech.edu`.
+
+#### DNS Hijacking: Entry Points 
+An attacker can perform a DNS hijack at several entry points:
+
+1. Insert malware modifying DNS cachaes in Billy's machine. 
+2. Modify/attack the DNS resolver's instructions — trigger buffer or stack overflows, change pointers, etc.
+3. Attack the router itself; the IP addresses are correct, but the router is forwarding packets elsewhere.
+4. Attack a DNS nameserver — change just one of records.
+5. Attack the company that provides the DNS server.
+
+~remark~. DNS attacks, unfortunately, are common for public school districts. This stems from a lack of funding for IT staff. In some cases, only one person is charged with managing an entire school district. In today's world, this is tantamount to one police officer for a large town.
+
+#### DNS Privacy 
+Recursive resolvers log requests made by particular machines. I.e., every domain Billy looks up will be logged by the DNS. Originally, these logs were intended for efficiency (think memoization—store previous queries, and its faster to return the matched IP address). It's now known that ISPs sell these logs to advertising companies. Billy can prevent this by changing their DNS provider.
+
+| DNS     | Server         | Policy                                                                                                         |
+| ------- | -------------- | -------------------------------------------------------------------------------------------------------------- |
+| 1.1.1.1 | Cloudflare DNS | No log sales, all logs are anonymous but logs are shared with APNIC Labs, a nonprofit internet research group. |
+| 8.8.8.8 | Google DNS     | No log sales, logs deleted within 24-48 hours, permanent logs containing city and region location.             |
+| 9.9.9.9 | quad9 DNS      | No log sales, all logs are anonymous.                                                                          |
+
+### Network Hops
+Back at Billy's machine, the browser engine's `caltech` tab process has been waiting for the the DNS lookup to return. Once the engine receives this stream, it sends a connection request to the IP address given by the DNS. This request is a bytestream specifying both the IP address and the port number of the receiving server process. The kernel sends this bytestream down to the network interface, which then sends it off to the LAN (local area network) provider. 
+
+The LAN provider receives the bytestream and determines the bytes correspond to a handshake request. The LAN sees that the IP address is outside its network, so it forwards the bytestream to a MAN (metropolitan area network) provider. 
+
+The MAN receives the bytestream and determines the bytes correspond to a handshake request. The MAN sees that the IP address is outside its network, so it must send the bytestream to a WAN (wide area network) provider.
+
+The WAN provider receives the bytestream and determines that it must go to, say, Los Angeles, California. At this point, the WAN must make a decision: What's the fastest way to get this bytestream to LA? The WAN makes this decision with a routing table, and uses a _routing algorithm_ to determine this path (details later). For now, we assume the WAN determines the optimal path—the bytestream travels to the server along intermediary nodes.
+
+### Server Acceptance
+On caltech's side, its server is busy processing requests, with a parent process listening to its server socket. The parent process sees Billy's request, forks a child, and makes an `accept` call. This sends back to Billy's browser a handshake, as well as the port number of the recently forked child. From here on out, Billy's browser will address packets to that port number. Again the packet travels through the network, going through the same drama illustrated earlier.
+
+### Client HTTP Request
+Eventually, it gets to Billy's browser. Connection established, Billy's browser now sends an _HTTP request_ for the `index.html` file mapped to `caltech.edu`. Those requests are sent again through the socket, traveling along the network. That request arrives at the port number of the forked child process. 
+
+### Server HTTP Response
+The child process writes an _HTTP response_, then sends it back down the connection towards Billy's browser. The browser receives the `HTML` bytestream and begins parsing, building, and rendering the page onto Billy's monitor. Everytime the browser encounters a resource — e.g., `styles.css` or `app.js` — it must again write to the socket with an HTTP request for those resources.
+
+This is a very rough picture of how data is transferred to between distant machines, with numerous details left out. The truly remarkable aspect to all of this: Everything appears to happen in less than a second.
+
+## Aside: Curl
+The ${\mo{curl} \dk url}$ shell command on Linux can be used to send HTTP requests and receive HTTP responses over the terminal. If we save the output to an HTML file (${\mo{curl} \dk url \dk \gt \dk \mo{index.html}}$) we can open the HTML file in a browser.
+
+## The HTTP Protocol
+An HTTP request is just a string
+
+$$
+	\small\lq
+		\mo{GET}{filepath}\mo{HTTP/1.1}\mo{\bslash n}
+		\mo{Host:}hostname\mo{\bslash n}
+		\mo{User-Agent:}browserName
+	\rq
+$$
+
+If we used Firefox to visit `twitter.com`, the string would represent a request with the following format:
+
+~~~
+GET / HTTP/1.1
+Host: twitter.com
+User-agent: Mozilla/5.0
+~~~
+
+The first line, `GET / HTTP/1.1` means: _Get this filepath using the protocol HTTP 1.1_. Recall that filepaths are just file names. The `GET` is a keyword in HTTP that tells the server process to write the contents of the file to its output socket. If we have the right to read that file, the server process writes to its socket an _HTTP response_. This is also just a string:
+
+
+$$
+	\small\lq
+		\mo{HTTP/1.1}{status}\mo{\bslash n}
+		\mo{Content-length:}{length}\mo{\bslash n}
+		\mo{Content-type:}{type}\mo{\bslash n}
+		\mo{Date:}{date}\mo{\bslash n}
+		{body}
+	\rq
+$$
+
+Using the same example of `twitter.com`, the response appears on our monitor as:
+
+~~~
+HTTP/1.1 200 OK
+Content-length: 9001
+Content-type: text/html; charset=UTF-8
+Date: Tue, 24 Sep 2019 20:30:00 GMT
+<!DOCTYPE HTML><html>...
+~~~
+
+HTTP status codes are what the client uses to determine what it should do when it receives a response. The status codes are organized generally. Where ${a}$ and ${b}$ are digits:
+
+| ~status code~ | ~semantic~    |
+| ------------- | ------------- |
+| ${1ab}$       | Informational |
+| ${2ab}$       | Success       |
+| ${3ab}$       | Redirection   |
+| ${4ab}$       | Client error  |
+| ${5ab}$       | Server error  |
+
+The most common status codes:
+
+| ~status~ | ~semantic~                                                                                                                                              |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 200      | _OK_. Nothing went wrong, everything is ok.                                                                                                             |
+| 206      | _Partial Content_. Nothing went wrong, parts of the file requested sent.                                                                                |
+| 301      | _Permanent Redirect_. File requested is now (and always will be) a pointer to another file, so I (the server) will send you the pointee file.           |
+| 302      | _Temporary Redirect_. File requested is now a pointer to another file, so I (the server) will send you the pointee file. This may change in the future. |
+| 304      | _Not Modified_. File requested wasn't modified since the last cache.                                                                                    |
+| 400      | _Bad Request_. Request does not follow protocol.                                                                                                        |
+| 401      | _Unauthorized_. You (the client) must provide credentials to view this file.                                                                            |
+| 403      | _Forbidden_. You (the client) are not authorized to view this file.                                                                                     |
+| 404      | _Not Found_. I (the server) could not find that file you (the client) requested (e.g., wrong URL).                                                      |
+| 410      | _Gone_. The file you (the client) requested does not exist.                                                                                             |
+| 500      | _Internal Server Error_. Something went wrong with me (the server).                                                                                     |
+| 502      | _Bad Gateway_. I (the server) am a proxy server, the server I get responses from cannot be reached.                                                     |
+| 503      | _Service Unavailable_. I (the server) am not available (e.g., server is overloaded or down for maintenance).                                            |
+| 504      | _Gateway Timeout_. I (the server) am a proxy server, and the server I get responses from is responding too slowly.                                      |
+
+Each of these status codes allows the client to take certain actions. The status code 206 is useful for breaking up content. I.e., if the client knows that a particular file is extremely large (perhaps from caching), then receiving a status code of 200 (the entire file) will prompt the client to break up the content. If the client receives 206, then it doesn't break up the content, since it already is broken up. The status code `301` is useful for efficiency — for future requests, the client won't bother requesting the original URL. Instead, the client will always substitute the requested URL with the redirected URL. A status code of 302, however, tells the client that the requested temporarily redirects, so the browser should always request for the original URL (since the redirect may stop). The status code 304 is also useful for efficiency. The client sends its cached version of the file to the server. The server checks this file against its own: If the cached version is the same, the server sends 304, and the client uses the cached version. Otherwise, the server returns the entire, new version of the file.
+
+### Proxy Servers
+The more users a web application obtains, the more requests the application's server must handle. And with more requests, the application requires more servers. Web applications will want clients to think that there's just one server, so they create a single client-facing server that mediates between the many servers and the client. That mediating server is called the __*proxy server*__.
+
+### HTTP Request Headers
+> __`Host.`__ The domain name of the server (e.g., `twitter.com`).
+
+> __`User-Agent.`__ The client's browser name and operating sytem.
+
+~remark~. The user-agent is how the server determines who is calling. This is useful for security measures. E.g., the server should allow `Googlebot` (Google's crawler for indexing pages), but probably shouldn't allow `SiteDestroyer`.
+
+> __`Referer.`__ The webpage leading the client to the page.
+
+~remark~. The referer allows the server to determine how the user got to the server. Note that _referer_ is misspelled (correct spelling is _referrer_). By the time HTTP's implementers noticed the misspelling, it was too late—too much code had been written using _referer_ to make the change. That said, referer is one less char value, so an argument may be made that referer _is_ the correct spelling.
+
+> __`Cookie.`__ The cookie provided by the server on first visit (if the server maintains cookies).
+
+> __`Referer`__. Subset of bytes requested (if client requests a range).
+
+> __`Cache-Control`.__ Specifices whether the client wants the cached response.
+
+> __`If-Modified-Since`.__ Only send the bytestream if its changed recently.
+
+> __`Connection`.__ Controls the TCP socket — `keep-alive` or `close`.
+
+~remark~. Recall that the default operation of a TCP socket on the server's side is to immediately close the socket once the request has been served. If the `keep-alive` operation is set, the connection socket used by the server's child process is kept open, maintaining a connection between the client and the server process. This is allows for better performance, but it can be used for malicious code. Remember that sockets require memory—too many sockets open, and the server is overloaded.
+
+> __`Accept`.__ Specifies the type of content expected (`text/html`).
+
+> __`Accept-Encoding`.__ Specifies the encoding algorithm expected (e.g., `gzip`).
+
+> __`Accept-Language`.__ Specifies the language expected (e.g., `en`).
+
+~example~. 
+
+<Algo>
+
+- __Shell Command__:
+~~~
+curl https://twitter.com --header "Accept-Language: es" --silent | grep JavaScript
+~~~
+- __Shell Output__:
+~~~ 
+<h1>JavaScript no está disponible.</h1>
+<p>Detectamos que JavaScript está desactivado en este navegador. Activa JavaScript o cambia a un navegador compatible para seguir usando twitter.com. Puedes ver una lista de navegadores compatibles en nuestro Centro de Ayuda.</p>
+~~~ 
+
+</Algo>
+
+### HTTP Response Headers
+> __`Date`.__ When the response was set.
+
+> __`Last-Modified`.__ When the content was last modified.
+
+> __`Cache-Control`.__ Whether to cache the response.
+
+> __`Expires`.__ Discard response from cache after specified date.
+
+> __`Vary`.__ List of headers that modify the response, used by the server's cache.
+
+> __`Set-Cookie`.__ Sets a cookie for the client.
+
+## Authorization
+> __~definition: authority~.__ A function ${f: A \to F,}$ where ${F}$ is a set of files and ${A \subseteq \set{\tx{read}, \tx{write}, \tx{delete}, \tx{create}}.}$  If ${A = \set{\tx{read}, \tx{write}, \tx{delete}, \tx{create}},}$ then we call ${A}$ _absolute authority_.
+
+> __~definition: superuser-user~.__ Let ${F}$ be a set of one or more files. The entity that holds absolute authority over ${F}$ is called the _superuser_. An entity that has a strict subset of absolute authority is called a _user_. An entity presenting themselves as a user is called a _requester_.
+
+> __~definition: access control~.__ The set of conditions employed by the superuser to determine whether a requester is a user.
+
+> __~definition: explicit authority~.__ Access control where each condition is the requester's execution of a particular procedure.
+
+> __~definition: ambient authority~.__ Access control where each condition is a property ${P,}$ such that ${P}$ is true for the requester.
+
+> __~definition: authentication~.__ The superuser's procedures for determining that every condition of a given access control is met.
+
+> __~definition: session~.__ A time interval ${S = \ix{t_i,t_f},}$ such that, for each unit of time in ${S,}$ a given requester is a user. We call ${t_i}$ the _session start_ and ${t_f}$ the _session end_.
+
+For interprocess communications on the same machine, access control is implemented through the machine's operating system. Because web communications do not necessarily exist on the same machine, application developers must use different means. The four most common means are __*cookies*__, __*IP checking*__, __*HTTP authentication*__, and __*client certificates*__.
+
+### IP Checking
+Check if the requester's IP address exists in the list of user IP addresses. If it is, then the requester is a user.
+
+~example~. A library's server only allowing clients on its network to access electronic journals or the library's books.
+
+~vulnerability~. ${B}$ sets up a client on the network, and ${A}$ connects to ${B.}$
+
+### HTTP Authentication
+Server requires the requester to submit an _HTTP Authorization_ request header. If the requester fails to do so, the server returns a 401 status code.
+
+~example~. The username-password block that pops up on the browser for some websites.
+
+### Client Certificates
+Server submits a list of clients to a third party application ${X}$ (i.e., not the server or the client). When a requester ${R}$ requests access, the request is sent to ${X,}$ which determines whether ${R}$ is a user.
+
+~example~. Verisign is a third party application that issues and maintains certificates for document signing.
+
+~problem~. Certification applications are expensive and opaque—it's not always clear what they're doing with user data. The server process also has no control over security; everything rests on the third-party certification application. Certification applications also make traffic analysis difficult.
+
+### Cookies
+A _cookie_ is a string isomorphic to ${k,v}$ where ${k}$ is a key and ${v}$ is a value. The key maps to a variable of the server process, and ${v}$ is the variable's value. For example, a website server might have a cookie field ${theme,}$ which sets the site's color theme (a color palette for styling). That field may have a default value of ${light}$ and an optional value ${dark.}$ If the default value is used, certain lines of CSS are served. If the user changes it to dark, different lines of CSS are served. If a server implements cookie functionality, it sends the browser an initial cookie. When the browser sends responses, it includes these cookies for the server to use. The server then watches for PUT or POST requests that potentially modify the cookies. If these modifications are found, the server returns a modified cookie for the browser to attach on subsequent requests.
+
+By maintaining cookies for each unique session (on the browser side), the server can (1) tailor the files served according to that user's preferences, (2) persist that particular user's data overtime, while (3) remaining stateless. This is how we stay logged in on websites even when we close a tab, and how shopping carts retain their contents when we log out or shut down for the day. I.e., creating the illusion of a _stateful server_.
+
+#### Raw Cookies
+We call a plain text cookie ${\px{k,v}}$ without anything further, a __*raw cookie*__. Raw cookies are insecure. An attacker can simply change the value in the browser's cookie jar to either keep the user logged-in or prevent the user from logging in. The server can prevent this by using _signed cookies_.
+
+#### Signed Cookies
+> __~definition: signature~.__ A _signature scheme_ is a triple ${(G,S,V)}$ where ${G,}$ ${S,}$ and ${V}$ are algorithms, defined as follows:
+> 
+> 1. The algorithm ${G}$ takes no arguments and returns a pair of strings ${\px{p_k, s_k},}$ where ${p_k}$ is a _public key_ and ${s_k}$ is a secret key.
+> 2. The algorithm ${S}$ takes a pair ${\px{s_k, x}}$ and returns a string ${t,}$ where ${x}$ is some value and ${t}$ is a string called a _tag_.
+> 3. The algorithm ${V}$ takes a triple ${\px{p_k, x, t},}$ and returns ${1}$ if ${x}$ maps to ${t,}$ and ${0}$ otherwise.
+
+> __~definition: correct signature scheme~.__ A _signature scheme_ is correct iff ${V(p_k, x, S(s_k, x)) \mapsto 1.}$
+
+> __~definition: secure signature scheme~.__ Let ${x}$ and ${t}$ be chosen by an attacker. A _signature scheme_ is secure iff ${V(p_k, x, t) \mapsto 1}$ at most ${k}$ times, where ${k}$ is a chosen constant in ${\pint.}$
+
+A __*signed cookie*__ is a cookie generated with a signature scheme. The procedure works as follows:
+
+1. The client sends a handshake request on initial communication.
+2. If the server accepts, it forks a child process to handle subsequent communications.
+3. The child process calls the signature scheme ${G\px{~} = \px{p_k, s_k}}$ saves the resulting keys.
+4. The client sends an HTTP Post request, with ${\px{\mo{username}, password}}$.
+$$
+\\[1em]
+	\eqs{
+		&\mo{POST}\bslash\mo{login}\mo{HTTP/1.1} \\
+		&\mo{username}\eq{username} \\
+		&\mo{password}\eq{password}
+	}
+$$
+5. The child process validates the user. If the user is validated, proceed. Otherwise, return an HTTP response denying access.
+6. The child process generates a tag: ${S(s_k,~\mo{username}) = t.}$
+7. The child process returns an HTTP response with:
+$$
+\\[1em]
+	\eqs{
+		&\mo{HTTP/1.1}\dk {200} \dk \mo{OK} \\
+		&\mo{Set-Cookie:} \dk \mo{username}\eq{username} \\
+		&\mo{Set-Cookie:} \dk \mo{tag}\eq{t}
+	}
+$$
+
+For all subsequent communications with the server, the browser includes:
+
+$$
+	\eqs{
+		&\mo{GET}\dk{url}\dk\mo{HTTP/1.1} \\
+		&\mo{Cookie:}\dk\mo{username}\eq{username;}\dk\mo{tag}\eq{t}
+	}
+$$
+
+When the server receives a cookie with a tag ${t,}$ it calls ${V(p_k, \mo{username}, t).}$ If ${V(p_k, \mo{username}, t) = 1,}$ then no verification is required, and the user's private file is returned. Otherwise, the server denies access.
+
+### Cookie Attributes
+Cookies are stored by the browser's _cookie jar_. This is database file (e.g., for Firefox, a file called `cookies.sqlite` in the its `Profiles` directory) containing domain names, and for each domain name, nonnull cookie attributes with their string-values. There are several cookie attributes that the domain's server(s) can initialize:
+
+> __`Expires`.__ Specifies a date for when the browser should delete the cookie. If no date is provided, the cookie only exists during the browsing session (as long as the browser process is live).
+
+~remark~. Prevailing browsers—Chrome, Firefox, and Safari—use __*session restoration*__: The browser takes liberties in storing session data. Session restoration is how we do not lose form field inputs after accidentally closing the site tab. This saves many headaches for filling long online forms, but again, presents a security issue. Best practice is to always set an `Expire` value. The long online form is bad design to begin with. Instead of having a massive form on a single page, the form should be broken down into sections, with each section mapped to a different path.
+
+Setting the `Expire` field does not necessarily have to be a date far off into the future. Some sites default to a year from the date of the most recent login, but there's no need to be so aggressive. The cycle can be shortened to a month or a day—it entirely depends on the application's usecases.
+
+> __`Path`.__ Scopes the HTTP `Cookie` header to a particular request path prefix. That is, the browser will only send (and later save) a cookie if the HTTP Request is for a certain path. E.g., the site may have special cookies for blind users. These cookies should not be sent and saved for non-blind users.
+
+~remark~. The `Path` attribute should _never_ be used on security-sensitive paths. Setting `Path=/user` will match against `Path=/user/Anne`, `Path=/user/John`, and all other paths incident to `/user`.
+
+> __`Domain`.__ Scopes the cookie to a domain broader than the domain returned by the HTTP Response's `Set-Cookie` header. E.g., `login.illinois.edu` sets a cookie for `illinois.edu`. This allows the server to use the cookie for `login.illinois.edu` in handling requests for `illinois.edu`. The alternative to achieving the same effect is maintaining a shared cookie object.
+
+### Signed Cookie Limitation 
+~example~. ${A}$ is a client and ${B}$ is a server employing signed cookies. An attacker can write a program that copies and saves to a file the first secret key ${s_k.}$ The attacker can then use that secret key ${s_k}$ on subsequent sessions, _even if the user changes their password._ Why? Because the tag ${t}$ is generated from the pair ${(s_k,x)}$ where ${s_k}$ is a secret key and ${x}$ is a value. In this case, the value is a field ${username}$ (not the value of the field, the actual key ${username}$). Remember that signatures aren't hashes. They're functions that return true or false if a particular value is signed.
+
+We can prevent this with several security measures.
+
+#### Unique Session IDs 
+1. The web server maintains a session record (preferably in a secure database). Call it ${R.}$
+2. When the user logs in successfully, we save to ${R}$ the record ${R\ix{n} \mapsto username,}$ where ${n}$ is a random number (provided by a strong random number generator).
+3. In the response, the server returns a cookie ${\px{\mo{sessionId} \mapsto n},}$ where ${n}$ is the random number generated earlier.
+4. For all subsequent communications, the server can verify the user by:
+	1. Read the ${\mo{sessionId}}$ value ${n}$ in the cookie:
+	$$
+		\mo{cookie}\mc\mo{sessionId}
+	$$
+	2. Request the database to return the username mapped to by ${n:}$
+	$$
+		v = R\ix{\mo{cookie}\mc\mo{sessionId}}
+	$$
+	3. If ${v \neq \mo{NULL},}$ then the user does not need to be verified. Otherwise, the user must be verified.
+	
+Notice that this _does not_ involve a signed cookie. Indeed, we _never_ use signed cookies for fields like usernames and passwords. Such high-sensitivity fields should be handled with backend encryption. Signed cookies should instead be used with mid-sensitivity fields (e.g., whether to show an _Accept Cookie Policy_ popup).
+
+~drawback~. This is not a feasible solution for applications with a large number of users. As more users join, the database demand increases. The application can curtail this somewhat by setting expiration times: After a given time ${t,}$ delete he database entry. However, this will raise additional concerns:
+
+- Getting the expiration time right requires careful attention to usage. Five minutes of inactivity before a new session ID is generated may be appropriate for a bank, but not for a blog (pity the user writing for three hours without hitting save, then an hour of writer's block).
+
+- Relational databases are not designed for frequent deletions, so the developer may consider a non-relational database. Non-relational database providers, however, have limits on how large a single record can be. This imposes a limit on the kind of data the server can save as cookies.
+
+### Session Hijacking 
+Bytestreams broadcasted over a wireless medium can _always_ be intercepted.

@@ -21,6 +21,10 @@
 		padding: 3px 2px;
 		top: 0;
 	}
+	.page section {
+		max-width: 500px;
+		margin: 10px auto;
+	}
 /* links */
 	.main>section a { text-decoration: underline; }
 /* Superscripts (for footnotes) */
