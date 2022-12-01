@@ -12,10 +12,28 @@ _This note is an overview of web security._
 	2. [Browser Engine](#browser-engine)
 	3. [DNS Lookup](#dns-lookup)
 	4. [DNS Server](#dns-server)
+		1. [DNS Hijacking: Entry Points](#dns-hijacking-entry-points)
+		2. [DNS Privacy](#dns-privacy)
 	5. [Network Hops](#network-hops)
 	6. [Server Acceptance](#server-acceptance)
 	7. [Client HTTP Request](#client-http-request)
 	8. [Server HTTP Response](#server-http-response)
+3. [Aside: Curl](#aside-curl)
+4. [The HTTP Protocol](#the-http-protocol)
+	1. [Proxy Servers](#proxy-servers)
+	2. [HTTP Request Headers](#http-request-headers)
+	3. [HTTP Response Headers](#http-response-headers)
+5. [Authorization](#authorization)
+	1. [IP Checking](#ip-checking)
+	2. [HTTP Authentication](#http-authentication)
+	3. [Client Certificates](#client-certificates)
+	4. [Cookies](#cookies)
+		1. [Raw Cookies](#raw-cookies)
+		2. [Signed Cookies](#signed-cookies)
+	5. [Cookie Attributes](#cookie-attributes)
+	6. [Signed Cookie Limitation](#signed-cookie-limitation)
+		1. [Unique Session IDs](#unique-session-ids)
+6. [Same Origin Policy](#same-origin-policy)
 
 
 ## Definitions
@@ -369,6 +387,12 @@ Setting the `Expire` field does not necessarily have to be a date far off into t
 
 > __`Domain`.__ Scopes the cookie to a domain broader than the domain returned by the HTTP Response's `Set-Cookie` header. E.g., `login.illinois.edu` sets a cookie for `illinois.edu`. This allows the server to use the cookie for `login.illinois.edu` in handling requests for `illinois.edu`. The alternative to achieving the same effect is maintaining a shared cookie object.
 
+> __`Secure`.__ If the string ${\mo{Secure}}$ is included in the `Set-Cookie` string, cookies will only be transmitted to and from the server of HTTP connections.
+
+~remark~. `Secure` should always be included in cookie transmissions. Moreover, HTTPS should be used for all client-server HTTP communications. Given how sophisticated packet sniffing and MITM (Man-in-the-middle) attacks have become today—as well as certain grey areas over the legality of sniffing free WiFi networks (it may be permissible under some circumstances)—we must have highly compelling reasons for using HTTP over HTTPS.
+
+> __`HttpOnly`.__ Prevents a cookie from being read on the frontend through JavaScript (via `document.cookie`).
+
 ### Signed Cookie Limitation 
 ~example~. ${A}$ is a client and ${B}$ is a server employing signed cookies. An attacker can write a program that copies and saves to a file the first secret key ${s_k.}$ The attacker can then use that secret key ${s_k}$ on subsequent sessions, _even if the user changes their password._ Why? Because the tag ${t}$ is generated from the pair ${(s_k,x)}$ where ${s_k}$ is a secret key and ${x}$ is a value. In this case, the value is a field ${username}$ (not the value of the field, the actual key ${username}$). Remember that signatures aren't hashes. They're functions that return true or false if a particular value is signed.
 
@@ -397,5 +421,85 @@ Notice that this _does not_ involve a signed cookie. Indeed, we _never_ use sign
 
 - Relational databases are not designed for frequent deletions, so the developer may consider a non-relational database. Non-relational database providers, however, have limits on how large a single record can be. This imposes a limit on the kind of data the server can save as cookies.
 
-### Session Hijacking 
-Bytestreams broadcasted over a wireless medium can _always_ be intercepted.
+## Problem of Ambient Authority
+~question~. Website ${W}$ has two paths, ${W\fslash{a}}$ and ${W\fslash{b}.}$ Path ${a}$ stores cookies ${C_a,}$ and ${a}$ does not want path ${b}$ to read its cookies, so path ${b}$ sets a path attribute for its cookies: ${\mo{Path}\eq\fslash{a}.}$ Is ${C_a}$ guaranteed to be inaccessible via ${b?}$
+
+~response~. No. Path ${b}$ can contain an `iframe` element with an `src` value of ${W\fslash{a}.}$ The cookie ${C_a}$ is now available on site ${b,}$ since ${a}$ and ${b}$ are _on the same domain_ ${W.}$
+
+~observation~. A cookie's [path attribute](#cookie-attributes) does not guarantee that a cookie is only sent from a specific URL. Browsers default to sending cookies from the current page a user is on. Best practice is to explicitly set `path=/` (the site's root), leave it at that, and never rely on it.
+
+
+~example~. The site `bank.gov/account` has access to cookies for `bank.gov`, but `bank.gov` has no access to the cookies of `bank.gov/account`.
+
+~example~. `malum.xyz` contains the following code:
+
+~~~
+<img
+	src='https://www.bank.io/widthdraw?from=bob&to=malory&amount=10000'
+/>
+~~~
+
+Bob, visiting `bank.io`, is sent to `malum.xyz`. When the site loads, the browser encounters the image element above, and sends a request for the `src` value. Without any safeguards, the server processes the request: Transfer ${\cash{10~000}}$ from Bob's account to Malory's account. Malory's malicious behavior is a type of attack called a __*cross-site request forgery (CSRF)*__.
+
+#### Cross-site Request Forgery (CSRF)
+> __~definition~.__ Given a web application ${W}$ with an authenticated entity ${U,}$ an attack that causes ${U}$ to perform unwanted actions on ${W.}$
+
+~example~. If ${U}$ is a user and ${W}$ is a bank, causing ${U}$ to unintentionally request fund transfers, email changes, etc.
+
+~example~. If ${U}$ is a superuser or administrator of some web application ${W,}$ causing ${U}$ to unintentionally add a new administrator ${X}$ or worse, uintentionally running commands from the server.
+
+CSRF attacks are the first point of attack for bad actors confronted with HTTPS-protected responses. I.e., CSRF attacks are effective even if the bad actor can't read the HTTP response.
+
+## Same Origin Policy
+Given two sites ${A}$ and ${B,}$ consider the set of possible actions a web application might perform using ${A}$ and ${B:}$
+
+- ${A}$ _links_ to site ${B}$
+- ${A}$ _embeds all of_ ${B}$ to itself without modifying ${B}$'s contents
+- ${A}$ _embeds all of_ ${B}$ to itself _and_ modifies ${B}$'s contents
+- ${A}$ _embeds some of_ ${B}$ (e.g., an image) to itself without modifying ${B}$'s contents
+- ${A}$ _embeds some of_ ${B}$ (e.g., an image) to itself and modifies ${B}$'s contents
+- ${A}$ _writes user input_ to ${B}$
+- ${A}$ _embeds scripts_ from site ${B}$
+- ${A}$ _reads user input_ to ${B}$
+
+Some of the actions present greater security risks than others.
+
+> __~same origin policy~.__ Let ${J_1}$ and ${J_2}$ be JavaScript execution contexts, with ${J_1}$ acting on a response ${R_1}$ from server process ${S_1}$ and ${J_2}$ acting on a response ${R_2}$ from server process ${S_2.}$ ${J_1}$ has access to ${R_2}$ and ${J_2}$ has access to ${R_1}$ if, and only if, all of the following conditions are true.
+> 
+> 1. ${R_1}$ and ${R_2}$ have the same protocol.
+> 2. ${R_1}$ and ${R_2}$ have the same hostname.
+> 3. ${R_1}$ and ${R_2}$ have the same port number.
+> 
+> ~exception~. The single exception: ${J_1}$ may submit form input to ${S_2.}$
+
+Recall that protocol, hostname, and port number are all contained in the segment headers transmitted between client and server. The exception of form input is an artifact of the internet. Form inputs were built into the web early on, before anyone understood the decisions' consequences. By the time we saw how this feature would be abused, it was already too late — too many parts of the Internet relied on the feature.
+
+> __~same origin policy: cookies~.__ Let ${W}$ be a site with ${n}$-subdomains ${u_1,\ldots,u_n.}$ If ${W}$ sends a cookie ${W_C}$, then every ${u_i}$ has access to ${W_C.}$ If a path ${u_i}$ sends a cookie ${C_{u_i}}$, then every other path ${u_j}$ can access to cookie ${C_{u_i},}$ but ${W}$ cannot access ${C_{u_i}.}$
+
+### Setting Document Domains
+~example~. If sites ${W\fslash{A}}$ and ${W\fslash{B}}$ share a top-level domain ${W,}$ they can agree to share one another's received responses by setting ${\tx{document}\mc\tx{domain} = W.}$ (Remember that ${A}$ and ${B}$ can't share the same responses-received if they have different protocols or different port numbers; those _cannot_ be set).
+
+~vulnerability~. A malicious site ${X}$ can also join the agreement without ${A}$ and ${B}$ knowing. ${X,}$ too, may write: ${\tx{document}\mc\tx{domain} = W.}$
+
+### Fragments
+~example~. Sites ${A}$ and ${B}$ can communicate with one another through URL fragments. This is a gap in the same origin policy. Suppose the URL visited is:
+
+$$
+	\mo{https://site.com:5000/$a$/$b$.html?$cookie$\#$F$}
+$$
+
+Above, ${F}$ is a _fragment_. If the user clicks the URL above, the default behavior is to navigate to a part of the page. The further default behavior: If the fragment doesn't exist on the page, nothing happens. All of this default behavior can be changed: Instead of navigating, change ${F.}$ E.g., if the fragment were:
+
+$$
+	\mo{https://site.com:5000/$a$/$b$.html?$cookie$\#$0$}
+$$
+
+the user clicking the URL would increment some count:
+
+$$
+	\mo{https://site.com:5000/$a$/$b$.html?$cookie$\#$1$}
+$$
+
+Again, this does not cause the page to reload. The moment we have an ability to change some value and save changes—which is precisely what's happening above—we have a communication channel.
+
+A child iframe can be accessed through the parent URL. The child iframe can then poll for changes to the fragment identifier.

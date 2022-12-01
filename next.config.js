@@ -392,7 +392,7 @@ const withMDX = createMDX({
 						"\\gt": "~\\texttt{>}~",
 						"\\eq": "~\\texttt{=}~",
 						"\\bslash": "\\texttt{\\textbackslash}",
-						"\\fslash": "\\texttt{\\slash}",
+						"\\fslash": "\\texttt{/}",
 						"\\uscore": "\\texttt{\\textunderscore}",
 						"\\of": "{#1}\\text{\\textquoteright}",
 						"\\are": "\\subset",

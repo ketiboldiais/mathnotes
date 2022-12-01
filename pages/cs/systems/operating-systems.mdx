@@ -287,7 +287,18 @@ __*POSIX (Portable Operating System Interface _for UNIX_)*__ is an interface spe
 
 ~detail~. Keyboard strokes are sequences of bytes, sound emissions are sequences of bytes. Files differ from these sequences because they have unique identifiers and metada.
 
+### Aside: List All
+The shell command `ls -al` lists all files in the current working directory. This will output a long, columnized list. The first column, containing values like `drwx` and `-rw`, indicates the rights to the particular path: `d` indicates a directory, `-` indicates a file, `r` means _user can read_, `w` _user can write_, and `x` indicates _user can execute_. We might see additional dashes. These dashes correspond to the _group rights_ and _other rights_. For example, a file ${f}$
 
+$$
+	\mo{rwx r-x r--}
+$$
+
+means the owner has read-write-execute permissions, the group has read-execute permissions, and all others only have read permissions. The rights `r`, `w`, and `x` map to a three-bit sequence. Thus, `r-w-x` maps to `111`, `r-x` maps to `101`, and `r--` maps to `100`. Putting it all together, the file ${f}$ has the permission:
+
+| `111` | `101` | `100` |
+| ----- | ----- | ----- |
+| 7     | 5     | 4     |
 
 ### Directories
 ~file metadata~. The file's metadata is a set of information, including but not limited to: file size, modification time, owner, security information (e.g., encryption protocol), and access control (e.g., read/write privileges).
@@ -378,6 +389,10 @@ The integer returned from the kernel is an index of a system-wide table (maintai
 
 ~detail~.  The ${\df{file}\mo{*}}$ is a pointer to a `struct` containing (1) the _file descriptor_, (2) a _buffer_ (array) for incoming bytes, and (3) a _lock_ (in case multiple threads use the file concurrently).
 
+### Disks
+We know that RAM, at hardware level, is a large sequence of registers. Each register has a width—what may be called the _word size_—indicating how many cells constitute one register. E.g., a 64-bit system uses 64 cells per register, a 32-bit system uses 32, a 16-bit system 16, and so on. Each register has a integer identification (its _address_).
+
+A similar idea applies to _disks_. The difference: Addresses are given to __*sectors*__ of the disk—regions of the disk that constitute a block of bytes. The block depends on the disk manufacturer's design. Some disk use 128 bytes per block, other 512 bytes, and others 2048 bytes. And because the lowest-level address maps to a sector for disks, read-write operations for disks are always done in blocks, not bytes. 
 
 ### Kernel Buffers
 When we read or write data, the kernel does not operate on individual bytes. Instead, it operates on _blocks_ of bytes. This is done not just because of performance and scheduling, but also because _disks_ operate in terms of blocks, not bytes. Because the kernel operates in terms of blocks, it must _buffer_ reads and writes.
@@ -531,9 +546,6 @@ are source and destination ports, ${\mo{L}}$ is the length of the UDP segment in
 
 #### UDP Checksums
 The checksum works as follows: The sender's UDP socket treats a segment as  16-bit integer. The socket executes a function ${f}$ with the segment as an argument, and ${f}$ returns some ${n}$ bits (e.g., ten bits). Those ten bits are attached as the last bits of the segment. When the receiver's socket gets the segment, it uses the same function ${f}$ on the segment. If the returned bits do not match the last ${n}$ bits, then the receiver concludes that an error occurred.
-
-### Packets
-
 
 ### Reliable Data Transfers
 Data transfers are measured in terms __*reliability*__. This is a binary metric:
