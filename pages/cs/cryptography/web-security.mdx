@@ -394,32 +394,33 @@ Setting the `Expire` field does not necessarily have to be a date far off into t
 > __`HttpOnly`.__ Prevents a cookie from being read on the frontend through JavaScript (via `document.cookie`).
 
 ### Signed Cookie Limitation 
-~example~. ${A}$ is a client and ${B}$ is a server employing signed cookies. An attacker can write a program that copies and saves to a file the first secret key ${s_k.}$ The attacker can then use that secret key ${s_k}$ on subsequent sessions, _even if the user changes their password._ Why? Because the tag ${t}$ is generated from the pair ${(s_k,x)}$ where ${s_k}$ is a secret key and ${x}$ is a value. In this case, the value is a field ${username}$ (not the value of the field, the actual key ${username}$). Remember that signatures aren't hashes. They're functions that return true or false if a particular value is signed.
-
-We can prevent this with several security measures.
+~example~. ${A}$ is a client and ${B}$ is a server employing signed cookies. An attacker can write a program that copies and saves to a file the first secret key ${s_k.}$ The attacker can then use that secret key ${s_k}$ on subsequent sessions, _even if the user changes their password._ Why? Because the tag ${t}$ is generated from the pair ${(s_k,x)}$ where ${s_k}$ is a secret key and ${x}$ is a value. In this case, the value is a field ${username}$ (not the value of the field, the actual key ${username}$). Remember that signatures aren't hashes. They're functions that return true or false if a particular value is signed. We can prevent this with unique session IDs.
 
 #### Unique Session IDs 
 1. The web server maintains a session record (preferably in a secure database). Call it ${R.}$
 2. When the user logs in successfully, we save to ${R}$ the record ${R\ix{n} \mapsto username,}$ where ${n}$ is a random number (provided by a strong random number generator).
 3. In the response, the server returns a cookie ${\px{\mo{sessionId} \mapsto n},}$ where ${n}$ is the random number generated earlier.
-4. For all subsequent communications, the server can verify the user by:
-	1. Read the ${\mo{sessionId}}$ value ${n}$ in the cookie:
+4. When the user makes later requests (e.g., ~delete~, ~post~, ~put~, etc.), the server can verify that the user is who they claim to be by:
+	1. Reading the ${\mo{sessionId}}$ value ${n}$ in the cookie:
 	$$
 		\mo{cookie}\mc\mo{sessionId}
 	$$
-	2. Request the database to return the username mapped to by ${n:}$
+	2. Requesting the database to return the username mapped to by ${n:}$
 	$$
 		v = R\ix{\mo{cookie}\mc\mo{sessionId}}
 	$$
-	3. If ${v \neq \mo{NULL},}$ then the user does not need to be verified. Otherwise, the user must be verified.
+	3. If ${v \neq \mo{NULL},}$ then the user is verified and the server processes the request. Otherwise, the user is not verified and the server returns a response error.
 	
 Notice that this _does not_ involve a signed cookie. Indeed, we _never_ use signed cookies for fields like usernames and passwords. Such high-sensitivity fields should be handled with backend encryption. Signed cookies should instead be used with mid-sensitivity fields (e.g., whether to show an _Accept Cookie Policy_ popup).
 
-~drawback~. This is not a feasible solution for applications with a large number of users. As more users join, the database demand increases. The application can curtail this somewhat by setting expiration times: After a given time ${t,}$ delete he database entry. However, this will raise additional concerns:
+#### JSON Web Tokens
+Unique session IDs are the traditional approach solving the signed cookie limitations. A more recent approach is the _*JSON web token (JWT)*_. A JWT is a long string:
 
-- Getting the expiration time right requires careful attention to usage. Five minutes of inactivity before a new session ID is generated may be appropriate for a bank, but not for a blog (pity the user writing for three hours without hitting save, then an hour of writer's block).
+$$
+	\string{\mo{anf8J9bUzI1Ni}\ldots}
+$$
 
-- Relational databases are not designed for frequent deletions, so the developer may consider a non-relational database. Non-relational database providers, however, have limits on how large a single record can be. This imposes a limit on the kind of data the server can save as cookies.
+This string is an encryption of a JSON object. The JSON object represents (1) a set of key-value pairs called __*claims*__ and a __*signature*__. With encryption, the JWT ensures the object's contents aren't revealed to attackers (i.e., _protected_). With a signature, JWT ensures the object's contents aren't tampered with (i.e., _authentic_). Notice the narrow tailoring: JWTs are only useful for _authentication vulnerabilities_; they do not guard against _authorization vulnerabilities_.
 
 ## Problem of Ambient Authority
 ~question~. Website ${W}$ has two paths, ${W\fslash{a}}$ and ${W\fslash{b}.}$ Path ${a}$ stores cookies ${C_a,}$ and ${a}$ does not want path ${b}$ to read its cookies, so path ${b}$ sets a path attribute for its cookies: ${\mo{Path}\eq\fslash{a}.}$ Is ${C_a}$ guaranteed to be inaccessible via ${b?}$
@@ -469,6 +470,16 @@ Some of the actions present greater security risks than others.
 > 1. ${R_1}$ and ${R_2}$ have the same protocol.
 > 2. ${R_1}$ and ${R_2}$ have the same hostname.
 > 3. ${R_1}$ and ${R_2}$ have the same port number.
+>
+> If all the conditions are true, ${J_1}$ and ${J_2}$ are of the same origin. If a site ${A}$ and a site ${B}$ are of the same origin, then:
+>
+> 1. ${A}$ can link to ${B.}$
+> 2. ${A}$ can embed ${B.}$
+> 3. ${A}$ _cannot_ embed ${B}$ _and_ modify ${B}$'s contents.
+> 4. ${A}$ can submit a form to ${B.}$
+> 5. ${A}$ can embed images from ${B.}$
+> 6. ${A}$ can embed scripts from ${B.}$
+> 7. ${A}$ _cannot_ read data from ${B.}$
 > 
 > ~exception~. The single exception: ${J_1}$ may submit form input to ${S_2.}$
 
@@ -500,6 +511,87 @@ $$
 	\mo{https://site.com:5000/$a$/$b$.html?$cookie$\#$1$}
 $$
 
-Again, this does not cause the page to reload. The moment we have an ability to change some value and save changes—which is precisely what's happening above—we have a communication channel.
+Again, this does not cause the page to reload. The moment we have an ability to change some value and save changes—which is precisely what's happening above—we have a communication channel. That is _cross-origin communication_ that a browser _cannot detect_. This is encapsulated by the four files below.
 
-A child iframe can be accessed through the parent URL. The child iframe can then poll for changes to the fragment identifier.
+<Grid cols={2}>
+~~~
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=, initial-scale=1.0" />
+	<title>Child</title>
+</head>
+<body>
+	<h1>Child: localhost: 4001</h1>
+	<div></div>
+	<script>
+		const div = document.querySelector("div");
+		setInterval(() => {
+			div.textContent = decodeURIComponent(window.location.hash.slice(1));
+		}, 100);
+	</script>
+</body>
+</html>
+~~~
+~~~
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Fragment Vulnerability</title>
+</head>
+<body>
+<h1>Parent: localhost:4000</h1>
+<input name="val" />
+<iframe src="http://localhost:4001/child.html"></iframe>
+<script>
+	const input = document.querySelector("input");
+	const iframe = document.querySelector("iframe");
+	input.addEventListener("input", () => {
+		iframe.src = `http://localhost:4001/child.html#${encodeURIComponent(
+			input.value
+		)}`;
+	});
+</script>
+</body>
+</html>
+~~~
+
+~~~
+import express from "express";
+import { createReadStream } from "fs";
+
+const app = express();
+
+const rootpath = '/';
+
+app.get(rootpath, (request, response) => {
+	createReadStream('parent.html').pipe(response);
+})
+
+app.listen(4000);
+~~~
+~~~
+import express from "express";
+import { createReadStream } from "fs";
+
+const app = express();
+
+app.get('/child.html', (request, response) => {
+	createReadStream('child.html').pipe(response);
+})
+
+
+app.listen(4001);
+~~~
+</Grid>
+
+### Post-messaging
+The fragment gap shown in the previous example was how web developers implemented cross-origin communication. Because of how useful — and dangerous — this pattern was, browsers implemented the _postMessage API_. This API allows sites with different origins to communicate with one another securely.
+
+
+

@@ -3,6 +3,30 @@
 /* Font Imports */
 	/* CMU Serif */
 	@font-face {
+		font-family: "SERIF";
+		font-style: normal;
+		font-weight: normal;
+		src: url("../public/fonts/serif_main_regular.woff")
+	}
+	@font-face {
+		font-family: "SERIF";
+		font-style: normal;
+		font-weight: bold;
+		src: url("../public/fonts/serif_main_bold.woff")
+	}
+	@font-face {
+		font-family: "SERIF";
+		font-style: italic;
+		font-weight: normal;
+		src: url("../public/fonts/serif_main_italics.woff")
+	}
+	@font-face {
+		font-family: 'SERIF';
+		font-style: italic;
+		font-weight: bold;
+		src: local('CMU Serif BoldItalic'), url('../public/fonts/cmunbi.woff') format('woff');
+	}
+	@font-face {
 		font-family: 'CMU Serif';
 		font-style: italic;
 		font-weight: normal;
@@ -16,19 +40,13 @@
 	}
 	@font-face {
 		font-family: 'CMU Serif';
-		font-style: italic;
-		font-weight: bold;
-		src: local('CMU Serif BoldItalic'), url('../public/fonts/cmunbi.woff') format('woff');
-	}
-	@font-face {
-		font-family: 'CMU Serif';
 		font-style: normal;
 		font-weight: normal;
 		src: local('CMU Serif Roman'), url('../public/fonts/cmunrm.woff') format('woff');
 		}
 /* Root Variables */
 	:root {
-	--serif: "CMU Serif", "Palatino Linotype";
+	--serif: "SERIF", "Palatino Linotype";
 	--sans_serif: avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	--mono: "Fira Code", Consolas, Monaco, Liberation Mono, "Lucida Console", monospace;
 	/* --dark: rgb(190, 206, 209); */
@@ -282,13 +300,6 @@
 	}
 	.hagoTable td:not(:nth-child(1)) {
 		border-left: solid thin var(--text-color);
-	}
-	.grid_map_container pre {
-		margin: 2px;
-		height: fit-content;
-	}
-	.grid_map_container {
-		margin-bottom: -1fr;
 	}
 /* Tables */
 	.hashtbl table {
@@ -563,15 +574,22 @@
 		font-size: 0.8rem;
 	}
 	pre {
-		width: 90%;
 		margin: 0 auto;
-		white-space: pre-line;
-		word-wrap: break-word;
 		tab-size: 2;
 		line-height: 1.2 !important;
+		scrollbar-width: none;
+		white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	}
 	pre code {
-		font-size: 0.8rem;
+		font-size: 0.7rem;
+	}
+	.grid-map-container pre {
+		border: solid thin lightgrey;
+		padding: 0.4em 1em;
 	}
 /* Side Notes */
 	div.note {

@@ -300,6 +300,9 @@ means the owner has read-write-execute permissions, the group has read-execute p
 | ----- | ----- | ----- |
 | 7     | 5     | 4     |
 
+### Aside: Finding a Directory
+On Unix systems, the ${\mo{mdfind} \dk \mo{kind:folder} \dk {folder~name}}$ can be used to find a folder fairly quickly. That said, it's often best to use the system's GUI (e.g., on Mac OS, _Spotlight_). This is because graphical searches on many systems cache heavily, leading to faster query results.
+
 ### Directories
 ~file metadata~. The file's metadata is a set of information, including but not limited to: file size, modification time, owner, security information (e.g., encryption protocol), and access control (e.g., read/write privileges).
 

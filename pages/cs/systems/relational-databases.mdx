@@ -306,3 +306,29 @@ SQL has many datatypes. Below are a few.
 > $$
 > 
 > inserts the values ${(v_1, \ldots, v_n)}$ into ${table,}$ ${v_1,\ldots,v_n}$ correspond to the attributes ${a_1, \ldots, a_n.}$
+
+## PostgreSQL
+__*PostgreSQL*__ (called _Postgres_) is a popular relational database management system (RDBMS).[^postgres1] Because of its perfromance and scalability, its a popular choice for large enterprises like Yahoo, Uber, and Tripadvisor. Massive enterprises like Google create their own systems (e.g., GoogleBase and Spanner).
+
+[^postgres1]: The name _Postgres_ is a reference to its predecessor _Ingres_ (which is a reference to the word _ingress_, the action of entering).
+
+### Installation
+Postgres is an application. We can install it with a [graphical installer](https://postgresapp.com/) or via the command line with a [package manager](https://wiki.postgresql.org/wiki/Homebrew).
+
+### Basic Commands
+Some useful Postgres commands (run these on a command line).
+
+| ~command~                           | ~semantic~                              |
+| ----------------------------------- | --------------------------------------- |
+| `sudo -u postgres createuser` ${X}$ | creates a new Postgres user named ${X}$ |
+| `\du`                               | Lists all current users                 |
+
+#### Users 
+By default, Postgres creates a superuser called `postgres`. _Absolutely do not use this for production_.
+The default account should only be used for local development. Reason: The default account is a superuser
+account, and they're authorized to do _anything_. E.g., delete databases or move them elsewhere.
+
+What we want to use for production instead is a user account with a password and limited rights.
+
+
+
