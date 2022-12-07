@@ -23,17 +23,23 @@ _This note is an overview of web security._
 	1. [Proxy Servers](#proxy-servers)
 	2. [HTTP Request Headers](#http-request-headers)
 	3. [HTTP Response Headers](#http-response-headers)
-5. [Authorization](#authorization)
+5. [Authority \& Authenticity](#authority--authenticity)
 	1. [IP Checking](#ip-checking)
 	2. [HTTP Authentication](#http-authentication)
 	3. [Client Certificates](#client-certificates)
 	4. [Cookies](#cookies)
-		1. [Raw Cookies](#raw-cookies)
-		2. [Signed Cookies](#signed-cookies)
-	5. [Cookie Attributes](#cookie-attributes)
-	6. [Signed Cookie Limitation](#signed-cookie-limitation)
+		1. [Cookie Attributes](#cookie-attributes)
+		2. [Raw Cookies](#raw-cookies)
+		3. [Cross-site Resource Forgery](#cross-site-resource-forgery)
+		4. [Signed Cookies](#signed-cookies)
+	5. [Signed Cookie Limitation](#signed-cookie-limitation)
 		1. [Unique Session IDs](#unique-session-ids)
-6. [Same Origin Policy](#same-origin-policy)
+		2. [JSON Web Tokens](#json-web-tokens)
+6. [Problem of Ambient Authority](#problem-of-ambient-authority)
+7. [Same Origin Policy](#same-origin-policy)
+	1. [Setting Document Domains](#setting-document-domains)
+	2. [Fragments](#fragments)
+	3. [Post-messaging](#post-messaging)
 
 
 ## Definitions
@@ -280,7 +286,7 @@ curl https://twitter.com --header "Accept-Language: es" --silent | grep JavaScri
 
 > __`Set-Cookie`.__ Sets a cookie for the client.
 
-## Authorization
+## Authority & Authenticity
 > __~definition: authority~.__ A function ${f: A \to F,}$ where ${F}$ is a set of files and ${A \subseteq \set{\tx{read}, \tx{write}, \tx{delete}, \tx{create}}.}$  If ${A = \set{\tx{read}, \tx{write}, \tx{delete}, \tx{create}},}$ then we call ${A}$ _absolute authority_.
 
 > __~definition: superuser-user~.__ Let ${F}$ be a set of one or more files. The entity that holds absolute authority over ${F}$ is called the _superuser_. An entity that has a strict subset of absolute authority is called a _user_. An entity presenting themselves as a user is called a _requester_.
@@ -291,7 +297,9 @@ curl https://twitter.com --header "Accept-Language: es" --silent | grep JavaScri
 
 > __~definition: ambient authority~.__ Access control where each condition is a property ${P,}$ such that ${P}$ is true for the requester.
 
-> __~definition: authentication~.__ The superuser's procedures for determining that every condition of a given access control is met.
+> __~definition: authorization~.__ The superuser's act of granting rights to a request.
+
+> __~definition: authentication~.__ The superuser's procedures for proving that a requester is a user.
 
 > __~definition: session~.__ A time interval ${S = \ix{t_i,t_f},}$ such that, for each unit of time in ${S,}$ a given requester is a user. We call ${t_i}$ the _session start_ and ${t_f}$ the _session end_.
 
@@ -321,8 +329,74 @@ A _cookie_ is a string isomorphic to ${k,v}$ where ${k}$ is a key and ${v}$ is a
 
 By maintaining cookies for each unique session (on the browser side), the server can (1) tailor the files served according to that user's preferences, (2) persist that particular user's data overtime, while (3) remaining stateless. This is how we stay logged in on websites even when we close a tab, and how shopping carts retain their contents when we log out or shut down for the day. I.e., creating the illusion of a _stateful server_.
 
+#### Cookie Attributes
+Cookies are stored by the browser's _cookie jar_. This is database file (e.g., for Firefox, a file called `cookies.sqlite` in the its `Profiles` directory) containing domain names, and for each domain name, nonnull cookie attributes with their string-values. There are several cookie attributes that the domain's server(s) can initialize:
+
+> __`Expires`.__ Specifies a date for when the browser should delete the cookie. If no date is provided, the cookie only exists during the browsing session (as long as the browser process is live).
+
+~remark~. Prevailing browsers—Chrome, Firefox, and Safari—use __*session restoration*__: The browser takes liberties in storing session data. Session restoration is how we do not lose form field inputs after accidentally closing the site tab. This saves many headaches for filling long online forms, but again, presents a security issue. Best practice is to always set an `Expire` value. The long online form is bad design to begin with. Instead of having a massive form on a single page, the form should be broken down into sections, with each section mapped to a different path.
+
+Setting the `Expire` field does not necessarily have to be a date far off into the future. Some sites default to a year from the date of the most recent login, but there's no need to be so aggressive. The cycle can be shortened to a month or a day—it entirely depends on the application's usecases.
+
+> __`Path`.__ Scopes the HTTP `Cookie` header to a particular request path prefix. That is, the browser will only send (and later save) a cookie if the HTTP Request is for a certain path. E.g., the site may have special cookies for blind users. These cookies should not be sent and saved for non-blind users.
+
+~remark~. The `Path` attribute should _never_ be used on security-sensitive paths. Setting `Path=/user` will match against `Path=/user/Anne`, `Path=/user/John`, and all other paths incident to `/user`.
+
+> __`Domain`.__ Scopes the cookie to a domain broader than the domain returned by the HTTP Response's `Set-Cookie` header. E.g., `login.illinois.edu` sets a cookie for `illinois.edu`. This allows the server to use the cookie for `login.illinois.edu` in handling requests for `illinois.edu`. The alternative to achieving the same effect is maintaining a shared cookie object.
+
+> __`Secure`.__ If the string ${\mo{Secure}}$ is included in the `Set-Cookie` string, cookies will only be transmitted to and from the server of HTTP connections.
+
+~remark~. `Secure` should always be included in cookie transmissions. Moreover, HTTPS should be used for all client-server HTTP communications. Given how sophisticated packet sniffing and MITM (Man-in-the-middle) attacks have become today—as well as certain grey areas over the legality of sniffing free WiFi networks (it may be permissible under some circumstances)—we must have highly compelling reasons for using HTTP over HTTPS.
+
+> __`HttpOnly`.__ Prevents a cookie from being read on the frontend through JavaScript (via `document.cookie`).
+
+
 #### Raw Cookies
 We call a plain text cookie ${\px{k,v}}$ without anything further, a __*raw cookie*__. Raw cookies are insecure. An attacker can simply change the value in the browser's cookie jar to either keep the user logged-in or prevent the user from logging in. The server can prevent this by using _signed cookies_.
+
+#### Cross-site Resource Forgery 
+Below is a simple server in ~nodejs~, using the ~express~ package.
+
+<Algo>
+
+1. __import__ ${express}$ __from__ ${\string{express}}$
+2. __import__ ${cookieParser}$ __from__ ${\string{cookie-parser}}$
+3. ${server}$ = ${express\px{~}}$
+4. ${server \mc \tx{use}(express\mc\tx{urlencoded}\px{ \tx{extended: false} })}$
+5. ${server \mc \tx{use}(cookieParser\px{~})}$
+6. ${server\mc\tx{get}}$ `(`${\string{/},~}$ ${request, ~ response}$ ${\nc}$ `{`
+	1. ${response\mc{\tx{cookie}}\px{\string{session}, \string{1432}, \set{\tx{httpOnly: true}} }}$
+	2. ${response\mc\tx{send}\px{B}}$
+7. `})`
+8. ${server\mc\tx{post}}$ `(`${\string{/transfer},~}$ ${request, ~ response}$ ${\nc}$ `{`
+	1. __if__ ${\px{ request\mc{\tx{cookies}}\mc{\tx{session}} \mo{===} \string{1432}}}$ `{`
+		1. ${{res}.\tx{status}\px{200}}$
+		2. ${\sd{\tx{code block} \dk C}}$
+	2. `}`
+	2. __else__ ${res \mc \tx{status} \px{401}}$
+9. `})`
+10. ${server.\tx{listen}\px{D}}$
+
+
+</Algo>
+
+Above, the server listens on a domain ${D.}$ It sends the bytestream ${B}$ (e.g., the contents of `index.html`) in response to ~get~ requests sent to the root path alongside a cookie containing the key-value pair ${\px{\tx{session}, \string{1432}}.}$ From line 9, a path called `/transfer` sends a 200 status code back to the client if the request's cookie header contains ${\string{1432},}$ and a 401 status code otherwise.
+
+The user visits ${D}$ and everything works well. Then they open another tab and visit malicious site ${M,}$ containing the following HTML:
+
+<Algo>
+
+1. `<form` ${action\eq\lq D \rq}$ ${method\eq\lq \df{post} \rq}$ `>`
+	1. `<input` ${name\eq\string{amount}}$ ${type\eq\string{hidden}}$ ${value\eq\string{1000}}$ `/>`
+	2. `<input` ${name\eq\string{to}}$ ${type\eq\string{hidden}}$ ${value\eq\string{malice}}$ `/>`
+	3. `<button>`${\tx{I am not a robot}}$`</button>`
+2. `<form>`
+
+</Algo>
+
+Above, ${M}$ uses the all too common button of human verification, ${\string{I am not a robot}.}$ When the user clicks on the button above, code block ${A}$ in the server __*will execute*__. Why? Because the browser will always send the cookies with the request. Remember that cookies are stored in the browser's cookie jar. It's irrelevant that the request is being sent from a site other than ${D}$'s frontend. When the browser sees that this request must be sent to ${D,}$ it checks its cookie jar for any cookies that should be sent with the request and attaches those cookies. This is called a __*cross-site resource forgery (CSRF) attack*__.
+
+~note~. Some browsers (e.g., Chrome) will not attach cookies to requests from sites like ${M.}$ Other browsers, however, do not have such security measures. We always assume that browsers do not implement those security measures.
 
 #### Signed Cookies
 > __~definition: signature~.__ A _signature scheme_ is a triple ${(G,S,V)}$ where ${G,}$ ${S,}$ and ${V}$ are algorithms, defined as follows:
@@ -372,44 +446,33 @@ $$
 
 When the server receives a cookie with a tag ${t,}$ it calls ${V(p_k, \mo{username}, t).}$ If ${V(p_k, \mo{username}, t) = 1,}$ then no verification is required, and the user's private file is returned. Otherwise, the server denies access.
 
-### Cookie Attributes
-Cookies are stored by the browser's _cookie jar_. This is database file (e.g., for Firefox, a file called `cookies.sqlite` in the its `Profiles` directory) containing domain names, and for each domain name, nonnull cookie attributes with their string-values. There are several cookie attributes that the domain's server(s) can initialize:
-
-> __`Expires`.__ Specifies a date for when the browser should delete the cookie. If no date is provided, the cookie only exists during the browsing session (as long as the browser process is live).
-
-~remark~. Prevailing browsers—Chrome, Firefox, and Safari—use __*session restoration*__: The browser takes liberties in storing session data. Session restoration is how we do not lose form field inputs after accidentally closing the site tab. This saves many headaches for filling long online forms, but again, presents a security issue. Best practice is to always set an `Expire` value. The long online form is bad design to begin with. Instead of having a massive form on a single page, the form should be broken down into sections, with each section mapped to a different path.
-
-Setting the `Expire` field does not necessarily have to be a date far off into the future. Some sites default to a year from the date of the most recent login, but there's no need to be so aggressive. The cycle can be shortened to a month or a day—it entirely depends on the application's usecases.
-
-> __`Path`.__ Scopes the HTTP `Cookie` header to a particular request path prefix. That is, the browser will only send (and later save) a cookie if the HTTP Request is for a certain path. E.g., the site may have special cookies for blind users. These cookies should not be sent and saved for non-blind users.
-
-~remark~. The `Path` attribute should _never_ be used on security-sensitive paths. Setting `Path=/user` will match against `Path=/user/Anne`, `Path=/user/John`, and all other paths incident to `/user`.
-
-> __`Domain`.__ Scopes the cookie to a domain broader than the domain returned by the HTTP Response's `Set-Cookie` header. E.g., `login.illinois.edu` sets a cookie for `illinois.edu`. This allows the server to use the cookie for `login.illinois.edu` in handling requests for `illinois.edu`. The alternative to achieving the same effect is maintaining a shared cookie object.
-
-> __`Secure`.__ If the string ${\mo{Secure}}$ is included in the `Set-Cookie` string, cookies will only be transmitted to and from the server of HTTP connections.
-
-~remark~. `Secure` should always be included in cookie transmissions. Moreover, HTTPS should be used for all client-server HTTP communications. Given how sophisticated packet sniffing and MITM (Man-in-the-middle) attacks have become today—as well as certain grey areas over the legality of sniffing free WiFi networks (it may be permissible under some circumstances)—we must have highly compelling reasons for using HTTP over HTTPS.
-
-> __`HttpOnly`.__ Prevents a cookie from being read on the frontend through JavaScript (via `document.cookie`).
 
 ### Signed Cookie Limitation 
 ~example~. ${A}$ is a client and ${B}$ is a server employing signed cookies. An attacker can write a program that copies and saves to a file the first secret key ${s_k.}$ The attacker can then use that secret key ${s_k}$ on subsequent sessions, _even if the user changes their password._ Why? Because the tag ${t}$ is generated from the pair ${(s_k,x)}$ where ${s_k}$ is a secret key and ${x}$ is a value. In this case, the value is a field ${username}$ (not the value of the field, the actual key ${username}$). Remember that signatures aren't hashes. They're functions that return true or false if a particular value is signed. We can prevent this with unique session IDs.
 
 #### Unique Session IDs 
-1. The web server maintains a session record (preferably in a secure database). Call it ${R.}$
-2. When the user logs in successfully, we save to ${R}$ the record ${R\ix{n} \mapsto username,}$ where ${n}$ is a random number (provided by a strong random number generator).
-3. In the response, the server returns a cookie ${\px{\mo{sessionId} \mapsto n},}$ where ${n}$ is the random number generated earlier.
-4. When the user makes later requests (e.g., ~delete~, ~post~, ~put~, etc.), the server can verify that the user is who they claim to be by:
-	1. Reading the ${\mo{sessionId}}$ value ${n}$ in the cookie:
+Storing unique session IDs is one solution to the signed cookie limitation. Here, we store identifiers mapped to each authenticated use on the server, only processing requests when the request includes the identifier they were initially given. By keeping the session IDs on the server rather than the client, we prevent attackers from employing authorization data on the client side—they don't exist on the client side.
+
+1. The web server maintains a session record in a database ${R.}$
+2. When the user logs in successfully, we save to ${R}$ the record ${R\ix{n} \mapsto C,}$ where ${n}$ is some hash and ${C}$ is a string isomorphic to a cookie (which can be arbitrarily complex).
 	$$
-		\mo{cookie}\mc\mo{sessionId}
+	\eqs{
+		n &= \mo{vUAWivCZq1EnaRhhWMDk0p}\ldots \\
+		C &= \lq \lbrace \rq \tx{cookie} \rq: \lbrace \lq \tx{httpOnly} \rq:\tx{true} \ldots \rq
+	}
 	$$
-	2. Requesting the database to return the username mapped to by ${n:}$
+3. In the response, the server returns a cookie ${\px{\mo{sessionId}, n}.}$
+4. When the user makes later requests (e.g., ~delete~, ~post~, ~put~, ~get~, etc.), the server authenticates the request by:
+	1. Reading the ${\tx{sessionId}}$ value ${n}$ in the cookie:
 	$$
-		v = R\ix{\mo{cookie}\mc\mo{sessionId}}
+		c = \tx{cookie}\mc\tx{sessionId}
 	$$
-	3. If ${v \neq \mo{NULL},}$ then the user is verified and the server processes the request. Otherwise, the user is not verified and the server returns a response error.
+	2. Querying the database:
+	$$
+		v = R.\tx{query}\px{\lq~\df{select} \dk \mo{*} \dk \df{from} \dk \mo{sessions} \dk \df{where} \dk \mo{sessionId} \dk \df{like} \dk c~\rq}
+	$$
+	3. If ${v \neq \mo{NULL},}$ then the request is authentic and the server processes the request.
+	4. Else, the request is inauthentic and the server does not process the request.
 	
 Notice that this _does not_ involve a signed cookie. Indeed, we _never_ use signed cookies for fields like usernames and passwords. Such high-sensitivity fields should be handled with backend encryption. Signed cookies should instead be used with mid-sensitivity fields (e.g., whether to show an _Accept Cookie Policy_ popup).
 
@@ -442,7 +505,6 @@ This string is an encryption of a JSON object. The JSON object represents (1) a 
 
 Bob, visiting `bank.io`, is sent to `malum.xyz`. When the site loads, the browser encounters the image element above, and sends a request for the `src` value. Without any safeguards, the server processes the request: Transfer ${\cash{10~000}}$ from Bob's account to Malory's account. Malory's malicious behavior is a type of attack called a __*cross-site request forgery (CSRF)*__.
 
-#### Cross-site Request Forgery (CSRF)
 > __~definition~.__ Given a web application ${W}$ with an authenticated entity ${U,}$ an attack that causes ${U}$ to perform unwanted actions on ${W.}$
 
 ~example~. If ${U}$ is a user and ${W}$ is a bank, causing ${U}$ to unintentionally request fund transfers, email changes, etc.
@@ -593,5 +655,225 @@ app.listen(4001);
 ### Post-messaging
 The fragment gap shown in the previous example was how web developers implemented cross-origin communication. Because of how useful — and dangerous — this pattern was, browsers implemented the _postMessage API_. This API allows sites with different origins to communicate with one another securely.
 
+## Web Authentication
+> __~validation~.__ An application's procedures for determining that a given set of data is correct.
 
+> __~verification~.__ An application's procedures for determining that a given set of data has not been tampered with.
+
+> __~authentication~.__ An application's procedures for proving that an entity is a user.
+
+~example~. Login forms, HTTP cookies, HTTP authentication, client certificates are all authentication tools.
+
+> __~user~.__ An entity authenticated by an application.
+
+~example~. Access control lists (e.g., a database of ${\tx{user~id} \to \tx{accessible~pages}}$) and capability URLs (e.g., the unique token in a Google Docs URL) are all authorization tools.
+
+> __~authorization~.__ An application's procedures for determining what rights to grant a user.
+
+
+To _authorize_ an entity, the application must _authenticate_ the entity. Once authenticated, the entity is a user. To authenticate an entity, the application must _validate_ and _verify_ dataset submitted by the user.
+
+~observation~. By implication, authentication requires at least one dataset to verify and validate. The classical datasets:
+
+1. __*Knowledge*__. Datasets known by the user (e.g., a username-password combination).
+2. __*Property*__. Datasets kept by the user (e.g., cryptographic keys).
+3. __*Attributes*__. User attributes (e.g., a fingerprint or other biometric data).
+
+The more datasets the application has, the more certain the application is about its authentication conclusions.
+
+> __~definition: ${n}$-factor authentication~.__ An authentication that uses $n$ datasets for authentication is called an _${n}$-factor authentication_.
+
+~example~. Standard ATMs require property and knowledge — the user's credit card and the user's pin. This is 2-factor authentication.
+
+~example~. A university requiring students to log in with their `.edu` emails and passwords followed by a submitting a texted security code is a 2-factor authentication. The `.edu` email and password combination is knowledge, and the texted security code is property.
+
+### Authentication-related Attacks
+> __~brute-force~.__ Testing multiple passwords from a particular source against a single attack.
+
+> __~credential stuffing~.__ Testing username-password pairs obtained from another application's breach. This attack is premised on the fact that users commonly recycle passwords (e.g., Bob uses one password for Netflix, Spotify, and Facebook).
+
+> __~password spraying~.__ Testing one weak password against a large number of different accounts (e.g., trying `123456789` across different sites).
+
+### Common Authentication Mistakes
+
+#### Case Sensitivity
+1. Usernames should be unique — no two users should have the same username.
+2. Usernames should always be stored case-insensitive. I.e., before storing a username in the database, convert it entirely to lowercase. To accomodate the user's desired username with its casing, the database can include a separate column `display_name`.
+
+~rationale~. We want usernames to be unique. Case sensitivity complicates this parameter — `alice1`, `aLice1`, `Alice1`, `ALICE1`, are all different users.
+
+#### Passwords
+
+> __~password entropy~.__ Given a password ${p}$ of length ${L_p}$ from an alphabet of ${n_p}$ characters, the following propositions are true:
+> 
+> 1. There are ${{n_p}^{L_p}}$ possible passwords.
+> 2. The _entropy_ of ${P,}$ denoted ${\Xx_p}$ is defined as:
+> $$
+> 	\Xx_p = L_p \lg n_p.
+> $$
+
+> __~weak password axiom~.__ Given the choice, a user will always use a weak password.
+
+To counter the weak password axiom, applications use __*password criteria*__. The software industry is flooded with recommendations on how to construct these criteria, but many of them are impractical.
+
+__~password rotation~__. Applications can require users to change their passwords every $n$ months. The problem: Users almost always just add a number to the new password. E.g., `billy1` becomes `billy11` after $n$ months, then `billy111` after $2n$ months. The passwords now provide another piece of information: How long the user's been registered with an application.
+
+__~composition rules~__. Some applications require users to include upper and lowercase letters, numbers, and symbols. There is really only one composition rule that should be enforced, the password length, discussed in the next section.
+
+The minimum length ensures the bare minimum for a proper hash, and the upper limit ensures the encryption algorithm can actually work. Outside of the rule above, there really should not be any other composition rules. Why? Because there's no evidence that passwords with symbols and mixed cases fare any better than passwords that consist entirely of letters or symbols. There is, however, a large body of evidence that users will respond to password constraints by doing the bare minimum. E.g., Billy puts in `"Billy#123"` (an all too common password structure) instead of something that Billy knows and has never shared with anyone (`"I wish I went to med school"`). In fact, passwords containing multiple words from a large dictionary are known to be much stronger than passwords of a single word.
+
+Following up, there are some practices that we should _never do today_. These were common practices in the 1990s and early-2000s when the Internet was young, but they absolutely should no longer be done:
+
+- __Maximum length of 8-10 characters.__ Longer passwords are stronger.
+- __Minimum password age policies.__ These are policies that only allow users to change their passwords $n$ times within a set time frame (e.g., you can only change your password once a week at most). If a user's password is exposed, they must be able to immediately change it. 
+- __Disabling cut-and-paste.__ This completely breaks password managers that automatically generate strong passwords.
+- __Password hints/Security questions.__  These are systems that provide alternative authentication via answering predefined questions. They're almost _never_ implemented with enough entropy (correct answers can be guessed in a few attempts). Because of how difficult it is to get these systems right, their risks and costs outweight their minute benefits. If a user can't remember their password, it should be reset.
+- __Requiring password input on a virtual keyboard.__ This idea started when key-loggers plagued the Internet. It's misguided and entails several problems: ${\px{1}}$ It implicitly limits the password alphabet—only the characters shown on the keyboard. ${\px{2}}$ It creates an easier avenue for attack: On modern systems, it's easier to record a screen than it is to install a key-logger. ${\px{3}}$ It creates a heap of usability and accessibility issues.
+
+### Password Best Practices
+
+#### Never Store Plaintext
+Passwords should never be stored in plaintext. Whether that's in database or (worse) a log file. This sounds obvious, but it's a far more common violation than most would think. At one point, Facebook and Twitter logged ~http~ requests to analyze security issues. Ironically, those log files were vulnerabilities that attackers took advantage of—they contained password submissions. Only password hashes should be stored.
+
+#### Check Known Leaks
+Passwords should be checked against known leaked passwords. When a user submits their password, check against another database for known leaks. If the submitted password is known leak, inform the user and instruct them to submit a different password. We want to check against these leaks because these are the first source attackers look to for guesses.
+
+#### Set Password Minimums and Maximums
+A password should be at least 8 characters long, with a maximum of at least 64 characters. _Do not allow unlimited length passwords_. Unlimited password lengths present an opportunity for a __*password denial-of-service (PDoS) attack*__. The PDoS is a varianet of the _long string DoS_: A string that's so long that the backend's hashing function causes a stack or heap overflow.
+
+| Password Length | Time to Crack |
+| --------------- | ------------- |
+| 9 characters    | 2 minutes     |
+| 10 characters   | 2 hours       |
+| 11 characters   | 6 days        |
+| 12 characters   | 1 year        |
+| 13 characters   | 64 years      |
+
+#### Watch for Hashing Limitations
+This is a practice that's all too often overlooked because of developer tendencies to simply use libraries blindly. ~bcrypt~, for example, is one of the most popular libraries for hashing passwords. But it's deeply limited: It only works for ASCII characters, and can only process passwords at most 72 characters in lenghth. Anymore than 72, and ~bcrypt~ chops off the rest of the string. This is called __*silent truncation*__. Applications should process passwords as is, length and unicode.
+
+For web applications, a hash function ${H}$ should be selected based on the following criteria:
+
+1. ${H}$ should be strongly invertible (i.e., difficult to go from ciphertext to plaintext).
+2. ${H}$ should be deterministic — the same message always results in the same hash.
+3. ${H}$ should be slow to compute. Slower hashing algorithms will slow down attackers.
+4. ${H}$ should have few collisions — it's infeasible to find different messages with the same hash value.
+5. ${H}$ should have avalanche effects — small changes to messages result in wildly different hashes.
+
+##### Rainbow Tables
+Simply hashing isn't enough. Suppose a site ${W}$ uses ~sha256~ to hash passwords. ~sha256~ is a fairly fast hasher. And because of how fast it is, an attacker can perform the following:
+
+1. Construct a table of the most common passwords or leaked passwords, alongside their ~sha256~ hashes. This is called a __*rainbow table*__.
+2. Compare those hashes with ${W}$'s hashes.
+3. Because ideal hash functions are deterministic, if the attacker finds matches with their table (perhaps through a simple linear search), it's trivial to determine which users have which passwords.
+
+##### Salting
+Password hashes should always be _salted_. A __*salt*__ is a fixed-length cryptographically-strong random value. The salt is usually 16, 32, or 64 bytes. The salt and the password are concatenated before they're hashed. To ensure the user can login later, the password and the salt sit next to one another in the database:
+
+~~~
+import crypto from "crypto"
+
+function sha256(s) {
+	crypto.createHash('sha256').update(s).digest('base64');
+}
+
+const salt = crypto.randomBytes(16).toString('base64');
+const passwordHash = sha256(salt + password);
+const user = await createUser(username, salt, passwordHash);
+
+// handle login
+
+const otherPasswordHash = sha256(salt + otherPassword);
+const isValid = otherPasswordHash === passwordHash;
+~~~
+
+The ~bcrypt~ library makes this easier (but recall its limitations):
+
+~~~
+import bcrypt from "bcrypt";
+
+const HASH_ROUNDS = 10; // sets how long the hash should run
+
+const passwordHash = bcrypt.hashSync(password, HASH_ROUNDS);
+const user = await createUser(username, passwordHash);
+
+// handle login
+const isValid = bcrypt.compareSync(otherPassword, passwordHash);
+~~~
+
+##### Password-immune Attacks
+There are a number of attacks that cannot be prevented with passwords:
+
+- Credential stuffing
+- Phishing
+- Keystroke logging
+- Local discovery
+- Extortion
+
+Passwords can prevent these attacks:
+
+- Password spraying
+- Brute force
+
+##### Multifactor Authentication (MFA)
+Attacks that circumvent passwords can be minimized with multifactor authentication (e.g., send a secret key to the user's email or phone to log in). If user experience is a concern, we can limit MFA to:
+
+- new browser/device or IP address
+- unusual country or location
+- IP address appears on known blocklists
+- IP address has tried to log in to multiple accounts
+- A login attempt that appears to be scripted rather than manual
+
+Why is MFA so prevalent today? One reason is because of a blog post by Alex Weinert at Microsoft (~your password doesn't matter~, 2019). In short, Microsoft researchers determined that over ${70\%}$ of the passwords in a given database with millions of records can be broken using a machine worth ${\cash{20~000}}$ and known leaks. 
+
+###### Time-based One-time Passwords (TOTP)
+Below is the general workflow for a TOTP:
+
+1. The server creates a secret key for the user requesting authentication.
+2. The server shares the secret key with an application ${A}$ on the user's end (e.g., their email or phone).
+3. ${A}$ starts a timer upon receipt.
+4. ${A}$ generates a password using the secret key and the counter.
+5. ${A}$ changes the counter after a fixed time (usually 30 seconds) and regenerates the one-time password.
+
+We can see this workflow in action on mobile applications like ~duo~.
+
+#### Limit Authentication Attempts
+Users should not have an unlimited number of register/login attempts. Unlimited attempts provide a straight route to _password brute-force attacks_ (guessing passwords until they land on the right one) and _denial-of-service (DoS) attacks (sending so many requests that the servers crash)_.
+
+##### Rate Limiters
+The standard response for too many authentication attempts: Temporarily ban the user. The ~express~ package for Node servers provides a middleware called ~ratelimiter~, which ensures that there aren't too many attempts for a given username. 
+
+##### CAPTCHA 
+Another approach is to use a __*Completely Automated Public Turing Test (~captcha~)*__. This differentiates between computers and humans through a reverse Turing test. The old tests uses funny-looking characters, but a paper by Greg Mori from UC Berkeley (~recognizing objects in adversarial clutter: breaking a visual captcha~) showed that ~captcha~s have a breakage rate of ${33\%,}$ and since they almost always allow multiple attempts, the ${33\%}$ is more than enough for an attacker to circumvent the guard. Moreover, recent developments in machine learning have shown that all text-based ~captchas~ can be broken. This is why the more common ~captchas~ today are either: ${\px{1}}$ _image ~captcha~s_ or ${\px{2}}$ re~captcha~ — ~captchas~ that use mouse movements, time to answer, and trust scores (built over time for a particular ~ip~ address) to differentiate (the familiar "I am not a robot" checkbox).
+
+~captchas~, however, present their own problems:
+
+- On average, it takes users 10 seconds to solve a ~captcha~.
+- Image ~captchas~ will not work for visually-impaired users. Remember that applications must still comply with accessibility laws. This means that the application must also implement an audio ~captcha~, which must be equally secure as the visual implementation.
+- Image ~captchas~ can be worked around: The attacker takes a screen shot of the ~captcha~ on the target site ${A,}$ and presents it to the users of another site ${B.}$ The user's inputs n site ${B}$ are then submitted as responses to site ${A.}$
+- There are implicit ethical concerns. Attackers can pay dark market firms employing humans that solve ~captchas~. These prices go as low as fifty cents for a thousand ~captcha~ solves. The humans solving these ~captchas~ are generally impoverished workers in Asia, South America, and Africa.
+- Because re~captchas~ build trust scores for IP addresses, they inherently discriminate against users that use VPNs or TOR.
+
+#### Reauthenticate for Sensitive Actions
+Changing passwords, emails, adding a new shipping address, or deleting an account are all sensitive actions. Users should be required to enter their current password before executing them.
+
+#### Generic Error Messages
+While error responses are necessary for development, they should not be used in production.
+
+~example~. If a user incorrectly enters their password, do not tell them that they incorrectly entered their password. Same goes for username and email. Informing the user that no account exists with a particular username or email are all pieces of information useful for an attack. Just give a generic error message: _Invalid username or password._
+
+~example~. For registration, do not inform users that an email or username is already in use. Either use a generic error message or send an activation link to the email.
+
+#### Watch HTTP Status Codes
+Invalid credentials _should always_ be responded with an HTTP 400.
+
+#### Response Discrepancy Timing
+Always keep authentication code on one branch. If authentication consists of multiple branches, attackers can time how long it takes to go from one branch to another. Longer times indicate that a particular user doesn't exist.
+
+#### Data Breaches 
+Some common mistakes that lead to data breaches:
+
+- Accidentally leaving an S3 bucket public.
+- Forgetting to set passwords on databases.
+- Neglecting `.gitignore` files and accidentally pushing sensitive information to Github.
 

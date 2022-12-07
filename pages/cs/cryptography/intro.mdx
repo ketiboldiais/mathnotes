@@ -59,4 +59,11 @@ A cryptosystem where ${k_e \neq k_d}$ is called an _asymmetric cryptosystem_. Be
 > __~definition: asymmetric cryptosystem~.__ A cryptosystem where, for any ${k_e \in \Kk_e}$ and any ${k_d \in \Kk_d,}$ it follows that ${k_e \neq k_d.}$ Given a symmetric cryptosystem, the procedure of ${e \in \CC}$ is called _asymmetric encryption_.
 
 
- 
+## Discrete Probability 
+> __~probability distribution~.__ Given the sample space ${U = \set{0,1}^n,}$ the _probability distribution_ ${P}$ over ${U}$ is a function ${P: U \mapsto \ix{0,1},}$ such that ${\tsum{x \in U}{}P\px{x} = 1.}$
+
+> __~uniform distribution~.__ Given a sample space ${U = \set{0,1}^n,}$ the _uniform distribution_ ${P}$ over ${U}$ is a probability distribution defined as ${P\px{x} = 1/\px{\abs{U}},}$ where ${x \in U.}$
+
+> __~point distribution~.__ Given a sample space ${U = \set{0,1}^n,}$ a _point distribution_ assigns 1 or 0 to a specified event ${x_0 \in U.}$ That is, ${P\px{x_0} = 1}$ and for all ${x \neq x_0,}$ ${P\px{x} = 0.}$
+
+> __~distribution vector~.__ A _distribution vector_ is a vector ${V = \ix{P(x_1), P(x_2), \ldots, P(x_n)}}$ in ${\reals^n,}$ where each ${P(x_i)}$ is a weight.

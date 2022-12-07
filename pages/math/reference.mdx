@@ -1,3 +1,5 @@
+## Exponents
+
 ${a^n \cdot a^m = a^{n+m}}$
 
 ${a^n \cdot b^n = (a \cdot b)^n}$
@@ -29,6 +31,7 @@ $$
 	\end{cases}
 $$
 
+## Logarithms
 ${\log_b(m \cdot n) = \log_b(m) + \log_b(n)}$
 
 ${\log_b\left(\dfrac{m}{n}\right) = \log_b(m) - \log_b(n)}$
@@ -43,6 +46,7 @@ ${\log_b\left(b^k\right) = k}$
 
 ${b^{\log_b(k)} = k}$
 
+## Trigonometry
 ${\tan \theta = \dfrac{\sin \theta}{\cos \theta}}$
 
 ${\sec \theta = \dfrac{1}{\cos \theta}}$
@@ -98,3 +102,112 @@ $$
 		&= 1 - 2 \sin^2 \theta
 	\end{equation}
 $$
+
+## Command Trigonometric Values
+$$
+\begin{array}{c:c:c:c}
+
+\sin(0) = 0 &
+\cos(0) = 1 &
+\tan(0) = 0
+\\
+\sin\left( \dfrac{\pi}{12} \right) = \dfrac{\sqrt{2}-1}{2\sqrt{2}} &
+\cos\left( \dfrac{\pi}{12} \right) = \dfrac{1+\sqrt{3}}{2\sqrt{2}} &
+\tan\left( \dfrac{\pi}{12} \right) = 2 - \sqrt{3}
+\\
+\sin\left( \dfrac{\pi}{6} \right) = \dfrac{1}{2} &
+\cos\left( \dfrac{\pi}{6} \right) = \dfrac{\sqrt{3}}{2} &
+\tan\left( \dfrac{\pi}{6} \right) = \dfrac{1}{\sqrt{3}}
+\\
+
+\end{array}
+$$
+
+## Functions
+### Odd Functions
+- An odd function ${f}$ is a function where ${f(-x)=-f(x).}$
+- Odd functions are horizontally symmetric.
+- Sine, tangent, cosecant, and cotangent are odd functions.
+
+#### Even Functions
+- An even function ${f}$ is a function where ${f(-x)=f(x).}$
+- Even functions are vertically symmetric.
+- Cosine and secant are even functions.
+
+### Injective Functions
+- A function ${f}$ is injective if and only if whenever ${f(x)=f(y),}$ then ${x=y.}$
+- Every element in the codomain is mapped to at most once.
+
+### Surjective Functions
+- A function ${f: A \to B}$ is surjective if and only if for every ${y \in B,}$ there is at least once ${x \in A}$ such that ${f(x)=y.}$
+- Every element in the codomain is mapped to at least once.
+
+### Bijective Functions
+- A function ${f: A \to B}$ is bijective if and only if there is exactly one ${x \in A}$ such that ${f(x)=y.}$
+- Every element in the codomain is mapped to exactly once.
+- Bijective functions always have an inverse. 
+
+### Periodic Functions
+- A periodic function is a function of the form ${f(x) = A \sin (Bx - C) + D}$ or ${f(x) = A \sin (Bx - C) + D.}$
+
+- Given a periodic function ${f(x) = A \sin (Bx - C) + D}$ or ${f(x) = A \sin (Bx - C) + D,}$ ${A}$ is the amplitude, ${2\pi/\abs{B}}$ is the period, ${C/B}$ is the phase shift, ${D}$ is the vertical shift, and ${\abs{A} = \frac{1}{2}\abs{\text{max} - \text{min}}}$ is the midline.
+
+- Given the tangent function ${f(x) = A \tan(Bx - C) + D,}$
+	- the stretch factor is ${\abs{A},}$
+	- the period is ${\pi / \abs{B},}$
+	- the domain is ${x \neq \dfrac{C}{B} + \dfrac{\pi}{2 \abs{B}k}}$ where ${k \in \mathbb{Z}^+,}$
+	- the range is ${(-\infty, \infty),}$
+	- ${D}$ is the horizontal shift,
+	- the vertical asymptotes occur at ${x = \dfrac{C}{B} + \dfrac{\pi}{2\abs{B}}k,}$ where ${k \in \mathbb{Z}^+,}$
+	- the amplitude does not exist, and
+	- ${f}$ is odd.
+
+- Given the secant function ${f(x) = A \sec(Bx - C) + D,}$
+	- the stretch factor is ${\abs{A},}$
+	- the period is ${\dfrac{2\pi}{\abs{B}}k}$
+	- the domain is ${x \neq \dfrac{C}{B} + \dfrac{\pi}{2\abs{B}}}$ where ${k \in \mathbb{Z}^+,}$
+	- The range is ${(-\infty, -\abs{A} + D] \cup [\abs{A} + D, \infty)}$
+	- The vertical asymptotes occur at ${x = \dfrac{C}{B} + \dfrac{\pi}{2\abs{B}}k,}$ where ${k}$ is an odd integer,
+	- The amplitude does not exist
+	- ${f}$ is an even function.
+
+- Given the cosecant function ${f(x) = A \sec(Bx - C) + D,}$
+	- the stretch factor is ${\abs{A},}$
+	- the period is ${\dfrac{2\pi}{\abs{B}}}$
+	- the domain is ${x \neq \dfrac{C}{B} + \dfrac{\pi}{\abs{B}}k}$ where ${k \in \mathbb{Z}^+,}$
+	- The range is ${(-\infty, -\abs{A} + D] \cup [\abs{A} + D, \infty)}$
+	- The vertical asymptotes occur at ${x = \dfrac{C}{B} + \dfrac{\pi}{\abs{B}}k,}$ where ${k}$ is an integer,
+	- The amplitude does not exist
+	- ${f}$ is an odd function.
+
+- Given the cotangent function ${f(x) = A \cot(Bx - C) + D,}$
+	- the stretch factor is ${\abs{A},}$
+	- the period is ${\dfrac{\pi}{\abs{B}}}$
+	- the domain is ${x \neq \dfrac{C}{B} + \dfrac{\pi}{\abs{B}}k}$ where ${k \in \mathbb{Z}^+,}$
+	- The range is ${(-\infty, \infty)}$
+	- The vertical asymptotes occur at ${x = \dfrac{C}{B} + \dfrac{\pi}{\abs{B}}k,}$ where ${k}$ is an integer,
+	- The amplitude does not exist
+	- ${f}$ is an odd function.
+
+## Algebra
+${(a + b)(a-b) = a^2 - b^2}$
+
+${a^2 + 2ab + b^2 = (a + b)^2}$
+
+~quadratic formula~. ${x = \dfrac{\pm \sqrt{b^2-4ac}}{2a} - \dfrac{b}{2a}}$
+
+Let ${Q}$ be a quadratic with discriminant ${d = \sqrt{b^2-4ac}.}$ If:
+
+1. ${d \gt 0,}$ then the roots are
+$$
+	x_1 = \dfrac{-b + \sqrt{b^2-4ac}}{2a}, \quad
+	x_2 = \dfrac{-b - \sqrt{b^2-4ac}}{2a}
+$$
+2. ${d \lt 0,}$ then the roots are
+$$
+	x_1 = \dfrac{-b + i\sqrt{|b^2-4ac|}}{2a}, \quad
+	x_2 = \dfrac{-b - i\sqrt{|b^2-4ac|}}{2a}
+$$
+
+
+Given the discriminant ${d = \sqrt{b^2-4ac}}$ of a quadratic ${Q,}$ if ${d \gt 0,}$ then ${Q}$ has two real roots, if ${d \lt 0,}$ then ${Q}$ has two complex roots, and if ${d = 0,}$ then ${Q}$ has one root.

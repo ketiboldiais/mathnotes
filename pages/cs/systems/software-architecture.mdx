@@ -1,0 +1,38 @@
+<Head>
+	<title>Software Architecture</title>
+	<meta name={`description`} content={`Notes on software architecture`}/>
+</Head>
+
+# Software Architecture
+_Some notes on software architecture._
+
+## Tiers 
+Software applications (hereinafter _applications_) can be classified as follows.
+
+### Single-tier Applications
+A __*single-tier application*__ is an application implemented on a single machine. Examples: Operating Systems, Inkscape, Terminal, Finder, Gimp, VSCode, Sublime, Notepad—traditional desktop applications.
+
+#### Benefits of Single-tier Applications
+__~peak performance~.__ Because data doesn't travel outside the machine, single-tier applications are the most performant. They don't have to wait for anything other than the kernel dispatching their processes. On an iPhone, compare a native iOS application with a mobile-friendly web application.
+
+__~peak security~.__ Single-tier applications are the cheapest in terms of security costs. Because all data rests with the user, security comes down to basic passwords.
+
+__~optimal UX/UI~.__ An application tailored specifically for the machine is much more likely to provider better UI and UX because of both native hardware support as well as the machine manufacturer's support. Contrast with websites where developers must consider how the web application looks and behaves across different browsers.
+
+#### Costs of Single-tier Applications
+__~no control post-shipment~.__ Once a single-tier application ships, the developer loses all control. Example: Despite numerous attempts to kill Internet Explorer, it continues wreaking havoc—users just won't let go.
+
+__~intellectual property risk~.__ Single-tier applications are subject to reverse-engineering and copying.
+
+__~hardware limitations~.__ Some functionalities simply cannot be implemented on certain machines (e.g., rendering high-end simulations or graphics). Architects must decide which hardware they want to target. The more targets, the more expensive.
+
+__~expensive labor~.__ The labor supply of Android, iOS, Windows, or Mac OS engineers is nowhere near as large as the supply of web developers. Accordingly, the former usually command much higher salaries.
+
+### Two-tier Application
+Two-tier applications involve two systems: (1) a client and (2) a server. The client contains the UI, and the server contains the application logic. This is the standard architecture for websites (e.g., online portfolios, Github pages, etc.) Given a website, each page is a static file, and which page is shown to the user is determined by the server's logic.
+
+### Three-tier Application
+Three-tier applications involve three systems (1) a client, (2) a server, and (3) a database. This is a common architecture for web applications — small online shops, online forums, (in general) websites that mimic state through user authorization and authentication.
+
+### Distributed System
+Distributed systems are applications with more than three tiers. This is the architecture behind gargantuan applications with millions of users (or in the case of WhatsApp, Google, or Facebook, billions). Such applications are implemented with an intricate web of systems—databases, servers, clients, storages, load balancers, caching systems, traffic routers, and so on. Distributed systems are the most complicated architectures, but they're inevitable for such massive applications.

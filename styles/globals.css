@@ -3,6 +3,12 @@
 /* Font Imports */
 	/* CMU Serif */
 	@font-face {
+		font-family: "MONO";
+		font-style: normal;
+		font-weight: normal;
+		src: url("../public/fonts/iosevka-extended.woff")
+	}
+	@font-face {
 		font-family: "SERIF";
 		font-style: normal;
 		font-weight: normal;
@@ -48,7 +54,7 @@
 	:root {
 	--serif: "SERIF", "Palatino Linotype";
 	--sans_serif: avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-	--mono: "Fira Code", Consolas, Monaco, Liberation Mono, "Lucida Console", monospace;
+	--mono: "MONO", Consolas, Monaco, Liberation Mono, "Lucida Console", monospace;
 	/* --dark: rgb(190, 206, 209); */
 	--lightRed: #ffdada;
 	--red: rgb(196, 28, 28);
@@ -279,7 +285,7 @@
 	h1 + p + ol {
 		margin: 0.8em;
 		font-size: 0.95rem;
-		columns: 3;
+		columns: 2;
 	}
 	h1 + p + ol a {
 		text-decoration: unset;
@@ -439,13 +445,6 @@
 		.grid_map_container {
 			height: min-content;
 		}
-		.grid-container ol {
-			/* padding: 0; */
-			/* padding-left: 1em; */
-		}
-		.grid-container ol li {
-			/* font-size: 0.9em; */
-		}
 		.grid-container ol li li { list-style-type: lower-alpha; }
 		.grid-container ol li li li { list-style-type: lower-roman; }
 		.grid-container ol li li li li { list-style-type: decimal; }
@@ -455,7 +454,6 @@
 		border-top: solid thin lightgray;
 		border-bottom: solid thin lightgray;
 		padding: 0 0 1em 0;
-		/* width: 80%; */
 		margin: 1em 1.5em;
 		font-size: 0.9em;
 	}
@@ -571,10 +569,11 @@
 /* Pre Tag (Code Block) */
 	code {
 		font-family: var(--mono);
-		font-size: 0.8rem;
+		font-size: 0.9em;
 	}
 	pre {
-		margin: 0 auto;
+		margin: 3% 5%;
+		padding: 1% 0;
 		tab-size: 2;
 		line-height: 1.2 !important;
 		scrollbar-width: none;
@@ -583,12 +582,12 @@
     white-space: -pre-wrap;      /* Opera 4-6 */
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
-	}
-	pre code {
-		font-size: 0.7rem;
+		border-top: solid thin lightgrey;
+		border-bottom: solid thin lightgrey;
 	}
 	.grid-map-container pre {
 		border: solid thin lightgrey;
+		margin: 0 auto;
 		padding: 0.4em 1em;
 	}
 /* Side Notes */
