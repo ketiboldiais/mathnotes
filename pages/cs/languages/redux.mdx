@@ -1,0 +1,94 @@
+<Head>
+	<title>Redux</title>
+	<meta name={`description`} content={`Notes on Redux.`}/>
+</Head>
+
+# Redux
+_Some notes on redux._
+
+## Overview 
+Redux is a state management framework. Because of the framework's complexity, we begin by analogizing to a judicial court.
+
+
+### Court Analogy
+The court's job is to respond to __claimants__—entities that want a court to do something. Claimants give the court __claims__, and __judges__ returns a __decision__ for the claim based on __filings__ (a written argument) submitted by the claimant. 
+
+- Decisions are either __final__ or __nonfinal__.
+- If a decision is final, then the claim's is marked __inactive__.
+- Otherwise, the claim's is marked __active__.
+
+To submit a claim, claimants must submit a __form__ to a __clerk__—a court officer in charge of handling claim submissions. The form has two fields:
+
+1. A __type__ field, with three checkboxes:
+	- ${\ws}$ ~create~. File a new claim.
+	- ${\ws}$ ~collect~. Collect a filing maintained by the court.
+	- ${\ws}$ ~withdraw~. Voluntarily withdraw a claim (i.e., the claimant won't proceed with the claim any further).
+2. The __body__ field contains information expanding on the claim's type:
+	- The claimant's name
+	- If any, a filing (e.g., filing evidence or a written argument).
+	- Any other information the court needs.
+
+When the clerk receives a form, they make three copies of the form (denoted ~formcopy~) and submit them to three separate departments:
+
+1. __Archives__ manages a record of all the claims the court has ever received, active or inactive.
+2. __Docket__ manages a record of all active claims.
+3. __Filings__ manages a record of all the filings claimants submit.
+
+Because the court's judges need information from the three departments at any time, a staff called __Administration__.
+
+- Administration maintains an __master record__ of all department records. This record has three partitions:
+	1. A subrecord ~archives~ for the archives,
+	2. A subrecord ~docket~ for the docket, and a
+	3. A subrecord ~filing~ for filings.
+- When the judges need a particular piece of information, they call the Clerk's Office.
+
+As is, this system has a few problems:
+
+- The Clerk's Office can get out of sync. Perhaps the Docket officers get bogged down and fail to update their files at the Clerk's Office.
+- We don't want duplicate filings—they waste both time and resources. But we also don't want the Clerk's Office to have to check for duplicates. Their only job is to respond to the judge's requests for information.
+
+To mitigate these issues, we modify the filing clerk's procedure somewhat:
+
+- Before the filing clerk submits copies to the three separate departments, the filing clerk performs the following: 
+	1. Go to Administration.
+	2. Make a copy of ~archives~, ~docket~, and ~filings~.
+	3. Submit these subrecord copy alongside the ~formcopy~ to the respective department.
+
+We also modify each department's procedures as well when they receive their list-file copies:
+
+- For Archives: 
+	1. If ~formcopy~ is a ~create~ type.
+		- Attach ~formcopy~'s claim to ~archives~.
+	2. Return ~archives~ to the Clerk's Office. 
+- For Evidence:
+	1. If ~formcopy~ is a ~collect~ type:
+		- Give the claimant the requested filing.
+	2. If ~formcopy~ is a ~create~ type and the claimant is submitting evidence to the court:
+		- Attach the evidence to ~evidence~.
+	3. Return ~evidence~ to the Clerk's Office.
+- For Docket:
+	1. If ~formcopy~ is a ~create~ type:
+		- Attach the ~filing~'s claim to the ~docket~.
+	2. If ~formcopy~ is a ~withdraw~ type:
+		- Find ~formcopy~'s claim in ~docket~.
+		- Remove ~formcopy~'s claim from ~docket~.
+	3. Return ~docket~ to the Clerk's Office.
+
+Mapping the analogy to Redux terms:
+	
+<Fig
+	link={"https://res.cloudinary.com/sublimis/image/upload/v1670443470/cs/redux_flow_l7qz67.svg"}
+	imwidth={568}
+	imheight={117}
+	width={70}
+/>
+
+1. An __action creator__ is a function that returns a struct (or for those familiar with JavaScript, an object).
+2. That struct is called an __action__. 
+	- The struct has a __type__ key and a __payload__ key.
+	- The type key's value specifies the kind of change we want made.
+	- The payload key's value specifies the data necessary to making that change.
+3. Actions are received by a __dispatch__ — a function that makes copies of actions and collections of actions.
+4. The dispatch submits actions to __reducers__ — functions that (1) maintain collections for specific actions and (2) submit their collections to the __state__.
+5. The __state__ is the set of all collections submitted by the reducers.
+6. Everything in state is accessible to the application's components.

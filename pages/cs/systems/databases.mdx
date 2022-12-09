@@ -42,3 +42,11 @@ This note volume presents an overview of databases. This introductory page prese
 
 ## Database Systems
 ~remark~. Most database systems were originally designed with magnetic disks in mind. That isn't necessarily the case today, but the original constraints of magnetic disks result in DBMS APIs breaking from APIs we're used to.
+
+## Disks
+### Read-write Times
+~for hard disks~, it takes ${\approx 2-3\tx{ms}}$ on average to position a disks's head for reading/writing. Then ${\approx 0-4\tx{ms}}$ are spent waiting for the target block to get under the head. Finally, ${\approx 0.25\tx{ms}}$ to move data to/from the disk's surface. SSDs have faster read times, but they're far more expensive, and writing is costly (there are only so many writes before the SSD is burned completely).
+
+### Reading Pages Optimally
+Because disks are read in blocks, reading directly adjacent blocks is faster than nonadjacent blocks (no time is spent waiting for the next block to position). It's faster to read sequential data (i.e., data isomorphic to an array) than it is to read nonsequential data (i.e., data isomorphic to a nonlinear network). This is why traditional DBMSs aim for maximized sequential access, much like virtual memory on an OS.
+

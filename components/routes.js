@@ -80,52 +80,29 @@ const Routes = [
             name: "Basic Notions",
             path: `${math}${aba}intro-to-abstract-algebra`,
             children: [
-              { name: "Operations", path: `${math}${aba}intro-to-abstract-algebra#operations` },
-              {
-                name: "Algebraic Structures",
-                path: `${math}${aba}intro-to-abstract-algebra#algebraic-structure`,
-              },
-              {
-                name: "Commutativity",
-                path: `${math}${aba}intro-to-abstract-algebra#commutativity`,
-              },
-              {
-                name: "Associativity",
-                path: `${math}${aba}intro-to-abstract-algebra#associativity`,
-              },
+              { name: "Operations", path: `${math}${aba}intro-to-abstract-algebra#operations`, },
+              { name: "Algebraic Structures", path: `${math}${aba}intro-to-abstract-algebra#algebraic-structure`, },
+              { name: "Commutativity", path: `${math}${aba}intro-to-abstract-algebra#commutativity`,},
+              { name: "Associativity", path: `${math}${aba}intro-to-abstract-algebra#associativity`, },
               { name: "Identity Element", path: `${math}${aba}intro-to-abstract-algebra#identity` },
-              {
-                name: "Distributivity",
-                path: `${math}${aba}intro-to-abstract-algebra#distributivity`,
-              },
+              { name: "Distributivity", path: `${math}${aba}intro-to-abstract-algebra#distributivity`, },
               { name: "Semigroups", path: `${math}${aba}intro-to-abstract-algebra#semigroup` },
-              {
-                name: "Commutative Semigroup",
-                path: `${math}${aba}intro-to-abstract-algebra#commutative-semigroup`,
-              },
+              { name: "Commutative Semigroup", path: `${math}${aba}intro-to-abstract-algebra#commutative-semigroup`, },
               { name: "Monoid", path: `${math}${aba}intro-to-abstract-algebra#monoid` },
-              {
-                name: "Commutative Monoid",
-                path: `${math}${aba}intro-to-abstract-algebra#commutative-monoids`,
-              },
+              { name: "Commutative Monoid", path: `${math}${aba}intro-to-abstract-algebra#commutative-monoids`, },
               { name: "Groups", path: `${math}${aba}intro-to-abstract-algebra#groups` },
-              {
-                name: "Abelian Groups",
-                path: `${math}${aba}intro-to-abstract-algebra#abelian-group`,
-              },
+              { name: "Abelian Groups", path: `${math}${aba}intro-to-abstract-algebra#abelian-group`, },
               { name: "Rings", path: `${math}${aba}intro-to-abstract-algebra#rings` },
               { name: "Isomorphism", path: `${math}${aba}intro-to-abstract-algebra#isomorphisms` },
             ],
           },
         ],
       },
-      {
-        name: "Geometry",
-        path: `${math}${geo}foundations`,
-        children: [{ name: "Trigonometry", path: `${math}${geo}trigonometry` }],
+      { name: "Geometry", path: `${math}${geo}foundations`, children: [
+          { name: "Trigonometry", path: `${math}${geo}trigonometry` }
+        ],
       },
-      {
-        name: "Linear Algebra",
+      { name: "Linear Algebra",
         path: `${math}${lin}gaussian-elimination`,
         children: [
           { name: "Vectors", path: `${math}${lin}axioms` },
@@ -133,16 +110,14 @@ const Routes = [
           // { name: "Vector Algebra", path: `${math}${lin}vectors` },
         ],
       },
-      {
-        name: "Probability Theory",
+      { name: "Probability Theory",
         path: `${math}${proba}intro`,
         children: [
           { name: "Classical Probability", path: `${math}${proba}axioms` },
           // { name: "Conditional Probability", path: `${math}${proba}conditioning` },
         ],
       },
-      {
-        name: "Number Theory",
+      { name: "Number Theory",
         path: `${math}${num}preface`,
         children: [
           { name: "Divisibility", path: `${math}${num}divisibility` },
@@ -154,8 +129,7 @@ const Routes = [
       { name: "Numerical Analysis", path: `${math}${na}fundamentals` },
       // {name: "Real Analysis", path: `${math}${ra}preface`, children: [
       // ]},
-      {
-        name: "Discrete Mathematics",
+      { name: "Discrete Mathematics",
         path: `${math}${dm}preface`,
         children: [
           { name: "Induction", path: `${math}${dm}induction` },
@@ -169,17 +143,13 @@ const Routes = [
           // { name: "Combinatorics", path: `${math}${dm}combinatorics` },
         ],
       },
-      {
-        name: "Real Analysis",
+      { name: "Real Analysis",
         path: `${math}${ra}preface`,
         children: [
           { name: "Constructing the Reals", path: `${math}${ra}constructing-the-reals` },
           { name: "Real-valued Functions", path: `${math}${ra}real-valued-functions` },
           { name: "Polynomial Functions", path: `${math}${ra}polynomial-functions` },
-          {
-            name: "Exponential & Logarithmic Functions",
-            path: `${math}${ra}exponential-and-logarithmic-functions`,
-          },
+          { name: "Exponential & Logarithmic Functions", path: `${math}${ra}exponential-and-logarithmic-functions`, },
           { name: "Periodic Functions", path: `${math}${ra}periodic-functions` },
           { name: "Limits", path: `${math}${ra}limits` },
           { name: "Continuity", path: `${math}${ra}continuity` },
@@ -217,8 +187,7 @@ const Routes = [
       // ]},
     ],
   },
-  {
-    name: "Review of Computer Science",
+  { name: "Review of Computer Science",
     path: `${cs}/preface`,
     children: [
       // { name: "Fundamentals", path: `${cs}${fs}preface`, children: [
@@ -228,8 +197,7 @@ const Routes = [
       // { name: "Arrays", path: `${cs}${fs}arrays` },
       // { name: "Loops", path: `${cs}${fs}loops` },
       // ]},
-      {
-        name: "Computer Systems",
+      { name: "Computer Systems",
         path: `${cs}${sys}intro`,
         children: [
           { name: "Logic Gates", path: `${cs}${sys}logic-gates` },
@@ -248,15 +216,8 @@ const Routes = [
           { name: "Memory Hierarchy", path: `${cs}${sys}memory_hierarchy` },
           { name: "Memory in x86-64", path: `${cs}${sys}x86_memory` },
           { name: "The CPU", path: `${cs}${sys}cpu` },
-          {
-            name: "Assemblers",
-            path: `${cs}${sys}assemblers`,
-            children: [{ name: "x86 Assembly", path: `${cs}${sys}x86_assembly` }],
-          },
-          {
-            name: "Virtual Machines",
-            path: `${cs}${sys}virtual_machines`,
-            children: [
+          { name: "Assemblers", path: `${cs}${sys}assemblers`, children: [{ name: "x86 Assembly", path: `${cs}${sys}x86_assembly` }], },
+          { name: "Virtual Machines", path: `${cs}${sys}virtual_machines`, children: [
               { name: "Implementing a Virtual Machine", path: `${cs}${sys}vm_implementation` },
             ],
           },
@@ -265,26 +226,21 @@ const Routes = [
           { name: "Linkers", path: `${cs}${sys}linkers` },
           { name: "Interrupts", path: `${cs}${sys}interrupts` },
           { name: "Operating Systems", path: `${cs}${sys}operating-systems` },
-          {
-            name: "Computer Networks",
+          { name: "Computer Networks",
             path: `${cs}${sys}computer-networks`,
             children: [
-              {
-                name: "Application Layer",
-                path: `${cs}${sys}osi-application-layer`,
-              },
+              { name: "Application Layer", path: `${cs}${sys}osi-application-layer`, },
               { name: "Data Layer", path: `${cs}${sys}data_layer` },
             ],
           },
-          {
-            name: "Databases",
+          { name: "Databases",
             path: `${cs}${sys}databases`,
             children: [
               { name: "Relational Databases", path: `${cs}${sys}relational-databases` },
               { name: "Nonrelational Databases", path: `${cs}${sys}nonrelational-databases` },
             ],
           },
-          { name: "Docker", path: `${cs}${sys}docker` },
+          { name: "Software Architecture", path: `${cs}${sys}software-architecture` },
         ],
       },
       // {
@@ -307,12 +263,12 @@ const Routes = [
       { name: "Cryptography & Security", path: `${cs}${cry}intro`, children: [
         { name: "Web Security", path: `${cs}${cry}web-security` },
       ]},
-      {
-        name: "Languages/Frameworks",
+      { name: "Languages and Frameworks",
         path: `${cs}${lang}preface`,
         children: [
           { name: "JavaScript", path: `${cs}${lang}javascript` },
-          { name: "React", path: `${cs}${lang}react` },
+          { name: "Redux", path: `${cs}${lang}redux` },
+          // { name: "React", path: `${cs}${lang}react` },
         ],
       },
       {
@@ -329,8 +285,7 @@ const Routes = [
           { name: "Binary Trees", path: `${cs}${dsa}binary-trees` },
           { name: "AVL Trees", path: `${cs}${dsa}avl-trees` },
           { name: "Fiber Trees", path: `${cs}${dsa}fiber-tree` },
-          {
-            name: "Graphs",
+          { name: "Graphs",
             path: `${cs}${dsa}graph-algorithms`,
             children: [
               { name: "Cycle Detection", path: `${cs}${dsa}cycle-detection` },

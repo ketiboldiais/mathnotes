@@ -1,13 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
 
 /* Font Imports */
 	/* CMU Serif */
-	@font-face {
-		font-family: "MONO";
-		font-style: normal;
-		font-weight: normal;
-		src: url("../public/fonts/iosevka-extended.woff")
-	}
 	@font-face {
 		font-family: "SERIF";
 		font-style: normal;
@@ -25,12 +20,6 @@
 		font-style: italic;
 		font-weight: normal;
 		src: url("../public/fonts/serif_main_italics.woff")
-	}
-	@font-face {
-		font-family: 'SERIF';
-		font-style: italic;
-		font-weight: bold;
-		src: local('CMU Serif BoldItalic'), url('../public/fonts/cmunbi.woff') format('woff');
 	}
 	@font-face {
 		font-family: 'CMU Serif';
@@ -52,9 +41,9 @@
 		}
 /* Root Variables */
 	:root {
-	--serif: "SERIF", "Palatino Linotype";
+	--serif: "Crimson Pro", "Palatino Linotype";
 	--sans_serif: avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-	--mono: "MONO", Consolas, Monaco, Liberation Mono, "Lucida Console", monospace;
+	--mono: Consolas, Monaco, Liberation Mono, "Lucida Console", monospace;
 	/* --dark: rgb(190, 206, 209); */
 	--lightRed: #ffdada;
 	--red: rgb(196, 28, 28);
@@ -136,7 +125,7 @@
 		padding-left: 1em;
 	}
 	blockquote p:first-child>strong>small:first-child {
-		/* font-weight: normal; */
+		font-weight: normal !important;
 		font-size: 0.95em;
 	}
 	blockquote p:first-child>strong>small:first-child::before,
@@ -165,8 +154,48 @@
 	p+ol li li li {list-style:decimal; }
 	p+ol li li li li {list-style:upper-alpha; }
 	p+ol li li li li li {list-style:lower-roman; }
-	ul {padding-left: 1.5em;}
-	/* ul li::marker {font-size: 0.7em;} */
+	/* ul {padding-left: 0.3em;} */
+	p + ul {
+		margin-top: -0.3em;
+	}
+	ul {
+		margin: 0;
+		padding: 0;
+		padding-left: 0.95rem;
+	}
+	ul ol {
+		padding-left: 0.95rem;
+	}
+	ul li {
+		list-style-type: "•  ";
+		padding-inline-start: 1ch;
+	}
+	ul ul li {
+		list-style-type: "◽︎  ";
+		padding-inline-start: 1ch;
+	}
+	ul ul ul li {
+		list-style-type: "+  ";
+		padding-inline-start: 1ch;
+	}
+	ul ol li {
+		list-style-type: decimal;
+	}
+	ul ol ol li {
+		list-style-type: lower-alpha;
+	}
+	ul ol li li li {
+		list-style-type: lower-roman;
+	}
+	ul li::marker {
+		font-size: 0.9em;
+	}
+/* Inputs */
+	input {
+		border: solid thin grey;
+		border-radius: none;
+	}
+	
 /* Table */
 	table {
 		margin: 1% auto;
@@ -569,10 +598,11 @@
 /* Pre Tag (Code Block) */
 	code {
 		font-family: var(--mono);
-		font-size: 0.9em;
+		font-size: 0.8em;
 	}
 	pre {
 		margin: 3% 5%;
+		font-family: var(--mono);
 		padding: 1% 0;
 		tab-size: 2;
 		line-height: 1.2 !important;
@@ -590,32 +620,6 @@
 		margin: 0 auto;
 		padding: 0.4em 1em;
 	}
-/* Side Notes */
-	div.note {
-		z-index: 5;
-		position: absolute;
-		display: flex;
-		right: 0;
-		margin: 0 5% 0 0;
-		padding: 0;
-		width: 15%;
-		color: rgb(130, 177, 180);
-	}
-	div.note sup {
-		display: block;
-		margin-top: 5%;
-	}
-	div.note div.note-content {
-		font-size: 0.85rem;
-	}
-/* Reference page diagrams */
-	.cb_ref path {
-		stroke-width: 2;
-		fill: rgb(255, 242, 192);
-		stroke: rgb(178, 140, 34);
-	}
-	aside { font-size: 11px; }
-	aside h2 {font-size: 1.5em}
 /* Illus */
 	/* General */
 		.illus, .hago {
@@ -683,23 +687,6 @@
 			stroke: var(--point-stroke-color);
 		}
 		.plot .ex circle { fill: var(--background-color); }
-	/* Table Matrix */
-		.TableMatrix {
-			width: fit-content !important;
-			border: none !important;
-			margin: 0 auto;
-		}
-		.TableMatrix thead tr {
-		border-bottom: solid thin grey !important;
-		}
-		.TableMatrix th, .TableMatrix td {
-			border: none !important;
-			padding: 0 0.5em !important;
-		}
-		.TableMatrix tr td:first-child,
-		.TableMatrix tr th:first-child {
-		border-right: solid thin grey !important;
-		}
 	/* Trees */
 		.tree line, .tree circle { stroke: rgb(127, 127, 127); }
 		.tree .no-circle circle {stroke: white}
@@ -782,118 +769,12 @@
 			margin: 0;
 			padding: 0;
 		}
-	/* Product */
-		table.product {
-			text-align: center;
-			border-collapse: separate;
-			border-spacing: 2px !important;
-			font-size: 0.9em;
-		}
-		table.product tr:not(:first-child) td:not(:first-child) {
-			border: solid thin lightgray;
-		}
-		table.product td.in {
-			background-color: var(--powder);
-			opacity: 1;
-		}
-		table.product td.out {
-			background-color: rgb(245, 193, 190);
-			opacity: 1;
-		}
-	/* Augmented Matix */
-		div.aug table, div.mx table {
-			font-size: 0.95em;
-			table-layout: fixed;
-		}
-		div.aug table td, div.aug table th, div.aug table tr, 
-		div.mx table td, div.mx table th, div.mx table tr {
-			border: 0;
-			text-align: center;
-		}
-		div.aug th, div.mx th {
-			margin: 0;
-			padding-top: 0;
-		}
-		div.aug td, div.mx td { padding: 0 0.4em; }
-		div.aug table td:last-child, div.aug table th:last-child {
-			border-left: solid thin var(--text-color); 
-		}
-		div.aug, div.mx {
-				margin: 0 auto;
-				display: flex;
-				justify-content: center;
-				background-image: linear-gradient(var(--text-color), var(--text-color)),
-													linear-gradient(var(--text-color), var(--text-color)),
-													linear-gradient(var(--text-color), var(--text-color)),
-													linear-gradient(var(--text-color), var(--text-color));
-				background-repeat: no-repeat;
-				background-size: 4px 1px;
-				background-position: left top, right top, left bottom, right bottom;
-				border: solid var(--text-color);
-				border-width: 0px 1px;
-				width: fit-content;
-				height: fit-content;
-				padding: 3px 0;
-		}
-	/* Equation block */
-		div.eq table td, div.eq table tr, div.eq table th {
-			border: 0;
-		}
-		div.table { table-layout: fixed; }
-		div.eq table td { text-align: center; }
-		div.eq table td { padding: 0 3px; }
-		div.mx table th, div.aug table th, div.eq table th {
-			font-weight: normal;
-		}
-/* Array */
-	div.table-array table th {
-		font-weight: normal;
-	}
-	div.table-array table {
-		margin: 0 auto;
-		table-layout: fixed;
-		border-collapse: collapse;
-		font-size: 0.85em;
-	}
-	div.table-array table th, 
-	div.table-array table td {
-		padding:0;
-		border-collapse: collapse;
-		text-align: center;
-	}
-	div.table-array table th {
-		color: lightgray;
-	}
 /* Hago Graph */
 	.hago_graph text {font-family: 'CMU Serif';}
 	.hago_graph_nodes circle {
 		fill: var(--background-color);
 		stroke: var(--text-color);
 	} 
-/* Number Line */
-	div.number-line {
-		margin: 5% 0; 
-	}
-	div.number-line table tr {
-		border-color: lightgrey;
-	}
-	div.number-line table td {
-		position: relative;
-		text-align: center;
-		padding: 0 5px;
-		left: 8px;
-		top: 15px;
-		border-color: lightgrey;
-	}
-	div.number-line table tr:not(:first-child) td {
-		border: none;
-	}
-/* List Table */
-	div.list table td, div.list table th {
-		border: 0 !important;
-		padding: 0 1px !important;
-		margin: 0 !important;
-	}
 /* Trace Article */
 	table.trace {
 		width: 100%;
@@ -937,7 +818,7 @@
 	}
 /* Media Queries */
 	@media (min-width:501px) {
-		html {font-size: 13px;}
+		html {font-size: 15px;}
 	}
 	@media (max-width: 500px) {
 		html {font-size: 9px;}

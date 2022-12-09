@@ -7,7 +7,7 @@
   },
   "editor.bracketPairColorization.enabled": false,
   "editor.tokenColorCustomizations": {
-    "comments": "#838383",
+    "comments": "#dfdfdf",
     "textMateRules": [
       {
         "scope": "meta.embedded.block.katex markup.inserted.math.display.markdown markup.quote.markdown text.html.markdown foregroundmarkup.inserted",
@@ -22,20 +22,6 @@
           "fontStyle": "bold"
         }
       }
-      // {
-      // "scope": ["entity.name.tag","punctuation.definition.tag.begin","punctuation.definition.tag.end"],
-      // "settings": {
-      // "foreground": "#7d7d7dca",
-      // "fontStyle": ""
-      // }
-      // },
-      // {
-      // "scope":"markup.quote",
-      // "settings": {
-      // "foreground": "#FFFF",
-      // "fontStyle": ""
-      // }
-      // }
     ]
   }
 }
