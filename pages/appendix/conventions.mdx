@@ -1,0 +1,23 @@
+## Conventions
+
+In examples that use a shell, a single dollar sign indicates a one line command. The default shell is Bash. Commands are broken on to separate lines for readability and tabs indicate a single white space. Different commands are always indicated by dollar signs.
+
+~example~. These are two commands:
+
+~~~
+$ docker image prune -a
+$ docker build -t mysite-node .
+~~~
+
+but this is one command:
+
+~~~
+$ docker run
+	--name mysite-server
+	--rm
+	-d
+	-p 80:80
+	mysite-node
+~~~
+
+I use Arch Linux by default and occasionally macOS, so general system-related concepts and workflows should be interpreted with Unix in mind.

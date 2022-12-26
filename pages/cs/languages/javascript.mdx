@@ -15,7 +15,7 @@ _This is a survey of the JavaScript language._
 3. [Objects](#objects)
 4. [Variables](#variables)
 	1. [Naming](#naming)
-	2. [Declaration & Initialization](#declaration--initialization)
+	2. [Declaration \& Initialization](#declaration--initialization)
 5. [Standard Library](#standard-library)
 	1. [Math Object](#math-object)
 6. [Fetch](#fetch)
@@ -25,8 +25,6 @@ _This is a survey of the JavaScript language._
 	3. [Promises](#promises)
 		1. [Async and Await](#async-and-await)
 8. [Symbols](#symbols)
-9. [React](#react)
-	1. [useEffect](#useeffect)
 
 ## Type System
 JavaScript has six primitive types.
@@ -66,16 +64,15 @@ JavaScript objects are essentially records, somewhat like the ${\tx{struct}}$ in
 
 <Algo>
 
-1. __let__ ${\dk obj = \lbrace}$
-	1. ${a:\dk 1,}$
-	2. ${b:\dk 2,}$
-	3. ${c:\dk \string{foobar}}$
+1. __let__ ${\dk \cv{O} = \lbrace}$
+	1. ${k_1:\dk 1,}$
+	2. ${k_2:\dk \mo{true},}$
+	3. ${k_3:\dk \string{foobar}}$
 2. ${\rbrace;}$
 
 </Algo>
 
-Each of ${a,}$ ${b,}$ and ${c}$ above are called _keys_, and their assigned values _values_. In short, the JavaScript object
-is a collection of key-value pairs.
+Above, ${\cv{O}}$ is an object with keys ${k_1,}$ ${k_2,}$ and ${k_3.}$ Objects can be of mixed type.
 
 ## Variables
 ### Naming
@@ -276,6 +273,7 @@ _Promises_ are one method of excorcising deeply-nested callbacks. As usual, the 
 | ${\text{let}\dk p = \textbf{new Promise}\px{\px{resolve,reject} \nc \set{\ldots}}}$ | Constructor, where ${resolve}$ and ${reject}$ are callback functions. If the job finished successfully, the Javascript-provided function ${resolve}$ is executed. Otherwise, another Javascript-provided function, ${reject,}$ is executed. We use these functions to handle the _success_ and _failure_ prongs usually handled by callbacks. For both ${resolve}$ and ${reject,}$ a _promise object_ is returned with the a _result_ property. If ${resolve}$ was executed, the _result_ property maps to a value (e.g., the data requested). If ${reject}$ was executed, the _result_ property maps to an error object. |
 | ${p\mc\tx{then}\px{f,g}}$                                                           | Where ${p}$ is a ${\tx{Promise},}$ ${f}$ executes when the promise is resolved and receives the result, ${g}$ executes when the promise is rejected and receives the error.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ${p\mc\tx{catch}\px{f,g}}$                                                          | Equivalent to ${\tx{then}\px{\tx{null},g}.}$ Used when we're only interested in errors.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+
 #### Async and Await 
 Promises can also be instantiated by including the ${\tx{asnyc}}$ keyword to function definitions.
 

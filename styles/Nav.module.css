@@ -12,7 +12,7 @@
 	.navContent {
 		font-size: 1rem;
 		position: fixed;
-		background-color: var(--background-color);
+		background-color: rgb(49, 49, 49);
 		box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, 0.425);
 		border-radius: 0 0 6px 0;
 		overscroll-behavior: contain;
@@ -40,8 +40,14 @@
 		color: var(--text-color);
 	}
 	.navContent li ul {list-style-type: decimal;}
-	.navContent li::marker {font-size: 0.95em;}
-	.navContent li a { text-decoration: none !important; }
+	.navContent li::marker {
+		font-size: 0.95em !important;
+		color: white;
+	}
+	.navContent li a {
+		text-decoration: none !important;
+		color: white;
+	}
 	/* .navContent li a:visited { color: var(--text-color); } */
 /* list indents */
 	.navContent>ul {margin: 1rem 0 2rem 2.1rem}

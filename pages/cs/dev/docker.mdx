@@ -1,0 +1,991 @@
+<Head>
+	<title>Docker</title>
+	<meta name={`description`} content={`Notes on docker for MacOS/Linux.`}/>
+</Head>
+
+# Docker
+
+_Notes on Docker. These notes assume MacOS- or Linux-based system, so Windows users should look elswhere. In the shell examples, a single dollar sign indicates a one line command. Commands are broken on to separate lines for readability and tabs indicate a single white space. Different commands are always indicated by dollar signs._
+
+1. [Installation](#installation)
+2. [Basics](#basics)
+	1. [Docker Files](#docker-files)
+	2. [Docker Ignore Files](#docker-ignore-files)
+	3. [Executing a Docker Image](#executing-a-docker-image)
+		1. [Runtime Logs](#runtime-logs)
+		2. [Runtime Inputs](#runtime-inputs)
+	4. [Caching](#caching)
+	5. [Show All Running Containers](#show-all-running-containers)
+	6. [Removing Containers](#removing-containers)
+	7. [Deleting Images](#deleting-images)
+	8. [Image Internals](#image-internals)
+	9. [Data Storage](#data-storage)
+	10. [Example Application](#example-application)
+	11. [Output Files](#output-files)
+3. [Persisting Data](#persisting-data)
+	1. [Volumes](#volumes)
+	2. [Named Volumes](#named-volumes)
+	3. [Deleting Volumes](#deleting-volumes)
+	4. [Bind Mounts](#bind-mounts)
+	5. [Read-only Volumes](#read-only-volumes)
+4. [Environment Variables](#environment-variables)
+5. [Buildtime Arguments](#buildtime-arguments)
+6. [Containers and Networks](#containers-and-networks)
+	1. [Container to Internet](#container-to-internet)
+	2. [Container to System](#container-to-system)
+	3. [Container to Container](#container-to-container)
+7. [Multicontainer Project](#multicontainer-project)
+	1. [Database Setup](#database-setup)
+	2. [Server Setup](#server-setup)
+	3. [Client Setup](#client-setup)
+	4. [Network Creation](#network-creation)
+		1. [Start the Database](#start-the-database)
+		2. [Connect the Server](#connect-the-server)
+		3. [Connect the Client](#connect-the-client)
+	5. [Persisting Data on the Database](#persisting-data-on-the-database)
+	6. [Persisting Data on the Server](#persisting-data-on-the-server)
+	7. [Persisting Data on the Client](#persisting-data-on-the-client)
+8. [Docker-Compose](#docker-compose)
+	1. [docker-compose.yaml](#docker-composeyaml)
+	2. [Running Docker-Compose](#running-docker-compose)
+9. [Deploying Containers](#deploying-containers)
+10. [Kubernetes](#kubernetes)
+	 1. [General Kubernetes Architecture](#general-kubernetes-architecture)
+		 1. [Pods](#pods)
+		 2. [Worker Nodes](#worker-nodes)
+		 3. [Master Node](#master-node)
+		 4. [Cluster](#cluster)
+		 5. [What Kubernetes Will Not Do](#what-kubernetes-will-not-do)
+11. [History of Containers](#history-of-containers)
+
+## Installation
+To install Docker, run:
+
+~~~
+brew install docker
+~~~
+
+To interact with Docker via the command line, run:
+
+~~~
+brew install colima
+~~~
+
+~colima~ is a container runtime provider for MacOS and Linux with little to no setup. To start using Docker, run:
+
+~~~
+colima start
+~~~
+
+~colima~ will initialize a virtual machine with 2 virtual CPUs, 2GB of virtual RAM, and 60GB of virtual storage by default. If we're no longer using Docker, run:
+
+~~~
+colima stop
+~~~
+
+## Basics
+Docker is a tool that solves the "it doesn't work on my machine" problem. The basic idea: Make an image of the application, and the application can be run on any machine.
+
+> __~image~.__ A file containing (1) an application's source code, (2) application-specific dependencies, and (3) machine dependencies.
+
+> __~container~.__ The running instance of an image.
+
+The single image file can be shared across machines with Docker installed and executed (i.e., run the application).
+
+### Docker Files
+Docker is a tool that makes building images easier. The file below is called `Dockerfile`. 
+
+<Algo>
+
+> __`Dockerfile`__
+
+1. ~from~ ${\dk}$ node
+2. ~workdir~ ${\dk}$ `/src`
+3. ~copy~ ${\dk}$ ${\mc}$ ${\dk}$ `/src`
+4. ~run~ ${\dk}$ `npm install`
+5. ~expose~ ${\dk}$ `80`
+6. ~cmd~  ${\dk}$`["node", "index.js"]`
+
+</Algo>
+
+~line 1~. Copy the `node` image from DockerHub (an online repository of images).
+
+~line 2~. Specifies that all subsequent commands must be executed within the directory `/src`. 
+
+~line 3~. Two separate paths. The first dot is the current directory _without the Dockerfile_. Everything—including files in subdirectories—will be copied into the second filepath. Here, `/src`.
+
+~line 4~. Expose port 80 for the application to use.
+
+~line 5~. Execute the command `node index.js` _after_ the image is executed (when a container instantiates).
+
+To run this docker file, we run the command:
+
+<Algo>
+
+1. __Command__: `docker build .`
+2. __Output__: `Successfully built 334837ba6abd`
+
+</Algo>
+
+### Docker Ignore Files
+Not everything should be copied in a Dockerfile. Always have an accompanying `.dockerignore`. Syntax is similar to `.gitignore` files. For example:
+
+~~~
+Dockerfile
+.git
+.gitignore
+*.key
+~~~
+
+### Executing a Docker Image
+We run the docker image with the command below. If we're using a port, the port must be specified.
+
+~~~
+$ docker run -p 3000:80 334837ba6abd
+~~~
+
+#### Runtime Logs
+
+Alternatively, we can run:
+
+~~~
+$ docker start -p 3000:80 334837ba6abd
+~~~
+
+The `docker start` command will run image in the background, preventing the container from blocking the terminal. If the terminal is blocked, console logs from the application source code will not be shown. The `docker start` command, however, won't show Docker's logs. If we want to see both the application's logs and Docker's logs, we can run:
+
+~~~
+$ docker run -p 3000:80 -d 334837ba6abd
+~~~
+
+#### Runtime Inputs
+To send and receive inputs at run time, pass the `-it` option:
+
+~~~
+$ docker run -it 334837ba6abd
+~~~
+
+### Caching
+Docker images are built quickly with caching. We can optimize the `Dockerfile`:
+
+<Algo>
+
+> __`Dockerfile`__
+
+1. ~from~ ${\dk}$ node
+2. ~workdir~ ${\dk}$ `/src`
+3. ~copy~ ${\dk}$ `package.json` ${\dk}$ `/src`
+4. ~run~ ${\dk}$ `npm install`
+5. ~copy~ ${\dk}$ ${\mc}$ ${\dk}$ `/src`
+6. ~expose~ ${\dk}$ `80`
+7. ~cmd~  ${\dk}$`["node", "index.js"]`
+
+</Algo>
+
+The `npm install` command can take a long time to finish. By finishing this task first before copying, we can speed up Docker's build process. Of course, to run `npm install`, we need the relevant `package.json` file, hence line 2.
+
+### Show All Running Containers
+To see all running containers:
+
+~~~
+$ docker ps -a
+~~~
+
+### Removing Containers
+We have a container named `𝑥`. To remove `CN`, we write:
+
+~~~
+$ docker rm 𝑥
+~~~
+
+Note that we can only remove containers that aren't already running. Thus, we must stop the container first:
+
+~~~
+$ docker stop 𝑥
+$ docker rm 𝑥
+~~~
+
+We can pass multiple container names, separated by whitespace:
+
+~~~
+$ docker stop 𝑥 𝑦 𝑧
+$ docker rem 𝑥 𝑦 𝑧
+~~~
+
+If there are many containers, run:
+
+~~~
+$ docker container prune
+~~~
+
+### Deleting Images
+Docker images are effectively files stored on disk. To see the images run:
+
+<Algo>
+
+1. __Command__: `docker images`
+2. __Output__:
+~~~
+REPOSITORY  TAG     IMAGE ID      CREATED     SIZE
+<none>      <none>  1b2c72215052  3 days ago  946MB
+node        <none>  7b2c7bafa052  1 hour ago  943MB
+~~~
+
+</Algo>
+
+Notice that these are fairly large files. To delete images:
+
+~~~
+$ docker rmi 7b2c7bafa052
+~~~
+
+Note that images can only be deleted if their resulting containers are removed.
+To remove all unused images:
+
+~~~
+$ docker image prune
+~~~
+
+### Image Internals
+Below, image `𝐵` has a dependency of image `𝑋`.
+
+~~~
+REPOSITORY  TAG     IMAGE ID      CREATED     SIZE
+𝑋           <none>  1b2c72215052  3 days ago  946MB
+𝐵           <none>  7b2c7bafa052  1 hour ago  943MB
+~~~
+
+Notice the file size difference. The `3MB` is the thin command layer of `𝐵` that sits on top of `𝑋`. 
+
+### Data Storage
+With Docker, application data is stored in images. Temporary data (e.g., entered inputs) are stored in containers. Docker does not provide functions for permanent data storage. For that, we use databases or files.
+
+### Example Application
+Below is an application file's structure, alongside a Dockerfile.
+
+<Grid cols={2}>
+~~~
+.
+├── pages/
+│   └── index.html
+├── public/
+│   └── styles.css
+├── temp
+├── .gitignore
+├── package.json
+├── server.js
+└── Dockerfile
+~~~
+
+~~~
+FROM node:16
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . .
+EXPOSE 80
+CMD ["node", "server.js"]
+~~~
+</Grid>
+
+To execute this application:
+
+~~~
+$ docker run -p 3000:80 -d --name 𝐴 --rm 𝑋
+~~~
+
+The `--name` flag sets a name ${A}$ for the image, and `--rm` ensures that the resulting container nameed ${X}$ is removed once its stopped.
+
+### Output Files
+Files outputted by a container are only visible within that container. I.e., they are only stored in virtual memory. This is a security measure. We don't want container output files defaulting to a storage location somewhere we don't know about.
+
+## Persisting Data
+Suppose we run a container ${A,}$ stopped it, then ran a container ${B.}$ Container ${B}$'s application code has access to ${A}$'s data. If, however, we _stopped_ ${A,}$ then ${B}$ no longer has access to ${A}$'s data. Why? Because ${A}$'s data only exists if ${A}$ is running.
+
+### Volumes
+> __~volume~.__ A _volume_ is a hard drive directory mapped to containers. For a container to use a volume, we must _mount_ the volume (i.e., establish a filestream).
+
+Say a container ${C}$ maps to a volume ${V.}$ If ${V}$ is mounted, then changes in ${C}$ are reflected in ${V.}$ Volumes allow us to persist data despite a container's termination and removal.
+
+~example~. Below, we want data to survive in a `temp` directory.
+
+~~~
+FROM node
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . /app
+EXPOSE 80
+VOLUME ["/app/temp"]
+CMD ["node", "server.js"]
+~~~
+
+The `VOLUME` instruction tells Docker that any data outputted to the `/temp` directory from the application should also be stored in a directory `/app/temp` outside the container (thereby surviving). Building the image as usual:
+
+~~~
+$ docker build 𝑋
+~~~
+
+then we run
+
+~~~
+$ docker run -d -p 3000:80 --rm 𝑋
+~~~
+
+By default, volumes are _anonymous volumes_. Running `docker volume ls` will list all volumes:
+
+~~~
+DRIVER    VOLUME NAME
+local     fe95918adf848199a
+~~~
+
+If we stop the applicaton's container, the volume above will no longer exist. 
+
+### Named Volumes
+To persist volumes, we must run the container with a _named volume_ flag. We can't create named volumes inside a Dockerfile. We'll use the following Dockerfile (same as the last, without the `VOLUME` line):
+
+~~~
+FROM node
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . /app
+EXPOSE 80
+CMD ["node", "server.js"]
+~~~
+
+
+Then we run the image. We'll name the container ${A}$:
+
+~~~
+$ docker build 𝑋
+$ docker run
+	-d
+	-p 3000:80
+	--name 𝐴
+	-v 𝑁:/app/temp
+	𝑋
+~~~
+Above, we created a named volume ${N}$ using the `-v` flag. The colon `:` tells Docker that ${N}$ is a named volume mapped to `/app/temp`. Running `docker volume ls`:
+
+~~~
+DRIVER    VOLUME NAME
+local     𝑁
+~~~
+
+### Deleting Volumes
+Where ${S}$ is a volume name, we can delete specific volumes with:
+
+~~~
+$ docker volume rm 𝑆
+~~~
+
+To delete all unusued volumes:
+
+~~~
+$ docker volume prune
+~~~
+
+### Bind Mounts
+Changes to application source code are not reflected in a running container. Remember that the container is completely divorced from the local environment. If we want changes in the local environment reflected, we need a connection between the running container and the local environment. We make those connections with a __*bind mount*__.
+
+~~~
+$ docker run
+	--name 𝐴
+	-v 𝑁:/app/temp
+	-v "$(pwd):/app"
+	-p 3000:80
+	-d
+	𝑋
+~~~
+
+Above, we bind the entire current working directory to the named volume ${N.}$ The full path expands from the expression `$(pwd)`. Quotes are optional, but it ensures that the path doesn't break because of special characters or spaces.
+
+_Note that this will only work if Docker has access to at least one parent directory in the path. Configure this via Docker's ~Resource Sharing~ option on Docker Desktop._
+
+For this specific application, if we run the image as is, the application won't work. Why? Because by using a bind mount, we overwrite everything in the container with the contents of `/app`. The `/app` directory doesn't have any `node_modules` directory, because we didn't run `npm install` outside the container. We can fix this by using an anonymous volume with the following command:
+
+~~~
+$ docker run -d -p 3000:80
+	--name 𝐴
+	-v 𝑁:/app/temp
+	-v "$(pwd):/app"
+	-v /app/node_modules
+	𝑋
+~~~
+
+This works because `/app/node_modules` has a more specific filepath than `$(pwd):/𝐷`. More specific volumes will always overwrite less specific volumes. If we run `docker volume ls`, we'll only see ${N}$ and the third volume. This is because the second volume is a bind mount, and it lives outside the container. Docker has no control over entities outside of containers.
+
+### Read-only Volumes
+To ensure a particular volume is read-only, append `:ro` to the volume directory's path. For example:
+
+~~~
+$ docker run -d -p 3000:80
+	--name 𝐴
+	-v 𝑁:/app/temp
+	-v "$(pwd):/app:ro"
+	-v /app/node_modules
+	𝑋
+~~~
+
+ensures that the volume mapped to `app` is read-only (no writes). (Note that the filepath specific rule applies).
+
+## Environment Variables
+Dockerfiles can contain environment variables. For example, below, the environment variable `ENV PORT` specifies an environment variable called `PORT`, which then be used the application source code (e.g., for an ~express~ server, `process.env.PORT`).
+
+~~~
+FROM node
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . /app
+ENV PORT 80
+EXPOSE $PORT
+CMD ["node", "server.js"]
+~~~
+
+_Do not include sensitive data in a Dockerfile_. For low- to mid-level sensitive data, make a separate `.env` file and use `--env-file .env` with the run command. E.g.,
+
+~~~
+$ docker run
+	-d
+	-p 3000:80
+	--env-file .env
+	--name 𝐴
+~~~
+
+For high-sensitivity data (e.g., security keys and passwords), use a dedicated secret manager (e.g, Hashicorp's ~vault~). _Do not store security keys and passwords in environment variables. Malicious code or poor API design can cause vulnerabilities in dependencies that touch such secrets_. 
+
+## Buildtime Arguments
+Dockerfiles may also contain arguments at buildtime. For example:
+
+~~~
+FROM node
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . /app
+ARG NODE_ENV=development
+ENV PORT 80
+ENV NODE_ENV $NODE_ENV
+EXPOSE $PORT
+CMD ["node", "server.js"]
+~~~
+
+Above, we specified the ~node~ environment to `development`. We can alternatively change it to `production` when executing the `build` command.
+
+~~~
+$ docker build 𝐴
+	--build-arg NODE_ENV=production
+~~~
+
+## Containers and Networks
+### Container to Internet
+Premise: We want a container ${A}$ to send requests and receive responses via the Internet (e.g., to ~twitter~'s API). Out of the box, we don't have to do anything with Docker. Docker has no business with an application's actual source code, so anything that breaks is a problem on the application's end.
+
+### Container to System
+Premise: We want a container ${A}$ to send requests and receive responses to a system process outside the container. For this to work, change references to `localhost` to `host.docker.internal`. Docker resolves `host.docker.internal` to the machine's IP address as seen by Docker.
+
+### Container to Container
+Premise: We want a container ${A}$ to send requests and receive responses to a container ${B.}$ For intercontainer communication, we use Docker Networks. First, create a network named ${N:}$
+
+~~~
+$ docker network create 𝑁
+~~~
+
+We can run an image using the network ${N}$ as an assumed resource. For example, suppose ${D}$ is an image for some database manager (e.g., ~postgres~) and suppose ${X}$ is the resulting container name (a container exposing  database endpoints):
+
+~~~
+$ docker run
+	-d
+	--name 𝑋
+	--network 𝑁
+	𝐷
+~~~
+
+Source code reliant on ${X}$ can simply reference ${X.}$ For example, a ~node~ server using ~mongoose~ to connect to a ~mongo~ database might have the line (in this case, ${X:=\mo{mongodb}}$):
+
+~~~
+mongoose.connect(
+	'mongodb://mongodb:8181/songs',
+	...
+)
+~~~
+
+## Multicontainer Project
+We consider using Docker for a more complex application: A client (~react~), a server (~express~), and a database (~mongo~). The application's filetree is as follows:
+
+~~~
+.
+├── server/
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── node_modules
+│   ├── app.js
+│   ├── package.json
+│   ├── logs
+│   └── models
+├── client/
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── node_modules
+│   ├── src/
+│   │   ├── app.js
+│   │   ├── index.js
+│   │   ├── index.css
+│   │   └── components/
+│   │       ├── nav.js
+│   │       └── layout.js
+│   ├── package.json
+│   └── public/
+│       └── index.html
+├── .env
+└── .gitignore
+~~~
+
+The `node_modules` for each project have been preinstalled. The server listens on port 80. The Dockerfiles are initially empty. Before proceeding, ensure both the `client` and `server` directories have a `.dockerignore` file:
+
+~~~
+node_modules
+.git
+Dockerfile
+~~~
+
+The `node_modules` directory is included in the `.dockerignore` because they take a long time to install.
+
+### Database Setup
+We start by running the ~mongo~ image available on ~dockerhub~:
+
+~~~
+$ docker run --name mongodb
+	--rm
+	-d
+	-p
+	mongo
+~~~
+
+To review: `--name` to name the resulting container, `--rm` to remove the container once stopped, `-d` to run the image in detached mode (so the terminal isn't blocked), `-p` to publish the resulting port number, and `mongo` is the name of the image. To stop this container:
+
+~~~
+$ docker stop mongodb
+~~~
+
+### Server Setup
+Next, we make a Dockerfile for the server:
+
+~~~
+FROM node
+WORKDIR /server
+COPY package.json .
+RUN npm install
+COPY . .
+EXPOSE 80
+CMD ["node", "app.js"]
+~~~
+
+Now build the server's image (the first command is just to ensure we don't have any existing images), with the tag `SiteName-node`.
+
+~~~
+$ docker image prune -a
+$ docker build -t mysite-node .
+~~~
+
+Before running the server, ensure that references `localhost:27017` (the port mapped to the ~mongo~ database) are replaced with `host.docker.internal:27017` (we will later change this to `mongodb:27017` when we create a network). 
+
+~~~
+$ docker run
+	--name mysite-server
+	--rm
+	-d
+	-p 80:80
+	mysite-node
+~~~
+
+Because the ~express~ server expects requests and sends responses to the ~react~ client, the argument `-p 80:80` maps the server's port 80 to the local port 80. Without that argument, the client has no way of speaking with the server (since the server is runs in a separate container). To stop this container:
+
+~~~
+$ docker stop mysite-server
+~~~
+
+### Client Setup
+Write the Dockerfile for the client:
+
+~~~
+FROM node
+WORKDIR /client
+COPY package.json .
+RUN npm intall
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+~~~
+
+Build the client's image:
+
+~~~
+$ docker build -t mysite-react .
+~~~
+
+Run the image to start a container:
+
+~~~
+$ docker run mysite-client
+	--rm
+	-d
+	-p 3000:3000
+	-i
+	-t
+	mysite-react
+~~~
+
+The options `-i` and `-t` ensures that the container is interactive. This is because React will stop running the development server—`http://localhost:3000`—if it isn't interacted with. To stop this container:
+
+~~~
+$ docker stop mysite-client
+~~~
+
+### Network Creation
+Now we place all the containers on the same network. Start by creating a network:
+
+~~~
+$ docker network create mysite-network
+~~~
+
+#### Start the Database
+Start the database:
+
+~~~
+$ docker run
+	--name mongodb
+	--rm
+	-d
+	mongo
+~~~
+
+We don't specify the port because all the containers will be on the same network.
+
+#### Connect the Server
+Because the server will now run on a contained network, references to `host.docker.internal:27017` should be changed to `mongodb:27017`. Because this change is made, the server's image must be rebuilt:
+
+~~~
+$ docker build -t mysite-node .
+~~~
+
+Now we can run the server:
+
+~~~
+$ docker run
+	--name mysite-server
+	--rm
+	-d
+	-p 80:80
+	--network mysite-network
+	mysite-node
+~~~
+
+Notice that we must still publish port 80. This is because React's development server still needs access to this port.
+
+#### Connect the Client
+Run the client:
+
+~~~
+$ docker run
+	--name mysite-client
+	--rm
+	-p 3000:3000
+	-it
+	mysite-react
+~~~
+
+Notice that we aren't using the network with this command. Why? Because React code only runs on the browser, not the system. Thus, the contained network is irrelevant.
+
+### Persisting Data on the Database
+Start by making a volume. The `/data/db` in `data:/data/db` is provided by the ~mongo~ image's documentation on Dockerhub as the path to the ~mongo~ image. Recall that we need this path to create a volume. The documentation also provides that we can use two environment variables (the all-caps arguments below) to set a username and password. 
+
+~~~
+$ docker run
+	--name mongodb
+	-v data:/data/db --rm
+	-d
+	--network mysite-network
+	MONGO_INITDB_ROOT_USERNAME=bob
+	MONGO_INITDB_ROOT_PASSWORD=bob123
+	mongo
+~~~
+
+Because we've set a username and password on the database, we must change the server's source code. References to `mongodb:27017` should be changed to `bob:secret@mongodb:27017`. The connection string must also end with `?authsource=admin`. For example, a full connection string might look like:
+
+~~~
+mongodb://bob:secret@mongodb:27017/users?authsource=admin
+~~~
+
+Because of this change, we rebuild the `mysite-node` image again:
+
+~~~
+$ docker build -t mysite-node
+~~~
+
+Testing:
+
+~~~
+$ docker run
+	--name mysite-server
+	--rm
+	-d
+	-p
+	80:80
+	--network mysite-network
+	mysite-node
+~~~
+
+Note: An alarming amount of Javascript-related tutorials will use environment variables to store the username and password, then inject them into connection strings with template literals to make development easier.  __This is extremely reckless, convenient or otherwise. Never ever do this__. First, database usernames and passwords are extremely sensitive data, and they shouldn't be stored in environment variables in the first place. Use a secrets manager. Second, template literals shouldn't be used to inject dynamic data like user input full stop. That's a wide, wide opening for code injection.
+
+### Persisting Data on the Server
+To persist server data, we map the server container to volumes. Because this is a long command, we present it below with comments (all one line):
+
+<Algo>
+
+1. `docker run` _start a container_
+2. `--name mysite-server` _name the container `mysite-server`_
+3. `-v $(pwd):/app` _map the `server` directory to some volume_
+4. `-v logs:/app/logs` _map the `logs` directory to a volume named `logs`_
+5. `-v /app/node_modules` _map the `node_modules` directory to some volume_
+5. `--rm` _remove when stopped_
+6. `-p 80:80` _publish virtual port `80` to local port `80`_
+7. `--network mysite-network` _use container network `mysite-network`_
+8. `mysite-node` _use the image `mysite-node`_
+
+</Algo>
+
+To see live changes with the server, use a ~node~ dependency like `nodemon`.
+
+### Persisting Data on the Client
+Likewise for the client, we bind volumes to persist data. Notice that we only map the `src` folder to a volume. This is just a project choice—we're assuming that any data that needs to be persist exists in the `src` directory.
+
+<Algo>
+
+1. `docker run` _start a container_
+2. `--name mysite-client` _name the container `mysite-client`_
+3. `-v $(pwd):/src` _map the `src` directory to some volume_
+4. `--rm` _remove the container when stopped_
+5. `-p 3000:3000` _publish virtual port 3000 to local port 3000_
+6. `-it` _run in interactive mode_
+7. `mysite-react` _using the `mysite-react` image_
+
+</Algo>
+
+## Docker-Compose
+_Linux users: `Docker-Compose` must be installed. MacOS and Windows users have `Docker-Compose` installed by default on Docker installation_.
+
+The preceding sections show how long and tedious Docker commands are. Rather than writing such long commands everytime, we can use `Docker-Compose`. `Docker-Compose` allows us to write a single configuration file—`docker-compose.yaml`—to orchestrate all our Docker commands. 
+
+### docker-compose.yaml
+Start by creating a `docker-compose.yaml` in the root directory (the parent directory of `client` and `server`). The filetree now looks like:
+
+~~~
+.
+├── server/
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── node_modules
+│   ├── app.js
+│   ├── package.json
+│   ├── logs
+│   └── models
+├── client/
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── node_modules
+│   ├── src/
+│   │   ├── app.js
+│   │   ├── index.js
+│   │   ├── index.css
+│   │   └── components/
+│   │       ├── nav.js
+│   │       └── layout.js
+│   ├── package.json
+│   └── public/
+│       └── index.html
+├── .env
+├── .gitignore
+└── .docker-compose.yaml
+~~~
+
+~yaml~ is a file format that uses semantic indentation (tabs matter, and tabs are two spaces). Assume all content below is case-sensitive.
+
+<Algo>
+
+1. `version: "3.8"` _Set the version number_
+2. `services:` _The containers_
+	1. `mongodb:`
+		1. `image: 'mongo'` _The `mongo` image from Dockerhub_
+		2. `container_name: mongodb` _Optional; set custom container name_
+		2. `volumes:` _The volumes we want mapped_
+			1. `- data:/data/db`
+		3. `env_file:` _Use the `.env` file in current directory_
+			1. `- ./.env`
+	2. `server:`
+		1. `build: ./server` _Build the server image_
+		2. `container_name: server`
+		2. `ports:` _Publish the ports_
+			1. `- '80:80'`
+		3. `volumes:`
+			1. `- logs:/app/logs`
+			2. `- ./server:/app`
+			3. `- /app/node_modules`
+		4. `depends_on:` _Run this service after `mongodb` service runs_
+			1. `- mongodb`
+	3. `client:`
+		1. `build: ./client` _Build the client image_
+		2. `container_name: client`
+		2. `ports:`
+			1. `- 3000:3000`
+		3. `volumes:`
+			1. `- ./client/src:/app/src`
+		4. `stdin_open: true` _Service needs an input stream connection (the `-i` option)_
+		5. `tty: true` _Service needs terminal connection (the `-t` option)_
+		6. `depends_on:`
+			1. `- server` _Run this service after `server` service runs_
+3. `volumes:`
+	1. `data:`
+	2. `logs:`
+
+</Algo>
+
+~remove~. Docker-Compose uses `--rm` by default. 
+
+~detached mode~. Pass the `-d` option explicitly in the `docker-compose` command (see next section).
+
+~network~. We do not need to include a network, because `Docker-Compose` will create a network and connect all the services on that network by default. Existing networks can be included with a `networks` key.
+
+~lines 31-33~. These are a Docker quirk. Docker needs these lines so it's aware which _named volumes_ should be created for the services. Anonymous volumes and bind mounts do not need to be specified.
+
+### Running Docker-Compose
+To run `Docker-Compose`, run the following command in the configuration file's working directory:
+
+~~~
+$ docker-compose up
+~~~
+
+Then, to shut everything down, we run:
+
+~~~
+$ docker-compose down
+~~~
+
+Note that `docker-compose down` does not remove volumes. To do so, we must include the `-v` option:
+
+~~~
+$ docker-compose down -v
+~~~
+
+Note that `Docker-Compose` does not substitute Dockerfiles. We still need to write those. We use the last section's multicontainer for this section's examples. By default, `Docker-Compose` will use existing images during the build process. If we want all images rebuilt, run:
+
+~~~
+$ docker-compose up --build
+~~~
+
+## Deploying Containers
+To publicly expose applications built with Docker containers, we deploy the containers to hosting providers. Because there are numerous Docker hosting services with their own documentation, we leave it to the reader to research and decide on such a service. As a starting point: The largest providers are ~aws~ (Amazon Web Services), ~azure~ (a Microsoft service), and ~google cloud~ (a Google service). Because deployment entirely depends on the hosting provider, we do not address deployment in detail (this is also beyond the scope of standard software development; deployment is generally handled by IT professionals certified to work with the provider's service).
+
+Note: Containers should work standalone. I.e., they should not depend on source code on the remote machine. As such, bind mounts are appropriate for development, _but not_ for production. On a remote machine, the image deployed should be the single source of truth. Hence, for production, we use the `COPY` command instead of bind mounts.
+
+For a very simple web application with a single image, the general ~aws ec2~ workflow is presented below. __Do not blindly follow this list__. The steps below are intended to give a brief overview of what the process looks like (at the time of writing). To perform a real-world deployment, be sure to very clearly understand the host provider's terms and pricing, as well as all the relevant documentation for each of the steps. Remember that once deployment begins, we're no longer in the safe confines of local development. There are real-world entities out there—humans and machines—eager to attack and destroy. Hosting providers do not issue refunds or excuse bills for deployment mistakes.
+
+1. Create an ~aws ec2~ account.
+2. Login.
+3. Choose an ~aws machine image~ option (this sets the operation system to be installed on the server).
+4. Select an ~instance~ type. Roughly, these are hardware specifications. The more powerful the hardware, the bigger the monthly bill.
+5. Ensure that a ~vpc~ (virtual private cloud) is created. A ~vpc~ is simply a set of network resources. We can create route tables, gateways, security groups, DNS, private subnetworks, public subnetworks, all the usual networks we'd expect a network provider to handle. As we'd expect, we need these resources to establish the container networks we saw earlier. More importantly, we need to configure those networks so different intercontainer communication is done securely.
+6. Create a ~key-pair~ with a name (we'll use `myapp` as an example). Once created, ~aws~ generates a `.pem` file for download. The `.pem` file contains a hash, which ~aws~ will use to authenticate and authorize ~ssh~ access to the instance. Needless to say, the generated `.pem` file is extremely sensitive data, and it is generated only once. Anyone who has the `.pem` file can access the ~aws~ instance.
+7. Create security groups.
+	- The security groups provide two types of rules, ~inbound rules~ and ~outbound rules~. The ~outbound rules~ specify where traffic from the instance can go outside the ~aws~ network. The ~inbound rules~ specify which sources outside the ~aws~ network we accept traffic from. Examining the ~inbound rules~, we'll see that there's only one permissible source, `0.0.0.0/0` over ~ssh~. As is, the entire world can access the application via SSH if they have the `.pem` file. The default value should be changed to our local machine's IP address.
+	- If the application is a website, a new security rule should be created: Set the type to `http`, leave all other defaults as is. 
+8. `ssh` into the ~aws~ instance.
+	1. ~aws~ provides the procedures for performing this step. At the time of writing, this is done by executing the following command:
+	~~~
+	$ chmod 400 myapp.pem
+	~~~
+	2. Followed by:
+	~~~
+	$ ssh
+		-i
+		myapp.pem
+		ec2-user@ec2-491-91.us-east-2.compute.amazonaws.com
+	~~~
+	3. After doing so, the command's prompt should change to some longer hostname.
+	4. All commands executed with this prompt are executed on the remote machine. We'll pretend the prompt is `aws` (in reality, it's some string with an ~ip~ address).
+9. Ensure the machine is up to date. Run:
+~~~
+aws$ yum update -y
+~~~
+10. Install Docker on the remote machine. Run:
+~~~
+aws$ amazon-linux-extras install docker
+~~~
+11.  Start Docker. Run:
+~~~
+aws$ service docker start
+~~~
+12.  At this point we have two options: ${\px{1}}$ Deploy all the source code to the remote machine, or ${\px{2}}$ deploy only the built image.
+	1. If we go with option ${\px{1}}$:
+		1. First build:
+		~~~
+		aws$ docker build
+		~~~
+		2. Then run:
+		~~~
+		aws$ docker run
+		~~~
+		Note that this will almost always generate errors and require further actions. As such, option ${\px{1}}$ can be an extremely complicated process and should only be done if there's a particularly strong reason for building the image remotely.
+	2. If we go with option ${\px{2},}$
+		1. Publish the application image to Dockerhub. This will generate a repository name. Assume it's `bob/myapp`.
+		2. Run the published image on the remote machine. Be sure to include all the necessary arguments (e.g., `-p 80:80`, etc.).
+		~~~
+		aws$ docker run -d --rm bob/myapp
+		~~~
+13. If we return to our ~aws~ dashboard, we should see the instance running with a public IPv4 address (e.g., something like `19.201.128.91`).
+
+Note that if we go with this approach, we are responsible for everything:
+
+1. Security configurations.
+2. Workflows for when containers crash.
+3. Workflows for when containers must be replaced.
+4. Workflows for when containers undergo maintenance.
+5. Response procedures for traffic spikes.
+6. Architecture for distributing traffic.
+7. Business and legal communications with the hosting provider.
+
+This is a tremendous amount of responsibility, and companies have dedicated teams for each of these issues. Of course, the burden is smaller for a simple application with little to no users, but security threats always loom.
+
+## Kubernetes
+~kubernetes~ is a set of tools, specifications, and standards that aim to ease the container deployment process. In short, we start by writing a deployment configuration file. Then, when we've decided on a cloud provider (or purchased a separate machine for hosting) that supports ~kubernetes~, we provide the configuration file and the image. As long as the server understands ~kubernetes~ syntax, it will the container as specified.
+
+To be clear, ~kubernetes~ is not a cloud provider nor is it an alternative to ~docker~. It also isn't just just an application. It's an open source project consisting of applications, specifications, and standards that manage container deployments. All together, ~kubernetes~ accomplishes something that looks like `docker-compose` for deployment. Where `docker-compose` makes container orchestration easier, ~kubernetes~ makes working with deployment orchaestration easier.
+
+### General Kubernetes Architecture
+#### Pods
+~pods~. The ~kubernetes~ workflow starts with a _pod_. We can think of it as a structure ${P=(C,S),}$ where ${C}$ is a set of containers (either one container or multiple containers), and ${S}$ is a configuration file.
+
+#### Worker Nodes
+We give a _pod_ and a _proxy_ to a _worker node_. The proxy is a configuration file used by ~kubernetes~ to manage network traffic. The worker node is the virtual machine that will run the application's containers. Worker nodes handle one pod. To run muliple pods, we need multiple worker nodes.
+
+#### Master Node 
+If we have many worker nodes, we have to make sure they're all working together and following protocol. Managing worker nodes is done by the _master node_ — a separate virtual machine that manages the worker nodes with a _control pane_ — another set of configurations.
+
+#### Cluster
+A unit of worker nodes and a master node is called _cluster_. The name cluster is descriptive; given ${n}$ worker nodes, we have one node with an outdegree of ${n,}$ reminiscent of clusters (or connected components) from graph theory. This cluster is described by the ~kubernetes~ configuration file. When we give this file to a Cloud provider that supports ~kubernetes~, the provider constructs the network per the specification.
+
+#### What Kubernetes Will Not Do 
+~kubernetes~ is not a resource manager. Thus, to use ~kubernetes~, there are a few things that we must do on our end:
+
+1. We must create the cluster.
+2. We must setup the ~api~ server, `kubelet`, and other ~kubernetes~ services and software on the nodes.
+3. We must create other cloud provide resources needed (e.g., load balancers and filesystems).
+
+Fortunately, ~kubernetes~ is designed to make checking off these items easier.
+
+## History of Containers
+Containers trace their origins to ~chroot~ (_change root_), a system call that appeared in AT&T System III Unix and BSD-Reno. The command was straightforward—given several folders with an existing root directory ${r,}$ ~chroot~ would change the root directory to a different directory ${r'.}$ This is a useful call: If we can change the root directory, then we can run safe code in ${r}$ and experimental code in ${r'.}$
+
+Problem with ~chroot~: We can always run `cd ..` (change to the parent directory). So, FreeBSD extended the idea to __jails__. Instead of running switching directories, make partitions of the OS. These partitions all have roots, which we can switch to and from. Partitions other than the native OS (the actual system OS) are called _jails_. Eventually, jails led to _hypervisors_—partitions specifically dedicated to running operating systems other than the native OS. Jails also led to _containers_ — jails that sit somewhere between hypervisors and local directories.

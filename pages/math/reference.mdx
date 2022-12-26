@@ -1,213 +1,169 @@
+<Head>
+	<title>Reference</title>
+	<meta name={`description`} content={`Cheatsheet of common math propositions.`}/>
+</Head>
+
+# Reference
+_This is a reference of common mathematical propositions._
+
 ## Exponents
+### Power of Zero
+- Iff ${n \gt 0, }$ then ${0^n = 0.}$
+- Iff ${n \lt 0,}$ then ${0^n = \text{undefined}.}$
+	- Reason: If ${n \lt 0}$ and ${0^{n} = 0,}$ then ${0^{n} = 1/0.}$
+- If ${n = 0,}$ then ${0^0}$ is either ${1}$ or undefined.
 
-${a^n \cdot a^m = a^{n+m}}$
 
-${a^n \cdot b^n = (a \cdot b)^n}$
+### Power of One
+- ${1^n = 1.}$
+- If ${n}$ is even, then ${(-1)^n = 1.}$
+- If ${n}$ is odd, then ${(-1)^n = -1.}$
 
-${\dfrac{a^n}{a^m} = a^{n-m}}$
 
-${\dfrac{a^n}{b^n} = \left(\dfrac{a}{b}\right)^n}$
-
-${\left(b^n\right)^m = b^{n \cdot m}}$
-
-${\sqrt[m]\left(b^n\right) = b^{n/m}}$
-
-${b^{1/n} = \sqrt[n]b}$
-
-${b^{-n} = \dfrac{1}{b^n}}$
-
-${b^0 = 1}$
-
-${0^n = 0,}$ for ${n \gt 0}$
-
-${b^1 = b}$
-
-${1^n = 1}$
-
+### Recursive Definition of Exponents
 $$
-	(-1)^n = \begin{cases}
-		1 &\text{if $n$ is even}
-		-1 &\text{if $n$ is odd}
-	\end{cases}
+b^n = 
+\begin{cases}
+	1 \space &\text{if} \space n = 0 \\
+	b \space &\text{if} \space n = 1 \\
+	b \times b^{n-1} \space &\text{else}
+\end{cases}
+$$
+
+### Addition of Exponents
+- ${b^{m+n} = b^m \times b^n.}$
+
+### Negative Exponents
+- ${b^{-n} = \dfrac{1}{b^n}.}$
+- ${0^{-n} = \text{undefined}.}$
+
+### Associativity of Exponents
+- ${(b^m)^n = b^m \times b^n.}$
+
+### Distributivity of Exponents
+- ${(ab)^n = a^n \times b^n.}$
+
+### Powers of Two
+<table>
+	<tbody>
+		<tr>
+			<td>${2^0}$</td>
+			<td>${1}$</td>
+			<td>${2^1}$</td>
+			<td>${2}$</td>
+		</tr>
+		<tr>
+			<td>${2^2}$</td>
+			<td>${4}$</td>
+			<td>${2^3}$</td>
+			<td>${8}$</td>
+		</tr>
+		<tr>
+			<td>${2^4}$</td>
+			<td>${16}$</td>
+			<td>${2^5}$</td>
+			<td>${32}$</td>
+		</tr>
+		<tr>
+			<td>${2^6}$</td>
+			<td>${64}$</td>
+			<td>${2^7}$</td>
+			<td>${128}$</td>
+		</tr>
+		<tr>
+			<td>${2^8}$</td>
+			<td>${512}$</td>
+			<td>${2^9}$</td>
+			<td>${512}$</td>
+		</tr>
+		<tr>
+			<td>${2^{10}}$</td>
+			<td>${1024}$</td>
+			<td>${2^{11}}$</td>
+			<td>${2048}$</td>
+		</tr>
+		<tr>
+			<td>${2^{12}}$</td>
+			<td>${4096}$</td>
+			<td>${2^{13}}$</td>
+			<td>${8192}$</td>
+		</tr>
+		<tr>
+			<td>${2^{14}}$</td>
+			<td>${16~384}$</td>
+			<td>${2^{15}}$</td>
+			<td>${32~768}$</td>
+		</tr>
+		<tr>
+			<td>${2^{16}}$</td>
+			<td>${65~536}$</td>
+			<td>${2^{17}}$</td>
+			<td>${131~072}$</td>
+		</tr>
+		<tr>
+			<td>${2^{18}}$</td>
+			<td>${262~144}$</td>
+			<td>${2^{19}}$</td>
+			<td>${524~288}$</td>
+		</tr>
+		<tr>
+			<td>${2^{20}}$</td>
+			<td>${1~048~576}$</td>
+			<td>${2^{21}}$</td>
+			<td>${2~097~152}$</td>
+		</tr>
+		<tr>
+			<td>${2^{32}}$</td>
+			<td>${4~294~967~296}$</td>
+			<td>${2^{64}}$</td>
+			<td>${18~446~744~073~709~551~616}$ (over 18 quintillion)</td>
+		</tr>
+	</tbody>
+</table>
+
+### Rational Exponents
+- Iff ${n \ge 0,}$ then ${x^{1/n} = \sqrt[n]{x}}$
+- ${\sqrt[n]{x} \iff (y^n = x \land y \in \reals^+).}$
+- If ${x \in \reals^+}$ and ${\frac{p}{q} \in \mathbb{Q},}$ then
+$$
+	x^{p/q} = (x^p)^{\frac{1}{q}} = \left(x^{\frac{1}{q}}\right)^p
 $$
 
 ## Logarithms
-${\log_b(m \cdot n) = \log_b(m) + \log_b(n)}$
+### Definition
+- ${\log_b(y) = x \iff b^x = y}$ where ${b \neq 0.}$
+### Log of One
+- Iff ${b \neq 0,}$ then ${\log_b(1) = 0}$ because ${b^0 = 1.}$
+- ${\log_b(b) = 1,}$ because ${b^1 = b.}$
+### Log of Products
+- ${\log_b(xy) = \log_b(x) + \log_b(y).}$
+### Log of Quotients
+- ${\log_b\left( \frac{x}{y} \right) = \log_b(x) + \log_b(y)}$
+	- Reason: ${b^c b^d = b^{c+d}.}$
+- ${\log_b(x^d) = d \log_b(x)}$
+	- Reason: ${(b^c)^d = b^{cd}.}$
+- ${\log_b(\sqrt[n]{x}) = \dfrac{\log_b(x)}{y}}$
+	- Reason: ${\sqrt[y]x = x^{1/y}.}$
+- ${x^{\log_b(y)}=y^{\log_b(x)}.}$
+	- Reason:
+		$$
+		\begin{aligned}
+			x^{\log_b(y)} &= b^{\log_b(x)\log_b(y)} \\
+			&= \left(b^{\log_b(y)}\right)^{\log_b(x)} \\
+			&= y^{\log_b(x)}
+		\end{aligned}
+		$$
+		
 
-${\log_b\left(\dfrac{m}{n}\right) = \log_b(m) - \log_b(n)}$
-
-${\log_b\left(m^k\right)=k \cdot \log_b(m)}$
-
-${\log_b(1) = 0}$
-
-${\log_b(b) = 1}$
-
-${\log_b\left(b^k\right) = k}$
-
-${b^{\log_b(k)} = k}$
-
-## Trigonometry
-${\tan \theta = \dfrac{\sin \theta}{\cos \theta}}$
-
-${\sec \theta = \dfrac{1}{\cos \theta}}$
-
-${\cot \theta = \dfrac{1}{\tan \theta}}$
-
-${\cot \theta = \dfrac{\cos \theta}{\sin \theta}}$
-
-${\csc \theta = \dfrac{1}{\sin \theta}}$
-
-${\sin^2 \theta + \cos^2 \theta = 1}$
-
-${\cos \theta = \sin \left(\dfrac{\pi}{2}-\theta\right)}$
-
-${\cot \theta = \tan \left(\dfrac{\pi}{2}-\theta\right)}$
-
-${\csc \theta = \sec \left(\dfrac{\pi}{2}-\theta\right)}$
-
-${\sin \theta = \cos \left(\dfrac{\pi}{2}-\theta\right)}$
-
-${\tan \theta = \cot \left(\dfrac{\pi}{2}-\theta\right)}$
-
-${\sec \theta = \csc \left(\dfrac{\pi}{2}-\theta\right)}$
-
-${\sin(\theta + 2\pi) = \sin \theta}$
-
-${\cos(\theta + 2\pi) = \cos \theta}$
-
-${\tan(\theta + \pi) = \tan \theta}$
-
-${\sin(-\theta) = - \sin \theta}$
-
-${\cos(-\theta) = \cos \theta}$
-
-${\tan(-\theta) = -\tan \theta}$
-
-${\sin(x + y) = \sin(x)\cos(y) + \cos(x)\sin(y)}$
-
-${\cos(x + y) = \cos(x)\cos(y) - \sin(x)\sin(y)}$
-
-${\sin(x-y) = \sin(x)\cos(y) - \cos(x)\sin(y)}$
-
-${\sin(x-y) = \sin(x)\cos(y) - \cos(x)\sin(y)}$
-
-${\cos(x-y) = \cos(x)\cos(y) + \sin(x)\sin(y)}$
-
-${\sin(2\theta) = 2\sin(\theta)\cos(\theta)}$
-
+	
+## Useful Scripts
+### Empty Trash
+~~~
+osascript -e 'tell app "Finder" to empty'
+~~~
+### Lower Process Schedule Priority
+Where ${A}$ is an application's name:
 $$
-	\begin{equation}
-		\cos2\theta &= \cos^2\theta - \sin^2\theta \\
-		&= 2 \cos^2 \theta - 1 \\
-		&= 1 - 2 \sin^2 \theta
-	\end{equation}
-$$
-
-## Command Trigonometric Values
-$$
-\begin{array}{c:c:c:c}
-
-\sin(0) = 0 &
-\cos(0) = 1 &
-\tan(0) = 0
-\\
-\sin\left( \dfrac{\pi}{12} \right) = \dfrac{\sqrt{2}-1}{2\sqrt{2}} &
-\cos\left( \dfrac{\pi}{12} \right) = \dfrac{1+\sqrt{3}}{2\sqrt{2}} &
-\tan\left( \dfrac{\pi}{12} \right) = 2 - \sqrt{3}
-\\
-\sin\left( \dfrac{\pi}{6} \right) = \dfrac{1}{2} &
-\cos\left( \dfrac{\pi}{6} \right) = \dfrac{\sqrt{3}}{2} &
-\tan\left( \dfrac{\pi}{6} \right) = \dfrac{1}{\sqrt{3}}
-\\
-
-\end{array}
-$$
-
-## Functions
-### Odd Functions
-- An odd function ${f}$ is a function where ${f(-x)=-f(x).}$
-- Odd functions are horizontally symmetric.
-- Sine, tangent, cosecant, and cotangent are odd functions.
-
-#### Even Functions
-- An even function ${f}$ is a function where ${f(-x)=f(x).}$
-- Even functions are vertically symmetric.
-- Cosine and secant are even functions.
-
-### Injective Functions
-- A function ${f}$ is injective if and only if whenever ${f(x)=f(y),}$ then ${x=y.}$
-- Every element in the codomain is mapped to at most once.
-
-### Surjective Functions
-- A function ${f: A \to B}$ is surjective if and only if for every ${y \in B,}$ there is at least once ${x \in A}$ such that ${f(x)=y.}$
-- Every element in the codomain is mapped to at least once.
-
-### Bijective Functions
-- A function ${f: A \to B}$ is bijective if and only if there is exactly one ${x \in A}$ such that ${f(x)=y.}$
-- Every element in the codomain is mapped to exactly once.
-- Bijective functions always have an inverse. 
-
-### Periodic Functions
-- A periodic function is a function of the form ${f(x) = A \sin (Bx - C) + D}$ or ${f(x) = A \sin (Bx - C) + D.}$
-
-- Given a periodic function ${f(x) = A \sin (Bx - C) + D}$ or ${f(x) = A \sin (Bx - C) + D,}$ ${A}$ is the amplitude, ${2\pi/\abs{B}}$ is the period, ${C/B}$ is the phase shift, ${D}$ is the vertical shift, and ${\abs{A} = \frac{1}{2}\abs{\text{max} - \text{min}}}$ is the midline.
-
-- Given the tangent function ${f(x) = A \tan(Bx - C) + D,}$
-	- the stretch factor is ${\abs{A},}$
-	- the period is ${\pi / \abs{B},}$
-	- the domain is ${x \neq \dfrac{C}{B} + \dfrac{\pi}{2 \abs{B}k}}$ where ${k \in \mathbb{Z}^+,}$
-	- the range is ${(-\infty, \infty),}$
-	- ${D}$ is the horizontal shift,
-	- the vertical asymptotes occur at ${x = \dfrac{C}{B} + \dfrac{\pi}{2\abs{B}}k,}$ where ${k \in \mathbb{Z}^+,}$
-	- the amplitude does not exist, and
-	- ${f}$ is odd.
-
-- Given the secant function ${f(x) = A \sec(Bx - C) + D,}$
-	- the stretch factor is ${\abs{A},}$
-	- the period is ${\dfrac{2\pi}{\abs{B}}k}$
-	- the domain is ${x \neq \dfrac{C}{B} + \dfrac{\pi}{2\abs{B}}}$ where ${k \in \mathbb{Z}^+,}$
-	- The range is ${(-\infty, -\abs{A} + D] \cup [\abs{A} + D, \infty)}$
-	- The vertical asymptotes occur at ${x = \dfrac{C}{B} + \dfrac{\pi}{2\abs{B}}k,}$ where ${k}$ is an odd integer,
-	- The amplitude does not exist
-	- ${f}$ is an even function.
-
-- Given the cosecant function ${f(x) = A \sec(Bx - C) + D,}$
-	- the stretch factor is ${\abs{A},}$
-	- the period is ${\dfrac{2\pi}{\abs{B}}}$
-	- the domain is ${x \neq \dfrac{C}{B} + \dfrac{\pi}{\abs{B}}k}$ where ${k \in \mathbb{Z}^+,}$
-	- The range is ${(-\infty, -\abs{A} + D] \cup [\abs{A} + D, \infty)}$
-	- The vertical asymptotes occur at ${x = \dfrac{C}{B} + \dfrac{\pi}{\abs{B}}k,}$ where ${k}$ is an integer,
-	- The amplitude does not exist
-	- ${f}$ is an odd function.
-
-- Given the cotangent function ${f(x) = A \cot(Bx - C) + D,}$
-	- the stretch factor is ${\abs{A},}$
-	- the period is ${\dfrac{\pi}{\abs{B}}}$
-	- the domain is ${x \neq \dfrac{C}{B} + \dfrac{\pi}{\abs{B}}k}$ where ${k \in \mathbb{Z}^+,}$
-	- The range is ${(-\infty, \infty)}$
-	- The vertical asymptotes occur at ${x = \dfrac{C}{B} + \dfrac{\pi}{\abs{B}}k,}$ where ${k}$ is an integer,
-	- The amplitude does not exist
-	- ${f}$ is an odd function.
-
-## Algebra
-${(a + b)(a-b) = a^2 - b^2}$
-
-${a^2 + 2ab + b^2 = (a + b)^2}$
-
-~quadratic formula~. ${x = \dfrac{\pm \sqrt{b^2-4ac}}{2a} - \dfrac{b}{2a}}$
-
-Let ${Q}$ be a quadratic with discriminant ${d = \sqrt{b^2-4ac}.}$ If:
-
-1. ${d \gt 0,}$ then the roots are
-$$
-	x_1 = \dfrac{-b + \sqrt{b^2-4ac}}{2a}, \quad
-	x_2 = \dfrac{-b - \sqrt{b^2-4ac}}{2a}
-$$
-2. ${d \lt 0,}$ then the roots are
-$$
-	x_1 = \dfrac{-b + i\sqrt{|b^2-4ac|}}{2a}, \quad
-	x_2 = \dfrac{-b - i\sqrt{|b^2-4ac|}}{2a}
-$$
-
-
-Given the discriminant ${d = \sqrt{b^2-4ac}}$ of a quadratic ${Q,}$ if ${d \gt 0,}$ then ${Q}$ has two real roots, if ${d \lt 0,}$ then ${Q}$ has two complex roots, and if ${d = 0,}$ then ${Q}$ has one root.
+~~~
+for f in $(pgrep '𝐴'); do renice +20 -p $f; done
+~~~

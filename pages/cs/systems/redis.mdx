@@ -1,0 +1,138 @@
+<Head>
+	<title>Redis</title>
+	<meta name={`description`} content={`Notes on redis.`}/>
+</Head>
+
+# Redis
+_Notes on Redis._
+
+## Overview
+Redis is a key-value store. It's not necessarily a database because it lacks traditional notions of data persistence. However, because it often looks, walks, and quacks like a database, we'll treat it as such. That said, it's a peculiar database:
+
+1. Redis stores via RAM. If the host system crashes or shuts down, Redis-stored data dissipates.
+2. Because of point ${\px{1},}$ Redis is not used for persistent storage.
+3. Because of point ${\px{1},}$ Redis _much faster_ at reading and writing than traditional databases.
+
+From ${\px{1}-\px{3},}$ Redis is ideal for data with the following properties:
+
+1. Low cost of loss (i.e., does not require absolute persistence),
+2. frequently changing,
+3. frequent read/writes, or
+4. take a very long time to compute.
+
+~example~. Verification codes and JSON web tokens often have short lifespans. Storing them in traditional databases would require frequent database transactions for management.
+
+~example~. Group invitations on a chatting application usually have short enough lifespans that storing them in a database would be troublesome.
+
+## Architecture
+For most applications, Redis sits in front of a database:
+
+$$
+\sd{\tx{client}} \iff 
+\sd{\tx{server}} \iff
+\sd{\tx{Redis}} \iff
+\sd{\tx{database}}
+$$
+
+## Commands
+| Command        | Semantic                   |
+| -------------- | -------------------------- |
+| `redis-server` | Starts a Redis server      |
+| `redis-cli`    | Starts a Redis CLI session |
+| `quit`         | Ends the CLI session       |
+
+### Store a Key-value Pair
+~~~terminal
+$ SET name john
+OK
+$ GET name
+"john"
+~~~
+By default, all values in Redis are stored as strings.
+
+### Delete a Key
+~~~terminal
+$ DEL name
+(nil)
+~~~
+
+### Check if a Key Exists
+~~~terminal
+$ EXISTS name
+(integer) 0
+~~~
+
+### Delete Everything in Store
+~~~terminal
+$ flushall
+OK
+$ KEYS *
+(empty array)
+~~~
+
+### Expiration
+The `ttl` command tells us how long the key will last. A value of `-1` means that the key has no expiration.
+~~~terminal
+$ SET name sam
+OK
+$ ttl name
+(integer) -1
+~~~
+We can set expirations with the `expire` command. Below, the `name` key is set to expire in 10 seconds.
+~~~terminal
+$ expire name 10
+(integer) 1
+~~~
+Alternatively:
+~~~terminal
+$ setex name 10 sam
+OK
+~~~
+
+### Storing Arrays
+To store an array. Below, the line[1] makes a list called `tokens`, containing the value `01a94fa`. To get this list, we use the `lrange` command, followed by the starting index and the ending index. In this case, `0 -1` corresponds to obtaining every item in the list `tokens`.
+~~~terminal
+$ lpush tokens 01a94fa
+(integer) 1
+$ lrange tokens 0 -1
+1) 01a94fa
+~~~
+The command `lpush` will insert an element at the leftside of the array, and `rpush` will insert an element at the rightside of the array.
+
+#### Removing an Element
+To remove an element from an array use either `lpop` (remove from the leftside) or `rpop` (remove from the rightside).
+~~~terminal
+$ lpop tokens
+01a94fa
+~~~
+
+### Storing Sets 
+Sets are stores with entirely unique values. To store a set:
+~~~terminal
+$ sadd tokens ajc92a0
+(integer) 1
+~~~
+To read the values, we use `smembers`:
+~~~terminal
+$ smembers tokens
+1) ajc92a0
+~~~
+
+### Storing Hashes
+For Redis, a hash is a set of key-value pairs. To store hashes, we prefix commands with an `h`.
+~~~terminal
+$ hset jim name james
+$ hset jim age 28
+(integer) 1
+$ hget jim name
+jimmy
+$ hgetall jim
+1) name
+2) james
+3) age
+4) 28
+~~~
+This corresponds to an object that looks like:
+~~~typescript
+jim = { name: "jimmy", age: 26 }
+~~~

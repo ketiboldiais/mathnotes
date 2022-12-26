@@ -3,6 +3,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
+import remarkPrism from 'remark-prism';
 import remarkSectionize from "remark-sectionize";
 import remarkUnwrapImages from "remark-unwrap-images";
 
@@ -23,6 +24,7 @@ const withMDX = createMDX({
 		remarkPlugins: [
 			remarkUnwrapImages,
 			remarkSectionize,
+			remarkPrism,
 			[remarkMath, {
 				strict: false,
 				unicodeTextInMathMode: true,
@@ -299,8 +301,7 @@ const withMDX = createMDX({
 						"\\goto":"\\textup{goto}(\\textup{line}~{#1})",
 						"\\fun": "\\bf{function}}~~{\\tt{#1}}{\\ar{#2}",
 						"\\let":"{#1} \\gets {#2}",
-						"\\df":"\\textup{#1}",
-						"\\cv":"\\textmd{#1}",
+								
 						"\\if":"\\textup{if}~",
 						"\\then":"\\textup{then}~",
 						"\\else":"\\textup{else}~",
@@ -323,8 +324,10 @@ const withMDX = createMDX({
 						"\\dec":"\\texttt{-=}",
 
 						// fonts
-						"\\tx":"\\text{#1}",
-						"\\mo":"\\texttt{#1}",
+						"\\tx":"\\text{#1}", // regular Latin
+						"\\mo":"\\texttt{#1}", // monospace
+						"\\df":"\\textup{#1}", // smallcaps
+						"\\cv":"\\textmd{#1}", // cursive
 
 						// long division
 						"\\ldiv":"{#1}{\\overline{\\smash{\\big)}\\,{#2}}}",

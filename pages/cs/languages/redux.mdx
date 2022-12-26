@@ -4,91 +4,548 @@
 </Head>
 
 # Redux
-_Some notes on redux._
+_A note on Redux. The note assumes knowledge with React (for the examples) and TypeScript. I strongly advise using TypeScript with Redux. Bugs are much harder to catch with plain JavaScript and the Redux API._
+
+1. [Preliminary Remarks](#preliminary-remarks)
+2. [Overview](#overview)
+3. [Foundational Example](#foundational-example)
+4. [Array of Objects Example](#array-of-objects-example)
+5. [Thunks](#thunks)
+6. [createEntityAdapter](#createentityadapter)
+7. [createApi and fetchBaseQuery](#createapi-and-fetchbasequery)
+8. [injectEndpoints](#injectendpoints)
+
+## Preliminary Remarks
+- This note was written in 2021. As with all notes on frameworks, the likelihood of being outdated is high.
+- Redux is an example of a great framework poxed by jargon. The API could be greatly simplified if functions were more immediately indicative of what they did. For example, it's not immediately clear what `createSlice`, `configureStore`, and `createAsyncThunk` do. Contrast that with, say, `fopen` (file open), or `fclose` (file close). All this is to say that a significant hurdle to learning Redux is keeping track of its terminology. Accordingly, always check the Redux documentation for clarity.
 
 ## Overview 
-Redux is a state management framework. Because of the framework's complexity, we begin by analogizing to a judicial court.
+Redux is a state management library.
 
-
-### Court Analogy
-The court's job is to respond to __claimants__—entities that want a court to do something. Claimants give the court __claims__, and __judges__ returns a __decision__ for the claim based on __filings__ (a written argument) submitted by the claimant. 
-
-- Decisions are either __final__ or __nonfinal__.
-- If a decision is final, then the claim's is marked __inactive__.
-- Otherwise, the claim's is marked __active__.
-
-To submit a claim, claimants must submit a __form__ to a __clerk__—a court officer in charge of handling claim submissions. The form has two fields:
-
-1. A __type__ field, with three checkboxes:
-	- ${\ws}$ ~create~. File a new claim.
-	- ${\ws}$ ~collect~. Collect a filing maintained by the court.
-	- ${\ws}$ ~withdraw~. Voluntarily withdraw a claim (i.e., the claimant won't proceed with the claim any further).
-2. The __body__ field contains information expanding on the claim's type:
-	- The claimant's name
-	- If any, a filing (e.g., filing evidence or a written argument).
-	- Any other information the court needs.
-
-When the clerk receives a form, they make three copies of the form (denoted ~formcopy~) and submit them to three separate departments:
-
-1. __Archives__ manages a record of all the claims the court has ever received, active or inactive.
-2. __Docket__ manages a record of all active claims.
-3. __Filings__ manages a record of all the filings claimants submit.
-
-Because the court's judges need information from the three departments at any time, a staff called __Administration__.
-
-- Administration maintains an __master record__ of all department records. This record has three partitions:
-	1. A subrecord ~archives~ for the archives,
-	2. A subrecord ~docket~ for the docket, and a
-	3. A subrecord ~filing~ for filings.
-- When the judges need a particular piece of information, they call the Clerk's Office.
-
-As is, this system has a few problems:
-
-- The Clerk's Office can get out of sync. Perhaps the Docket officers get bogged down and fail to update their files at the Clerk's Office.
-- We don't want duplicate filings—they waste both time and resources. But we also don't want the Clerk's Office to have to check for duplicates. Their only job is to respond to the judge's requests for information.
-
-To mitigate these issues, we modify the filing clerk's procedure somewhat:
-
-- Before the filing clerk submits copies to the three separate departments, the filing clerk performs the following: 
-	1. Go to Administration.
-	2. Make a copy of ~archives~, ~docket~, and ~filings~.
-	3. Submit these subrecord copy alongside the ~formcopy~ to the respective department.
-
-We also modify each department's procedures as well when they receive their list-file copies:
-
-- For Archives: 
-	1. If ~formcopy~ is a ~create~ type.
-		- Attach ~formcopy~'s claim to ~archives~.
-	2. Return ~archives~ to the Clerk's Office. 
-- For Evidence:
-	1. If ~formcopy~ is a ~collect~ type:
-		- Give the claimant the requested filing.
-	2. If ~formcopy~ is a ~create~ type and the claimant is submitting evidence to the court:
-		- Attach the evidence to ~evidence~.
-	3. Return ~evidence~ to the Clerk's Office.
-- For Docket:
-	1. If ~formcopy~ is a ~create~ type:
-		- Attach the ~filing~'s claim to the ~docket~.
-	2. If ~formcopy~ is a ~withdraw~ type:
-		- Find ~formcopy~'s claim in ~docket~.
-		- Remove ~formcopy~'s claim from ~docket~.
-	3. Return ~docket~ to the Clerk's Office.
-
-Mapping the analogy to Redux terms:
+## Foundational Example
+- __~definition: state~.__ The set of all data in an application at a given time ${t.}$ The state consists of one or more partitions called _slices_.
+	- ~example~. 
+	~~~typescript
+	type count_state = {
+		count: number
+	}
+	~~~
+- __~definition: action~.__ An object ${A=\set{\mo{type}: s, \mo{payload}: d},}$ where ${s}$ is a string and ${d}$ is a set of data.
+	- ~example~.
+	~~~typescript
+	type action_add = {
+		type: 'update',
+		payload: { data: number }
+	};
+	type action_minus = {
+		type: 'minus',
+		payload: { data: number }
+	};
+	type count_action = action_add | action_minus;
+	~~~
+- __~definition: reducer~.__ A function ${r: A \to S,}$ where ${A}$ is the set of _actions_, and ${S}$ is the set of _states_. A reducer ${r}$ takes an action ${a}$ and returns a new state ${r(a) = s.}$
+	- ~example~. 
+	~~~typescript
+	const compute = (state:count_state, action: count_action) => {
+		if (action.type === 'add') {
+			state.count += action.payload.data;
+		}
+		else if (action.type === 'minus') {
+			state.count -= action.payload.data;
+		}
+		else return state;
+	}
+	~~~
+- __~definition: store~.__ A store is an object with two sets of key-value pairs: ${S}$ and ${R.}$ The set ${S}$ is a collection of _states_ and the set ${R}$ is the collection of their _reducers_.
+- ~example (react + typescript)~. Below is a file called `store.ts`.
+	- The global Redux state is created with `configureStore`.
+	- It has a reducer called `counter`.
+	- The `countSlice` is a substate of `store`.
+		- `countSlice` has four reducers, `up1`, `down1`, `upx`, `downx`.
+		- `counterSlice` has an initial state, `initialCounterState`.
+		- The `state` argument in `countSlice`'s reducers are of type `CountState`.
+			- _Note: The `CountState` annotation is unnecessary, as Redux will infer the type. It's included for clarity._
+	- Notice the `reducers` (plural) in `countSlice` and the `reducer` (singular) in the `store`. Internally, `createSlice` bundles all of the `countSlice`'s reducers into a single reducer function.
+	- The `createSlice` function has another key, `name`.
+		- The `name`'s value initiates the _action_ object's _type_ field.
+	~~~tsx
+	import { configureStore } from '@reduxjs/toolkit';
+	import { createSlice } from '@reduxjs/toolkit';
 	
-<Fig
-	link={"https://res.cloudinary.com/sublimis/image/upload/v1670443470/cs/redux_flow_l7qz67.svg"}
-	imwidth={568}
-	imheight={117}
-	width={70}
-/>
+	type CountState = {count: number};
+	type CountAction = PayloadAction<{x: number}>
+	
+	const initialCount = {
+		value: 0;
+	}
+	
+	const countSlice = createSlice({
+		name: 'counter',
+		initialState: initialCountState,
+		reducers: {
+			up1: (state: CountState)
+				=> state.value++,
+			down1: (state: CountState)
+				=> state.value--,
+			upx: (state: CountState, action: CountAction)
+				=> state.value += action.payload.x,
+			downx: (state: CountState, action: CountAction)
+				=> state.value += action.payload.x
+		}
+	})
+	
+	const store = configureStore({
+		reducer: {
+			counter: countSlice.reducer;
+		}
+	})
+	
+	export type RootState = ReturnType<typeof store.getState>;
+	export type AppDispatch = typeof store.dispatch;
+	export const {up1, down1, upx, downx} = countSlice.actions;
+	export { store };
+	~~~
+	- The file `index.tsx`. the `Provider` tag allows all nested code to access the store imported from `store.ts`.
+	~~~typescript
+	import App from `App.tsx`
+	import {Provider} from 'react-redux';
+	
+	ReactDOM.render(
+		<React.StrictMode>
+			<Provider store={store}>
+				<App/>
+			</Provider>
+		</React.StrictMode>
+	)
+	~~~
+	- Below is `App.tsx`.
+		- The `useSelector` function allows `App` to access the store.
+		- The `useDispatch` function allows `App` to call the reducer functions of store.
+	~~~tsx
+	import {useSelector, useDispatch, useState} from 'react-redux';
+	import {up1, down1, upx, downx, RootState} from './store.tsx'
 
-1. An __action creator__ is a function that returns a struct (or for those familiar with JavaScript, an object).
-2. That struct is called an __action__. 
-	- The struct has a __type__ key and a __payload__ key.
-	- The type key's value specifies the kind of change we want made.
-	- The payload key's value specifies the data necessary to making that change.
-3. Actions are received by a __dispatch__ — a function that makes copies of actions and collections of actions.
-4. The dispatch submits actions to __reducers__ — functions that (1) maintain collections for specific actions and (2) submit their collections to the __state__.
-5. The __state__ is the set of all collections submitted by the reducers.
-6. Everything in state is accessible to the application's components.
+	const App = () => {
+		const count = useSelector((state:RootState) => state.counter.value);
+		const dispatch = useDispatch();
+		const [x, setx] = useState(1);
+		return (
+			<div>
+				<p>{count}</p>
+				<button onClick={() => dispatch(up1())}>++</button>
+				<button onClick={() => dispatch(down1())}>--</button>
+				<input value={x} onChange={(e) => setx(e.target.value)}/>
+				<button onClick={() => dispatch(upx({x: Number(x)}))}>+x</button>
+				<button onClick={() => dispatch(downx({x: Number(x)}))}>-x</button>
+			</div>
+		)
+	}
+	
+	export default App;
+	~~~
+
+## Array of Objects Example
+- Below is store with a `posts` slice. The `posts` are arrays of objects.
+	- The `selectPosts` fucntion is called a _selector_. We can use it elsewhere to directly read the `posts` value of `postSlice`.
+	~~~tsx
+	import { configureStore } from '@reduxjs/toolkit';
+	import { createSlice } from '@reduxjs/toolkit';
+	
+	type Post = {
+		id: number;
+		title: string;
+		content: string;
+	};
+	type PostsState = {
+		posts: Post[]
+	};
+	type PostAction = PayloadAction<Post>;
+	
+	const initialPostState = {
+		posts: [
+			{id: 1, title: 'post1', content: 'hi'},
+			{id: 2, title: 'post2', content: 'bye'},
+		]
+	}
+	
+	const postSlice = createSlice({
+		name: 'postState',
+		initialState: initialPostsState,
+		reducers: {
+			addPost: (state, action: PostAction)
+				=> state.posts.push(action.payload),
+		}
+	});
+	
+	const selectPosts = (state: PostsState) => state.postState.posts;
+	
+	const store = configureStore({
+		reducer: {
+			posts: postSlice.reducer
+		}
+	})
+	~~~
+	
+## Thunks
+- `createAsyncThunk` is Reduxes for `make_async_action_creators`.
+- The definition of "thunk" is left as an exercise for the reader.
+- `createAsyncThunk` allows us to make asynchronous API call. 
+	- Takes two arguments:
+		1. A Redux action-type as a string ${S.}$
+			- The action type ${S}$ should lead to additional types that handle promise states.
+		2. a callback function ${f}$ that returns a promise.
+	- Returns an action-type's string value:
+		- ${f \mc \tx{fulfilled} \nc \lq S/\tx{fulfilled} \rq}$
+		- ${f \mc \tx{pending} \nc \lq S/\tx{pending} \rq}$
+		- ${f \mc \tx{rejected} \nc \lq S/\tx{rejected} \rq}$
+- The action-type strings returned from `createAsyncThunk` can then be stored in a `extraReducers` property.
+	- `extraReducers` allow a slice manager to respond to types outside what it usually expects.
+	- In the example below, the asynchronous `fetchPosts` returns a promise, which is outside what `postSlice` expects.
+	- By using `createAsyncThunk`, we give `postSlice` additional action types to respond to, _without_ having to modify the `Post` type definition.
+
+	~~~tsx
+	import { configureStore } from '@reduxjs/toolkit';
+	import { createSlice } from '@reduxjs/toolkit';
+	
+	type Post = {
+		id: number;
+		title: string;
+		content: string;
+	};
+	type PostsState = {
+		posts: Post[];
+		loading: 'idle' | 'pending' | 'succeeded' | 'failed';
+		error: null | string;
+	};
+	type PostAction = PayloadAction<Post>;
+	
+
+	const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
+		const response = await fetch('site.com/posts');
+		const data: Post[] = await response.json();
+		return data;
+	})
+
+	const initialPostState: PostsState = {
+		posts: [],
+		status: 'idle',
+		error: null
+	}
+	
+	const postSlice = createSlice({
+		name: 'postsState',
+		initialState: initialPostsState,
+		reducers: {
+			addPost: (state, action: PostAction)
+				=> state.posts.push(action.payload),
+		},
+		extraReducers: (builder) => {
+			builder.addCase(
+				fetchPosts.pending,
+				(state) => state.status='loading'),
+			builder.addCase(
+				fetchPosts.fulfilled,
+				(state, action) => {
+					state.status = 'succeeded'
+					const loadedPosts = {
+						state.posts.push(...action.payload)
+					}
+				})
+			builder.addCase(
+				fetchPosts.rejected,
+				(state, action) => {
+					state.error = action.payload.message;
+					state.status = 'idle';
+				}
+			)
+		}
+	});
+	
+	const selectPosts = (state) => state.postsState.posts;
+	const selectPostsStatus = (state) => state.postsState.status;
+	const selectPostsError = (state) => state.postsState.error;
+	
+	const store = configureStore({
+		reducer: {
+			posts: postSlice.reducer
+		}
+	})
+	~~~
+- The `builder` is just an object that generates three callback functions: `addCase`, `addMatcher`, and `addDefaultCase`.
+	- `addCase` will add a case to a switch statement.
+	- `addDefault` adds a default case to the switch statement.
+	- `addMatcher` is used to match incoming actions against a custom filter function.
+	- ~example~.
+	- Each of the `builder.addCase`s above can be expressed as:
+	~~~typescript
+	switch (state of promise) {
+		case fetchPosts.pending: 
+			...handle
+		case fetchPosts.fulfilled:
+			...handle
+		case fetchPosts.rejected:
+			...handle
+	}
+	~~~
+- In a component:
+	~~~tsx
+	import { useEffect } from 'react';
+	import { useDispatch, useSelector } from "react-redux";
+	import { fetchTodos } from "./fetchTodos";
+
+	export const GetPostsButton = () => {
+		const dispatch = useDispatch();
+		const getPosts = () => dispatch(fetchPosts());
+		const posts = useSelector(selectPosts);
+		const status = useSelector(selectPostsStatus);
+		const error = useSelector(selectPostsError);
+		
+		useEffect(()=>{
+			let content;
+			if (postStatus === 'loading') {
+				content = <li>loading</li>
+			}
+			else if (postStatus === 'error') {
+				content = <li>error</li>
+			}
+			else {
+				content = posts.map((post) => <li key={post.id}>post.content</li>)
+			}
+		},[]) 
+
+		return (
+			<ul>
+				<button type="button" onClick={getPosts}>GetPosts</button>
+				{content}
+			</ul>
+		)
+	};
+	~~~
+	
+## createEntityAdapter
+_This section assumes basic knowledge of relational databases_.
+
+- The `createEntityAdapter` is Reduxese for `make_crud_functions`.
+- It returns a set of prebuilt reducers and selectors equivalent to CRUD (create, read, update, delete) functions. This is especially useful for relational or nested data (in Reduxese, _normalized state structure_).
+- Below, the `createEntityAdapter` takes a configuration object.
+	- This object has two fields, `selectId` and `selectComparer`.
+		- `selectId`: The function used to focus on a row. The property used as an id must be unique.
+		- `sortComparer`: The 2-argument function used to sort the rows.
+- Following the `PostState` example below, the `createEntityAdapter` generates the following functions:
+	1. `addOne` - takes one `Post` and adds it not already present.
+	2. `addMany` - takes array of `Post`, inserts each if not already present.
+	3. `setOne` - takes one `Post` and adds/replaces it. 
+	4. `setMany` - takes array of `Post` and adds/replaces each.
+	5. `setAll` - takes array of `Post` and replaces all existing entities.
+	6. `removeOne` - Accepts a `Post` id, uses `selectId` to delete.
+	7. `removeMany` - Takes array of `Post` ids, uses `selectId` to delete all.
+	8 `removeAll` - Deletes all current posts in state.
+	9. `updateOne` - Accepts an object with a `Post` id, one or more property values in a changes field, and updates the corresponding `Post`.
+	10. `updateMany` - `updateOne` applied to each element in array.
+	11. `upsertOne` - Takes a `Post`, finds an existing post with the ID, merges fields into the exisiting post.
+	11. `upsertMany` - `upsertOne` applies to each element in array.
+	12. `selectIds` - Returns an array of post `id`s.
+	13. `selectEntities` - Returns the `Post` lookup table.
+	14. `selectAll` - Returns all posts.
+	15. `selectTotal` - Returns the total number of posts.
+	16. `selectById` - Returns the `Post` with the given id.
+	~~~tsx
+	import { configureStore } from '@reduxjs/toolkit';
+	import { createSlice } from '@reduxjs/toolkit';
+	
+	type Post = {
+		id: number;
+		title: string;
+		content: string;
+	};
+	type PostsState = {
+		posts: Post[];
+		loading: 'idle' | 'pending' | 'succeeded' | 'failed';
+		error: null | string;
+	};
+	type PostAction = PayloadAction<Post>;
+	
+
+	const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
+		const response = await fetch('site.com/posts');
+		const data: Post[] = await response.json();
+		return data;
+	})
+	
+	const postsAdapter = createEntityAdapter<Post>({
+		selectId: (post) => post.id,
+		sortComparer: (a,b) => a.title.localCompare(title);
+	})
+
+	const initialPostState: PostsState = {
+		posts: [],
+		status: 'idle',
+		error: null
+	}
+	
+	const postSlice = createSlice({
+		name: 'postsState',
+		initialState: initialPostsState,
+		reducers: {
+			addPost: (state, action: PostAction)
+				=> state.posts.push(action.payload),
+		},
+		extraReducers: (builder) => {
+			builder.addCase(
+				fetchPosts.pending,
+				(state) => state.status='loading'),
+			builder.addCase(
+				fetchPosts.fulfilled,
+				(state, action) => {
+					state.status = 'succeeded'
+					const loadedPosts = {
+						postsAdapter.addMany(...action.payload)
+					}
+				})
+			builder.addCase(
+				fetchPosts.rejected,
+				(state, action) => {
+					state.error = action.payload.message;
+					state.status = 'idle';
+				}
+			)
+		}
+	});
+	
+	const selectPosts = (state) => state.postsState.posts;
+	const selectPostsStatus = (state) => state.postsState.status;
+	const selectPostsError = (state) => state.postsState.error;
+	
+	const store = configureStore({
+		reducer: {
+			posts: postSlice.reducer
+		}
+	})
+	~~~
+- We can use the entity adapter's generated selectors instead of writing our own:
+~~~typescript
+export const {
+	selectAll: selectAllPosts,
+	selectById: selectPostId,
+	selectIds: selectPostIds
+} = postsAdapter.getSelectors(state => state.posts)
+~~~
+
+## createApi and fetchBaseQuery
+- Redux created further abstractions for asynchronous actions with `createApi` and `fetchBaseQuery`.
+- `fetchBaseQuery` is just a wrapper for `fetch`. It takes a configuration object with the following properties:
+	1. `baseUrl` - the web API's domain name. `createApi` will use this to build endpoints. E.g., if the API is `site.com`, a subsequent endpoint might be `site.com/posts`.
+	2. `prepareHeaders` - If this property is set, all HTTP requests sent will be injected with the headers set.
+	3. `jsonContentType` - Automatically sets all HTTP requests to have `content-type: application/json`.
+- Below, `createApi` is just another way to write `createAsyncThunk`.
+	- The `builder` notation is the same as that of `createAsyncThunk`.
+
+~~~tsx
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { configureStore } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+
+type Post = {
+	id: number;
+	title: string;
+	content: string;
+};
+type PostsState = {
+	posts: Post[];
+	loading: 'idle' | 'pending' | 'succeeded' | 'failed';
+	error: null | string;
+};
+type PostAction = PayloadAction<Post>;
+
+const apiSlice = createApi({
+	reducerPath: 'api',
+	tagTypes: ['Posts'],
+	baseQuery: fetchBaseQuery({baseUrl: 'site.com'}),
+	endpoints: (builder) => {
+		getPosts: builder.query({
+			query: () => '/posts',
+			providesTags: ['Posts']
+		}),
+		addPost: builder.mutation({
+			query: (postObject: Post) => {
+				url: '/posts',
+				method: 'POST',
+				body: postObject
+			},
+			invalidatesTags: ['Posts']
+		}),
+		deletePost: builder.mutation({
+			query: (postObject: Post) => {
+				url: '/posts',
+				method: 'DELETE',
+				body: postObject
+			},
+			invalidatesTags: ['Posts']
+		})
+	}
+})
+~~~
+- The `builder.query` function creates a function that sends `HTTP GET` requests.
+- The `builder.mutation` function creates a functions that send data updates to the server _and_ apply changes to the local cache. This is necessary to _invalidate_ the cache. If we do not invalidate the cache, we won't see changes to UI. To ensure that the respective caches are invalidated, we include `tagTypes: [posts]`.
+- `createApi` generates custom hooks:
+~~~typescript
+export const { useGetPostsQuery, useAddPost, useDeletePost } = apiSlice;
+~~~
+
+## injectEndpoints
+- The returned API object from `createApi` has an `injectEndpoints` method.
+- This allows us to insert additional endpoints to the API object's `endpoints` property.
+- For example:
+
+~~~tsx
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { configureStore } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+
+type Post = {
+	id: number;
+	title: string;
+	content: string;
+};
+type PostsState = {
+	posts: Post[];
+	loading: 'idle' | 'pending' | 'succeeded' | 'failed';
+	error: null | string;
+};
+type PostAction = PayloadAction<Post>;
+
+const apiSlice = createApi({
+	reducerPath: 'api',
+	tagTypes: ['Posts'],
+	baseQuery: fetchBaseQuery({baseUrl: 'site.com'}),
+})
+
+const postsApi = apiSlice.injectEndpoints({
+	endpoints: (builder) => {
+		getPosts: builder.query({
+			query: () => '/posts',
+			providesTags: ['Posts'],
+			transformResponse: responseData => {
+				// do something with response data
+				// before storing in posts state
+			}
+		}),
+		addPost: builder.mutation({
+			query: (postObject: Post) => {
+				url: '/posts',
+				method: 'POST',
+				body: postObject
+			},
+			invalidatesTags: ['Posts']
+		}),
+		deletePost: builder.mutation({
+			query: (postObject: Post) => {
+				url: '/posts',
+				method: 'DELETE',
+				body: postObject
+			},
+			invalidatesTags: ['Posts']
+		})
+	}
+})
+~~~

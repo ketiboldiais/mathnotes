@@ -4,7 +4,7 @@ const ra = "/real_analysis/";
 const cpa = "/complex-analysis/";
 const aba = "/abstract-algebra/";
 const geo = "/geometry/";
-const dp = "/design-patterns/";
+const dev = "/dev/";
 const proba = "/probability/";
 const lin = "/linear_algebra/";
 const com = "/combinatorics/";
@@ -30,8 +30,8 @@ const clang = "c/";
 const Routes = [
   { name: "Front Matter", path: "/" },
   { name: "Scratch", path: "/scratch" },
-  {
-    name: "Review of Mathematics",
+  { name: "Reference", path: `${math}/reference` },
+  { name: "Review of Mathematics",
     path: `${math}/preface`,
     children: [
       // { name: "Reference", path: `${math}/reference` },
@@ -231,6 +231,7 @@ const Routes = [
             children: [
               { name: "Application Layer", path: `${cs}${sys}osi-application-layer`, },
               { name: "Data Layer", path: `${cs}${sys}data_layer` },
+              { name: "Email Protocols", path: `${cs}${sys}email-protocols`, },
             ],
           },
           { name: "Databases",
@@ -238,6 +239,7 @@ const Routes = [
             children: [
               { name: "Relational Databases", path: `${cs}${sys}relational-databases` },
               { name: "Nonrelational Databases", path: `${cs}${sys}nonrelational-databases` },
+              { name: "Redis", path: `${cs}${sys}redis` },
             ],
           },
           { name: "Software Architecture", path: `${cs}${sys}software-architecture` },
@@ -300,6 +302,7 @@ const Routes = [
           { name: "Numeric Algorithms", path: `${cs}${dsa}dsa_numeric_algorithms` },
           { name: "Hash Tables", path: `${cs}${dsa}hash_tables` },
           { name: "Heaps", path: `${cs}${dsa}heaps` },
+          { name: "Bloom Filters", path: `${cs}${dsa}bloom-filters` },
           { name: "Sorting Algorithms", path: `${cs}${dsa}sorting-algorithms` },
           { name: "Recursion", path: `${cs}${dsa}recursion` },
           { name: "Caches", path: `${cs}${dsa}caches` },
@@ -418,6 +421,10 @@ const Routes = [
       // { name: "Metaprogramming: Templates", path: `${cs}${dsa}templates`, },
       // ],},
       // ]},
+      { name: "Development", path: `${cs}${dev}preface`, children: [
+        {name: "Git", path: `${cs}${dev}git`},
+        {name: "Docker", path: `${cs}${dev}docker`}
+      ]},
     ],
   },
 ];

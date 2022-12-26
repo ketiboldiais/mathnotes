@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
 
 /* Font Imports */
 	/* CMU Serif */
@@ -22,6 +22,12 @@
 		src: url("../public/fonts/serif_main_italics.woff")
 	}
 	@font-face {
+		font-family: "SANS_SERIF";
+		font-style: normal;
+		font-weight: normal;
+		src: url("../public/fonts/sans_serif_main.woff")
+	}
+	@font-face {
 		font-family: 'CMU Serif';
 		font-style: italic;
 		font-weight: normal;
@@ -41,9 +47,9 @@
 		}
 /* Root Variables */
 	:root {
-	--serif: "Crimson Pro", "Palatino Linotype";
+	--serif: "SERIF", "Palatino Linotype";
 	--sans_serif: avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-	--mono: Consolas, Monaco, Liberation Mono, "Lucida Console", monospace;
+	--mono: "Fira Code", Monaco, Liberation Mono, "Lucida Console", monospace;
 	/* --dark: rgb(190, 206, 209); */
 	--lightRed: #ffdada;
 	--red: rgb(196, 28, 28);
@@ -75,7 +81,7 @@
 	/* Core Colors */
 	/* --background-color: rgb(251,255,244); */
 	--background-color: white;
-	--text-color: black;
+	--text-color: rgb(56, 56, 56);
 	--nav-content-background-color: rgb(255, 255, 255);
 	--card: 1px 5px 9px 3px rgba(73, 73, 73, 0.659);
 
@@ -122,7 +128,7 @@
 /* Paragraphs and Block Quotes */
 	blockquote {
 		margin: 1% auto;
-		padding-left: 1em;
+		padding: 0 1em 0 1em;
 	}
 	blockquote p:first-child>strong>small:first-child {
 		font-weight: normal !important;
@@ -163,32 +169,34 @@
 		padding: 0;
 		padding-left: 0.95rem;
 	}
-	ul ol {
-		padding-left: 0.95rem;
+	:not(div.algo) ul li, :not(div.algo) ol li {
+		padding: 2px;
 	}
-	ul li {
+	:not(div.algo) ul ol {
+		padding-left: 1rem;
+	}
+	:not(div.algo) ul li {
 		list-style-type: "•  ";
-		padding-inline-start: 1ch;
 	}
-	ul ul li {
+	:not(div.algo) ul ul li {
 		list-style-type: "◽︎  ";
 		padding-inline-start: 1ch;
 	}
-	ul ul ul li {
+	:not(div.algo) ul ul ul li {
 		list-style-type: "+  ";
 		padding-inline-start: 1ch;
 	}
-	ul ol li {
+	:not(div.algo) ul ol li {
 		list-style-type: decimal;
 	}
-	ul ol ol li {
+	:not(div.algo) ol li li {
 		list-style-type: lower-alpha;
 	}
-	ul ol li li li {
+	:not(div.algo) ul ol li li li {
 		list-style-type: lower-roman;
 	}
-	ul li::marker {
-		font-size: 0.9em;
+	:not(div.algo) ul>li::marker {
+		font-size: 1.1em;
 	}
 /* Inputs */
 	input {
@@ -250,6 +258,12 @@
 		margin: 0; 
 		padding: 0;
 	}
+	h1,h2,h3,h4,h5,h6 {
+		font-weight: bold;
+		font-family: 'SANS_SERIF';
+		margin: 0; 
+		padding: 0;
+	}
 	h2+p,h3+p,h4+p,h5+p,h6+p { margin-top:0; }
 	h2+blockquote,h3+blockquote, h4+blockquote,h5+blockquote,h6+blockquote {
 		margin-top: -1% !important;
@@ -285,10 +299,6 @@
 			margin: -2% 0;
 		}
 		ul li p, ol li p {
-			padding: 0 !important;
-			margin: 0 !important;
-		}
-		ul li {
 			padding: 0 !important;
 			margin: 0 !important;
 		}
@@ -492,6 +502,11 @@
 		font-size: 1.1em;
 		border-bottom: solid thin lightgray;
 	}
+	div.algo pre {
+		margin: 0;
+		border-top: 0;
+		border-bottom: 0;
+	}
 	/* div.algo small { font-size: 1.1em; } */
 	div.algo p {
 		font-size: inherit;
@@ -522,9 +537,10 @@
 		font-family: var(--serif);
 		color: rgb(146, 171, 182);
 		font-style: italic;
-		font-size: inherit;
+		font-size: 0.75rem;
 		display: inline;
 		text-align: left;
+		line-height: 1.3rem;
 		width: max-content;
 		margin: 0;
 		padding: 0;
@@ -550,7 +566,9 @@
 	div.algo ul {list-style: none;}
 	div.algo ul {padding: 0; margin: 0;}
 	div.algo ul li {padding: 0; margin: 0;}
-	div.algo ul ul {padding: 0 1em; margin: 0; border-left: solid thin lightgrey;}
+	div.algo ul ul {
+		padding: 0 1em; margin: 0; border-left: solid thin lightgrey;
+	}
 	/* div.algo p:first-child span.textup {font-weight: 600;} */
 	/* div.algo p:first-child {font-variant: small-caps;} */
 	div.algo p:first-child {
@@ -572,6 +590,10 @@
 		line-height: 1.25;
 		text-align: justify;
 	}
+	.katex .texttt {
+		font-family: var(--mono);
+		font-size: 0.8rem;
+	}
 	.katex-display + p {
 		margin: 0 !important;
 	}
@@ -582,12 +604,8 @@
 /* Boxed Inline Code */
 	em code {
 		font-style: normal;
-		border: solid thin grey;
-		padding-left: 2px;
-		padding-right: 2px;
-		line-height: 0;
 	}
-	blockquote strong code {
+	blockquote stronkg code {
 		font-family: var(--serif);
 		font-size: inherit;
 		font-variant: normal;
@@ -595,30 +613,85 @@
 		border: none;
 		font-weight: bold;
 	}
-/* Pre Tag (Code Block) */
+/* SECTION Pre Tag (Code Block) */
+	:not(pre) code {
+		font-size: 0.85em;
+	}
 	code {
+		white-space: pre;
+		font-family: var(--mono);
+	}
+	pre {
+		padding: 0.5em 0.8em;
+		color: white;
+		background: rgb(45, 45, 45);
+		font-family: var(--mono);
+		font-size: 1em;
+		text-align: left;
+		white-space: pre;
+		word-spacing: normal;
+		word-break: normal;
+		word-wrap: normal;
+		line-height: 1.5;
+		-moz-tab-size: 2;
+		-o-tab-size: 2;
+		tab-size: 2;
+		-webkit-hyphens: none;
+		-moz-hyphens: none;
+		-ms-hyphens: none;
+		hyphens: none
+	}
+	pre code {
 		font-family: var(--mono);
 		font-size: 0.8em;
 	}
-	pre {
-		margin: 3% 5%;
-		font-family: var(--mono);
-		padding: 1% 0;
-		tab-size: 2;
-		line-height: 1.2 !important;
-		scrollbar-width: none;
-		white-space: pre-wrap;       /* Since CSS 2.1 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
-		border-top: solid thin lightgrey;
-		border-bottom: solid thin lightgrey;
-	}
+	.token.cdata,
+	.token.comment,
+	.token.doctype,
+	.token.prolog { color: #708090 }
+
+	.token.punctuation { color: rgb(181, 205, 209) }
+
+	.token.boolean,
+	.token.constant,
+	.token.deleted,
+	.token.number,
+	.token.property,
+	.token.symbol,
+	.token.tag { color: rgb(245, 168, 210) }
+
+	.token.attr-name,
+	.token.builtin,
+	.token.char,
+	.token.inserted,
+	.token.selector,
+	.token.string { color: rgb(176, 210, 107) }
+
+	.language-css .token.string,
+	.style .token.string,
+	.token.entity,
+	.token.operator,
+	.token.url { color: #ffe460; }
+
+	.token.atrule,
+	.token.attr-value,
+	.token.keyword { color: rgb(143, 211, 240) }
+	.token.class-name,
+	.token.function { color: #f38181 }
+
+	.token.important,
+	.token.regex,
+	.token.variable { color: rgb(255, 215, 140) }
+
+	.token.bold,
+	.token.important { font-weight: 700 }
+	.token.italic { font-style: italic }
+	.token.entity { cursor: help }
+
 	.grid-map-container pre {
 		border: solid thin lightgrey;
 		margin: 0 auto;
-		padding: 0.4em 1em;
+		padding: 1px 5px 6px 5px;
 	}
 /* Illus */
 	/* General */
@@ -818,11 +891,18 @@
 	}
 /* Media Queries */
 	@media (min-width:501px) {
-		html {font-size: 15px;}
+		html {font-size: 13px;}
 	}
-	@media (max-width: 500px) {
-		html {font-size: 9px;}
-		div.algo {width:95%}
+	@media (max-width: 400px) {
+		html {font-size: 11px;}
+		h1 + p + ol {
+			columns: 1;
+			font-size: 0.9rem;
+		}
+		div.algo {
+			width: 98%;
+			margin: 2px auto;
+		}
 		div.ltb table {
 			width: 100%;
 		}

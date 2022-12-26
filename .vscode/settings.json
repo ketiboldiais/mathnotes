@@ -1,7 +1,11 @@
 {
   "editor.wordWrap": "wordWrapColumn",
-  "workbench.colorTheme": "Gray Matter Light",
-  "editor.fontSize": 16,
+  "workbench.colorTheme": "Atom One Dark",
+  "editor.fontSize": 13,
+  "markdown.styles": ["Style.css"],
+  "files.associations": {
+    ".mdx":"markdown"
+  },
   "[markdown]": {
     "editor.wordWrap": "wordWrapColumn"
   },
@@ -12,14 +16,36 @@
       {
         "scope": "meta.embedded.block.katex markup.inserted.math.display.markdown markup.quote.markdown text.html.markdown foregroundmarkup.inserted",
         "settings": {
+          "fontStyle": "",
+          "foreground": "#58eeff"
+        }
+      },
+      {
+        "scope": "markup.fenced_code, markup.inline.raw.string",
+        "settings": {
+          "foreground": "#ebbf3b",
           "fontStyle": ""
         }
       },
       {
-        "scope": "markup.heading.markdown",
+        "scope": "markup.quote.markdown",
         "settings": {
-          "foreground": "#cb2b12",
-          "fontStyle": "bold"
+          "foreground": "#ebbf3b",
+          "fontStyle": ""
+        }
+      },
+      {
+        "scope": "markup.italic, punctuation.definition.italic",
+        "settings": {
+          "foreground": "#aaaaaa",
+          "fontStyle": "italic"
+        }
+      },
+      {
+        "scope": "entity.name.section.markdown, punctuation.definition.heading.markdown",
+        "settings": {
+          "foreground": "#68b2c1",
+          "fontStyle": "bold",
         }
       }
     ]

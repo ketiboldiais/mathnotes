@@ -8,4 +8,62 @@
 This chapter covers notes on categories, more generally providing an overview of
 _category theory_.
 
-## Foundational Definitions
+## Foundations
+We must be comfortable with this section's definitions before proceeding.
+
+### Function Composition
+Consider two functions:
+$$
+	f: A \to B \\
+	g: B \to C
+$$
+
+The function ${f}$ takes an ${A}$ and returns a ${B.}$
+The function ${g}$ takes a ${B}$ and returns a ${C.}$
+In some programming language (perhaps Haskell), we might write:
+
+~~~haskell
+f :: int => string
+g :: string => double
+~~~
+
+Composing the functions mathematically is elementary:
+
+$$
+(g \circ f)(x) = g(f(x))
+$$
+
+But not so much programatically. How do we express ${g \circ f}$ in
+a programming language? First, note that ${g \circ f}$ is just a name.
+Accordingly, we can give it another name, say, ${h:}$
+
+
+$$
+h(x) = g(f(x))
+$$
+
+Put this way, we have:
+
+~~~typescript
+let h = (x) => g(f(x))
+~~~
+
+What is `h`'s type? Well, `f` expects an `int`, so `x` must be an `int`.
+This `int` is passed to `f`, which returns a `string`, which is what `g` expects. Given that `string`, `g` returns a `double`. Hence, `h` is a function 
+that takes an `int` and returns a `double`.
+
+~~~haskell
+h :: int => double
+~~~
+
+Some Haskell-like language might implement direct support for this pattern:
+
+~~~haskell
+f :: int => string
+g :: string => double
+g . f
+~~~
+
+### Associativity
+### Commutativity
+### Distributivity

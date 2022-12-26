@@ -63,7 +63,8 @@ _This note is an overview of web security._
 		8. [Watch HTTP Status Codes](#watch-http-status-codes)
 		9. [Response Discrepancy Timing](#response-discrepancy-timing)
 		10. [Data Breaches](#data-breaches)
-9. [Server Security](#server-security)
+9. [Designing Servers](#designing-servers)
+	1. [Warning on Express](#warning-on-express)
 
 
 ## Definitions
@@ -109,7 +110,7 @@ The browser takes this URL and parses Billy's input string. Checks are made: If 
 ### DNS Lookup
 The browser engine takes the parsed string and executes a `getaddrinfo` call, corresponding to a DNS lookup.
 
-```
+```c
 struct addrinfo *lookup_host(char* host_name, char* port) {
 	struct addrinfo *server;
 	struct addrinfo hints;
@@ -189,7 +190,7 @@ $$
 
 If we used Firefox to visit `twitter.com`, the string would represent a request with the following format:
 
-~~~
+~~~http
 GET / HTTP/1.1
 Host: twitter.com
 User-agent: Mozilla/5.0
@@ -210,7 +211,7 @@ $$
 
 Using the same example of `twitter.com`, the response appears on our monitor as:
 
-~~~
+~~~http
 HTTP/1.1 200 OK
 Content-length: 9001
 Content-type: text/html; charset=UTF-8
@@ -349,7 +350,11 @@ Server submits a list of clients to a third party application ${X}$ (i.e., not t
 ~problem~. Certification applications are expensive and opaque—it's not always clear what they're doing with user data. The server process also has no control over security; everything rests on the third-party certification application. Certification applications also make traffic analysis difficult.
 
 ### Cookies
-A _cookie_ is a string isomorphic to ${k,v}$ where ${k}$ is a key and ${v}$ is a value. The key maps to a variable of the server process, and ${v}$ is the variable's value. For example, a website server might have a cookie field ${theme,}$ which sets the site's color theme (a color palette for styling). That field may have a default value of ${light}$ and an optional value ${dark.}$ If the default value is used, certain lines of CSS are served. If the user changes it to dark, different lines of CSS are served. If a server implements cookie functionality, it sends the browser an initial cookie. When the browser sends responses, it includes these cookies for the server to use. The server then watches for PUT or POST requests that potentially modify the cookies. If these modifications are found, the server returns a modified cookie for the browser to attach on subsequent requests.
+> __~definition: cookie~.__ A _cookie_ is a string isomorphic to ${k,v}$ where ${k}$ is a key and ${v}$ is a value. The key maps to a variable of the server process, and ${v}$ is the variable's value.
+ 
+~example~. A web server might have a cookie field ${theme,}$ which sets the site's color theme (a color palette for styling). That field may have a default value of ${light}$ and a alternative value of ${dark.}$ If the default value is used, certain lines of CSS are served. If the user changes it to dark, different lines of CSS are served.
+
+If a server implements cookie functionality, it sends the browser an initial cookie. When the browser sends responses, it includes these cookies for the server to use. The server then watches for PUT or POST requests that potentially modify the cookies. If these modifications are found, the server returns a modified cookie for the browser to attach on subsequent requests.
 
 By maintaining cookies for each unique session (on the browser side), the server can (1) tailor the files served according to that user's preferences, (2) persist that particular user's data overtime, while (3) remaining stateless. This is how we stay logged in on websites even when we close a tab, and how shopping carts retain their contents when we log out or shut down for the day. I.e., creating the illusion of a _stateful server_.
 
@@ -368,7 +373,7 @@ Setting the `Expire` field does not necessarily have to be a date far off into t
 
 > __`Domain`.__ Scopes the cookie to a domain broader than the domain returned by the HTTP Response's `Set-Cookie` header. E.g., `login.illinois.edu` sets a cookie for `illinois.edu`. This allows the server to use the cookie for `login.illinois.edu` in handling requests for `illinois.edu`. The alternative to achieving the same effect is maintaining a shared cookie object.
 
-> __`Secure`.__ If the string ${\mo{Secure}}$ is included in the `Set-Cookie` string, cookies will only be transmitted to and from the server of HTTP connections.
+> __`Secure`.__ If the string ${\mo{Secure}}$ is included in the `Set-Cookie` string, cookies will only be transmitted to and from the server over HTTPS connections.
 
 ~remark~. `Secure` should always be included in cookie transmissions. Moreover, HTTPS should be used for all client-server HTTP communications. Given how sophisticated packet sniffing and MITM (Man-in-the-middle) attacks have become today—as well as certain grey areas over the legality of sniffing free WiFi networks (it may be permissible under some circumstances)—we must have highly compelling reasons for using HTTP over HTTPS.
 
@@ -917,7 +922,7 @@ __~polymorphic functions~.__ Functions that decide what to do based on the type 
 ### Warning on Express
 ~example~. Node's ~express~ module uses a construct called _middleware._ The syntactic structure:
 
-~~~
+~~~typescript
 // Middleware A
 function A(req, res, next) {
 	// code

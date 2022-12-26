@@ -1,0 +1,51 @@
+<Head>
+	<title>Email Protocols</title>
+	<meta name={`description`} content={`Notes on email protocols.`}/>
+</Head>
+
+# Email Protocols
+_Notes on email protocols._
+
+## Overview
+- Email workflow:
+	$$
+	\sd{\tx{user agent}}
+	- {\tx{SMTP}} \to
+	\sd{\tx{sender's mail server}}
+	- {\tx{SMTP}} \to
+	\sd{\tx{recipient's mail server}}
+	- {\tx{POP3 or IMAP}} \to
+	\sd{\tx{user agent}}
+	$$
+- __*User agents*__ are the applications that allow users to create, read, update, and delete email.
+	- Some user agents are GUI-based: Outlook, Apple's Mail, Eudora, etc.
+	- Others are text-based: Pine, Elm, etc.
+- __*Mail servers*__ are the applications that store incoming mail and send outgoing mail along the network.
+- Email requires two protocols to operate:
+	1. __*Simple Mail Transfer Protocol (SMTP)*__ specifies how users (user agents) send email messages and attachments to one another.
+	2. And either of: __*Post Office Protocol (POP)*__ and __*Internet Message Access Protocol (IMAP)*__, which specify how clients retrieve emails from an email server.
+- SMTP is a _push protocol_ — it can only be used to _post_ messages.
+- To get emails, we need a _pull protocol_ — a protocol that can be used to _get_ messages.
+	- Protocols include: POP3, HTTP, and IMAP.
+
+## POP3
+- Runs on TCP Port 110.
+- There are two modes:
+	1. _DDM (Download and Delete Mode)_
+		- User gets messages on the server and stores locally. 
+		- Server deletes messages once retrieved.
+	2. _DKM (Download and Keep Mode)_
+		- User gets messages on the server and store locally.
+		- Server _does not_ delete messages.
+- POP3 is a thin protocol with limited functionality.
+	- In DDM mode, If the user downloads mail, they must backup important mail because they no longer exist on the server.
+	- In DDK mode, the user must redownload all their mail for new machines.
+
+## IMAP 
+- IMAP came about because of POP3's limitations.
+- Mail is not downloaded, but kept on the server.
+- Received email is stored in an _inbox_ identified with the user.
+- Users can:
+	- create and manage remote folders.
+	- retrieve portions of email (e.g., subject line, sender, body, etc.)
+
