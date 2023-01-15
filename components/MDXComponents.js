@@ -16,8 +16,6 @@ const MDXComponents = {
 				<Image
 					{...props}
 					alt={props.alt}
-					layout="fill"
-					objectFit="contain"
 				/>
 			</figure>
 		</div>

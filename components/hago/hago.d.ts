@@ -215,7 +215,7 @@ export declare interface BoardProps {
     width: number;
     height: number;
     cwidth: number;
-    cheight: number;
+    cheight?: number;
     margins: number[];
     children?: ReactNode;
 }
@@ -1250,26 +1250,6 @@ export declare interface PathProps {
 }
 
 export declare const Plot: ({ data, className, id, sc, xs, ys, domain, range, ticks, xTicks, yTicks, axesLabels, samples, width, height, wh, scale, cwidth, cheight, m, marginTop, marginRight, marginBottom, marginLeft, margins, }: PlotProps) => JSX.Element;
-
-export declare function Plot3D({ cameraParams, z, segments, xMin, gridColor, xMax, xRange, yMin, yMax, yRange, scale, size, }: {
-    cameraParams?: {
-        fov: number;
-        position: number[];
-        near: number;
-        far: number;
-    };
-    z: any;
-    segments?: number;
-    xMin?: number;
-    gridColor?: string;
-    xMax?: number;
-    xRange?: number;
-    yMin?: number;
-    yMax?: number;
-    yRange?: number;
-    scale?: number;
-    size?: number[];
-}): JSX.Element;
 
 /**
  * @public

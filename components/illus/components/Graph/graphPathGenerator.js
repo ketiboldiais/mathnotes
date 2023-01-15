@@ -1,13 +1,13 @@
 import { nodeContainsLoop } from "./nodeContainsLoop";
 
 export const graphPathGenerator = (d) => {
-	const x1 = d.source.x;
-	const y1 = d.source.y;
-	const x2 = d.target.x;
-	const y2 = d.target.y;
-	const dx = x2 - x1;
-	const dy = y2 - y1;
-	const dr = Math.sqrt(dx * dx + dy * dy);
+	let x1 = d.source.x;
+	let y1 = d.source.y;
+	let x2 = d.target.x;
+	let y2 = d.target.y;
+	let dx = x2 - x1;
+	let dy = y2 - y1;
+	let dr = Math.sqrt(dx * dx + dy * dy);
 	// Set the defaults for a normal edge
 	let drx = dr;
 	let dry = dr;

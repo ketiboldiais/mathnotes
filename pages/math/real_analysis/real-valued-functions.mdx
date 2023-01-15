@@ -54,11 +54,31 @@ Below is a quick overview of the different function
 types. The function types can also be viewed from a
 procedural perspective. Suppose ${f:A \mapsto B}$ where ${b \in B.}$ Saying that ${f}$ is _injective_ is akin to: "There is _at most one way_ to reach the result ${b.}$" When we say that ${f}$ is _surjective_: "There is _at least one way_ to reach the result ${b.}$ And _bijective_: "There is _exactly one way_ to reach the result ${b.}$
 
-|            | ${f: x \in \X \mapsto y \in \Y}$ | ~notation~         | ~leeway~                                                            |
-| ---------- | -------------------------------- | ------------------ | ------------------------------------------------------------------- |
-| injective  | ${y}$ mapped to _at most once_   | ${f: \X \inj \Y}$  | some ${y}$ are not mapped to                                        |
-| surjective | ${y}$ mapped to _at least once_  | ${f: \X \surj \Y}$ | some ${y}$ are mapped to more than once (but not by the same ${x}$) |
-| bijective  | ${y}$ mapped to _exactly once_   | ${f: \X \bij \Y}$  | none; unique ${x}$ to unqiue ${y}$                                  |
+<Grid cols={3}>
+
+| __Injective__                  |
+| ------------------------------ |
+| ${y}$ mapped to _at most once_ |
+| ${f: \X \inj \Y}$              |
+| some ${y}$ are not mapped to   |
+
+
+| __Surjective__                                                      |
+| ------------------------------------------------------------------- |
+| ${y}$ mapped to _at least once_                                     |
+| ${f: \X \surj \Y}$                                                  |
+| some ${y}$ are mapped to more than once (but not by the same ${x}$) |
+
+
+| __Bijective__                      |
+| ---------------------------------- |
+| ${y}$ mapped to _exactly once_     |
+| ${f: \X \bij \Y}$                  |
+| none; unique ${x}$ to unqiue ${y}$ |
+
+</Grid>
+
+
 
 ### Function Composition
 > __~function composition~.__ Let ${f}$ and ${g}$ be functions. The _composition_ of ${f}$ and ${g,}$ denoted ${f \wc g,}$ is defined as ${(f \wc g)(x) = f(g(x)),}$ where ${\dom{f \wc g} = \set{x \in \dom{g} : g(x) \in \dom{f}}.}$

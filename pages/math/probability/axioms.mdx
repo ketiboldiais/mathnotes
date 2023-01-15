@@ -10,119 +10,139 @@ import { BarPlot } from "../../../components/illus/components/BarPlot/BarPlot";
 
 _These notes provide an overview of probability._
 
-1. [Primitives](#primitives)
-   1. [Set Notation](#set-notation)
-   2. [Theorems of Set Theory](#theorems-of-set-theory)
-   3. [Definitions](#definitions)
+1. [Models](#models)
+   1. [When is a Model Correct?](#when-is-a-model-correct)
+   2. [How Do We Verify a Model?](#how-do-we-verify-a-model)
+2. [What is an Outcome?](#what-is-an-outcome)
+3. [What is an Event?](#what-is-an-event)
+4. [What is a probability?](#what-is-a-probability)
+   1. [What is a Discrete Sample Space?](#what-is-a-discrete-sample-space)
+   2. [`P{A xor B}`](#pa-xor-b)
+   3. [`P{A or B}`](#pa-or-b)
+5. [Probability Distribution](#probability-distribution)
+6. [Enumerating Events](#enumerating-events)
+   1. [Sequence](#sequence)
+      1. [Counting Sequences](#counting-sequences)
+   2. [Permutation](#permutation)
+      1. [Counting Permutations](#counting-permutations)
+   3. [Combinations](#combinations)
+7. [Classical Theorems](#classical-theorems)
+   1. [Uniform Distribution](#uniform-distribution)
+   2. [Probability of an Event](#probability-of-an-event)
+   3. [Probability of ${\\bm{A}}$ or ${\\bm{B}}$](#probability-of-bma-or-bmb)
+   4. [Conditional Probability](#conditional-probability)
+   5. [Independent Events](#independent-events)
+8. [Random Variables](#random-variables)
+   1. [Functions of Random Variables](#functions-of-random-variables)
+   2. [Discrete vs. Continuous Random Variables](#discrete-vs-continuous-random-variables)
+   3. [Probability Mass Function](#probability-mass-function)
+   4. [Expected Value](#expected-value)
 
-## Primitives
-Broadly, probability comprises three types: (1) _classical probability_ —
-probability theory premised on a finite number of equally likely possible
-outcomes. E.g., What is the probability of pulling an ${(\tx{ace}, \spades)}$
-from a standard deck? (2) _frequentist probability_ — probability theory
-premised on the limits of long-run experiments. E.g., What is the probability
-of hitting a bull's eye on a dart board? (3) _subjective probability_ —
-probability theory premised on subjective interpretations of conclusions from
-the previous two types.
+## Models
+> __Definition: Axiom.__ A statement accepted as true without proof.
 
-### Set Notation
-We begin with some set notation we will use extensively.
+> __Definition: Model.__ A set of axioms that describe an object.
+ 
+_Note_. The object described by a model may be abstract (i.e., perceived only within our minds) or real (i.e., a real-world phenomenon that we can perceive with some sense).
 
-> __~notation~.__ Given the non-empty set ${A}$ and the non-empty set ${B,}$ we define the following notations:
->
-> | ~notation~                      | ~meaning~                                                                                                                                                                          |
-> | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-> | ${a \in A}$                     | ${a}$ is an element of ${A.}$                                                                                                                                                      |
-> | ${b \in B}$                     | ${b}$ is an element of ${B.}$                                                                                                                                                      |
-> | ${A \cup B}$                    | ${\set{x : x \in A ~\tx{ or }~} x \in B}$                                                                                                                                          |
-> | ${A \cap B}$                    | ${\set{x : x \in A ~\tx{ and }~} x \in B}$                                                                                                                                         |
-> | ${A \rid B}$                    | ${\set{x : x \in A ~\tx{ and }~} x \notin B}$                                                                                                                                      |
-> | ${A \dif B}$                    | ${\set{x : x \in A ~\tx{ xor }~} x \in B}$                                                                                                                                         |
-> | ${\nix{A}}$                     | ${\set{x : x \notin A}}$                                                                                                                                                           |
-> | ${A \subset B}$                 | If ${x \in A,}$ then ${x \in B.}$                                                                                                                                                  |
-> | ${A \not\subset B}$             | If ${x \in A,}$ then ${x \notin B.}$                                                                                                                                               |
-> | ${A = B}$                       | If ${x \in A,}$ then ${x \in B,}$ and if ${x \in B,}$ then ${x \in A.}$                                                                                                            |
-> | ${A \neq B}$                    | If ${x \in A,}$ then ${x \notin B,}$ and if ${x \in B,}$ then ${x \notin A.}$                                                                                                      |
-> | ${A \subseteq B}$               | ${A \subset B}$ or ${A = B.}$                                                                                                                                                      |
-> | ${\abs{A}}$                     | The number of elements of ${A.}$                                                                                                                                                   |
-> | ${\abs{B}}$                     | The number of elements of ${B.}$                                                                                                                                                   |
-> | ${f: A \leftrightsquigarrow B}$ | A set ${f,}$ whose elements are pairs ${(a,b),}$ where ${a \in A}$ and ${b \in B,}$ such that ${(a,b)}$ satisfies a condition ${C.}$ We call this set a _relation_.                |
-> | ${f: A \mapsto B}$              | A relation ${f,}$ where the condition ${C}$ is: For all ${a \in A}$ and for all ${b_1,b_2 \in B,}$ if ${(a,b_1) \in f,}$ then ${(a,b_2) \notin f.}$ We call this set a _function_. |
-> | ${f: A \inj B}$                 | A function ${f}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _at most once_. We call this set an _injection_.                          |
-> | ${f: A \surj B}$                | A function ${f,}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _at least once_. We call this set a _surjection_.                        |
-> | ${f: A \bij B}$                 | A function ${f,}$ with the added condition that: For all ${b \in B,}$ ${b}$ is paired with an ${a \in A}$ _exactly once_. We call this set a _bijection_.                          |
-> | ${\ar{a \le i \le b : P(x_i)}}$ | The sequence ${(x_a, \ldots, x_b)}$ where each ${x_i}$ is defined by the expression ${P(x_i).}$                                                                                    |
-> | ${\ix{n}}$                      | The sequence ${(0 \le i \lt n : x_i).}$ That is, ${(0,1,2,3,4,\ldots,n-1).}$                                                                                                       |
+_Example_. The Perfect Gas Law is a model of how the pressure ${P,}$ volume ${V,}$ and temperature ${T}$ of a given gas are related: ${PV = RT,}$ where ${R}$ is the gas constant.
 
-### Theorems of Set Theory
-Below is a list of several useful theorems from set theory.
+_Example_. Set theory is a model of how collections called _sets_ can be used to provide the foundations of mathematics.
 
-| ~reference~        | ~theorem~                                  |
-| ------------------ | ------------------------------------------ |
-| Identity Law 1     | ${A \subseteq U \iff A \cap U = L}$        |
-| Identity Law 2     | ${A \subseteq U \iff A \cap \nil = A}$     |
-| Identity Law 3     | ${A \subseteq U \iff A \dif \nil = A}$     |
-| Identity Law 4     | ${A \subseteq U \iff A \rid \nil = A}$     |
-| Indempotence Law 1 | ${S \cup S = S}$                           |
-| Indempotence Law 2 | ${S \cap S = S}$                           |
-| Nilpotence Law 1   | ${S \dif \nil = \nil}$                     |
-| Nilpotence Law 2   | ${S \rid S = \nil}$                        |
-| Domination Law 1   | ${S \subseteq U \nc S \cup U = U}$         |
-| Domination Law 2   | ${S \subseteq U \nc S \cap \nil = \nil}$   |
-| Domination Law 3   | ${S \subseteq U \nc S \times \nil = \nil}$ |
-| Domination Law 4   | ${S \subseteq U \nc \nil \rid S = \nil}$   |
+### When is a Model Correct?
+A model is _correct_ if it cannot prove ${p \land \neg p.}$ That is, the model is _free of_, and _avoids_, contradictions. The process of checking whether this requirement is met is called _verification_.
 
-### Definitions
-Below are definitions used extensively throughout the notes.
+### How Do We Verify a Model?
+In mathematics, we verify models with the rules of _mathematical logic_ (which are themselves models, but that's a topic for another day). Models subject to the rules of mathematical logic are called _mathematical models_.
 
-> __~experiment~.__ An _experiment_ is any procedure that (1) can be repeated, and (2) has a well-defined set of all possible outcomes.
+Models that have been verified often earn the postfix “theory” or the prefix “the laws of.” For example: Set Theory, Number Theory, Complexity Theory, etc. This usage of “theory” is different from “scientific theory.” Scientific theories are akin to _hypotheses_ or _conjectures_ in mathematics. Where ${x}$ is some noun, the syntax “${x}$ theory” in mathematics is akin to “the laws of ${x}$” in the sciences. This outline focuses on one particular theory, _probability theory_.
 
-> __~sample space~.__ A _sample space_ is the set of all possible outcomes of an experiment. We denote a sample space with the symbol ${\Omega.}$
+Theories are what we use to create further models. For example: Models subject to _the laws of geometry_ are called _geometric models_. Models subject to _number theory_ are called _number theoretic models_. And for our purposes: Models subject to probability theory are called _probabilistic models_.
 
-~example~. Coin toss: ${\set{H, T}.}$
+## What is an Outcome?
+> __Definition: Outcome.__ An _outcome_, or _sample point_, is the simplest object in a probabilistic model—it is an entity that cannot be simplified further.
 
-~example~. Toss a coin twice: ${\set{H, T} \times \set{H, T}.}$ Or, more explicitly, the set of tuples ${\set{(H,H)~(H,T)~(T,H)~(T,T)}.}$
+In other words, a _outcome_ is (1) where a probabilistic model starts, and (2) where a probabilistic model ends. What the point _represents_ is entirely up to us. It could be a person, a number, a fruit, a cat, whatever. The key idea is that a sample point is _axiomatic_—it's a guard rail, beyond which is infinite descent: What’s an ${x}$? An ${x}$ is a ${y.}$ What’s a ${y}$? A ${y}$ is a ${z.}$ What’s a ${z}$? A ${z}$ is a ... Without the sample point, we’d get nowhere.
 
-~example~. Roll a die: ${\set{1,2,3,4,5,6}.}$
+## What is an Event?
+> __Definition: Event.__ An _event_ is a set of outcomes.
 
-~example~. Roll two dice: ${\set{1,2,3,4,5,6} \times \set{1,2,3,4,5,6}.}$
+That is all an event is—a set of outcomes. Keeping the definition bare simple gives its user more flexibility. For basic probability, it’s easiest to think of an event as a set of outcomes from running an _experiment_.
 
-~example~. Timing Olympic runners: ${\oio{a}{b}}$ (some open interval). The previous examples are instances of _discrete sample spaces_. This is an example of _continuous sample space_. In all experiments (especially this one), we must get the sample space right. Missing just one outcome will almost always result in a bogus analysis.
+> __Definition: Experiment.__ An experiment is a procedure that can be infinitely repeated, with each result corresponding to an outcome in a well-defined set.
 
-~example~. Selecting a ${1024 \times 1024}$ black and white image: ${\abs{S}=1024\times 1024 \times 256}$ (assuming 1 byte per pixel). Discrete does not mean "small" or "easier."
+The phrase _well-defined_ is short for “no surprises” or “unambiguous.” Saying that ${A}$ is the well-defined set ${\set{0,1}}$ is equivalent to saying: “Whenever you look inside ${A,}$ you'll always find ${0}$ and ${1,}$ nothing else.“ On the other hand, the set ${B=\set{0,1,\sqrt{4}}}$ is not well-defined, because ${\sqrt{4}}$ has two possible values: ${-2}$ or ${2.}$ We coud look inside ${B}$ and find ${\set{0,1,2}}$ and then later find ${\set{0,1,-2}.}$
 
-> __~event~.__ A subset of the sample space — ergo an outcome set — is called an _event_. By definition, we say that the result of an experiment is an _event_. We denote events in uppercase Latin letters.
-
-~example~. Rolling an even number on a die. The sample space is ${\set{1,2,3,4,5,6},}$ the event is ${\set{2,4,6}.}$
-
-~example~. Rolling a ${-1}$ on a die. The sample space is ${\set{1,2,3,4,5,6},}$ the event is ${\nil.}$
-
-> __~simple event~.__ An event comprising just one outcome is called a _simple event_.
-
-Simple events are also called _samples_, _sample points_, or _points_.
-
-> __~compound event~.__ An event comprising two or more outcomes is called a _compound event_.
-
-
-
-> __~event notations~.__ Given the events ${A}$ and ${B}$ of a sample space ${\Omega,}$ we use the following notations to denote compound events of ${A}$ and ${B:}$
->
-> | ~notation~      | ~event~               |
-> | --------------- | --------------------- |
-> | ${A \cup B}$    | ${A}$ _or_ ${B}$      |
-> | ${A \cap B}$    | ${A}$ _and_ ${B}$     |
-> | ${\nix{A}}$     | _not_ ${A}$           |
-> | ${A \subset B}$ | ${A}$ _implies_ ${B}$ |
-> | ${A \dup B}$    | ${A}$ _xor_ ${B}$     |
-> | ${\Omega}$      | certainly             |
-> | ${\nil}$        | certainly not         |
-
-> __~probability~.__ Let ${E}$ be an event where ${E \subset \Omega.}$ The _probability_ of ${E,}$ denoted ${\pb{E},}$ is a ratio of the cardinality of ${E}$ to the cardinality of ${\Omega.}$ That is,
+_Example_. Tossing a coin is an experiment with two events:
 
 $$
-	\pb{E} = \frac{\tx{number of outcomes in } E}{\tx{number of outcomes in } \Omega}
-	= \frac{\abs{E}}{\abs{\Omega}}.
+\set{\set{H}, \set{T}}
 $$
+
+The sample points are ${H}$ and ${T.}$ The events are ${\set{H}}$ and ${\set{T}.}$ The set of possible outcomes is the set of all events: ${\set{\set{H}, \set{T}}.}$ We call this set the __*sample space*__.
+
+> __Definition: Sample Space.__ Let ${E}$ be an experiment. The sample space of ${E,}$ denoted ${\Ss_E,}$ or, if unambiguous, ${\Ss,}$ is the set of all events resulting from ${E.}$
+
+Why are events defined as sets of sample points instead of the sample points themselves? Because the outcomes of an experiment aren't necessarily the simplest objects. Consider the following experiment, written in some pseudocode.
+
+~~~tsx
+1. let result = []
+2. let toss1 = tossCoin()
+3. result.insert(toss1)
+4. let toss2 = tossCoin()
+5. result.insert(toss2)
+~~~
+
+What are the possible values of `result`? We can have `[H,T]`, `[H,H]`, `[T,H]`, and `[T,T]`. These are the outcomes of the experiment, but they aren't sample points! Why aren't they sample points? Because each outcome can be simplified further: `H` or `T` for the first toss, and `H` or `T` for the second toss. Remember that sample points are entities that cannot be further simplified.
+
+| Result  | Reduction           |
+| ------- | ------------------- |
+| `[H,H]` | `{(1,H)} ∪ {(2,H)}` |
+| `[H,T]` | `{(1,H)} ∪ {(2,T)}` |
+| `[T,H]` | `{(1,T)} ∪ {(2,T)}` |
+| `[T,T]` | `{(1,T)} ∪ {(2,T)}` |
+
+Thus, for any given run of the experiment, we get a set, not an element. It follows that for any given experiment, an event is a _subset_ of the sample space.
+
+## What is a probability?
+A probability is a special kind of ratio:
+
+> __Definition: Probability.__ Let ${E}$ be an experiment with some event ${A}$ and a sample space ${\Ss.}$ The _probability_ of ${A}$ is a ratio ${\pb{A} = \card{A}/\card{\Ss},}$ where ${\card{A}}$ is the number of outcomes in ${A,}$ and ${\card{\Ss}}$ is the number of all possible outcomes of ${E.}$
+
+We say special because it has a few more properties that separate it from other ratios:
+
+> __Normalization Axiom.__ The probability of a sample ${S}$ is always 1: ${\pb{\Ss}=1.}$ By implication, ${\pb{\nil} = 0.}$
+
+> __Nonnegativity Axiom.__ All probabilities are nonnegative.
+
+> __Nonnnegativity Corollary.__ Because of the normalization axiom and the nonnegativity axiom, the probability of an event ${A}$ in the sample space ${\Ss}$ is always less than or equal to ${1.}$ I.e., ${0 \le \pb{A} \le 1.}$
+
+> __Additivity Axiom.__ Given events ${A}$ and ${B,}$ if ${A \cap B = \nil}$ (that is, ${A}$ and ${B}$ share no outcomes), then ${\pb{A \cup B} = \pb{A} + \pb{B}.}$
+
+Below are notations we'll use extensively. Assume ${A}$ and ${B}$ are events.
+
+| Notation                    | Meaning                                            |
+| --------------------------- | -------------------------------------------------- |
+| ${\pb{A}}$                  | The probability of ${A}$                           |
+| ${\pb{A^c}}$                | The probability of all outcomes not in ${A}$       |
+| ${\pb{A \cup B}}$           | The probability of ${A}$ _or_ ${B}$ _or_ both      |
+| ${\pb{A \dup B}}$           | The probability of ${A}$ _or_ ${B}$ _but not_ both |
+| ${\pb{A \cap B}}$           | The probability of ${A}$ _and_ ${B}$               |
+| ${\pb{A^c \cap B^c}}$       | The probability of _neither_ ${A}$ _nor_ ${B}$     |
+| ${\pb{A \smallsetminus B}}$ | The probability of ${A}$ but not ${B}$             |
+| ${\pb{B \smallsetminus A}}$ | The probability of ${B}$ but not ${A}$             |
+
+### What is a Discrete Sample Space?
+> __Definition: Discrete Sample Space.__ A sample space is _discrete_ if either of these conditions are met: (1) the sample space contains finitely many outcomes, or (2) the sample space contains infinitely many outcomes that can be arranged into a simple sequence ${o_1, o_2, o_3, \ldots}$
+
+### `P{A xor B}`
+> __Axiom.__ Let ${\Ss = \set{A,B},}$ with ${A \cap B = \nil.}$ The probability of ${A}$ or ${B,}$ but not both, occurring, is ${\pb{A \dup B} = \pb{A} + \pb{B}.}$
+
+### `P{A or B}`
+> __Axiom.__ Let ${\Ss = \set{A,B}.}$ The probability of ${A}$ or ${B,}$ or both, occurring, is ${\pb{A \cup B} = \pb{A} + \pb{B} - \pb{A \rid B}.}$
+
+
+## Probability Distribution
 
 > __~probability distribution~.__ A probability distribution ${\texttt{P}}$ is a function that assigns to each event ${E}$ a probability ${\pb{E},}$ such that: (1) ${\pb{E} \ge 0,}$ (2) ${\pb{\Omega}=1,}$ and (3) if ${A \cap B = \nil,}$ then ${\pb{A \cup B}=\pb{A} + \pb{B}.}$
 
@@ -285,17 +305,10 @@ $$
 
 ### Expected Value
 
-<div className={'float-right'}>
-<BarPlot data={[
-  ["1",1/6],
-  ["2",1/2],
-  ["3",1/3],
-]} wh={[300,300]} margins={[30,0,30,200]} scale={200}/>
-</div>
-
 ~example~. A game: 1/6 of the time, the payout is ${\cash{1}.}$ 1/2 of time, the payout is ${\cash{2}.}$ 1/3 of the time, ${\cash{4}.}$
 
-~question~. Playing ${n}$ times (where ${n}$ is very large), what's the average payout? ${(1/6)(\cash{1}) + (1/2)(\cash{2}) + (1/3)(\cash{4}) = \cash{2.5}.}$
+~question~. Playing ${n}$ times (where ${n}$ is very large), what's the average payout?
+> ${(1/6)(\cash{1}) + (1/2)(\cash{2}) + (1/3)(\cash{4}) = \cash{2.5}.}$
 
 The value 2.5 is an example of a __*random variable*__.
 

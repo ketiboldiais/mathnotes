@@ -128,7 +128,9 @@
 /* Paragraphs and Block Quotes */
 	blockquote {
 		margin: 1% auto;
-		padding: 0 1em 0 1em;
+		padding: 1px 1em 1px 1em;
+		background-color: rgb(226, 236, 238);
+		border-left: solid 4px  rgb(154, 189, 197);
 	}
 	blockquote p:first-child>strong>small:first-child {
 		font-weight: normal !important;
@@ -260,13 +262,13 @@
 	}
 	h1,h2,h3,h4,h5,h6 {
 		font-weight: bold;
-		font-family: 'SANS_SERIF';
+		font-family: var(--sans_serif);
 		margin: 0; 
 		padding: 0;
 	}
 	h2+p,h3+p,h4+p,h5+p,h6+p { margin-top:0; }
 	h2+blockquote,h3+blockquote, h4+blockquote,h5+blockquote,h6+blockquote {
-		margin-top: -1% !important;
+		/* margin-top: -1px !important; */
 	}
 	h1 {
 		text-align: center;

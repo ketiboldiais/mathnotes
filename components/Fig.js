@@ -10,8 +10,6 @@ export const Fig = ({
 	height = 30,
 	imwidth = 150,
 	imheight = 150,
-	layout = "responsive",
-	fit = "cover",
 	marginTop = 0,
 	marginBottom = 0,
 	className=''
@@ -32,8 +30,6 @@ export const Fig = ({
 				alt={caption}
 				width={imwidth}
 				height={imheight}
-				layout={layout}
-				objectFit={fit}
 			/>
 			{children}
 		</figure>

@@ -307,6 +307,7 @@ const Routes = [
           { name: "Recursion", path: `${cs}${dsa}recursion` },
           { name: "Caches", path: `${cs}${dsa}caches` },
           { name: "Backtracking", path: `${cs}${dsa}backtracking` },
+          { name: "Information Retrieval", path: `${cs}${dsa}information-retrieval` },
           // { name: "Static Arrays", path: `${cs}${dsa}arrays`,
           // 	children: [
           // 		{ name: "Linear Search", path: `${cs}${dsa}arrays#linear-search`, },

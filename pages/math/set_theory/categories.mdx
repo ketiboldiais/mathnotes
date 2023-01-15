@@ -1,69 +1,569 @@
-<Head>
-	<title>Categories</title>
-	<meta name={`description`} content={`Notes on category theory.`}/>
-</Head>
+# Category Theory
+_A note on category theory. I’m of the opinion that category theory is best understood through programming, given its nascency and ubiquity among functional languages. To that end, this note uses TypeScript and Haskell for examples._
 
-# Categories
+1. [Preliminary Remarks](#preliminary-remarks)
+2. [On Haskell](#on-haskell)
+	1. [Boolean Operations](#boolean-operations)
+	2. [Numerics](#numerics)
+	3. [Relational operators](#relational-operators)
+	4. [Characters](#characters)
+3. [On TypeScript](#on-typescript)
+	1. [`A.concat(B)`](#aconcatb)
+	2. [`A.every(𝑏)`](#aevery𝑏)
+	3. [`A.some(𝑏)`](#asome𝑏)
+	4. [`A.filter(𝑏)`](#afilter𝑏)
+	5. [`A.slice(i,k)`](#asliceik)
+	6. [`A.reduce(𝑟,𝑥)`](#areduce𝑟𝑥)
+	7. [`A.reduceRight(𝑟,𝑥)`](#areduceright𝑟𝑥)
+	8. [`A.map(𝑓)`](#amap𝑓)
+	9. [`A.push(𝑥)`](#apush𝑥)
+	10. [`A.pop()`](#apop)
+	11. [`A.reverse()`](#areverse)
+	12. [`pipe` and `flow`](#pipe-and-flow)
+	13. [Conditional Types](#conditional-types)
+	14. [Variadic Tuples](#variadic-tuples)
+	15. [Template Literal Types](#template-literal-types)
+	16. [`Option<T>`](#optiont)
+4. [Types](#types)
+5. [Functions](#functions)
+6. [Properties of Process](#properties-of-process)
+7. [Category Theory](#category-theory-1)
+	1. [Magmas](#magmas)
+	2. [Associativity Morphism](#associativity-morphism)
+	3. [Semigroup](#semigroup)
+	4. [Identity Morphism](#identity-morphism)
+	5. [Monoid](#monoid)
+	6. [Composition](#composition)
+	7. [Orders](#orders)
+	8. [Applications](#applications)
+	9. [The Golden Apple](#the-golden-apple)
+	10. [Functors](#functors)
 
-This chapter covers notes on categories, more generally providing an overview of
-_category theory_.
-
-## Foundations
-We must be comfortable with this section's definitions before proceeding.
-
-### Function Composition
-Consider two functions:
-$$
-	f: A \to B \\
-	g: B \to C
-$$
-
-The function ${f}$ takes an ${A}$ and returns a ${B.}$
-The function ${g}$ takes a ${B}$ and returns a ${C.}$
-In some programming language (perhaps Haskell), we might write:
-
-~~~haskell
-f :: int => string
-g :: string => double
-~~~
-
-Composing the functions mathematically is elementary:
-
-$$
-(g \circ f)(x) = g(f(x))
-$$
-
-But not so much programatically. How do we express ${g \circ f}$ in
-a programming language? First, note that ${g \circ f}$ is just a name.
-Accordingly, we can give it another name, say, ${h:}$
-
-
-$$
-h(x) = g(f(x))
-$$
-
-Put this way, we have:
+## Preliminary Remarks
+For brevity, the `show` function maps to `console.log`:
 
 ~~~typescript
-let h = (x) => g(f(x))
+const show = console.log
 ~~~
 
-What is `h`'s type? Well, `f` expects an `int`, so `x` must be an `int`.
-This `int` is passed to `f`, which returns a `string`, which is what `g` expects. Given that `string`, `g` returns a `double`. Hence, `h` is a function 
-that takes an `int` and returns a `double`.
+To preface: Category theory generalizes a lot of concepts from abstract algebra. As such, the reader is assumed to be familiar with basic abstract algebra concepts before tackling category theory. Without that familiarity, much of category theory will appear like meaningless drivel and symbol manipulation.
+
+## On Haskell
+Familiar types: `Bool`, `Int`, `Integer`, `Float`, `Double`, `Char`. All Haskell types begin with a capital letter. Use a lowercase letter and it’s presumed to be a generic type.
+
+### Boolean Operations
+Boolean operations in Haskell are functions.
 
 ~~~haskell
-h :: int => double
+-- not :: Bool -> Bool
+not True -- False
+not False -- True
+
+-- (||) :: Bool -> Bool
+True || False -- True
+
+-- (&&) :: Bool -> Bool
+True && False -- False
 ~~~
 
-Some Haskell-like language might implement direct support for this pattern:
-
+### Numerics
+- `Int` - 64-bit integers
+- `Integer` - integers of arbitrary length
+- `Float` - 32-bit floating-point reals.
+- `Double` - 64-bit floating point reals.
 ~~~haskell
-f :: int => string
-g :: string => double
-g . f
+2 + 2 -- 4
+2 - 2 -- 0
+3 * 3 -- 9
+4 div 2 -- 2 (integer division)
+2 rem (-3) -- 2 (remainder operation)
+2 mod (-3) -- -1 (modulo operation)
+~~~ 
+- Notice `rem` and `mod`. Haskell properly addresses a common pet-peeve of mathematicians: The `mod` used by programmers is a very different `mod` from the mathematical definition. `rem` is the true math definition, `mod` is the `%` found in other languages.
+- Watch for parentheses and negative numbers.
+- Reals can be coverted to integers with `round`, `floor`, and `ceiling`.
+- Some predefined functions:
+~~~haskell
+even :: Integral a => a -> Bool
+odd :: Integral a => a -> Bool
+min :: Ord a => a -> a -> a
+max :: Ord a => a -> a -> a
+~~~
+- `Integral` is a typeclass. It’s the set of `Integer` and `Int`. Another typeclass is `Floating` (the reals) and `Num` (`Integral` and `Floating`).
+- `Ord` is another typeclass. Essentially, a poset (a set with some inherent ordering). Any type whose values can be compared (e.g., `Char` or the `Integral` types), belong to the typeclass `Ord`.
+
+### Relational operators
+~~~haskell
+2 < 1 -- false
+2 > 1 -- true
+2 <= 3 -- true
+3 >= 4 -- false
+2 == 2 -- true
+2 /= 2 -- false
 ~~~
 
-### Associativity
-### Commutativity
-### Distributivity
+### Characters
+- Type: `Char`
+- Literals: `'a'`, `'A'`, `\n`, etc.
+- Relational operators available (applies alphabetical order).
+- `Char` can be converted to `Int` and vice versa by importing the `Data.Char` library. This library contains the two functions:
+~~~haskell
+ord :: Char -> Int
+chr :: Int -> Char
+~~~
+
+## On TypeScript
+We should be comfortable with basic functional programming. Native mutating methods (e.g., `push`, `pop`, etc.) are not covered in depth. Instead, we will cover their non-mutating equivalents.
+
+### `A.concat(B)`
+The `concat` method merges two or more arrays into a single, new array:
+
+~~~typescript
+const A = [1,2,3]
+const B = [6,7,8]
+const C = A.concat(B)
+
+show(C) // [1,2,3,6,7,8]
+~~~
+
+### `A.every(𝑏)`
+The `every` method returns `true` if _all_ elements of `A` satisfy the boolean function 𝑏. We can think of this as `∀x[x ∈ A : 𝑏(x)]`
+
+~~~typescript
+const A = [2,4,6,8]
+const e = (n:number) => n % 2===0
+const x = A.every(e)
+
+show(x) // true
+~~~
+
+### `A.some(𝑏)`
+Returns `true` if _at least one_ element in the array satisfies boolean function 𝑏. We can think of this as `∃x[x ∈ A : 𝑏(x)]`.
+
+~~~typescript
+const A = [1,2,3,4,5,6]
+const b = (x:number) => x > 5
+const x = A.some(b)
+show(x) // true
+~~~
+
+### `A.filter(𝑏)`
+Returns a copy of `A` consisting of only the elements that satisfy the boolean function 𝑏.
+
+~~~typescript
+const A = [1,2,3,4,5,6]
+const isOdd = (n:number) => n % 2 !== 0
+const oddsOfA = A.filter(isOdd)
+
+show(oddsOfA) // [1,3,5]
+~~~
+
+### `A.slice(i,k)`
+Returns a copy of `A` with the elements of index `j`, where `i <= j < k`. This is a fairly versatile method:
+
+- If `i` and `k` are not provided, then a copy of the entire array is returned.
+- If only `i` is provided, then a copy of all elements starting at `i` is returned.
+- Negative indices will start the count from the right-side of the array.
+
+~~~typescript
+const A = [1,2,3,4,5,6]
+
+const B = A.slice(0,5)
+show(B) // [1,2,3,4,5]
+
+const C = A.slice()
+show(C) // [1,2,3,4,5,6]
+
+const D = A.slice(3)
+show(D) // [4,5,6]
+
+const E = A.slice(-2)
+show(E) // [5,6]
+~~~
+
+### `A.reduce(𝑟,𝑥)` 
+In other languages, this is called the `foldl` or `foldLeft` function. Think of it as the “build-up” function, where ${r}$ is the function that builds up the value ${x}$.
+
+- The function ${r}$ takes two parameters, ${a}$ and ${b.}$
+- The parameter ${b}$ is initially some starting value.
+- The paramater ${a}$ is an element of the array.
+- Go through each element of the array, passing ${a}$ and the result of the last call: ${r(a_{i},b_{i-1}).}$
+  
+~~~typescript
+const A = ['a','b','c']
+const B = A.reduce((a,b)=>a.concat(b),'')
+show(B) // 'abc'
+~~~
+
+### `A.reduceRight(𝑟,𝑥)`
+Same behavior as `reduce`, but with array element arguments passed starting from the right. Other languages call this `foldr` or `foldRight`:
+
+~~~typescript
+const A = ['a','b','c']
+const B = A.reduceRight((a,b)=>a.concat(b),'')
+show(B) // 'cba
+~~~
+
+### `A.map(𝑓)`
+Returns an array `B` whose elements are the elements of `A` after applying `𝑓`.
+
+~~~typescript
+const A = ['a','b','c']
+const B = A.map(c => c.toUpperCase())
+show(B) // ['A', 'B', 'C']
+~~~ 
+
+### `A.push(𝑥)`
+The `push` method inserts a new element `𝑥` to the array `A`. This, however, is a mutating method. To push immutably, we use the spread operator:
+
+~~~typescript
+const A = [1,2,3]
+const B = [...A, 4]
+show(B) // [1,3,4,5]
+~~~
+
+### `A.pop()`
+The `pop` method removes the last element from the array `A`. Once more, this is a mutating method. To pop immutably, we use `slice`:
+  ~~~typescript
+  const A = [1,2,3]
+  const B = A.slice(0,-1)
+  show(B) // [1,2]
+  ~~~
+
+### `A.reverse()`
+The `reverse` method mutates the array `A` by reversing its elements. To reverse immutably, we can use `reduceRight`:
+  ~~~typescript
+  const A = [1,2,3]
+  const B = A.reduceRight((a,b) => [...a,b],[])
+  show(B) // [3,2,1]
+  ~~~ 
+
+### `pipe` and `flow`
+Consider the following pattern:
+  ~~~typescript
+  const f = (n:N) => n - 32
+  const g = (n:N) => n * 0.5556
+  const toCelsius = (t:N) => g(f(t))
+  show(toCelsius(90)) // 32.2248
+  ~~~
+We can use the `pipe` function to rewrite this:
+  ~~~typescript
+  const f = (n:N) => n - 32
+  const g = (n:N) => n * 0.5556
+  const toCelsius = (t:N) => pipe(t, f, g)
+  show(toCelsius(90)) // 32.2248
+  ~~~
+Alternatively, we could use `flow`:
+  ~~~typescript
+  const f = (n:N) => n - 32
+  const g = (n:N) => n * 0.5556
+  const toCelsius = (t:N) => flow(f, g)(t)
+  show(toCelsius(90)) // 32.2248
+  ~~~
+
+### Conditional Types
+- Conditional types allow us to tell the compiler what type to infer, based on a condition. The general form:
+
+~~~typescript
+type T<X> = X extends Y ? A : B 
+~~~
+
+- This definition reads as follows:
+  - Let `T` be a type that takes a generic `X`.
+  - If the generic `X` _extends_ `Y`, then `T = A`.
+  - If the generic `Y` _does not extend_ `Y`, then `T = B`.
+- A type `X` extends `Y` if we can assign a value of type `X` to a variable that expects `Y`s.
+
+_Example_. The code below gets the underlying types of an array’s elements.
+~~~typescript
+type Flat<T> = T extends (infer U)[] ? U : T;
+type A = Flat<[number, string, object]>;
+let x: A; // number|string|object
+~~~
+
+### Variadic Tuples
+- We can spread a tuple type into another tuple type:
+~~~typescript
+type BB = [boolean, boolean]; 
+type BBS = [...BB, string]; // [boolean, boolean, string]
+~~~
+- We call these tuples _variadic tuples_.
+
+### Template Literal Types
+- Template literals may also be written:
+~~~typescript
+type Y = 'yes'
+type N = 'no'
+type YN = `${Y}/${N}` // 'yes/no'
+~~~
+
+### `Option<T>`
+- An `Option<T>` is an object of the form:
+  ~~~typescript
+  type Some<T> = {_tag: 'Some'; value: T}
+  type None = {_tag: 'None'}
+  type Option<T> = None | Some<T>
+  ~~~
+- It’s a wrapper for a value that’s either a type `T` or `null | undefined`.
+
+> _Example_. Some code that returns a `{speak:string}` object, perhaps part of a program that sets the user’s preferred language.
+> 
+> ~~~typescript
+> type LangPref = {speak:string};
+> const setLang1 = (lang:string): (LangPref|void) => {
+>   switch(lang) {
+>     case 'en': return {speak: 'English'};
+>     case 'fr': return {speak: 'French'};
+>     default: throw new Error('Language not set.')
+>   }
+> }
+> const lang = setLang('en') // {speak:'English'}
+> const lang2 = setLang('ja') // throw an error
+> 
+> // won't work because of the throw
+> const a = setLang('fr').speak;
+> ~~~
+
+- We can rewrite this as an option:
+  ~~~typescript
+  type LangPref = {speak:string}
+
+  const setLang2 = (lang:string): O.Option<LangPref> => {
+    switch(lang) {
+      case 'en': return O.some({speak: 'English'});
+      case 'fr': return O.some({speak: 'French'});
+      default: return O.none
+    }
+  }
+  ~~~
+- Compare the differences:
+  ~~~typescript
+  type setLang1 = (lang:string) => (LangPref | void);
+  type setLang2 = (lang:string) => Option<LangPref>;
+  ~~~
+- Question: Doesn’t this mean we now have to constantly check if we have a `none` or a `some`?
+- Answer: Yes, but it’s better than what we had before: Constantly checking if we had a value, a `null`, or an `undefined`.
+- It’s important to keep in mind that the `Option` type does far more than checking if we have value: It effectively replaces the traditional `if-else` pattern.
+- Functions that take `Option` values are branch-off points. We get a `Some`, we go one way, we get a `None`, we go another. _We should be minimizing these points as much as possible_. The more branches we introduce, the greater our program complexity. There must eventually be a function that takes a guaranteed value. 
+
+
+## Types
+When we write
+~~~typescript
+let x:number
+~~~
+we’re stating that `x` is a member of the set of numbers. We do so purely to help our understanding of types and category theory. Mathematically, this is incorrect. If we continue from this premise, we’ll eventually run into Russell’s Paradox because of types like `unknown`, `any`, and circular definitions. We won’t entangle ourselves with all of that. Eventually, we’ll let go of this idea that `type = set`.
+
+## Functions
+Functions are called _pure functions_ if they have no side-effects. 
+
+_Example_. This is a pure function:
+~~~typescript
+const f = (x:number) => x** 2
+~~~
+
+_Example_. This is not:
+~~~typescript
+const f = (x:number) => {
+  console.log(x)
+  return x ** 2
+}
+~~~
+
+The second example has a side-effect: Printing to the console.
+
+## Properties of Process
+Before we look at category theory, a quick reminder of fundamental properties:
+
+| Property       | Form                          | Quip                                                           |
+| -------------- | ----------------------------- | -------------------------------------------------------------- |
+| Identity       | ${a + x = a}$                 | ${x}$ can be combined with ${a}$ without changing ${a}$        |
+| Associativity  | ${(a + b) + c = a + (b + c)}$ | Which inputs to process together is irrelevant                 |
+| Commutativity  | ${a + b = b + a}$             | Which order to process the inputs is irrelevant                |
+| Distributivity | ${a*(b + c) = a*b + a*c}$     | A process can be assigned to different, independent processors |
+
+There are many other properties, but the four above form the “core.” If we think about most procedures in the real world, we’d find that they _do not_ satisfy the properties above. Few objects can be combined with another without effect. Most cooking recipes are non-associative—mix sauce and cooked spaghetti, not sauce and raw spaghetti. Government regulations and laws are most certainly non-commutative—there’s always a guideline on what to do next (with penalties to boot). Society, by and large, is so non-distributive it merits title—_the tragedy of the commons._
+
+
+
+
+## Category Theory
+> __Definition__. A _category_ is a collection of _objects_ with a collection of _morphims_ between the objects. We call the collection of morphisms a _hom-set_, and write ${\C(a,b)}$ or ${\textbf{Hom}_\C (a,b).}$
+
+First, some rough intuition: Category theory, at first glance, looks like an application of graph theory. We take some objects and draw directed edges between them, representing the relationships. This leaves us with a digraph.
+
+For many real-world applications, the number of objects is fairly small. In these situations, category theory _is_ just a special case of graph theory. But graph theory is limited:
+
+1. Graph theory axioms are bound by _set theory_. If we claim a directed edge exists, but that directed edge violates some notion within set theory, then we have a contradiction—no dice. 
+2. Graph theory does not have axioms to handle the concept of _composition_. There’s no such thing as “composing” a directed edge. Without these axioms, attempting to model category theory ideas via graphs is a dog that won’t hunt.
+
+There are many other differences, to be covered later. For now, if the diagrams look like digraphs, that’s ok. The digrams are just an aid. If it helps to think of them as digraphs, then so be it.
+
+> _Example._ When we write ${f: A \longmapsto B,}$ we are denoting a category. The objects are ${A}$ and ${B,}$ and the morphism is ${f.}$
+
+
+### Magmas
+> __Definition.__ Let ${\Oo}$ be a collection of objects ${\cls{a,b.}}$ If ${\Oo}$ has an operation ${+,}$ such that ${(a + b = c) \in \Oo,}$ then we say that ${\Oo}$ is a _magma_.
+
+Magmas are the simplest non-empty category. They aren’t restricted by any laws. All we need is a set of objects and some operation ${+}$ (often called _concatenation_) that, when applied to two objects ${a}$ and ${b}$ of ${\Oo,}$ we get back an element ${a + b = c}$ in ${\Oo.}$ 
+
+> __Example.__ The category ${(\cls{1,0}, +)}$ is a magma, since ${1 + 0 = 1}$ and ${0 + 1 = 1.}$
+
+Note: Operations are just functions. We usually write ${1 + 0 = 1,}$ but there’s nothing stopping us from writing ${+(1,0) = 1.}$ In fact, the latter notation is often found in introductory set theory textbooks alongside traces in languages like Scheme: `(+ 1 0)`.
+
+
+### Associativity Morphism
+> __Definition.__ Let ${\C}$ be the following category:
+> $$
+> f: A \longmapsto B \\
+> g: B \longmapsto C \\
+> h: C \longmapsto D
+> $$
+> Then there exists the morphism:
+> $$
+> h \circ \px{ g \circ f } = \px{ h \circ g } \circ f
+> $$
+> We call the fourth morphism, ${h \circ g,}$ _associativity_.
+
+### Semigroup
+> __Definition.__ Given a [magma](#magmas) ${\Oo,}$ if ${\Oo}$’s concatentation ${+}$ is associative, then ${\Oo}$ is a _semigroup_.
+
+
+### Identity Morphism
+> __Definition.__ Let ${\Cc}$ be a category. Then for every object ${X}$ within ${\Cc,}$ there exists a morphism ${\tx{Id}_X : X \longmapsto X.}$ We call this morphism _identity_.
+
+> __Lemma.__ Given ${f : A \longmapsto X}$ and ${g : X \longmapsto B,}$ it follows that ${\tx{Id}_X \circ f = f}$ and ${\tx{Id}_X \circ g = g.}$ 
+
+_Example._ The type `number` has an identity `0`. 
+
+_Example_. A type may have _many_ identity elements. Below, the type `Wum` (“weird number”) has infinitely many identity elements — the set of all negative numbers:
+
+~~~typescript
+const {abs, floor} = Math;
+
+class Wum {
+  constructor(private x: number) {
+    this.x = abs(floor(x));
+  }
+  add(n: number) {
+    return n <= 0 ? this.x : this.x + abs(floor(n));
+  }
+}
+~~~
+
+### Monoid
+> __Definition.__ Let ${\Cc}$ be a semigroup. If ${\Cc}$ contains an identity element, then ${\Cc}$ is a _monoid_.
+
+_Example_. Below, the category `(number, f)` is a mononoid.
+~~~typescript
+const f = (x: number, y: number) => x + y
+
+f(0,x) === f(x,0) // identity ✓  0 :: number
+
+f(f(x,y), z) === f(x, f(y, z)) // associativity ✓
+~~~
+
+
+
+
+
+### Composition  
+> __Definition.__ Let ${\Cc}$ be the following category:
+> $$
+> f: A \longmapsto B \\
+> g: B \longmapsto C
+> $$
+> Then there exists a third morphism:
+> $$
+> g \circ f: A \longmapsto C \\
+> $$
+> We call this third morphism _composition_.
+
+
+
+
+### Orders
+> __Definition: Preorder.__ Let ${\Oo = \lBrace a, b, c \rBrace}$ be a collection of objects. If ${a \le b,}$ ${b \le c,}$ and ${a \le c,}$ then ${\Oo}$ is the category _preorder_.
+
+> __Definition: Partial Order.__ Let ${\Oo = \lBrace a, b, c \rBrace}$ be a preorder with the additional condition that: If ${a \le b}$ and ${b \le a,}$ then ${a = b.}$ We call ${\Oo}$ the category _partial order_.
+
+> __Definition: Total Order.__ Given a collection ${\Oo = \lBrace a,b,c \rBrace,}$ if ${a \le b \le c,}$ then ${\Oo}$ is the category _total order_.
+
+
+### Applications
+- Objects and morphims can be anything we want, as long as we abide by the tenets of category theory.
+- A programming application:
+  1. Objects are _types_,
+  2. morphisms are _functions_, and
+  3. ${\circ}$ is _function composition_.
+- Example:
+  ~~~typescript
+  const idA = (s: string): string => s // identity morphism of A
+  const idB = (c: number): number => c // identity morphism of B
+  const idC = (b: boolean): boolean => b // identity morphism of C
+  const f = (s: string): number => s.length // morphism: f: A -> B
+  const g = (n: number): boolean => n > 0 // morphism: f: B -> C
+  const gf = (s: string): boolean => g(f(s)) // composition: g∘f: A -> B -> C
+  ~~~ 
+
+### The Golden Apple
+- Anyone who’s used functional programming extensively will have encountered what we’re going to informally call _the golden apple_. We give it this name because of function composition’s alluring, yet seemingly discordant nature.
+- First, we have two types:
+~~~typescript
+type F = (a: A) => B
+type G = (c: C) => D
+~~~
+- Next, we write a function `gf`, corresponding to the composition of a function of type `F` and a function of type `G`.
+~~~typescript
+type F   =  (a: A) => B
+type G   =  (c: C) => D
+type GF  =  (f: F, g: G) => (a: A) => D
+~~~
+- All of this is ok, as long `B = C`. For example:
+~~~typescript
+const {log: show} = console;
+
+type F = (a: string) => number
+type G = (c: number) => boolean
+type GF = (f:F, g: G) => (a: string) => boolean
+
+const gf: GF = (f: F, g: G) => (a) => g(f(a))
+
+const strlen: F = (a) => a.length;
+const within10: G = (c) => 0 < c && c < 10 
+const str10 = gf(strlen, within10)
+
+const x = str10('012345')
+const y = str10('0123456789')
+show(x) // true
+show(y) // false
+~~~
+- Nothing new here. This is plain-old function composition.
+- Unfortunately, it’s not always the case that `B = C`. 
+  - Case 1: `F` returns a type `X`, different from `C`:
+    ~~~ts
+    type F  = A => X;
+    type G  = C => D;
+    type GF = (F,G) => A => D; // compiler groans
+    ~~~
+    - Preview: Category theory tells us that a __functor__ solves this problem.
+  - Case 2: `F` returns a type `X`, different from `C`, and `G` takes two arguments of type `B` and `C`:
+    ~~~ts
+    type F  = A => X;
+    type G  = (B,C) => D;
+    type GF = (F,G) => A => D; // compiler wails
+    ~~~
+    - Preview: An __applicative functor__ solves this problem.
+  - Case 3: `F` and `G` return completely different arguments entirely:
+    ~~~ts
+    type F  = A => X;
+    type G  = B => Y;
+    type GF = (F,G) => D // compiler has left the chat
+    ~~~
+    - Preview: A __monad__ solves this problem.
+    
+### Functors
+- Of the three cases mentioned previously, case 1 is arguably the most common, particularly with JavaScript. The usual circumstances:
+  1. We have a function `f` that usually returns a `number`, but includes a `throw`.
+  2. Elsewhere, a function `g` takes a `number`, and returns a `boolean`.
+  3. We can’t compose `f` and `g`, because `f` possibly returns nothing.
